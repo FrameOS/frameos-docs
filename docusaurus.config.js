@@ -91,7 +91,7 @@ const config = {
             items: [
               {
                 label: "FrameOS",
-                to: "/docs/intro",
+                to: "/",
               },
             ],
           },
