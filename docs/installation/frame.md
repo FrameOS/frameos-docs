@@ -10,10 +10,10 @@ The bare minimum for web kiosk mode:
 
 - Any random Linux box you have SSH access to.
 
-The recommended / supported frames:
+The recommended / supported / tested combinations:
 
-- [Inky Impression 5.7"](https://shop.pimoroni.com/products/inky-impression-5-7?variant=32298701324371) e-ink display
-- [Inky Impression 7.3"](https://shop.pimoroni.com/products/inky-impression-7-3?variant=40512683376723) e-ink display
+- [Inky Impression 5.7"](https://shop.pimoroni.com/products/inky-impression-5-7?variant=32298701324371) e-ink display + [Raspberry Pi Zero W](https://amzn.to/3suqQHD) 
+- [Inky Impression 7.3"](https://shop.pimoroni.com/products/inky-impression-7-3?variant=40512683376723) e-ink display + [Raspberry Pi Zero W](https://amzn.to/3suqQHD) 
 - More coming soon
 
 Attach them to a Raspberry Pi Zero W or W2, and control the render loop via FrameOS.
