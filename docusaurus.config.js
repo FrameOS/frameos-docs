@@ -116,6 +116,16 @@ const config = {
         darkTheme: darkCodeTheme,
       },
     }),
+  plugins: [
+    [
+      "posthog-docusaurus",
+      {
+        apiKey: "phc_Qp5EaVoMqQejQnkcAMSgEOj2An44uDDSJpRTecvcq2p",
+        appUrl: "https://eu.posthog.com",
+        enableInDevelopment: false,
+      },
+    ],
+  ],
 };
 
 module.exports = config;
