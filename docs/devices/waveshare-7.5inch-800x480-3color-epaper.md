@@ -1,0 +1,1 @@
+# Waveshare 7.5" 800×480 3-color
