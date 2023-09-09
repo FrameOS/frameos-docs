@@ -4,9 +4,12 @@ sidebar_position: 2
 
 # HDMI & Web Kiosk
 
-## HDMI
+## HDMI output
 
-The HDMI output passes the generated image onto the framebuffer. It's a crude approach, and useful for testing, or when your image doesn't require 60fps interactivity.
+If no other device matches, FrameOS defaults to displaying the image over the HDMI output.
+
+Note that this is not just a fallback, but the required operating mode for some frames.
+
 
 ## Web Kiosk
 

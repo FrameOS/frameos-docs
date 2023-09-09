@@ -1,26 +1,11 @@
 ---
 sidebar_position: 1
 ---
-
 # Frame Setup
 
-## Required hardware 
+To setup a frame, follow the generic Raspberry Pi setup instructions below, along with any alterations from [each device's page](/devices). 
 
-The bare minimum for web kiosk mode: 
-
-- Any random Linux box you have SSH access to.
-
-The recommended / supported / tested combinations:
-
-- [Inky Impression 5.7"](https://shop.pimoroni.com/products/inky-impression-5-7?variant=32298701324371) e-ink display + [Raspberry Pi Zero W](https://amzn.to/3suqQHD) 
-- [Inky Impression 7.3"](https://shop.pimoroni.com/products/inky-impression-7-3?variant=40512683376723) e-ink display + [Raspberry Pi Zero W](https://amzn.to/3suqQHD) 
-- More coming soon
-
-Attach them to a Raspberry Pi Zero W or W2, and control the render loop via FrameOS.
-
-![](./_img/0-frames.jpeg)
-
-## Raspberry Pi setup (individual frames)
+## Raspberry Setup
 
 Download the [Raspberry Pi Imager](https://www.raspberrypi.com/software/) and select [Raspberry Pi OS Lite](https://www.raspberrypi.org/downloads/raspberry-pi-os/) debian `bullseye`. Select 32-bit if you have the zero w v1, otherwise select 64 bit.
 
