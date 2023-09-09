@@ -10,15 +10,15 @@ FrameOS has been tested and confirmed working with:
 
 ### e-ink displays
 
-- [Pimoroni inky impression 5.7" 7-color](./piromoni-inky-impression-5.7inch-eink)
-- [Pimoroni inky impression 7.3" 7-color](./piromoni-inky-impression-7.3inch-eink)
+- [Pimoroni inky impression 5.7" 7-color](./pimoroni-inky-impression-5.7inch-eink)
+- [Pimoroni inky impression 7.3" 7-color](./pimoroni-inky-impression-7.3inch-eink)
 - [Waveshare 2.13" 250×122](./waveshare-2.13inch-250x122-epaper)
 - [Waveshare 7.5" 800×480](./waveshare-7.5inch-800x480-epaper)
 - [Waveshare 7.5" 800×480 3-color](./waveshare-7.5inch-800x480-3color-epaper)
 
 ### LCD displays
 
-- [Pimoroni HyperPixel 2.1" Round 480x480](./piromoni-hyperpixel-2.1inch-round-480x480-lcd)
+- [Pimoroni HyperPixel 2.1" Round 480x480](./pimoroni-hyperpixel-2.1inch-round-480x480-lcd)
 - [Waveshare 5" Round 1080×1080](./waveshare-5inch-round-1080x1080-lcd)
 
 
