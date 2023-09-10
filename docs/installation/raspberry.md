@@ -1,11 +1,11 @@
 ---
-sidebar_position: 1
+sidebar_position: 2
 ---
-# Frame Setup
+# Raspberry Setup
 
-To setup a frame, follow the generic Raspberry Pi setup instructions below, along with any alterations from [each device's page](/devices). 
-
-## Raspberry Setup
+:::info
+Be sure to look at the [device-specific instructions](/devices) for any changes to these steps. 
+::: 
 
 Download the [Raspberry Pi Imager](https://www.raspberrypi.com/software/) and select [Raspberry Pi OS Lite](https://www.raspberrypi.org/downloads/raspberry-pi-os/) debian `bullseye`. Select 32-bit if you have the zero w v1, otherwise select 64 bit.
 

@@ -5,11 +5,11 @@ slug: /
 
 # FrameOS 
 
-FrameOS is software purpose built for controlling Raspberry Pi-powered e-paper and LCD displays. It consists of ~~two~~ three parts:
+FrameOS is a conductor of Raspberry Pi-powered e-ink displays and LCD screens. To get started
 
-- **FrameOS guides** - getting started guides, links to 3d-printable models and other resources for each supported frame 
-- **FrameOS controller** - the management software used to deploy changes to frames, write custom frame-apps, and aggregate logs. It's a self-hosted python webapp.
-- **FrameOS device software**, deployed onto a Raspberry Pi with a screen attached to it. Written in python.
+- Read the **[device guides](/devices)** - getting started guides, links to 3d-printable models and other resources for each supported display.
+- Install the **[FrameOS controller](/installation/controller)** - a self-hosted python app that lets you build and deploy software onto individual frames via SSH.
+- Deploy built [apps](/apps), or install , deployed onto a Raspberry Pi with a screen attached to it. Written in python.
 
 ![](./_img/1-frames.jpg)
 
