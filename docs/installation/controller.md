@@ -16,11 +16,11 @@ Running FrameOS via Docker is the easiest. Alternatively deploy it you'd deploy 
 
 ```bash
 # running the latest release
-docker run -d -p 8999:8999 -v data:/app/data mariusandra/frameos
+docker run -d -p 8999:8999 -v ./db:/app/db mariusandra/frameos
 
 # build your own from this repository
 docker build . -t frameos
-docker run -d -p 8999:8999 -v data:/app/data frameos
+docker run -d -p 8999:8999 -v ./db:/app/db frameos
 ```
 
 Then load http://0.0.0.0:8999 - ideally using a local IP that your frames can connect to.
