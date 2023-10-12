@@ -12,15 +12,34 @@ The FrameOS controller is where you set up your frames. You can run it continuou
 
 ## Running via docker
 
-Running FrameOS via Docker is the easiest. Alternatively deploy it you'd deploy any Python + React app.
 
 ```bash
 # running the latest release
-docker run -d -p 8999:8999 -v ./db:/app/db mariusandra/frameos
+docker run -d -p 8999:8999 -v ./db:/app/db --name frameos --restart always mariusandra/frameos
 
-# build your own from this repository
-docker build . -t frameos
-docker run -d -p 8999:8999 -v ./db:/app/db frameos
+# update daily to the latest release
+docker run -d \
+    --name watchtower \
+    -v /var/run/docker.sock:/var/run/docker.sock \
+    containrrr/watchtower \
+    --interval 86400
+    frameos
+
+# one time update
+docker run \
+    -v /var/run/docker.sock:/var/run/docker.sock \
+    containrrr/watchtower \
+    --run-once \
+    frameos
+```
+
+Alternatively, if you want to develop locally via docker:
+
+```bash
+# build your own
+git clone https://github.com/mariusandra/frameos/
+docker build frameos -t frameos
+docker run -d -p 8999:8999 -v ./db:/app/db --name frameos frameos
 ```
 
 Then load http://0.0.0.0:8999 - ideally using a local IP that your frames can connect to.
