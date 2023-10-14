@@ -8,14 +8,15 @@ sidebar_position: 1
 
 The FrameOS controller is where you set up your frames. You can run it continuously on a server, or locally on your computer when needed. You'll miss out on log aggregation if the FrameOS server is not always on. The frames however will keep on running and updating independently.
 
-![2023-08-21 01 11 13](https://github.com/mariusandra/frameos/assets/53387/25e5666b-e380-4115-bedf-b149e332a1b1)
+![FrameOS walkthrough](../_img/walkthrough.gif)
 
 ## Running via docker
 
 
 ```bash
 # running the latest release
-docker run -d -p 8999:8999 -v ./db:/app/db --name frameos --restart always mariusandra/frameos
+SECRET_KEY=$(openssl rand -base64 32)
+docker run -d -p 8999:8999 -v ./db:/app/db --name frameos --restart always -e SECRET_KEY="$SECRET_KEY" mariusandra/frameos
 
 # update daily to the latest release
 docker run -d \
@@ -48,7 +49,7 @@ Then load http://0.0.0.0:8999 - ideally using a local IP that your frames can co
 
 ## Install the frame
 
-Finally, add the frame to FrameOS. Make sure both can ping each other with the IPs given.
+Now you're ready to add frames to FrameOS. Make sure both can ping each other with the IPs given.
 
 ![](./_img/8-deploy-frame.gif)
 
