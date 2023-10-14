@@ -1,6 +1,6 @@
 # FrameOS Apps
 
-There are many apps you can deploy on your frame:
+There are many apps you can deploy on your frame. We'll soon have a repository anyone can contribute to. 
 
 ## Image Generation
 
