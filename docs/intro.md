@@ -5,17 +5,21 @@ slug: /
 
 # FrameOS 
 
-FrameOS is a conductor of Raspberry Pi-powered e-ink displays and LCD screens. To get started
+FrameOS is a tool for controlling Raspberry Pi-powered e-ink displays, a repository of apps to run on them, and an IDE for writing your own. 
 
-- Read the **[device guides](/devices)** - getting started guides, links to 3d-printable models and other resources for each supported display.
-- Install the **[FrameOS controller](/installation/controller)** - a self-hosted python app that lets you build and deploy software onto individual frames via SSH.
-- Set up the SD card for the [Raspberry Pi](/installation/raspberry) that'll be used in the frame.
-- Finally, deploy prebuilt [apps](/apps) onto your frames, or code your own.
+To get started:
 
-![](./_img/1-frames.jpg)
+1. Install the [FrameOS controller](/installation/controller), a dockerized python app, which is used to deploy apps onto individual frames via SSH.
 
+2. Read the [decice hardware guide](/devices) for your screen type. Typically you'll just need to connect the display to a Raspberry Pi, install the OS, and make sure it's reachable over the network. 
 
-![FrameOS Screenshot](./_img/diagram-reload.gif)
+3. Once connected, deploy our prebuilt [apps](/apps), or code your own directly inside the contrller.
+
+4. Finally, for a professional look, 3d print a case around your frame, or order one online.
+
+![FrameOS walkthrough](./_img/walkthrough.gif)
+
+![FrameOS Frames](./_img/1-frames.jpg)
 
 ## Supported platforms
 
