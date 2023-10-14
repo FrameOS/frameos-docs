@@ -19,8 +19,6 @@ To get started:
 
 ![FrameOS walkthrough](./_img/walkthrough.gif)
 
-![FrameOS Frames](./_img/1-frames.jpg)
-
 ## Supported platforms
 
 We support all the most common e-ink displays out there.
@@ -31,6 +29,8 @@ We support all the most common e-ink displays out there.
 - Web server kiosk mode
 
 [See the full list here!](/devices)
+
+![FrameOS Frames](./_img/1-frames.jpg)
 
 ## Status
 
