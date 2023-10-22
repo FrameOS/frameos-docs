@@ -11,16 +11,15 @@ Features:
 
 1. **Centralized Deployment:** The FrameOS Controller connects to Raspberry Pis via SSH for direct software installation.
 
-2. **Diagram Editor**: A drag-and-drop interface to combine apps into scenes, with prebuilt apps like "Website screenshot", "OpenAI image" and "Calendar overlay".
+2. **Diagram Editor**: A drag-and-drop interface to combine apps into scenes, with prebuilt blocks like "Website screenshot", "OpenAI image", and "Calendar overlay" for you to arrange.
 
-3. **Python Apps**: Apps in FrameOS are Python-based, and can be edited in the controller. Fork existing apps, or write your own.
+3. **Python Apps**: FrameOS apps are Python-based, and can be edited in the controller. Peek into and modify existing apps, or write your own.
 
-4. **Template Repository**: A collection of scene templates for quick deployment. Save and share your own.
+4. **Template Repository**: A collection of scene templates for inspiration and quick deployment. It's easy to share your own.
 
 5. **Hardware Guides**: For most supported displays, we provide hardware guides, installation instructions, and 3D printable cases.
 
 ![FrameOS walkthrough](./_img/walkthrough.gif)
-
 
 
 ## Getting started
@@ -44,9 +43,11 @@ We support all the most common e-ink displays out there.
 
 ## Status
 
-FrameOS is currently in beta. Things are broken, and breaking changes happen all the time. It is not yet ready for production use.
+FrameOS is not ready for production use!
 
-If you're the adventurous type, please do try it out, and help out. We're missing all sorts of apps and overlays for example.
+While feature complete for a growing number of use cases, FrameOS is still in early development, and does not have a stable release. Things will break, and things will change. Hopefully not by much. I do consider it good enough for personal projects though.
+
+If you're the adventurous type, please try it out, and help out. Look at [the tasklist](https://github.com/mariusandra/frameos/issues/1) for ideas. Don't ask for permission, just submit a PR. If you're not sure, open an issue and we'll discuss it.
 
 ## Why?
 
