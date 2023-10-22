@@ -7,7 +7,17 @@ sidebar_position: 2
 Be sure to look at the [device-specific instructions](/devices) for any changes to these steps. 
 ::: 
 
-Download the [Raspberry Pi Imager](https://www.raspberrypi.com/software/) and select [Raspberry Pi OS Lite](https://www.raspberrypi.org/downloads/raspberry-pi-os/) debian `bullseye`. Select 32-bit if you have the zero w v1, otherwise select 64 bit.
+## What to choose?
+
+Typically, you'll want to buy a **Raspberry Pi Zero 2 W**. It offers the best compromise in terms of performance, power draw, and size. It can usually be had for around 20 units of currency. Check [rpilocator](https://rpilocator.com/?cat=PIZERO2). 
+
+The first **Pi Zero W** works as well. It's cheaper, and draws a tiny bit less power. However instead of four 64-bit cores, it has just one  32-bit core. This makes it a lot slower, and **unable to run a browser on device** for taking screenshots, if you're into that.  
+
+## Installation
+
+Download the [Raspberry Pi Imager](https://www.raspberrypi.com/software/) and install the Lite version of the latest Raspberry Pi OS, called "Bookworm".
+
+If you have a Raspberry Pi 1, 2, or Zero W, select "Raspberry OS Lite (32-bit)". If you have any newer model (e.g. 3, 4, Zero 2 W), select "Raspberry OS Lite (64-bit)".
 
 ![](./_img/1-os-raspberry-lite.gif)
 
@@ -27,15 +37,15 @@ When done, place the card into the raspberry.
 
 ![](./_img/13-sdcard.gif)
 
-Place the raspberry on the artboard, and plug it in
+Connect the raspberry and the frame.
 
 ![](./_img/14-wire.gif)
 
-And wait until it shows up with `ping` and `ssh`.
+And wait until it shows up with `ping` and `ssh`. Check your router's connected clients for the IP.
 
 ![](./_img/6-success.gif)
 
-If you're already here, and plan on using Inky Impresson frames, run `sudo raspi-config` and
+If you're already here, skip to the [device guide](/devices) for your screen, to see if you should run `sudo raspi-config` and
 
 1. enable SPI
 2. enable I2C
@@ -44,4 +54,4 @@ Sadly these aren't automated yet.
 
 ![](./_img/10-raspi-config.gif)
 
-Now get your [controller](./controller) set up.
+Now get your [controller](./controller) set up if you haven't already.

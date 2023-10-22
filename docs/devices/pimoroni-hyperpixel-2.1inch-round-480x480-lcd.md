@@ -13,7 +13,10 @@
 
 ## Installation steps
 
-- Install the latest Raspberry Pi OS (Bookwork), not the old one (Buster) as written in [Pimoroni's docs](https://shop.pimoroni.com/products/hyperpixel-round?variant=39381081882707). We're only writing to the framebuffer, and not using the slightly broken GPU acceleration, so the OS version doesn't matter.
+- Install the second-latest Raspberry Pi OS (Bullseye), not the old old one (Buster) as written in [Pimoroni's docs](https://shop.pimoroni.com/products/hyperpixel-round?variant=39381081882707), and not the new one (Bookworm). 
+- We're only writing to the framebuffer, and not using the slightly broken GPU acceleration (works in Buster), so the OS version doesn't matter. However I didn't get the latest (Bookworm) working yet.
+- Bullseye comes with Python 3.9, but FrameOS requires 3.11. Do the [required upgrade](https://www.google.com/search?q=debian+bullseye+python+3.11).
+
 - SSH in and run the following to install the pimoroni software and activate the display:
 ```shell
 sudo apt install git
@@ -24,15 +27,26 @@ sudo ./install.sh
 sudo sed -i '/dtoverlay=vc4-kms-v3d/s/^/#/' /boot/config.txt
 sudo reboot
 ```
-- Set up the frame in the FrameOS controller.
+- When you reboot, the screen should show a Linux startup screen. 
+- Set up the frame in the FrameOS controller. Select the **Pimoroni HyperPixel 2.1 Round** driver.
 
 ## 3D models
 
-- [Case I printed](https://cults3d.com/en/3d-model/gadget/enclosure-m3-for-pimoroni-hyperpixel-2-1-round-touch-and-raspberry-pi-zero)
+- This is the [case I printed](https://cults3d.com/en/3d-model/gadget/enclosure-m3-for-pimoroni-hyperpixel-2-1-round-touch-and-raspberry-pi-zeer.imaero)
 
 ## Brightness control
 
-Both the hyperpixel and the hyperpixel4 use pin 19 (BCM) ([source](https://github.com/pimoroni/hyperpixel/issues/11#issuecomment-437573404)).
+Within your apps, run
+
+```python
+# Turn the display on
+self.app_handler.image_handler.display_on()
+
+# Turn the display off
+self.app_handler.image_handler.display_off()
+```
+
+To control the brightness from the command line, run
 
 ```shell
 sudo apt install wiringpi
@@ -45,5 +59,4 @@ gpio -g pwm 19 60
 # 25 - 90 Various degrees of brightness
 # 91 - 1023 Full brightness
 ```
-
-Inspiration: https://github.com/pimoroni/hyperpixel2r/blob/master/dist/hyperpixel2r-init
+Both the hyperpixel and the hyperpixel4 use pin 19 (BCM) ([source](https://github.com/pimoroni/hyperpixel/issues/11#issuecomment-437573404), [inspiration](https://github.com/pimoroni/hyperpixel2r/blob/master/dist/hyperpixel2r-init)).

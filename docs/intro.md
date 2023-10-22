@@ -25,7 +25,7 @@ Features:
 ## Getting started
 
 1. Start by installing the [FrameOS controller](/installation/controller).
-2. Then read the [hardware guide](/devices) for your configuration.
+2. Then set up [the raspberry](/installation/raspberry), while following the [device guide](/devices) for your specific screen.
 
 
 ## Supported platforms

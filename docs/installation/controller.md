@@ -12,12 +12,23 @@ The FrameOS controller is where you set up your frames. You can run it continuou
 
 ## Running via docker
 
+The easiest way to run the controller is via Docker.
 
 ```bash
-# running the latest release
+# generate a stable secret key
 SECRET_KEY=$(openssl rand -base64 32)
-docker run -d -p 8999:8999 -v ./db:/app/db --name frameos --restart always -e SECRET_KEY="$SECRET_KEY" mariusandra/frameos
 
+# run the latest release
+docker run -d --name frameos --restart always 
+        -p 8999:8999 \
+        -v ./db:/app/db \
+        -e SECRET_KEY="$SECRET_KEY" \
+        mariusandra/frameos:latest
+```
+
+If you want to keep the container up to date, use watchtower:
+
+```bash
 # update daily to the latest release
 docker run -d \
     --name watchtower \
@@ -34,7 +45,9 @@ docker run \
     frameos
 ```
 
-Alternatively, if you want to develop locally via docker:
+## Developing via docker
+
+If you want to run the development build locally via docker:
 
 ```bash
 # build your own
@@ -43,25 +56,20 @@ docker build frameos -t frameos
 docker run -d -p 8999:8999 -v ./db:/app/db --name frameos frameos
 ```
 
-Then load http://0.0.0.0:8999 - ideally using a local IP that your frames can connect to.
+Then load http://0.0.0.0:8999, preferably with a local IP that your frames can connect to.
 
 ![](./_img/7-docker-fast-frameos.gif)
 
-## Install the frame
+## Setup the frame
 
-Now you're ready to add frames to FrameOS. Make sure both can ping each other with the IPs given.
+You're now ready to add frames to FrameOS.
 
-![](./_img/8-deploy-frame.gif)
+Read the relevant [device specific guide](/devices), and setup the connected [raspberry pi](/installation/raspberry).
 
-If everything well and you have a good deploy
-
-![](./_img/11-good-deploy.gif)
-
-... you should see something like this:
-
-![](./_img/12-parrot.gif?)
-
-Repeat the process to add more frames
+Once both can see each other with the IPs and ports you provide, add them to FrameOS.
 
 ![](./_img/15-multiple.gif)
 
+## Install apps on the frame
+
+Next, read about the [apps](/apps) you can install, and about writing your own.
