@@ -21,9 +21,11 @@ Hot tip: doubleclicking on a tab maximizes it.
 - The best advice is to follow by example. Look at the [built in apps](https://github.com/mariusandra/frameos/tree/main/frameos/apps) for inspiration.
 - Look at the source of [the App class](https://github.com/mariusandra/frameos/blob/main/frameos/apps/__init__.py#L83) itself to see what methods you have available.
 - Apps can do anything. Some, like [screenshot](https://github.com/mariusandra/frameos/blob/main/frameos/apps/screenshot/frame.py), can be quite invasive by even installing packages via `apt` and `pip` on init.
-- The `render` event is your starting point. It's called when `self.rerender()` is called after any other event. 
-- The `render` event is also called on a timer you can set under the frame config.
+- The `render` event is your starting point. It's called on a timer you can set under the frame's config, or when `self.rerender()` is called after any other event.
+- The render `context` comes with an `image` that you can draw on.  
+- The context also contains a `state` dict that is carried between apps, but gets cleared every render. Apps can use instance variables to persist state between renders.
 - The file [`image_utils.py`](https://github.com/mariusandra/frameos/blob/main/frameos/frame/image_utils.py) might also be of interest.
+- Double check before you blindly trust someone else's apps or scene templates. Apps can still do anything on a frame, so be careful. 
 
 ## Example app
 
