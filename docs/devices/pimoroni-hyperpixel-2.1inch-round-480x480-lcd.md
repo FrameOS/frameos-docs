@@ -13,16 +13,37 @@
 
 ## Installation steps
 
-- Install the latest Raspberry Pi OS (Bullseye), not the old one (Buster) as written in [Pimoroni's docs](https://shop.pimoroni.com/products/hyperpixel-round?variant=39381081882707). We're only writing to the framebuffer, and not using the slightly broken GPU acceleration, so the OS version doesn't matter.
-- Install the pimoroni software with
+- Install the latest Raspberry Pi OS (Bookwork), not the old one (Buster) as written in [Pimoroni's docs](https://shop.pimoroni.com/products/hyperpixel-round?variant=39381081882707). We're only writing to the framebuffer, and not using the slightly broken GPU acceleration, so the OS version doesn't matter.
+- SSH in and run the following to install the pimoroni software and activate the display:
 ```shell
+sudo apt install git
 git clone https://github.com/pimoroni/hyperpixel2r
 cd hyperpixel2r
 sudo ./install.sh
+# remove 3d acceleration
+sudo sed -i '/dtoverlay=vc4-kms-v3d/s/^/#/' /boot/config.txt
+sudo reboot
 ```
-- Install the FrameOS controller, and set up the frame.
+- Set up the frame in the FrameOS controller.
 
 ## 3D models
 
-TODO
+- [Case I printed](https://cults3d.com/en/3d-model/gadget/enclosure-m3-for-pimoroni-hyperpixel-2-1-round-touch-and-raspberry-pi-zero)
 
+## Brightness control
+
+Both the hyperpixel and the hyperpixel4 use pin 19 (BCM) ([source](https://github.com/pimoroni/hyperpixel/issues/11#issuecomment-437573404)).
+
+```shell
+sudo apt install wiringpi
+# Set the pin to PWM mode
+gpio -g mode 19 pwm 
+# Set the value/brightness to 60
+gpio -g pwm 19 60
+# Value Effect
+# 0 - 24 Backlight off
+# 25 - 90 Various degrees of brightness
+# 91 - 1023 Full brightness
+```
+
+Inspiration: https://github.com/pimoroni/hyperpixel2r/blob/master/dist/hyperpixel2r-init
