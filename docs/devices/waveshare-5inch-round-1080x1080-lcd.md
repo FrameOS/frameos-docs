@@ -1,5 +1,6 @@
 # Waveshare 5" 1080x1080 round LCD
 
+- Status: 🟢 Working
 - [5" round 1080x1080 LCD](https://www.waveshare.com/5inch-1080x1080-lcd.htm) via the HDMI/FrameBuffer driver. Make sure to add the following rows to the end of `/boot/config.txt`, and reboot:
 
 ```ini

@@ -3,6 +3,7 @@
 - Status: 🟢 Working
 - Manufacturer: [Pimoroni](https://shop.pimoroni.com/)
 - Device: [HyperPixel 2.1" Round 480x480 LCD with touch](https://shop.pimoroni.com/products/hyperpixel-round?variant=39381081882707)
+- Extra: touch input
 
 ## What to buy?
 
