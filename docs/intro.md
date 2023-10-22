@@ -11,7 +11,7 @@ Features:
 
 1. **Centralized Deployment:** The FrameOS Controller connects to Raspberry Pis via SSH for direct software installation.
 
-2. **Diagram Editor**: A drag-and-drop interface to combine apps into scenes, with prebuilt blocks like "Website screenshot", "OpenAI image", and "Calendar overlay" for you to arrange.
+2. **Diagram Editor**: A drag-and-drop interface to combine apps into scenes, with prebuilt blocks like "Browser screenshot", "OpenAI image", and "Calendar overlay" for you to arrange.
 
 3. **Python Apps**: FrameOS apps are Python-based, and can be edited in the controller. Peek into and modify existing apps, or write your own.
 
