@@ -13,11 +13,11 @@ Features:
 
 2. **Diagram Editor**: A drag-and-drop interface to combine apps into scenes, with prebuilt blocks like "Browser screenshot", "OpenAI image", and "Calendar overlay" for you to arrange.
 
-3. **Python Apps**: FrameOS apps are Python-based, and can be edited in the controller. Peek into and modify existing apps, or write your own.
+3. **Python Apps**: FrameOS apps are Python-based, and can be edited in the controller. Learn from and modify existing apps, then write your own.
 
 4. **Template Repository**: A collection of scene templates for inspiration and quick deployment. It's easy to share your own.
 
-5. **Hardware Guides**: For most supported displays, we provide hardware guides, installation instructions, and 3D printable cases.
+5. **Hardware Guides**: For most supported displays, we provide hardware guides, installation instructions, and 3D printable cases (maybe? check back later).
 
 ![FrameOS walkthrough](./_img/walkthrough.gif)
 
