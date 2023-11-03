@@ -10,7 +10,7 @@ In FrameOS, each frame consists of one "Scene: default" (more coming soon), onto
 
 Click the "edit" button next to an app to edit its source. You can edit all apps, including the built-in ones.
 
-Suppose you want a random image from a list of keywords. Just edit the "unsplash" app, and change the relevant lines. Then save and redeploy:
+Suppose you want a random image from a list of keywords. Just edit the "unsplash" app, and change the relevant lines. Then save and deploy:
 
 ![Editing FrameOS apps](./_img/edit-app.gif)
 
