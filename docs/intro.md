@@ -11,13 +11,13 @@ Features:
 
 1. **Centralized Deployment:** The FrameOS Controller connects to Raspberry Pis via SSH for direct software installation.
 
-2. **Diagram Editor**: A drag-and-drop interface to combine apps into scenes, with prebuilt blocks like "Browser screenshot", "OpenAI image", and "Calendar overlay" for you to arrange.
+2. **Diagram Editor**: A drag-and-drop interface to combine Python apps into scenes, with prebuilt apps like "Browser screenshot", "OpenAI image", and "Calendar overlay" for you to arrange.
 
-3. **Python Apps**: FrameOS apps are Python-based, and can be edited in the controller. Learn from and modify existing apps, then write your own.
+3. **Python Apps**: FrameOS apps are Python-based, and can be edited in the controller. Modify and learn from existing apps, then write your own.
 
-4. **Template Repository**: A collection of scene templates for inspiration and quick deployment. It's easy to share your own.
+4. **GPT4 Support**: Ask your favourite LLM to write and debug FrameOS apps for you.
 
-5. **Hardware Guides**: For most supported displays, we provide hardware guides, installation instructions, and 3D printable cases (maybe? check back later).
+5. **Hardware Guides**: For tested displays, we provide hardware guides, installation instructions, and 3D printable cases.
 
 ![FrameOS walkthrough](./_img/walkthrough.gif)
 
@@ -43,9 +43,9 @@ We support all the most common e-ink displays out there.
 
 ## Status
 
-FrameOS is not ready for production use!
+FrameOS is good enough for home and hobbyist usage.
 
-While feature complete for a growing number of use cases, FrameOS is still in early development, and does not have a stable release. Things will break, and things will change. Hopefully not by much. I do consider it good enough for personal projects though.
+This software is still in early development, and does not have a stable release. A docker image is generated for every push to `main`. There are no guarantees things won't suddenly break between releases, despite our best efforts.
 
 If you're the adventurous type, please try it out, and help out. Look at [the tasklist](https://github.com/mariusandra/frameos/issues/1) for ideas. Don't ask for permission, just submit a PR. If you're not sure, open an issue and we'll discuss it.
 

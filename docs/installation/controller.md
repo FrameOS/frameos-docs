@@ -6,13 +6,16 @@ sidebar_position: 1
 
 ## FrameOS controller
 
-The FrameOS controller is where you set up your frames. You can run it continuously on a server, or locally on your computer when needed. You'll miss out on log aggregation if the FrameOS server is not always on. The frames however will keep on running and updating independently.
+The FrameOS controller is the application you use to deploy FrameOS onto individual devices.
+
+Once deployed, the frames don't need the controller to function. It's still useful to keep it up for log aggregation.
+
 
 ![FrameOS walkthrough](../_img/walkthrough.gif)
 
 ## Running via docker
 
-The easiest way to run the controller is via Docker.
+The easiest way to run the FrameOS controller is via Docker.
 
 ```bash
 # generate a stable secret key
@@ -44,6 +47,8 @@ docker run \
     --run-once \
     frameos
 ```
+
+Keep in mind that FrameOS is in early development, and despite best efforts, there are no guarantees of stability between releases. 
 
 ## Developing via docker
 
