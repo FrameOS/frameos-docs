@@ -19,19 +19,13 @@ Download the [Raspberry Pi Imager](https://www.raspberrypi.com/software/) and in
 
 If you have a Raspberry Pi 1, 2, or Zero W, select "Raspberry OS Lite (32-bit)". If you have any newer model (e.g. 3, 4, Zero 2 W), select "Raspberry OS Lite (64-bit)".
 
-![](./_img/1-os-raspberry-lite.gif)
+![](./_img/1b-bookworm-lite.gif)
 
-Click the "Gear" icon and make sure you have set the correct hostname, ssh user/password, and WiFi credentials. Set a strong password and save it in your password manager.
+When prompted, edit your settings and make sure you have set the correct hostname and WiFi credentials. Copy the SSH key from the FrameOS controller's settings page as the authorized key.
 
-![](./_img/2-config-settings.gif)
+![](./_img/2b-config-settings.gif)
 
-Choose your SD card and write
-
-![](./_img/3-storage-write.gif)
-
-It'll take a while
-
-![](./_img/4-wait-wait-wait.gif)
+Choose your SD card and write. It'll take a while. 
 
 When done, place the card into the raspberry.
 
@@ -41,7 +35,7 @@ Connect the raspberry and the frame.
 
 ![](./_img/14-wire.gif)
 
-And wait until it shows up with `ping` and `ssh`. Check your router's connected clients for the IP.
+And wait until it shows up with `ping` and `ssh`. Use the provided hostname or check your router's connected clients for the IP.
 
 ![](./_img/6-success.gif)
 
