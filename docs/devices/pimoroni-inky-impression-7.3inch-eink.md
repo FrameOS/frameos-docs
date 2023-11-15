@@ -9,5 +9,6 @@
 
 - Setup the FrameOS Controller
 - Select the "Pimoroni Inky Impression e-ink frames" driver
-- Save & Deploy FrameOS onto the frame
-- If you get an error initializing the inky library, SSH onto the frame and install the [Pimoroni software](https://shop.pimoroni.com/products/inky-impression-7-3?variant=40512683376723) with `curl https://get.pimoroni.com/inky | bash`, agree to the first prompt. No need to do the full install. Then restart FrameOS on the frame.
+- Save & Deploy FrameOS onto the frame.
+- The display should start blinking, and it should just work.
+- If you get an error initializing the inky library, SSH onto the frame and install the [Pimoroni software](https://shop.pimoroni.com/products/inky-impression-7-3?variant=40512683376723) with `curl https://get.pimoroni.com/inky | bash`. Then try redeploying FrameOS.
