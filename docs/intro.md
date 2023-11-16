@@ -47,7 +47,7 @@ FrameOS is good enough for home and hobbyist usage.
 
 This software is still in early development, and does not have a stable release. A docker image is generated for every push to `main`. There are no guarantees things won't suddenly break between releases, despite our best efforts.
 
-If you're the adventurous type, please try it out, and help out. Look at [the tasklist](https://github.com/mariusandra/frameos/issues/1) for ideas. Don't ask for permission, just submit a PR. If you're not sure, open an issue and we'll discuss it.
+If you're the adventurous type, please try it out, and help out. Look at [the tasklist](https://github.com/FrameOS/frameos/issues/1) for ideas. Don't ask for permission, just submit a PR. If you're not sure, open an issue and we'll discuss it.
 
 ## Why?
 

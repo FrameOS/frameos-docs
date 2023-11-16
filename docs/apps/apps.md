@@ -18,13 +18,13 @@ Hot tip: doubleclicking on a tab maximizes it.
 
 ## Coding guidelines
 
-- The best advice is to follow by example. Look at the [built in apps](https://github.com/mariusandra/frameos/tree/main/frameos/apps) for inspiration.
-- Look at the source of [the App class](https://github.com/mariusandra/frameos/blob/main/frameos/apps/__init__.py#L83) itself to see what methods you have available.
-- Apps can do anything. Some, like [screenshot](https://github.com/mariusandra/frameos/blob/main/frameos/apps/screenshot/frame.py), can be quite invasive by even installing packages via `apt` and `pip` on init.
+- The best advice is to follow by example. Look at the [built in apps](https://github.com/FrameOS/frameos/tree/main/frameos/apps) for inspiration.
+- Look at the source of [the App class](https://github.com/FrameOS/frameos/blob/main/frameos/apps/__init__.py#L83) itself to see what methods you have available.
+- Apps can do anything. Some, like [screenshot](https://github.com/FrameOS/frameos/blob/main/frameos/apps/screenshot/frame.py), can be quite invasive by even installing packages via `apt` and `pip` on init.
 - The `render` event is your starting point. It's called on a timer you can set under the frame's config, or when `self.rerender()` is called after any other event.
 - The render `context` comes with an `image` that you can draw on.  
 - The context also contains a `state` dict that is carried between apps, but gets cleared every render. Apps can use instance variables to persist state between renders.
-- The file [`image_utils.py`](https://github.com/mariusandra/frameos/blob/main/frameos/frame/image_utils.py) might also be of interest.
+- The file [`image_utils.py`](https://github.com/FrameOS/frameos/blob/main/frameos/frame/image_utils.py) might also be of interest.
 - Double check before you blindly trust someone else's apps or scene templates. Apps can still do anything on a frame, so be careful. 
 
 ## Example app
@@ -52,7 +52,7 @@ class CodeApp(App):
 
 ## Templates
 
-Each scene can be saved as a template. Templates can be exported and imported. They can also be shared via repositories. The repository formats are still a work in progress, but check the [frameos-repo](https://github.com/mariusandra/frameos-repo) repository for an example. It's running the `bin/build.py` script before publishing to https://repo.frameos.net/.
+Each scene can be saved as a template. Templates can be exported and imported. They can also be shared via repositories. The repository formats are still a work in progress, but check the [frameos-repo](https://github.com/FrameOS/frameos-repo) repository for an example. It's running the `bin/build.py` script before publishing to https://repo.frameos.net/.
 
 ![FrameOS templates](./_img/templates.gif)
 
@@ -62,7 +62,7 @@ You can add the default template repository by pasting in `https://repo.frameos.
 ## Built in apps
 
 The following apps are installed by default. See their
-[source code](https://github.com/mariusandra/frameos/tree/main/frameos/apps) on Github.
+[source code](https://github.com/FrameOS/frameos/tree/main/frameos/apps) on Github.
 
 ### Helpers
 

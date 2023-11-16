@@ -26,7 +26,7 @@ docker run -d --name frameos --restart always
         -p 8999:8999 \
         -v ./db:/app/db \
         -e SECRET_KEY="$SECRET_KEY" \
-        mariusandra/frameos:latest
+        frameos/frameos:latest
 ```
 
 If you want to keep the container up to date, use watchtower:
@@ -56,7 +56,7 @@ If you want to run the development build locally via docker:
 
 ```bash
 # build your own
-git clone https://github.com/mariusandra/frameos/
+git clone https://github.com/FrameOS/frameos/
 docker build frameos -t frameos
 docker run -d -p 8999:8999 -v ./db:/app/db --name frameos frameos
 ```

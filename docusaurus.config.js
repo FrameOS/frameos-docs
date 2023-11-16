@@ -42,13 +42,13 @@ const config = {
           sidebarPath: require.resolve("./sidebars.js"),
           // Please change this to your repo.
           // Remove this to remove the "edit this page" links.
-          editUrl: "https://github.com/mariusandra/frameos-docs/tree/main/",
+          editUrl: "https://github.com/FrameOS/frameos-docs/tree/main/",
         },
         blog: {
           showReadingTime: true,
           // Please change this to your repo.
           // Remove this to remove the "edit this page" links.
-          editUrl: "https://github.com/mariusandra/frameos-docs/tree/main/",
+          editUrl: "https://github.com/FrameOS/frameos-docs/tree/main/",
         },
         theme: {
           customCss: require.resolve("./src/css/custom.css"),
@@ -77,7 +77,7 @@ const config = {
           },
           { to: "/blog", label: "Blog", position: "left" },
           {
-            href: "https://github.com/mariusandra/frameos",
+            href: "https://github.com/FrameOS/frameos",
             label: "GitHub",
             position: "right",
           },
@@ -104,7 +104,7 @@ const config = {
               },
               {
                 label: "GitHub",
-                href: "https://github.com/mariusandra/frameos",
+                href: "https://github.com/FrameOS/frameos",
               },
             ],
           },
