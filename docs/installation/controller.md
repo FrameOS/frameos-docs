@@ -23,7 +23,7 @@ SECRET_KEY=$(openssl rand -base64 32)
 
 # run the latest release
 docker run -d --name frameos --restart always 
-        -p 8999:8999 \
+        -p 8989:8989 \
         -v ./db:/app/db \
         -e SECRET_KEY="$SECRET_KEY" \
         frameos/frameos:latest
@@ -58,10 +58,10 @@ If you want to run the development build locally via docker:
 # build your own
 git clone https://github.com/FrameOS/frameos/
 docker build frameos -t frameos
-docker run -d -p 8999:8999 -v ./db:/app/db --name frameos frameos
+docker run -d -p 8989:8989 -v ./db:/app/db --name frameos frameos
 ```
 
-Then load http://0.0.0.0:8999, preferably with a local IP that your frames can connect to.
+Then load http://0.0.0.0:8989, preferably with a local IP that your frames can connect to.
 
 ![](./_img/7-docker-fast-frameos.gif)
 
