@@ -38,16 +38,6 @@ sudo reboot
 
 ## Brightness control
 
-Within your apps, run
-
-```python
-# Turn the display on
-self.app_handler.image_handler.display_on()
-
-# Turn the display off
-self.app_handler.image_handler.display_off()
-```
-
 To control the brightness from the command line, run
 
 ```shell

@@ -39,13 +39,4 @@ And wait until it shows up with `ping` and `ssh`. Use the provided hostname or c
 
 ![](./_img/6-success.gif)
 
-If you're already here, skip to the [device guide](/devices) for your screen, to see if you should run `sudo raspi-config` and
-
-1. enable SPI
-2. enable I2C
-
-Sadly these aren't automated yet.
-
-![](./_img/10-raspi-config.gif)
-
 Now get your [controller](./controller) set up if you haven't already.
