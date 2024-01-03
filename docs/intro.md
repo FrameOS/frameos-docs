@@ -15,7 +15,7 @@ Features:
 
 1. **Centralized Deployment:** The FrameOS Controller connects to Raspberry Pis via SSH for direct software installation.
 
-2. **Compiled & Efficient**: FrameOS is written [in Nim](https://nim-lang.org/), a compiled language. Your final configuration gets compiled down into a single efficient binary that contains all apps and assets.
+2. **Compiled & Efficient**: FrameOS is written [in Nim](https://nim-lang.org/), a compiled language. Your final configuration gets compiled down into a single efficient binary that contains all apps, assets and drivers.
 
 2. **Diagram Editor**: A drag-and-drop interface to combine Nim apps into scenes. Fork and edit existing apps like "OpenAI image", and "Text overlay" to suit your needs. Overwrite all fields with inline code snippets.
 
