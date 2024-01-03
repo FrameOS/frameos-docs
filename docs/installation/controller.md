@@ -22,7 +22,7 @@ The easiest way to run the FrameOS controller is via Docker.
 SECRET_KEY=$(openssl rand -base64 32)
 
 # run the latest release
-docker run -d --name frameos --restart always 
+docker run -d --name frameos --restart always \
         -p 8989:8989 \
         -v ./db:/app/db \
         -e SECRET_KEY="$SECRET_KEY" \
