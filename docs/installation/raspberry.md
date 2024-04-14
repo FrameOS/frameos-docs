@@ -13,19 +13,25 @@ Typically, you'll want to buy a **Raspberry Pi Zero 2 W**. It offers the best co
 
 The first **Pi Zero W** works as well. It's cheaper, and draws a tiny bit less power. However instead of four 64-bit cores, it has just one  32-bit core. This makes it a lot slower, and **unable to run a browser on device** for taking screenshots, if you're into that.  
 
+Note: please check if your [device](/devices) has any specific requirements that override the steps below.
+
 ## Installation
 
 Download the [Raspberry Pi Imager](https://www.raspberrypi.com/software/) and install the Lite version of the latest Raspberry Pi OS, called "Bookworm".
 
-If you have a Raspberry Pi 1, 2, or Zero W, select "Raspberry OS Lite (32-bit)". If you have any newer model (e.g. 3, 4, Zero 2 W), select "Raspberry OS Lite (64-bit)".
+If you have a Raspberry Pi 1, 2, or Zero W, select "Raspberry PI OS Lite (32-bit)". If you have any newer model (e.g. 3, 4, Zero 2 W, 5, etc), select "Raspberry Pi OS Lite (64-bit)".
 
-![](./_img/1b-bookworm-lite.gif)
+![](../_img/pi-os.gif)
 
-When prompted, edit your settings and make sure you have set the correct hostname and WiFi credentials. Copy the SSH key from the FrameOS controller's settings page as the authorized key.
+Choose your SD card and write. 
 
-![](./_img/2b-config-settings.gif)
+When prompted, edit your settings and make sure you have set the correct hostname and WiFi credentials. 
 
-Choose your SD card and write. It'll take a while. 
+Either set it to use user/pass authentication, or (better) generate a new keypar under settings and copy the public key here.
+
+![](../_img/ssh-key-imager.gif)
+
+It'll take a while. 
 
 When done, place the card into the raspberry.
 
@@ -35,8 +41,16 @@ Connect the raspberry and the frame.
 
 ![](./_img/14-wire.gif)
 
-And wait until it shows up with `ping` and `ssh`. Use the provided hostname or check your router's connected clients for the IP.
+And wait until it shows up with `ping` and `ssh`. Use the provided hostname or check your router's connected clients list for the IP.
 
 ![](./_img/6-success.gif)
 
-Now get your [controller](./controller) set up if you haven't already.
+Once connected run the following to make sure your OS is up to date:
+
+```sh
+sudo apt update -y && sudo apt upgrade -y
+```
+
+### Next steps
+
+That's all you need. Given a SSH connection, the FrameOS [controller](./controller) will do the rest.

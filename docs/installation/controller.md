@@ -10,8 +10,7 @@ The FrameOS controller is the application you use to deploy FrameOS onto individ
 
 Once deployed, the frames don't need the controller to function. It's still useful to keep it up for log aggregation.
 
-
-![FrameOS walkthrough](../_img/walkthrough.gif)
+![FrameOS walkthrough](../_img/deep-dive-köök.gif)
 
 ## Running via docker
 
@@ -63,18 +62,17 @@ docker run -d -p 8989:8989 -v ./db:/app/db --name frameos frameos
 
 Then load http://0.0.0.0:8989, preferably with a local IP that your frames can connect to.
 
-![](./_img/7-docker-fast-frameos.gif)
-
-## Setup the frame
+## Setup the raspberry
 
 You're now ready to add frames to FrameOS.
 
-Read the relevant [device specific guide](/devices), and setup the connected [raspberry pi](/installation/raspberry).
+Follow the [Raspberry Pi setup guide](/installation/raspberry) to get your frames setup.
 
-Once both can see each other with the IPs and ports you provide, add them to FrameOS.
+Once you see the frames over SSH, press "add a smart frame", and tell the controller the new frame's IP or hostname.
 
-![](./_img/15-multiple.gif)
+![](../_img/new-frame.gif)
 
-## Install apps on the frame
+## Install apps and scenes
 
 Next, read about the [apps](/apps) you can install, and about writing your own.
+
