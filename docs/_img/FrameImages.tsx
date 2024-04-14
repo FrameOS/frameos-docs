@@ -1,0 +1,1 @@
+import { framedoor } from "./framedoor";
