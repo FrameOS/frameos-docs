@@ -14,7 +14,7 @@
 
 ## Installation steps
 
-- Install the second-latest Raspberry Pi OS (Bullseye), not the old old one (Buster) as written in [Pimoroni's docs](https://shop.pimoroni.com/products/hyperpixel-round?variant=39381081882707), and not the new one (Bookworm). Choose either "Raspberry Pi OS (Legacy) Lite" or "Raspberry Pi OS (Legacy, 64-bit) Lite"
+- **Install the second-latest Raspberry Pi OS (Bullseye)**, not the old old one (Buster) as written in [Pimoroni's docs](https://shop.pimoroni.com/products/hyperpixel-round?variant=39381081882707), and not the new one (Bookworm). Choose either "Raspberry Pi OS (Legacy) Lite" or "Raspberry Pi OS (Legacy, 64-bit) Lite"
 - We're only writing to the framebuffer, and not using the slightly broken GPU acceleration (works in Buster), so despite Pimoroni's docs, the OS version doesn't matter. However I didn't get the latest OS (Bookworm) working yet. Will update when I do.
 - Bullseye comes with Python 3.9, but FrameOS requires 3.11. Do the [required upgrade](https://www.google.com/search?q=debian+bullseye+python+3.11).
 

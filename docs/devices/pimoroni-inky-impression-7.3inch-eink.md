@@ -5,7 +5,7 @@
 - Device: [Inky Impression 7.3"](https://shop.pimoroni.com/products/inky-impression-7-3?variant=40512683376723) e-ink display
 - Extra: 4 physical buttons
 
-Note: The Pimoroni Inky driver is currently **not** compiled to Nim, and is using a Python workaround. This makes the installation take longer than it should. This will be fixed soon.
+Note: The Pimoroni Inky driver is currently written in Python, making the installation a bit longer.
 
 ## Setup
 

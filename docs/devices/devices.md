@@ -4,7 +4,7 @@ sidebar_position: 1
 
 # List of devices
 
-## 🟢 Known to work
+## 🟢 Working
 
 FrameOS has been tested and confirmed working with:
 
@@ -12,18 +12,19 @@ FrameOS has been tested and confirmed working with:
 
 - [Pimoroni inky impression 5.7" 7-color](./pimoroni-inky-impression-5.7inch-eink)
 - [Pimoroni inky impression 7.3" 7-color](./pimoroni-inky-impression-7.3inch-eink)
+- Most other [Pimoroni e-ink displays](https://shop.pimoroni.com/collections/displays)
 - [Waveshare 2.13" 250×122](./waveshare-2.13inch-250x122-epaper)
 - [Waveshare 7.5" 800×480](./waveshare-7.5inch-800x480-epaper)
+- Most other [waveshare e-ink displays](https://www.waveshare.com/product/displays/e-paper/epaper-1.htm)
 
 ### LCD displays
 
 - [Pimoroni HyperPixel 2.1" Round 480x480](./pimoroni-hyperpixel-2.1inch-round-480x480-lcd)
 - [Waveshare 5" Round 1080×1080](./waveshare-5inch-round-1080x1080-lcd)
 
+## Not personally tested
 
-## 🟡 Easy to get working
-
-The following devices should be easy to get working, but I don't own any to test. Check the `frameos/src/drivers/waveshare` folder. Community confirmations and contributions are welcome!
+These should all work. Confirm [with an image](https://github.com/FrameOS/frameos/issues/65) if you get some running:
 
 - Waveshare 1.02" 128×80
 - Waveshare 1.54" 200x200
@@ -81,3 +82,7 @@ The following devices should be easy to get working, but I don't own any to test
 FrameOS is currently known **not to work** on:
 
 - Waveshare 10.3" 1872×1404 e-Paper - it uses a different driver. Possible, but a bit more work.
+
+## 🟠 Not listed?
+
+Let us know or try anyway!

@@ -2,21 +2,27 @@
 
 ## Adding apps to a frame
 
-In FrameOS, each frame consists of one "Scene: default" (more coming soon), onto which you add apps. You drag them from the "apps" tab, and connect to whatever makes sense:
+In FrameOS, each frame consists of multiple scenes. 
 
-![Adding FrameOS apps](./_img/add-app.gif)
+![Scenes](../_img/scenes-list.gif)
+
+Once deployed, you can switch back and forth between scenes using the Control tab, or the frame's Control URL.
+
+![Scene control](../_img/scenes-control.gif)
+
+Each scene consists of apps. You drag them from the "apps" tab, and connect them in whatever order makes sense:
+
+![Adding FrameOS apps](../_img/apps.gif)
 
 ## Editing apps
 
 Click the "edit" button next to an app to edit its source. You can edit all apps, including the built-in ones.
 
-Suppose you want a random image from a list of keywords. Just edit the "unsplash" app, and change the relevant lines. Then save and deploy.
-
 ## Coding guidelines
 
-- The best advice is to follow by example. Look at the [built in apps](https://github.com/FrameOS/frameos/tree/main/frameos/src/apps) for inspiration.
+- The best advice is to follow by example. Look at the [built in apps](https://github.com/FrameOS/frameos/tree/main/frameos/src/apps) and the provided scene templates for inspiration.
 - Look at the source of [the types.nim file](https://github.com/FrameOS/frameos/blob/main/frameos/src/frameos/types.nim#L83) to see the general structure of the app.
-- The `render` event is your starting point. It's called on a timer you can set under the frame's config, or when dispatched from any other app.
+- The `render` event is your starting point. It's called on a timer you can set under the scene's config, or when the `render` event is dispatched from any other app.
 - The render `context` comes with an `image` that you can draw on.  
 - The context also contains a `state` JSON node that is carried between apps, but gets cleared every render. Apps can use instance variables to persist state between renders.
 - The files [`utils/image.nim`](https://github.com/FrameOS/frameos/blob/main/frameos/src/frameos/utils/image.nim) and  [`utils/font.nim`](https://github.com/FrameOS/frameos/blob/main/frameos/src/frameos/utils/font.nim) might also be of interest.
@@ -73,39 +79,12 @@ proc run*(self: App, context: ExecutionContext) =
     )
 ```
 
-## Templates
+## State
 
-**Note:** The default templates have not yet been updated for the [Nim version of FrameOS](/blog/nim-rewrite). They're left as an example if you want to build your own, but will not work out of the box.
+Each scene can expose publicly controllable state:
 
-Each scene can be saved as a template. Templates can be exported and imported. They can also be shared via repositories. The repository formats are still a work in progress, but check the [frameos-repo](https://github.com/FrameOS/frameos-repo) repository for an example. It's running the `bin/build.py` script before publishing to https://repo.frameos.net/.
+![State](../_img/state.gif)
 
-![FrameOS templates](./_img/templates.gif)
+State can be publicly controllable or private. It can be persisted to disk to survive power loss, or reset each time.
 
-## Built in apps
-
-The following apps are installed by default. See their
-[source code](https://github.com/FrameOS/frameos/tree/main/frameos/src/apps) on Github.
-
-### Helpers
-
-- Code - clean starter
-
-### Image Generation
-
-- Set a single color
-- Download an image from a URL
-- Gradient
-- OpenAI DallE 3
-- Random Unsplash photo
-
-### Overlays
-
-- Clock
-- Text
-
-### Utilities
-
-- Resize
-- Rotate
-- Read home assistant sensor data
-- Break event if rendering
+The `state` object is a standard nim's [JsonNode](https://nim-lang.org/docs/json.html). So access it accordingly. This means use code like `state{"field"}.getStr()` to access values, and `state{"field"} = %*("str")` to store them.
