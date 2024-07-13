@@ -71,8 +71,6 @@ proc run*(self: App, context: ExecutionContext) =
 
 Each scene can expose publicly controllable state:
 
-![State](../../_img/state.gif)
-
 State can be publicly controllable or private. It can be persisted to disk to survive power loss, or reset each time.
 
 The `state` object is a standard nim's [JsonNode](https://nim-lang.org/docs/json.html). So access it accordingly. This means use code like `state{"field"}.getStr()` to access values, and `state{"field"} = %*("str")` to store them.
