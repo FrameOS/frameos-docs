@@ -12,7 +12,7 @@ This webapp:
 
 You'll need to host the backend somewhere that has direct SSH access to the frames.
 
-If you need to push through firewalls, [Tailscale](https://tailscale.com/) is a nice option.
+If you need to punch through firewalls, [Tailscale](https://tailscale.com/) is a nice option.
 
 ## Running via docker
 
