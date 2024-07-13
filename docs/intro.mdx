@@ -5,56 +5,55 @@ slug: /
 
 # FrameOS 
 
+![FrameOS backend](./guide/_img2/frameos-backend.gif)
+
 ### An operating system for <u>single function smart frames</u>. 
 
+It's designed for both screens that update **60 frames per second**, and for screens that update **60 seconds per frame**.
 Think smart home calendars, meeting room displays, thermostats, interactive message boards, public advertisement screens, and more. 
 
-| Dashboard | Thermostat | Message board |
-|---|---|---|
-| ![Door frame](./_img/frame-door.jpg) Tells me which windows are open before leaving the house  |  ![Bathroom frame](./_img/frame-bathroom.jpg) Hot water control and clock in the bathroom |![Pasta frame](./_img/phone-pasta.jpg) QR-code controlled kitchen message board |
+FrameOS is written in [nim](https://nim-lang.org/), and gets compiled into a single binary when deployed.
 
-It's designed for both screens that update **60 frames per second**, and for screens that update **60 seconds per frame**.
+|  |  |
+|---|---|
+| ![Door frame](./_img/ukseraam.jpg) |![Timmy Tommy](./_img/timmy-tommy.jpg) |
+|![Bathroom frame](./_img/frame-bathroom.jpg) | ![Pasta frame](./_img/phone-pasta-2.jpg) |
 
 ### What do you need?
 
-- A Raspberry Pi. Any will do, but the [Zero W 2](https://www.raspberrypi.com/products/raspberry-pi-zero-2-w/) hits the sweet spot for eink displays (cheap, multicore, low power), and can easily do 24 FPS on small LCDs.
+- A Raspberry Pi. Any will do. The [Zero W 2](https://www.raspberrypi.com/products/raspberry-pi-zero-2-w/) hits the sweet spot for eink displays (small, cheap, multicore), and can easily do 24 FPS on small LCDs. To get 60FPS over HDMI you'll need a [Raspberry Pi 5](https://www.raspberrypi.com/products/raspberry-pi-5/).
 - A display of some sort. E-ink or LCD. Take your pick from [Waveshare](https://www.waveshare.com/product/displays/e-paper/epaper-1.htm) or 
-[Pimoroni](https://shop.pimoroni.com/collections/displays)'s e-ink HATs, or hook up a TV with an HDMI cable. To get 60FPS over HDMI you'll need a [Raspberry Pi 5](https://www.raspberrypi.com/products/raspberry-pi-5/) though.
-- A server for hosting the FrameOS controller. You'll use this to setup your scenes, and deploy them onto frames via SSH. FrameOS is written in [nim](https://nim-lang.org/), and gets compiled into a single binary.
+[Pimoroni](https://shop.pimoroni.com/collections/displays)'s e-ink HATs, or hook up a TV with an HDMI cable. 
+- A server for hosting the FrameOS backend. You'll use this to deploy scenes onto frames via SSH. 
 
-### Sample scenes
+[Read the guide](/guide/backend) to get started.
 
-Once setup, deploy your first scene from [the scene templates repository](https://repo.frameos.net/):
+### Prebuilt scenes
 
-![Scenes](./_img/scenes-samples.png)
+Deploy your first scene from the templates repository:
 
-The list of samples keeps growing, so check back often.
+![Scenes](./_img/sample-scenes.png)
 
 ### Create your own scenes
 
-Didn't find what you need? 
-Visually connect apps like "Text Overlay" and "OpenAI Image" to build your own scenes:
+Visually connect apps like "Render Text" and "OpenAI Image" to build your own scenes. 
+Make those scenes externally controllable with a QR code at the corner of the screen.
 
-![Star counter scene](./_img/diagram-starcounter.png)
+![Good run](./_img/good-run.png)
 
-Go a step deeper, fork these prebuilt apps, and/or build new ones from scratch:
+Go a step deeper, fork the prebuilt apps, and build new ones from scratch:
 
-![Stars app code](./_img/code-github.png)
+![Fork code](./_img/fork-openai.png)
 
 ## Getting started
 
-1. Start by installing the [FrameOS controller](/installation/controller).
-2. Then set up [the raspberry](/installation/raspberry), while following the [device guide](/devices) for your specific screen.
-
-
-## Supported platforms
-
-Supported are all the most common e-ink displays out there (most [Waveshare](https://www.waveshare.com/product/displays/e-paper/epaper-1.htm) and
-[Pimoroni](https://shop.pimoroni.com/collections/displays) panels), and anything you can connect over HDMI. [See the full list here!](/devices)
+1. Start by installing the [FrameOS backend](/guide/backend).
+2. Then set up [the raspberry](/guide/raspberry), while following the [device guide](/devices) for your specific screen.
+3. Finally, read the [rest of the guide](/guide/using) to learn how to build your own apps.
 
 ## Status
 
-FrameOS is good enough for small-time usage. The experience of building apps is still a bit wonky, but most of the core concepts are in place.
+FrameOS is good enough for small-time usage. Most of the core concepts are in place.
 
 We haven't released a numbered version yet. A `FrameOS/frameos:latest` docker image is generated for every push to `main`. While we take great care not to break things, there are no guarantees at this point.
 
@@ -62,7 +61,7 @@ If you're the adventurous type, please try it out, and help out. Look at [the ta
 
 ## Next steps:
 
-- Start by installing the [FrameOS controller](/installation/controller).
+- Start by installing the [FrameOS backend](/guide/backend).
 
 - Read the blog post: [Why FrameOS?](/blog/why-frameos)
 
