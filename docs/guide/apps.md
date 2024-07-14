@@ -1,76 +1,63 @@
-# Apps Guide
+---
+sidebar_position: 5
+---
 
-TODO: This guide needs updating.
+# Editing apps
 
-## Editing apps
+### Edit any app
 
-Click the "edit" button next to an app to edit its source. You can edit all apps, including the built-in ones.
+Click the "edit" button next to an app to edit its source. You can edit all apps, including the built-in ones. Any changes you save will be forked onto the scene. The original app will be unmodified.
 
-## Coding guidelines
+![](./_img2/apps-edit.gif)
 
-- The best advice is to follow by example. Look at the [built in apps](https://github.com/FrameOS/frameos/tree/main/frameos/src/apps) and the provided scene templates for inspiration.
+### Coding guidelines
+
+- The best advice is to follow by example. Look at the [built in apps](https://github.com/FrameOS/frameos/tree/main/frameos/src/apps) for inspiration.
 - Look at the source of [the types.nim file](https://github.com/FrameOS/frameos/blob/main/frameos/src/frameos/types.nim#L83) to see the general structure of the app.
-- The `render` event is your starting point. It's called on a timer you can set under the scene's config, or when the `render` event is dispatched from any other app.
+- Look at [apps.nim](https://github.com/FrameOS/frameos/blob/main/frameos/src/frameos/apps.nim) and the files in the [utils/](https://github.com/FrameOS/frameos/tree/main/frameos/src/frameos/utils) folder to see what other functions are available.
+
+- The `render` event is your starting point. It's called on a set timer, or when the `render` event is dispatched from any other app.
 - The render `context` comes with an `image` that you can draw on.  
-- The context also contains a `state` JSON node that is carried between apps, but gets cleared every render. Apps can use instance variables to persist state between renders.
-- The files [`utils/image.nim`](https://github.com/FrameOS/frameos/blob/main/frameos/src/frameos/utils/image.nim) and  [`utils/font.nim`](https://github.com/FrameOS/frameos/blob/main/frameos/src/frameos/utils/font.nim) might also be of interest.
+- The context also contains the `state` JSON node that is carried between apps, but gets cleared every render. To persist between renders, use instance variables on the `App` object.
 - Double check before you blindly install someone else's apps or scene templates. Apps can still do almost anything on a frame, so be careful. 
 
-## Example app
+### Example app
 
-Here's the example `Code` app from the "Boilerplate" category. The app sets a scene state variable, and draws a blue heart:
+Here's the source for the "Color" render app. This app can run in two modes, "get" (data app / green node) or "run" (render app / blue node).
 
 ```python
-import json, strformat
 import pixie
-from frameos/types import FrameScene, FrameConfig, ExecutionContext, Logger
+import options
+import frameos/apps
+import frameos/types
 
 type
   AppConfig* = object
-    keyword*: string
+    inputImage*: Option[Image]
+    color*: Color
 
-  App* = ref object
-    nodeId*: string
-    scene*: FrameScene
-    frameConfig*: FrameConfig
+  App* = ref object of AppRoot
     appConfig*: AppConfig
 
-proc init*(nodeId: string, scene: FrameScene, appConfig: AppConfig): App =
-  result = App(
-    nodeId: nodeId,
-    scene: scene,
-    frameConfig: scene.frameConfig,
-    appConfig: appConfig,
-  )
-
-proc log*(self: App, message: string) =
-  self.scene.logger.log(%*{"event": &"{self.nodeId}:log", "message": message})
-
-proc error*(self: App, message: string) =
-  self.scene.logger.log(%*{"event": &"{self.nodeId}:error", "error": message})
+proc render*(self: App, context: ExecutionContext, image: Image) =
+  image.fill(self.appConfig.color)
 
 proc run*(self: App, context: ExecutionContext) =
-  self.log(&"Hello from {context.event} {self.appConfig.keyword}")
-  self.scene.state["count"] = %*(self.scene.state{"count"}.getInt(0) + 1)
+  render(self, context, context.image)
 
-  if context.event == "render":
-    context.image.fillPath(
-      """
-        M 20 60
-        A 40 40 90 0 1 100 60
-        A 40 40 90 0 1 180 60
-        Q 180 120 100 180
-        Q 20 120 20 60
-        z
-      """,
-      parseHtmlColor("#FC427B").rgba
-    )
+proc get*(self: App, context: ExecutionContext): Image =
+  result = if self.appConfig.inputImage.isSome:
+    self.appConfig.inputImage.get()
+  elif context.hasImage:
+    newImage(context.image.width, context.image.height)
+  else:
+    newImage(self.frameConfig.renderWidth(), self.frameConfig.renderHeight())
+  render(self, context, result)
+
 ```
 
-## State
+### State
 
-Each scene can expose publicly controllable state:
+The `state` object is a standard nim [JsonNode](https://nim-lang.org/docs/json.html). Access it accordingly. This means use code like `state{"field"}.getStr()` to access values, and `state{"field"} = %*("str")` to store them.
 
-State can be publicly controllable or private. It can be persisted to disk to survive power loss, or reset each time.
-
-The `state` object is a standard nim's [JsonNode](https://nim-lang.org/docs/json.html). So access it accordingly. This means use code like `state{"field"}.getStr()` to access values, and `state{"field"} = %*("str")` to store them.
+Even better, just drag the yellow state nodes onto your scene and wire them up directly.
