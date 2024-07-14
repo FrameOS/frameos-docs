@@ -1,4 +1,4 @@
-# FrameOS Apps Guide
+# Apps Guide
 
 TODO: This guide needs updating.
 

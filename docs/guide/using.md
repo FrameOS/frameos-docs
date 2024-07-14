@@ -1,11 +1,14 @@
 ---
-sidebar_position: 3
+sidebar_position: 30
 ---
 # Using FrameOS
 
-TODO: write all of that :)
+TODO: write all of this...
 
-- Setting up a frame
+- Editing scenes
+- Apps: flow and data apps
+- State
+
 - Interesting settings
   - Device
   - Frame access + key
@@ -13,8 +16,3 @@ TODO: write all of that :)
   - Reboot
   - QR control code
   - Debug logging
-- Installing scenes
-- Control URL & QR
-- Editing scenes
-- Apps: flow and data apps
-- State
