@@ -5,8 +5,6 @@ slug: /
 
 # FrameOS 
 
-![FrameOS backend](./guide/_img2/frameos-backend.gif)
-
 ### An operating system for <u>single function smart frames</u>. 
 
 It's designed for both screens that update **60 frames per second**, and for screens that update **60 seconds per frame**.
@@ -14,36 +12,37 @@ Think smart home calendars, meeting room displays, thermostats, interactive mess
 
 FrameOS is written in [nim](https://nim-lang.org/), and gets compiled into a single binary when deployed.
 
-|  |  |
-|---|---|
-| ![Door frame](./_img/ukseraam.jpg) |![Timmy Tommy](./_img/timmy-tommy.jpg) |
-|![Bathroom frame](./_img/frame-bathroom.jpg) | ![Pasta frame](./_img/phone-pasta-2.jpg) |
-
 ### What do you need?
 
-- A Raspberry Pi. Any will do. The [Zero W 2](https://www.raspberrypi.com/products/raspberry-pi-zero-2-w/) hits the sweet spot for eink displays (small, cheap, multicore), and can easily do 24 FPS on small LCDs. To get 60FPS over HDMI you'll need a [Raspberry Pi 5](https://www.raspberrypi.com/products/raspberry-pi-5/).
 - A display of some sort. E-ink or LCD. Take your pick from [Waveshare](https://www.waveshare.com/product/displays/e-paper/epaper-1.htm) or 
 [Pimoroni](https://shop.pimoroni.com/collections/displays)'s e-ink HATs, or hook up a TV with an HDMI cable. 
-- A server for hosting the FrameOS backend. You'll use this to deploy scenes onto frames via SSH. 
+- A Raspberry Pi.
+  - If size matters, use the [Zero W 2](https://www.raspberrypi.com/products/raspberry-pi-zero-2-w/). It's great for eink displays, and can even do 24 FPS on small LCDs. 
+  - For maximum peformance, (e.g. 60FPS over HDMI) you'll need a [Raspberry Pi 5](https://www.raspberrypi.com/products/raspberry-pi-5/).
+- A server to host the FrameOS backend. It'll need to be able to connect to the frames over SSH. Use [Tailscale](https://tailscale.com/) on all devices if they're not all in the same network.
 
-[Read the guide](/guide/backend) to get started.
+### FrameOS backend
 
-### Prebuilt scenes
+You use this self-hosted application to deploy scenes onto frames.
+You can deploy from a growing library of prebuilt scenes, or use the visual editor to arrange the nodes that make up a scene yourself.
+If that's not enough, edit the nim source directly.
+
+![FrameOS backend](./guide/_img2/frameos-backend.gif)
+
+### Sample frames
+
+Here are some frames I have around the house.
+
+|  |  |
+|---|---|
+| ![Door frame](./_img/ukseraam.jpg) Hallway dashboard |![Timmy Tommy](./_img/timmy-tommy.jpg) Kitchen calendar |
+|![Bathroom frame](./_img/frame-bathroom.jpg) Bathroom thermostat | ![Pasta frame](./_img/phone-pasta-2.jpg) Scan the code to change the text |
+
+### Sample scenes
 
 Deploy your first scene from the list of prebuilt templates:
 
 ![Scenes](./_img/sample-scenes.png)
-
-### Create your own scenes
-
-Visually connect apps like "Render Text" and "OpenAI Image" to build your own scenes. 
-Make those scenes externally controllable with a QR code at the corner of the screen.
-
-![Good run](./_img/good-run.png)
-
-Go a step deeper, fork the prebuilt apps, and build new ones from scratch:
-
-![Fork code](./_img/fork-openai.png)
 
 ## Getting started
 
@@ -55,7 +54,7 @@ Go a step deeper, fork the prebuilt apps, and build new ones from scratch:
 
 FrameOS is good enough for small-time usage. Most of the core concepts are in place.
 
-We haven't released a numbered version yet. A `FrameOS/frameos:latest` docker image is generated for every push to `main`. While we take great care not to break things, there are no guarantees at this point.
+There is no numbered release yet. A `FrameOS/frameos:latest` docker image is generated for every push to `main`. While we take great care not to break things, there are no guarantees at this point.
 
 If you're the adventurous type, please try it out, and help out. Look at [the tasklist](https://github.com/FrameOS/frameos/issues/1) for ideas. Don't ask for permission, just submit a PR. If you're not sure, open an issue and we'll discuss it.
 
