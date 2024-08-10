@@ -19,7 +19,7 @@ FrameOS is written in [nim](https://nim-lang.org/), and gets compiled into a sin
 - A Raspberry Pi.
   - For maximum peformance, (e.g. 60FPS over HDMI) you'll need a [Raspberry Pi 5](https://www.raspberrypi.com/products/raspberry-pi-5/).
   - If size matters, use the [Zero W 2](https://www.raspberrypi.com/products/raspberry-pi-zero-2-w/). It's great for eink displays, and can even do 24 FPS on small LCDs.
-- A server to host the FrameOS backend. It'll need to be able to connect to the frames over SSH. Use [Tailscale](https://tailscale.com/) on all devices if they're not all in the same network.
+- Someplace to run the FrameOS backend. Either run it [via docker locally](https://frameos.net/guide/backend#running-via-docker), or host it in a server. It'll connect to the frames via SSH.
 
 ### FrameOS backend
 
