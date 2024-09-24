@@ -12,26 +12,29 @@ Think smart home calendars, meeting room displays, thermostats, interactive mess
 
 FrameOS is written in [nim](https://nim-lang.org/), and gets compiled into a single binary when deployed.
 
-### What do you need?
-
-- A display of some sort. E-ink or LCD. Take your pick from [Waveshare](https://www.waveshare.com/product/displays/e-paper/epaper-1.htm) or 
-[Pimoroni](https://shop.pimoroni.com/collections/displays)'s e-ink HATs, or hook up a TV with an HDMI cable. 
-- A Raspberry Pi.
-  - For maximum peformance, (e.g. 60FPS over HDMI) you'll need a [Raspberry Pi 5](https://www.raspberrypi.com/products/raspberry-pi-5/).
-  - If size matters, use the [Zero W 2](https://www.raspberrypi.com/products/raspberry-pi-zero-2-w/). It's great for eink displays, and can even do 24 FPS on small LCDs.
-- Someplace to run the FrameOS backend. Either run it [locally via docker](https://frameos.net/guide/backend#running-via-docker), or host it on a server. It'll connect to the frames using SSH.
-
 ### FrameOS backend
 
-You use this self-hosted application to deploy scenes onto frames.
+You use the _FrameOS backend_ to deploy _FrameOS_ onto _frames_. Say that again!
 
-[![FrameOS backend](./guide/_img2/frameos-backend.gif)](./guide/_img2/frameos-backend.gif)
-
-Install it with:
+The backend is a Python/Flask webapp, run through docker. It can be installed with a single command:
 
 ```bash
 curl -fsSL https://frameos.net/install.sh | bash
 ```
+
+Here's what it looks like:
+
+[![FrameOS backend](./guide/_img2/frameos-backend.gif)](./guide/_img2/frameos-backend.gif)
+
+### What do you need to get started?
+
+- Someplace to run the FrameOS backend. Run it locally or on a server. It'll connect to the frames with SSH.
+- A display of some sort. E-ink or LCD. Take your pick from [Waveshare](https://www.waveshare.com/product/displays/e-paper/epaper-1.htm) or
+[Pimoroni](https://shop.pimoroni.com/collections/displays)'s e-ink HATs, or hook up a TV with an HDMI cable.
+- A Raspberry Pi with a stock Raspberry Pi OS Lite installed.
+  - For maximum peformance, (e.g. 60FPS over HDMI) you'll need a [Raspberry Pi 5](https://www.raspberrypi.com/products/raspberry-pi-5/).
+  - If size matters, use the [Zero W 2](https://www.raspberrypi.com/products/raspberry-pi-zero-2-w/). It's great for eink displays, and can even do 24 FPS on small LCDs.
+
 
 ### Sample frames
 
@@ -75,14 +78,6 @@ There is no numbered release yet. A `FrameOS/frameos:latest` docker image is gen
 
 If you're the adventurous type, please try it out, and help out. Look at [the tasklist](https://github.com/FrameOS/frameos/issues/1) for ideas. Don't ask for permission, just submit a PR. If you're not sure, open an issue and we'll discuss it.
 
-## Next steps
-
-- Start by installing the [FrameOS backend](/guide/backend).
-
-- Read the blog post: [Why FrameOS?](/blog/why-frameos)
-
-- Read more about the [Nim rewrite](/blog/nim-rewrite).
-
 <form
   action="https://buttondown.email/api/emails/embed-subscribe/frameos"
   method="post"
@@ -90,7 +85,15 @@ If you're the adventurous type, please try it out, and help out. Look at [the ta
   onsubmit="window.open('https://buttondown.email/frameos', 'popupwindow')"
   class="embeddable-buttondown-form"
 >
-  <ul><li><label for="bd-email">Subscribe to the newsletter: </label>
+  <div><label for="bd-email">Finally, subscribe to the newsletter to be the first to hear of news and updates: </label>
   <input type="email" name="email" id="bd-email" placeholder="you@email.com" />
-  <input type="submit" value="Subscribe" /></li></ul>
+  <input type="submit" value="Subscribe" /></div>
 </form>
+
+## Next steps
+
+- Start by installing the [FrameOS backend](/guide/backend).
+
+- Read the blog post: [Why FrameOS?](/blog/why-frameos)
+
+- Read more about the [Nim rewrite](/blog/nim-rewrite).
