@@ -14,9 +14,17 @@ You'll need to host the backend somewhere that has direct SSH access to the fram
 
 If you need to punch through firewalls, [Tailscale](https://tailscale.com/) is a nice option.
 
+## Quick install
+
+The easiest way to install the FrameOS backend on a Mac or Debian/Ubuntu Linux is to run the following installation script:
+
+```bash
+curl -fsSL https://frameos.net/install.sh | bash
+```
+
 ## Running via docker
 
-The easiest way to run the FrameOS backend is via Docker.
+The second-easiest way to run the FrameOS backend is via Docker. This is what the script above does.
 
 ```bash
 # generate a stable secret key
