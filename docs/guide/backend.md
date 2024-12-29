@@ -14,13 +14,25 @@ You'll need to host the backend somewhere that has direct SSH access to the fram
 
 If you need to punch through firewalls, [Tailscale](https://tailscale.com/) is a nice option.
 
-## Quick install
+## Quick install (self hosted)
 
 The easiest way to install the FrameOS backend on a Mac or Debian/Ubuntu Linux is to run the following installation script:
 
 ```bash
 curl -fsSL https://frameos.net/install.sh | bash
 ```
+
+## Home Assistant Addon
+
+- Go to **Settings > Add-ons > Add-on Store** in Home Assistant.
+- Click on the **...** menu in the top right corner.
+- Select **Repositories**.
+- Add `https://github.com/FrameOS/frameos-home-assistant-addon`
+- Find **FrameOS** in the add-on list and click on it.
+- Click **Install**.
+- After installation, click **Start**.
+- Optionally, enable **Start on boot** and **Watchdog**.
+- Click on **Open Web UI** to access the FrameOS interface.
 
 ## Running via docker
 
