@@ -1,5 +1,13 @@
 # Waveshare Other Displays
 
+- Status: 🟢 Definitely Working (I've tested them)
+  - Waveshare 4.0" (E) 6-color Spectra
+  - Waveshare 4.01" (F) 7 Color
+  - Waveshare 7.3" (E) 6-color Spectra
+  - Waveshare 7.5" (B V2) Black/White/Red
+  - Waveshare 12.48" (B V2) Black/White/Red
+  - Waveshare 13.3" (E) 6-color Spectra
+
 - Status: 🟢 Probably Working
 - These displays should all work. I haven't tested them all.
   - Waveshare 1.02" (D) 128x80 Black/White
@@ -40,7 +48,6 @@
   - Waveshare 3.0" (G) 400x168 Black/White/Yellow/Red
   - Waveshare 3.52" 360x240 Black/White
   - Waveshare 3.7" 480x280 4 Grayscale
-  - Waveshare 4.01" (F) 640x400 7 Color
   - Waveshare 4.2" 400x300 4 Grayscale
   - Waveshare 4.2" (V2) 400x300 4 Grayscale
   - Waveshare 4.2" (B) 400x300 Black/White/Red
@@ -65,11 +72,9 @@
   - Waveshare 7.5" (C) 640x384 Black/White/Yellow
   - Waveshare 7.5" (V2) 800x480 Black/White
   - Waveshare 7.5" (V2 OLD) 800x480 Black/White
-  - Waveshare 7.5" (B V2) 800x480 Black/White/Red
   - Waveshare 7.5" (HD) 880x528 Black/White
   - Waveshare 7.5" (B HD) 880x528 Black/White/Red
   - Waveshare 10.2" (B) 960x640 Black/White/Red
   - Waveshare 12.48" 1304x984 Black/White
   - Waveshare 12.48" (B) 1304x984 Black/White/Red
-  - Waveshare 12.48" (B V2) 1304x984 Black/White/Red
   - Waveshare 13.3" (K) 960x680 Black/White
