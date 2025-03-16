@@ -188,7 +188,7 @@ if [ -z "$SECRET_KEY" ]; then
 fi
 
 # Save environment variables to .env file
-echo "SECRET_KEY=\"$SECRET_KEY\"" > "$ENV_FILE"
+echo "SECRET_KEY=$SECRET_KEY" > "$ENV_FILE"
 echo "PORT=$PORT" >> "$ENV_FILE"
 
 # Check if the FrameOS container is already running
