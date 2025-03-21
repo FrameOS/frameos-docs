@@ -21,7 +21,7 @@ FrameOS has been tested and confirmed working with:
 
 - [Pimoroni HyperPixel 2.1" Round 480x480](./pimoroni-hyperpixel-2.1inch-round-480x480-lcd)
 - [Waveshare 5" Round 1080×1080](./waveshare-5inch-round-1080x1080-lcd)
-- Any display conencted via HDMI should work just fine.
+- Any display connected via HDMI should work just fine.
 
 ## Not personally tested
 
