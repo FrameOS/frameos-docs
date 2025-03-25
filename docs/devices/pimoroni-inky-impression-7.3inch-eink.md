@@ -9,7 +9,6 @@ Note: The Pimoroni Inky driver is currently written in Python, making the instal
 
 ## Setup
 
-- SSH onto the frame and install the [Pimoroni software](https://shop.pimoroni.com/products/inky-impression-7-3?variant=40512683376723) with `curl https://get.pimoroni.com/inky | bash`. 
 - Setup the FrameOS Controller
 - Select the "Pimoroni Inky Impression e-ink frames" driver
 - Save & Deploy FrameOS onto the frame.
