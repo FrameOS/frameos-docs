@@ -47,6 +47,6 @@ sudo apt update -y && sudo apt upgrade -y
 
 ### Next steps
 
-That's all you need. Given a SSH connection, the FrameOS [backend](./backend) will do the rest.
+That's all you need. Given a SSH connection, the FrameOS [backend](/guide/backend) will do the rest.
 
-Read next: [First deploy](./first-deploy)
+Read next: [First deploy](/guide/first-deploy)
