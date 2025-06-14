@@ -19,7 +19,7 @@ If you need to punch through firewalls, [Tailscale](https://tailscale.com/) is a
 The easiest way to install the FrameOS backend on a Mac or Debian/Ubuntu Linux is to run the following installation script:
 
 ```bash
-curl -fsSL https://frameos.net/install.sh | bash
+bash <(curl -fsSL https://frameos.net/install.sh)
 ```
 
 ## Home Assistant Addon
