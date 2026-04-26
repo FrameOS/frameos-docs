@@ -1,0 +1,17 @@
+schema-version = "1.10.0"
+
+[install]
+nodejs_20.pkg-path = "nodejs_20"
+
+[hook]
+on-activate = """
+  set -euo pipefail
+
+  if [ ! -d node_modules ] || \
+     [ ! -f node_modules/.package-lock.json ] || \
+     [ package.json -nt node_modules/.package-lock.json ] || \
+     [ package-lock.json -nt node_modules/.package-lock.json ]; then
+    echo "Installing npm dependencies..."
+    npm ci
+  fi
+"""
