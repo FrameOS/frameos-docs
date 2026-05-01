@@ -1,8 +1,12 @@
 # Dependencies
 /node_modules
 
+# Local cloud datastore
+/.data
+
 # Production
 /build
+/.next
 
 # Generated files
 .docusaurus

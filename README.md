@@ -1,41 +1,49 @@
-# Website
+# FrameOS Cloud
 
-This website is built using [Docusaurus 2](https://docusaurus.io/), a modern static website generator.
+This repository now runs the FrameOS docs, blog, cloud login, backend setup, and saved template manager as a Next.js app.
 
-### Installation
+## Development
 
-```
-$ yarn
-```
-
-### Local Development
-
-```
-$ yarn start
+```bash
+npm install
+npm run dev
 ```
 
-This command starts a local development server and opens up a browser window. Most changes are reflected live without having to restart the server.
+When direnv is enabled, `.envrc` activates the Flox environment and adds `node_modules/.bin` to `PATH`.
 
-### Build
+## Build
 
-```
-$ yarn build
-```
-
-This command generates static content into the `build` directory and can be served using any static contents hosting service.
-
-### Deployment
-
-Using SSH:
-
-```
-$ USE_SSH=true yarn deploy
+```bash
+npm run build
+npm run serve
 ```
 
-Not using SSH:
+## Local Cloud Data
 
-```
-$ GIT_USER=<Your GitHub username> yarn deploy
+Development data is stored in `.data/frameos-cloud.json`. The directory is ignored by git.
+
+The local datastore supports:
+
+- password accounts
+- cookie sessions
+- Google OAuth accounts
+- backend instance bearer tokens
+- saved scene templates
+
+## Google OAuth
+
+Set these variables before starting the app:
+
+```bash
+GOOGLE_CLIENT_ID=...
+GOOGLE_CLIENT_SECRET=...
+FRAMEOS_CLOUD_URL=http://localhost:3000
 ```
 
-If you are using GitHub pages for hosting, this command is a convenient way to build the website and push to the `gh-pages` branch.
+Configure the Google OAuth redirect URI as:
+
+```text
+http://localhost:3000/api/auth/google/callback
+```
+
+Use the production domain instead of localhost for deployed environments.
