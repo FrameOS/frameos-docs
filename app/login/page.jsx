@@ -3,7 +3,7 @@ import { safeReturnTo } from "@/lib/http";
 
 export default async function LoginPage({ searchParams }) {
   const params = await searchParams;
-  const returnTo = safeReturnTo(params?.returnTo, "/");
+  const returnTo = safeReturnTo(params?.returnTo, "/account/backends");
 
   return (
     <main className="centerShell">

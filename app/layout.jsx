@@ -4,7 +4,7 @@ import { getCurrentUser } from "@/lib/auth";
 
 export const metadata = {
   title: "FrameOS Cloud",
-  description: "FrameOS docs, blog, and cloud login.",
+  description: "FrameOS docs, blog, cloud login, and encrypted backups.",
 };
 
 export default async function RootLayout({ children }) {

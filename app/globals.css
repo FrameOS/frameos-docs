@@ -118,6 +118,7 @@ textarea {
 
 .accountNav {
   justify-content: end;
+  position: relative;
 }
 
 .accountPill {
@@ -132,6 +133,65 @@ textarea {
   padding: 8px 12px;
   text-overflow: ellipsis;
   white-space: nowrap;
+}
+
+.accountMenu {
+  position: relative;
+}
+
+.accountSummary {
+  align-items: center;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 7px;
+  cursor: pointer;
+  display: inline-flex;
+  font-size: 14px;
+  font-weight: 900;
+  gap: 7px;
+  list-style: none;
+  min-height: 38px;
+  padding: 8px 11px;
+}
+
+.accountSummary::-webkit-details-marker {
+  display: none;
+}
+
+.accountMenu[open] .accountSummary {
+  border-color: var(--green);
+  box-shadow: 0 0 0 3px rgba(23, 114, 69, 0.12);
+}
+
+.accountMenuPanel {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  box-shadow: var(--shadow);
+  display: grid;
+  gap: 5px;
+  min-width: 250px;
+  padding: 10px;
+  position: absolute;
+  right: 0;
+  top: calc(100% + 8px);
+  z-index: 30;
+}
+
+.accountMenuPanel a {
+  align-items: center;
+  border-radius: 7px;
+  color: #324038;
+  display: inline-flex;
+  font-size: 14px;
+  font-weight: 800;
+  gap: 8px;
+  min-height: 38px;
+  padding: 9px 10px;
+}
+
+.accountMenuPanel a:hover {
+  background: #eef5ef;
 }
 
 .button {
@@ -283,7 +343,7 @@ textarea {
 .metricBand {
   display: grid;
   gap: 14px;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(4, 1fr);
   margin: 18px 0 28px;
 }
 
@@ -306,6 +366,78 @@ textarea {
 .postRow p {
   color: var(--muted);
   line-height: 1.45;
+}
+
+.cloudBackupCallout {
+  align-items: center;
+  background: #17221c;
+  border: 1px solid #26392f;
+  border-radius: 8px;
+  color: #f7fbf8;
+  display: grid;
+  gap: 22px;
+  grid-template-columns: minmax(0, 1fr) auto;
+  margin: 18px 0;
+  padding: clamp(20px, 3vw, 30px);
+}
+
+.cloudBackupCallout h2 {
+  font-size: clamp(28px, 4vw, 46px);
+  line-height: 1.05;
+  margin: 0;
+}
+
+.cloudBackupCallout p:not(.eyebrow) {
+  color: #c8d9ce;
+  font-size: 17px;
+  line-height: 1.55;
+  margin: 10px 0 0;
+  max-width: 780px;
+}
+
+.cloudBackupCallout .eyebrow {
+  color: var(--yellow);
+}
+
+.latestReleaseBand {
+  align-items: center;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  box-shadow: var(--shadow);
+  display: grid;
+  gap: 18px;
+  grid-template-columns: minmax(0, 1fr) auto auto;
+  margin: 18px 0;
+  padding: 20px;
+}
+
+.latestReleaseBand h2 {
+  font-size: clamp(24px, 3vw, 34px);
+  line-height: 1.08;
+  margin: 0;
+}
+
+.releaseFacts,
+.releaseMeta {
+  align-items: center;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 9px;
+}
+
+.releaseFacts span,
+.releaseMeta span {
+  align-items: center;
+  background: #eef5ef;
+  border: 1px solid #d5e3d8;
+  border-radius: 999px;
+  color: #31433a;
+  display: inline-flex;
+  font-size: 13px;
+  font-weight: 900;
+  gap: 7px;
+  padding: 7px 10px;
 }
 
 .dashboardGrid {
@@ -486,10 +618,301 @@ textarea:focus {
   color: var(--red);
 }
 
+.authorizationShell {
+  grid-template-columns: minmax(0, 0.95fr) minmax(360px, 480px);
+}
+
+.authorizationPanel {
+  display: grid;
+  gap: 18px;
+}
+
+.authorizationTitle {
+  align-items: start;
+  display: grid;
+  gap: 12px;
+  grid-template-columns: auto minmax(0, 1fr);
+}
+
+.authorizationTitle svg {
+  color: var(--green);
+  margin-top: 3px;
+}
+
+.authorizationTitle h2 {
+  font-size: 24px;
+  margin: 0 0 5px;
+}
+
+.authorizationTitle p {
+  color: var(--muted);
+  margin: 0;
+  overflow-wrap: anywhere;
+}
+
+.authDetailList {
+  display: grid;
+  gap: 10px;
+  margin: 0;
+}
+
+.authDetailList div {
+  background: #fbfcfa;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 12px;
+}
+
+.authDetailList dt {
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 900;
+  text-transform: uppercase;
+}
+
+.authDetailList dd {
+  font-weight: 800;
+  margin: 4px 0 0;
+  overflow-wrap: anywhere;
+}
+
+.authorizationActions {
+  display: grid;
+  gap: 10px;
+  grid-template-columns: 1fr 1fr;
+}
+
 .formGrid {
   display: grid;
   gap: 14px;
   grid-template-columns: 1fr 190px;
+}
+
+.backupsShell {
+  display: grid;
+  gap: 24px;
+}
+
+.backupHeader,
+.accountHeader {
+  max-width: 980px;
+}
+
+.pageHeader p:not(.eyebrow) {
+  color: var(--muted);
+  font-size: 18px;
+  line-height: 1.6;
+  max-width: 820px;
+}
+
+.backupBadges,
+.backupActions {
+  align-items: center;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.backupBadges span {
+  align-items: center;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  display: inline-flex;
+  font-size: 13px;
+  font-weight: 900;
+  gap: 7px;
+  padding: 8px 11px;
+}
+
+.backupGrid {
+  align-items: start;
+  display: grid;
+  gap: 18px;
+  grid-template-columns: minmax(0, 1fr) minmax(360px, 0.78fr);
+}
+
+.backupComposer,
+.backupVault {
+  display: grid;
+  gap: 16px;
+}
+
+.backupComposer textarea {
+  font-family: "SFMono-Regular", Consolas, "Liberation Mono", monospace;
+  min-height: 280px;
+}
+
+.iconButton {
+  align-items: center;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 7px;
+  color: var(--ink);
+  cursor: pointer;
+  display: inline-flex;
+  height: 38px;
+  justify-content: center;
+  width: 38px;
+}
+
+.iconButton:hover {
+  background: #eef5ef;
+}
+
+.backupRows {
+  display: grid;
+  gap: 10px;
+}
+
+.backupRow {
+  background: #fbfcfa;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  color: var(--ink);
+  cursor: pointer;
+  display: grid;
+  gap: 4px;
+  padding: 13px;
+  text-align: left;
+}
+
+.backupRow.active {
+  border-color: var(--green);
+  box-shadow: 0 0 0 3px rgba(23, 114, 69, 0.12);
+}
+
+.backupRow span,
+.backupRow small {
+  color: var(--muted);
+}
+
+.decryptedBackup {
+  display: grid;
+  gap: 10px;
+}
+
+.sectionHeader.compact {
+  justify-content: start;
+}
+
+.accountShell {
+  display: grid;
+  gap: 24px;
+}
+
+.accountList {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  box-shadow: var(--shadow);
+  display: grid;
+  gap: 16px;
+  padding: 22px;
+}
+
+.emptyPanel {
+  background: #fbfcfa;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  color: var(--muted);
+  display: grid;
+  gap: 8px;
+  padding: 18px;
+}
+
+.emptyPanel strong {
+  color: var(--ink);
+}
+
+.emptyPanel p {
+  margin: 0;
+}
+
+.backendCard {
+  align-items: center;
+  background: #fbfcfa;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  display: grid;
+  gap: 16px;
+  grid-template-columns: minmax(0, 1fr) minmax(260px, 0.75fr) auto;
+  padding: 16px;
+}
+
+.backendCard h3 {
+  font-size: 20px;
+  margin: 0 0 5px;
+}
+
+.backendCard p {
+  color: var(--muted);
+  margin: 0;
+  overflow-wrap: anywhere;
+}
+
+.backendCard dl {
+  display: grid;
+  gap: 9px;
+  grid-template-columns: 1fr 1fr;
+  margin: 0;
+}
+
+.backendCard dt {
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 900;
+  text-transform: uppercase;
+}
+
+.backendCard dd {
+  font-weight: 800;
+  margin: 3px 0 0;
+}
+
+.backendActions {
+  align-items: center;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  justify-content: end;
+}
+
+.releasesShell {
+  display: grid;
+  gap: 20px;
+}
+
+.releaseList {
+  display: grid;
+  gap: 16px;
+}
+
+.releaseCard {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  box-shadow: var(--shadow);
+  display: grid;
+  gap: 14px;
+  padding: 22px;
+}
+
+.releaseCardHeader {
+  align-items: start;
+  display: flex;
+  gap: 16px;
+  justify-content: space-between;
+}
+
+.releaseCardHeader h2 {
+  font-size: clamp(25px, 4vw, 40px);
+  line-height: 1.05;
+  margin: 0;
+}
+
+.releaseNotes {
+  white-space: pre-wrap;
 }
 
 pre {
@@ -657,7 +1080,12 @@ pre {
   .dashboardGrid,
   .contentLayout,
   .metricBand,
-  .formGrid {
+  .formGrid,
+  .authorizationShell,
+  .backupGrid,
+  .backendCard,
+  .cloudBackupCallout,
+  .latestReleaseBand {
     grid-template-columns: 1fr;
   }
 
@@ -673,14 +1101,27 @@ pre {
     justify-content: start;
   }
 
+  .accountMenuPanel {
+    left: 0;
+    right: auto;
+  }
+
   .authPanel,
   .contentNav {
     position: static;
   }
 
+  .authorizationActions {
+    grid-template-columns: 1fr;
+  }
+
   .contentLayout.docsLayout {
     grid-template-columns: 1fr;
     max-width: 100%;
+  }
+
+  .cloudBackupCallout {
+    align-items: start;
   }
 }
 

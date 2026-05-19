@@ -3,7 +3,7 @@
 import { useMemo, useState } from "react";
 import { KeyRound, LogIn, Mail, UserPlus } from "lucide-react";
 
-export function AuthForms({ returnTo = "/", oauthStatus }) {
+export function AuthForms({ returnTo = "/account/backends", oauthStatus }) {
   const [mode, setMode] = useState("login");
   const [pending, setPending] = useState(false);
   const [error, setError] = useState("");

@@ -4,7 +4,7 @@ import { safeReturnTo } from "@/lib/http";
 
 export async function GET(request) {
   const url = new URL(request.url);
-  const returnTo = safeReturnTo(url.searchParams.get("returnTo"), "/");
+  const returnTo = safeReturnTo(url.searchParams.get("returnTo"), "/account/backends");
 
   if (!googleOAuthConfigured()) {
     return NextResponse.redirect(new URL(`/login?oauth=not_configured&returnTo=${encodeURIComponent(returnTo)}`, request.url));

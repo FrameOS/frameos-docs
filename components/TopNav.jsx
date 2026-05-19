@@ -1,5 +1,6 @@
 import Link from "next/link";
-import { BookOpen, LogIn, SquareStack } from "lucide-react";
+import { BookOpen, LogIn, Package, SquareStack } from "lucide-react";
+import { AccountMenu } from "@/components/AccountMenu";
 
 export function TopNav({ user }) {
   return (
@@ -21,16 +22,15 @@ export function TopNav({ user }) {
           <SquareStack size={17} />
           Blog
         </Link>
+        <Link href="/releases">
+          <Package size={17} />
+          Releases
+        </Link>
       </nav>
 
       <div className="accountNav">
         {user ? (
-          <>
-            <span className="accountPill">{user.name || user.email}</span>
-            <a className="button ghost small" href="/logout">
-              Sign out
-            </a>
-          </>
+          <AccountMenu user={user} />
         ) : (
           <Link className="button primary small" href="/login">
             <LogIn size={16} />

@@ -11,8 +11,8 @@ slug: /
 It's designed for both screens that update **60 frames per second**, and for screens that update **60 seconds per frame**.
 Think smart home calendars, meeting room displays, thermostats, interactive message boards, public advertisement screens, and more. 
 
-FrameOS is written in [nim](https://nim-lang.org/), and gets compiled into a single binary when deployed. Everything runs locally on device, 
-there is no cloud to subscribe to.
+FrameOS is written in [nim](https://nim-lang.org/), and gets compiled into a single binary when deployed. Everything runs locally on device.
+No cloud is required, and an optional encrypted FrameOS Cloud backup can sync self-hosted backends and frames without exposing plaintext to the server.
 
 ### FrameOS backend
 
@@ -28,6 +28,12 @@ bash <(curl -fsSL https://frameos.net/install.sh)
 Here's what it looks like:
 
 [![FrameOS backend](./guide/_img2/frameos-backend.gif)](./guide/_img2/frameos-backend.gif)
+
+### Encrypted cloud backups
+
+Self-hosted backends can link to FrameOS Cloud for encrypted backups. Backend metadata, frame state, and frame assets are uploaded as encrypted envelopes, and the passphrase stays in the browser.
+
+[Read the encrypted cloud backup guide](/guide/cloud-backups) or open [FrameOS Cloud backups](/backups).
 
 ### What do you need to get started?
 

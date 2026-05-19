@@ -1,13 +1,21 @@
 import Link from "next/link";
-import { ArrowRight, BookOpen, LogIn, Monitor, SquareStack } from "lucide-react";
+import { ArrowRight, BookOpen, Calendar, Cloud, LogIn, Monitor, Package, SquareStack } from "lucide-react";
 import { getCurrentUser } from "@/lib/auth";
 import { excerptFromMarkdown, getAllBlogPosts } from "@/lib/content";
+import { formatReleaseDate, getLatestRelease } from "@/lib/github-releases";
 
 export const dynamic = "force-dynamic";
 
 export default async function HomePage() {
   const user = await getCurrentUser();
   const posts = getAllBlogPosts().slice(0, 3);
+  let latestRelease = null;
+
+  try {
+    latestRelease = await getLatestRelease();
+  } catch {
+    latestRelease = null;
+  }
 
   return (
     <main className="pageShell homeShell">
@@ -50,6 +58,43 @@ export default async function HomePage() {
         </div>
       </section>
 
+      <section className="cloudBackupCallout">
+        <div>
+          <p className="eyebrow">New for self-hosters</p>
+          <h2>Encrypted FrameOS Cloud backups</h2>
+          <p>
+            Sync backend metadata, scene state, and frame assets without exposing plaintext to FrameOS Cloud. Backups are encrypted before upload and decrypted only in the browser.
+          </p>
+        </div>
+        <Link className="button primary" href={user ? "/backups" : "/login?returnTo=%2Fbackups"}>
+          <Cloud size={17} />
+          Open backups
+        </Link>
+      </section>
+
+      {latestRelease ? (
+        <section className="latestReleaseBand">
+          <div>
+            <p className="eyebrow">Latest release</p>
+            <h2>{latestRelease.name}</h2>
+          </div>
+          <div className="releaseFacts">
+            <span>
+              <Package size={16} />
+              Version {latestRelease.tagName}
+            </span>
+            <span>
+              <Calendar size={16} />
+              {formatReleaseDate(latestRelease.publishedAt || latestRelease.createdAt)}
+            </span>
+          </div>
+          <Link className="button secondary" href="/releases">
+            View releases
+            <ArrowRight size={15} />
+          </Link>
+        </section>
+      ) : null}
+
       <section className="metricBand" aria-label="FrameOS areas">
         <Link href="/docs">
           <BookOpen size={19} />
@@ -65,6 +110,11 @@ export default async function HomePage() {
           <SquareStack size={19} />
           <strong>Blog</strong>
           <span>Follow build guides, project updates, and hardware notes.</span>
+        </Link>
+        <Link href="/docs/guide/cloud-backups">
+          <Cloud size={19} />
+          <strong>Cloud backups</strong>
+          <span>Optional encrypted sync for self-hosted backends and frame assets.</span>
         </Link>
       </section>
 

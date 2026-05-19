@@ -14,6 +14,12 @@ You'll need to host the backend somewhere that has direct SSH access to the fram
 
 If you need to punch through firewalls, [Tailscale](https://tailscale.com/) is a nice option.
 
+## Optional FrameOS Cloud backups
+
+Self-hosted backends can link to FrameOS Cloud for encrypted backups. The cloud service stores encrypted manifests and encrypted asset objects, while the backup passphrase and decrypted data stay in the browser.
+
+Use this for backend recovery, syncing frame metadata, and preserving frame-local assets from `/srv/assets`. See [Encrypted Cloud Backups](/guide/cloud-backups) for the API contract and security model.
+
 ## Quick install (self hosted)
 
 The easiest way to install the FrameOS backend on a Mac or Debian/Ubuntu Linux is to run the following installation script:

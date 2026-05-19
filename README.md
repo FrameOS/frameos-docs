@@ -1,6 +1,6 @@
 # FrameOS Cloud
 
-This repository runs the FrameOS docs, blog, and cloud login as a Next.js app.
+This repository runs the FrameOS docs, blog, cloud login, and encrypted cloud backups as a Next.js app.
 
 ## Development
 
@@ -27,6 +27,10 @@ The local datastore supports:
 - password accounts
 - cookie sessions
 - Google OAuth accounts
+- linked self-hosted backend tokens
+- encrypted backup manifests and encrypted backup objects
+
+Backup data is stored as opaque ciphertext. Browser code handles encryption and decryption; server routes only validate envelope shape and ownership.
 
 ## Google OAuth
 
