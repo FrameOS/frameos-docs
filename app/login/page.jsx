@@ -10,7 +10,7 @@ export default async function LoginPage({ searchParams }) {
       <div className="loginIntro">
         <p className="eyebrow">Cloud account</p>
         <h1>Sign in to FrameOS Cloud</h1>
-        <p>Use password login or Google OAuth to connect backends and save templates to frameos.net.</p>
+        <p>Use password login or Google OAuth for your FrameOS account.</p>
       </div>
       <AuthForms oauthStatus={params?.oauth} returnTo={returnTo} />
     </main>

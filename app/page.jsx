@@ -1,33 +1,41 @@
 import Link from "next/link";
-import { ArrowRight, BookOpen, Library, Server } from "lucide-react";
+import { ArrowRight, BookOpen, LogIn, Monitor, SquareStack } from "lucide-react";
 import { getCurrentUser } from "@/lib/auth";
-import { readDb } from "@/lib/cloud-db";
+import { excerptFromMarkdown, getAllBlogPosts } from "@/lib/content";
 
 export const dynamic = "force-dynamic";
 
 export default async function HomePage() {
   const user = await getCurrentUser();
-  const db = readDb();
-  const templates = user ? db.templates.filter((template) => template.ownerId === user.id).slice(0, 4) : db.templates.filter((template) => template.visibility === "public").slice(0, 4);
-  const instances = user ? db.backendInstances.filter((instance) => instance.userId === user.id && !instance.revokedAt).slice(0, 3) : [];
+  const posts = getAllBlogPosts().slice(0, 3);
 
   return (
     <main className="pageShell homeShell">
       <section className="consoleHero">
         <div className="consoleCopy">
           <p className="eyebrow">FrameOS</p>
-          <h1>{user ? `Welcome back, ${user.name || user.email}` : "Control software for Raspberry Pi display frames"}</h1>
+          <h1>
+            {user ? (
+              <>
+                Welcome back,
+                <br />
+                {user.name || user.email}
+              </>
+            ) : (
+              "Control software for Raspberry Pi display frames"
+            )}
+          </h1>
           <p>
-            Install the backend, connect a frame over SSH, and deploy scenes to e-ink or LCD displays. Cloud login is here for backend pairing and saving scene templates to frameos.net.
+            Install the backend, connect a frame over SSH, and deploy scenes to e-ink or LCD displays. Start with the guide, then pick the hardware that matches your display.
           </p>
           <div className="actionRow">
             <Link className="button primary" href="/docs">
               <BookOpen size={17} />
               Start with the docs
             </Link>
-            <Link className="button secondary" href={user ? "/templates" : "/login?returnTo=/templates"}>
-              <Library size={17} />
-              {user ? "Manage templates" : "Sign in"}
+            <Link className="button secondary" href={user ? "/blog" : "/login"}>
+              {user ? <SquareStack size={17} /> : <LogIn size={17} />}
+              {user ? "Read updates" : "Sign in"}
             </Link>
           </div>
         </div>
@@ -48,15 +56,15 @@ export default async function HomePage() {
           <strong>Docs</strong>
           <span>Install the backend, set up the Raspberry Pi, and pick a display.</span>
         </Link>
-        <Link href="/setup">
-          <Server size={19} />
-          <strong>Backend pairing</strong>
-          <span>Connect a self-hosted backend to your frameos.net account.</span>
+        <Link href="/docs/devices/devices">
+          <Monitor size={19} />
+          <strong>Devices</strong>
+          <span>Find setup notes for Waveshare, Pimoroni, HDMI, and other panels.</span>
         </Link>
-        <Link href="/templates">
-          <Library size={19} />
-          <strong>Templates</strong>
-          <span>Save scene templates from the backend and manage them here.</span>
+        <Link href="/blog">
+          <SquareStack size={19} />
+          <strong>Blog</strong>
+          <span>Follow build guides, project updates, and hardware notes.</span>
         </Link>
       </section>
 
@@ -90,49 +98,47 @@ export default async function HomePage() {
         <div className="panel">
           <div className="sectionHeader">
             <div>
-              <p className="eyebrow">Templates</p>
-              <h2>{user ? "Your saved templates" : "Public templates"}</h2>
+              <p className="eyebrow">Devices</p>
+              <h2>Supported hardware</h2>
             </div>
-            <Link className="textLink" href={user ? "/templates" : "/login?returnTo=/templates"}>
+            <Link className="textLink" href="/docs/devices/devices">
               Open <ArrowRight size={15} />
             </Link>
           </div>
-          {templates.length ? (
-            <div className="listRows">
-              {templates.map((template) => (
-                <div className="listRow" key={template.id}>
-                  <strong>{template.name}</strong>
-                  <span>{template.description || "No description"}</span>
-                </div>
-              ))}
-            </div>
-          ) : (
-            <p className="emptyState">No templates yet. Save one from FrameOS or create it here.</p>
-          )}
+          <div className="listRows">
+            <Link className="listRow" href="/docs/devices/pimoroni-inky-impression-7.3inch-eink">
+              <strong>Pimoroni Inky Impression</strong>
+              <span>Notes for the 7.3 inch full color e-ink panel.</span>
+            </Link>
+            <Link className="listRow" href="/docs/devices/waveshare-7.5inch-800x480-epaper">
+              <strong>Waveshare e-paper</strong>
+              <span>Setup notes for common Waveshare e-paper displays.</span>
+            </Link>
+            <Link className="listRow" href="/docs/devices/framebuffer-hdmi">
+              <strong>HDMI framebuffer</strong>
+              <span>Use a TV, monitor, or other HDMI display.</span>
+            </Link>
+          </div>
         </div>
 
         <div className="panel">
           <div className="sectionHeader">
             <div>
-              <p className="eyebrow">Backend</p>
-              <h2>Connected instances</h2>
+              <p className="eyebrow">Blog</p>
+              <h2>Latest updates</h2>
             </div>
-            <Link className="textLink" href={user ? "/setup" : "/login?returnTo=/setup"}>
-              Setup <ArrowRight size={15} />
+            <Link className="textLink" href="/blog">
+              Open <ArrowRight size={15} />
             </Link>
           </div>
-          {user && instances.length ? (
-            <div className="listRows">
-              {instances.map((instance) => (
-                <div className="listRow" key={instance.id}>
-                  <strong>{instance.name}</strong>
-                  <span>{instance.lastSeenAt ? `Last seen ${new Date(instance.lastSeenAt).toLocaleString()}` : "Token created, not used yet"}</span>
-                </div>
-              ))}
-            </div>
-          ) : (
-            <p className="emptyState">{user ? "No backend instances connected yet." : "Sign in to connect a FrameOS backend instance."}</p>
-          )}
+          <div className="listRows">
+            {posts.map((post) => (
+              <Link className="listRow" href={post.href} key={post.href}>
+                <strong>{post.title}</strong>
+                <span>{excerptFromMarkdown(post.content, 95)}</span>
+              </Link>
+            ))}
+          </div>
         </div>
       </section>
     </main>

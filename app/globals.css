@@ -215,9 +215,7 @@ textarea {
 .consoleCopy,
 .mediaPanel,
 .panel,
-.authPanel,
-.railPanel,
-.editorPanel {
+.authPanel {
   background: var(--surface);
   border: 1px solid var(--line);
   border-radius: 8px;
@@ -305,10 +303,7 @@ textarea {
 .metricBand span,
 .emptyState,
 .listRow span,
-.postRow p,
-.apiPanel p,
-.railInfo p,
-.instanceRow span {
+.postRow p {
   color: var(--muted);
   line-height: 1.45;
 }
@@ -352,8 +347,7 @@ textarea {
 }
 
 .listRow,
-.postRow,
-.instanceRow {
+.postRow {
   background: #fbfcfa;
   border: 1px solid var(--line);
   border-radius: 8px;
@@ -413,8 +407,7 @@ textarea {
   box-shadow: 0 1px 4px rgba(31, 46, 36, 0.12);
 }
 
-.stackForm,
-.templateForm {
+.stackForm {
   display: grid;
   gap: 14px;
 }
@@ -493,69 +486,16 @@ textarea:focus {
   color: var(--red);
 }
 
-.workspaceGrid {
-  display: grid;
-  gap: 18px;
-  grid-template-columns: 310px 1fr;
-  min-height: calc(100vh - 150px);
-}
-
-.railPanel,
-.editorPanel {
-  padding: 18px;
-}
-
-.railPanel {
-  align-self: start;
-  display: grid;
-  gap: 10px;
-  position: sticky;
-  top: 92px;
-}
-
-.railItem {
-  align-items: center;
-  background: transparent;
-  border: 1px solid transparent;
-  border-radius: 7px;
-  color: var(--muted);
-  cursor: pointer;
-  display: flex;
-  gap: 8px;
-  min-height: 42px;
-  padding: 10px;
-  text-align: left;
-}
-
-.railItem.active,
-.railItem:hover {
-  background: #eef5ef;
-  border-color: #d6e6da;
-  color: var(--ink);
-}
-
 .formGrid {
   display: grid;
   gap: 14px;
   grid-template-columns: 1fr 190px;
 }
 
-.codeInput,
 pre {
   font-family: "SFMono-Regular", Consolas, "Liberation Mono", monospace;
   font-size: 13px;
   line-height: 1.5;
-}
-
-.tokenPanel,
-.apiPanel {
-  background: #f8faf6;
-  border: 1px solid var(--line);
-  border-radius: 8px;
-  display: grid;
-  gap: 12px;
-  margin-top: 18px;
-  padding: 16px;
 }
 
 pre {
@@ -565,35 +505,6 @@ pre {
   margin: 0;
   overflow-x: auto;
   padding: 14px;
-}
-
-.railInfo {
-  align-items: start;
-  background: #f8faf6;
-  border: 1px solid var(--line);
-  border-radius: 8px;
-  display: grid;
-  gap: 8px;
-  padding: 14px;
-}
-
-.instanceRow {
-  position: relative;
-}
-
-.iconButton {
-  align-items: center;
-  background: transparent;
-  border: 1px solid var(--line);
-  border-radius: 6px;
-  cursor: pointer;
-  display: inline-flex;
-  height: 32px;
-  justify-content: center;
-  position: absolute;
-  right: 10px;
-  top: 10px;
-  width: 32px;
 }
 
 .contentLayout {
@@ -744,7 +655,6 @@ pre {
   .centerShell,
   .consoleHero,
   .dashboardGrid,
-  .workspaceGrid,
   .contentLayout,
   .metricBand,
   .formGrid {
@@ -764,7 +674,6 @@ pre {
   }
 
   .authPanel,
-  .railPanel,
   .contentNav {
     position: static;
   }
@@ -786,8 +695,6 @@ pre {
   .consoleCopy,
   .panel,
   .authPanel,
-  .railPanel,
-  .editorPanel,
   .markdownShell {
     padding: 16px;
   }

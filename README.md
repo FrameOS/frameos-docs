@@ -1,6 +1,6 @@
 # FrameOS Cloud
 
-This repository now runs the FrameOS docs, blog, cloud login, backend setup, and saved template manager as a Next.js app.
+This repository runs the FrameOS docs, blog, and cloud login as a Next.js app.
 
 ## Development
 
@@ -27,8 +27,6 @@ The local datastore supports:
 - password accounts
 - cookie sessions
 - Google OAuth accounts
-- backend instance bearer tokens
-- saved scene templates
 
 ## Google OAuth
 

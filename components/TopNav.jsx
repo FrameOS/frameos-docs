@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { BookOpen, Library, LogIn, Server, SquareStack } from "lucide-react";
+import { BookOpen, LogIn, SquareStack } from "lucide-react";
 
 export function TopNav({ user }) {
   return (
@@ -17,14 +17,6 @@ export function TopNav({ user }) {
           <BookOpen size={17} />
           Docs
         </Link>
-        <Link href="/templates">
-          <Library size={17} />
-          Templates
-        </Link>
-        <Link href="/setup">
-          <Server size={17} />
-          Backend
-        </Link>
         <Link href="/blog">
           <SquareStack size={17} />
           Blog
@@ -35,9 +27,9 @@ export function TopNav({ user }) {
         {user ? (
           <>
             <span className="accountPill">{user.name || user.email}</span>
-            <Link className="button ghost small" href="/logout">
+            <a className="button ghost small" href="/logout">
               Sign out
-            </Link>
+            </a>
           </>
         ) : (
           <Link className="button primary small" href="/login">
