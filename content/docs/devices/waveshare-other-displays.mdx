@@ -1,0 +1,42 @@
+---
+title: Waveshare e-Paper displays
+description: Which Waveshare panels are tested, and what to know before buying.
+---
+
+FrameOS has native Nim drivers for nearly a hundred Waveshare e-Paper variants — see the
+[full driver list](/devices). This page covers what's been verified on real hardware and a few
+buying tips.
+
+## Tested on real hardware
+
+- Waveshare 13.3" (E) 1600×1200 **Spectra 6 color**
+- Waveshare 7.3" (E) 800×480 **Spectra 6 color**
+- Waveshare 4.0" (E) 600×400 **Spectra 6 color**
+- Waveshare 4.01" (F) 640×400 7-color
+- Waveshare 12.48" (B / B V2) 1304×984 black/white/red
+- Waveshare 7.5" (V2) 800×480 black/white and (B V2) 3-color
+- Waveshare 2.13" 250×122 black/white
+- Waveshare 10.3" 1872×1404 16-grayscale (IT8951 controller)
+
+Everything else on the [driver list](/devices) shares controller logic with these and should work.
+If you confirm a panel, [post a photo](https://github.com/FrameOS/frameos/issues/65) and we'll
+mark it tested.
+
+## Buying tips
+
+- **Spectra 6 (E) panels** are the current sweet spot for color e-ink: six real ink colors,
+  much better saturation than the older 7-color (F) ACeP panels. The
+  [build video](/blog/eink-spectra-waveshare-pimoroni) compares them side by side.
+- Waveshare panels usually arrive as a **bare glass panel plus a separate driver HAT** connected
+  by a ribbon cable. That's more flexible for slim builds than Pimoroni's all-in-one HATs, but
+  slightly more fiddly. Handle the glass with care.
+- Pay attention to the **letter suffix** (B, C, D, E, F, G, V2…) — it identifies the exact
+  revision and the right driver. The label is printed on the panel's ribbon cable.
+- Driver picked but the image looks wrong? Try the neighbouring revisions of the same size —
+  Waveshare reuses product names across hardware generations.
+
+## Known quirks
+
+- The 12.48" panel uses two driver boards and its own wiring — follow
+  [the 12.48" build video](/blog/frameos-2024) for assembly.
+- The 10.3" IT8951 panel works but is grayscale-only and draws more power than SPI panels.

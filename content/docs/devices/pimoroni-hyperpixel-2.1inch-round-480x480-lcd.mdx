@@ -1,0 +1,55 @@
+---
+title: Pimoroni HyperPixel 2.1" round LCD
+description: A round 480×480 touch LCD on the Pi's GPIO header.
+---
+
+- Status: 🟢 Working
+- Manufacturer: [Pimoroni](https://shop.pimoroni.com/)
+- Device: [HyperPixel 2.1" Round 480×480 LCD with touch](https://shop.pimoroni.com/products/hyperpixel-round)
+- Extra: touch input
+
+## What to buy
+
+- The HyperPixel 2.1" Round display from Pimoroni.
+- A Raspberry Pi Zero 2 W (preferred) or Zero W.
+- A 40-pin GPIO header to solder onto the Pi — or buy the pre-pinned Zero WH/W2H and skip the
+  soldering.
+
+## Setup
+
+FrameOS has two drivers for this panel:
+
+- **Pimoroni HyperPixel 2.1 Round (native)** — try this first on current Raspberry Pi OS.
+- **Pimoroni HyperPixel 2.1 Round** — the legacy framebuffer driver, for the Bullseye-based setup
+  below.
+
+For the legacy route, install **Raspberry Pi OS (Legacy) Lite — "Bullseye"**, then SSH in and run:
+
+```bash
+sudo apt -y update
+sudo apt -y install git
+git clone https://github.com/pimoroni/hyperpixel2r
+cd hyperpixel2r
+sudo ./install.sh
+# remove 3d acceleration
+sudo sed -i '/dtoverlay=vc4-kms-v3d/s/^/#/' /boot/config.txt
+sudo reboot
+```
+
+After the reboot the screen shows the Linux boot log. Add the frame in the backend, pick the
+HyperPixel driver, and deploy.
+
+## Brightness control
+
+The backlight is on BCM pin 19 (PWM):
+
+```bash
+sudo apt install wiringpi
+gpio -g mode 19 pwm   # set the pin to PWM mode
+gpio -g pwm 19 60     # 0-24 off, 25-90 dimmed, 91-1023 full brightness
+```
+
+## 3D models
+
+A community case design is available
+[on Cults3D](https://cults3d.com/en/3d-model/gadget/enclosure-m3-for-pimoroni-hyperpixel-2-1-round-touch-and-raspberry-pi-zeer.imaero).

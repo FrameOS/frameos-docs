@@ -1,0 +1,69 @@
+---
+title: Editing scenes
+description: Build scenes visually with the node-based editor - events, apps, data sources and state.
+---
+
+A **scene** is what a frame shows: a graph of connected nodes that runs on the device. Scenes are
+built in a visual editor in the backend, then compiled and deployed onto the frame.
+
+## Create a scene
+
+Click **+ Add new scene**, give it a name, and open the editor.
+
+![Creating a new scene](/images/app/new-scene.gif)
+
+## The four node colors
+
+- 🟥 **Red — events.** Entry points that trigger execution. The most important one is `render`,
+  which fires at a set interval (every 60 seconds, every hour, whatever you choose). Others react
+  to button presses, schedules, or custom events.
+- 🟦 **Blue — render apps.** Draw things: images, text, calendars, gradients, split layouts.
+- 🟩 **Green — data apps.** Fetch and transform data: download an image, query Home Assistant,
+  parse an iCal feed, generate an image with OpenAI, take a screenshot of a web page.
+- 🟨 **Yellow — state fields.** User-editable values (text, numbers, options) that can be changed
+  live from the control page without redeploying.
+
+Drag from the `render` event's connector to add a blue **Render image** app:
+
+![Adding a render app](/images/app/edit-add-render.gif)
+
+Then drag its **image** field out and pick a green data app to feed it — use **FrameOS Gallery**
+if unsure. Press deploy:
+
+![Adding a data app](/images/app/edit-add-data.gif)
+
+## Caching
+
+Every data app has cache controls. A scene might re-render every minute while its data app only
+fetches a new image every 15 minutes — the cached value is reused in between. And if a re-render
+produces the same image as before, an e-ink display won't refresh at all: no unnecessary flashing.
+
+![Cache controls](/images/app/caching.gif)
+
+## State fields
+
+Add a yellow **state field** under the scene's "State" tab, then drag it onto the canvas and wire
+it into any app input. Deploy once, and from then on you can change the value live — from the
+frame's control page, the backend, or the [HTTP API](/guide/control).
+
+![Adding a state field](/images/app/edit-add-text.gif)
+
+![Editing state live](/images/app/edit-set-message.gif)
+
+## Code nodes
+
+For quick data plumbing there are inline **code nodes** (green when not selected): single
+expressions in Nim that combine or transform values mid-graph — string concatenation, math,
+formatting.
+
+![Code nodes](/images/app/code-nodes.gif)
+
+## How to learn
+
+FrameOS ships with many sample scenes. The fastest way to learn is to install them, open them in
+the editor, and poke around.
+
+![Sample scenes in the editor](/images/app/edit-samples.gif)
+
+When the visual editor isn't enough, write your own apps — in Nim or JavaScript.
+[Editing apps](/guide/apps) is next.

@@ -1,0 +1,97 @@
+---
+title: Editing apps
+description: Every node on a scene is an app you can fork and edit - in Nim or JavaScript.
+---
+
+Every blue and green node on a scene is an **app**: a small program with typed config fields, an
+optional image output, and access to the scene's state. FrameOS ships with ~40 built-in apps
+(clocks, calendars, weather, Home Assistant sensors, OpenAI text & images, QR codes, RTSP camera
+snapshots, web page screenshots, image manipulation, layout splitting…), and you can edit or write
+your own.
+
+## Edit any app
+
+Click the **edit** button next to any app on a scene to open its source. You can edit all apps,
+including the built-in ones — saved changes are forked onto that scene, leaving the original
+untouched.
+
+![Editing an app](/images/app/apps-edit.gif)
+
+<Callout type="warn">
+  Apps run with full access on the frame. Read the source before installing scenes or apps from
+  strangers.
+</Callout>
+
+## Nim apps
+
+Built-in apps are written in [Nim](https://nim-lang.org/) and compiled into the frame's binary —
+this is how a $15 Pi Zero 2 W stays fast. A minimal render app:
+
+```python title="color.nim"
+import pixie
+import options
+import frameos/apps
+import frameos/types
+
+type
+  AppConfig* = object
+    inputImage*: Option[Image]
+    color*: Color
+
+  App* = ref object of AppRoot
+    appConfig*: AppConfig
+
+proc render*(self: App, context: ExecutionContext, image: Image) =
+  image.fill(self.appConfig.color)
+
+# called when used as a render app (blue node)
+proc run*(self: App, context: ExecutionContext) =
+  render(self, context, context.image)
+
+# called when used as a data app (green node)
+proc get*(self: App, context: ExecutionContext): Image =
+  result = if self.appConfig.inputImage.isSome:
+    self.appConfig.inputImage.get()
+  elif context.hasImage:
+    newImage(context.image.width, context.image.height)
+  else:
+    newImage(self.frameConfig.renderWidth(), self.frameConfig.renderHeight())
+  render(self, context, result)
+```
+
+Things to know:
+
+- The `render` event is your starting point — it fires on the scene's timer, or when dispatched
+  by another app.
+- The `context` carries the `image` you draw on (via [pixie](https://github.com/treeform/pixie))
+  and the scene's `state`, a standard Nim
+  [JsonNode](https://nim-lang.org/docs/json.html): read with `state{"field"}.getStr()`, write with
+  `state{"field"} = %*("value")`.
+- State is cleared on every render; use instance variables on the `App` object to persist data
+  between renders.
+- Learn by example: the
+  [built-in apps](https://github.com/FrameOS/frameos/tree/main/frameos/src/apps),
+  [types.nim](https://github.com/FrameOS/frameos/blob/main/frameos/src/frameos/types.nim), and the
+  [utils/](https://github.com/FrameOS/frameos/tree/main/frameos/src/frameos/utils) folder show
+  what's available.
+
+## JavaScript apps
+
+You can also write apps in **JavaScript/TypeScript**. They run on the frame inside an embedded
+[QuickJS](https://bellard.org/quickjs/) runtime — no Node.js needed on the device. Create one from
+the code templates (text, logic, SVG, or image), define its fields in `config.json`, and export
+plain functions:
+
+```ts title="app.ts"
+export function init(app: FrameOSApp): void {
+  app.initialized = true
+}
+
+export function get(app: FrameOSApp, context: FrameOSContext): string {
+  return `${app.config.prefix}: ${app.config.message}`
+}
+```
+
+JS apps can fetch data with `frameos.fetchText()` / `frameos.fetchJson()`, return text, JSON, SVG
+markup, or images, and plug into scenes exactly like Nim apps. They're the fastest way to write
+custom logic without touching a compiler.

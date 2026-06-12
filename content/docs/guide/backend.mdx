@@ -1,0 +1,101 @@
+---
+title: The backend
+description: Install the self-hosted FrameOS backend with one command, via Docker, or as a Home Assistant add-on.
+---
+
+The backend is the control panel for your frames. You use it to design scenes and deploy them onto
+frames over SSH. It's a single self-hosted web app — there is no hosted cloud version and no
+account to sign up for anywhere.
+
+![The FrameOS backend](/images/app/frameos-backend.gif)
+
+A few things worth knowing up front:
+
+- The backend needs **network access to your frames** (SSH for deploys, HTTP for status). If your
+  backend runs far away from your frames, [Tailscale](https://tailscale.com/) is a nice way to
+  punch through firewalls.
+- The backend **does not need to stay running**. Frames work fully standalone after a deploy.
+  Keeping it running gets you log aggregation, metrics, and one-click redeploys.
+
+## Quick install
+
+The easiest way to install on a Mac or a Debian/Ubuntu Linux machine:
+
+```bash
+bash <(curl -fsSL https://frameos.net/install.sh)
+```
+
+The script installs Docker if needed, then runs the `frameos/frameos` container on port `8989`.
+
+## Home Assistant add-on
+
+If you run Home Assistant, FrameOS is one click away:
+
+1. Go to **Settings → Add-ons → Add-on Store** in Home Assistant.
+2. Click the **⋮** menu in the top right corner and select **Repositories**.
+3. Add `https://github.com/FrameOS/frameos-home-assistant-addon`.
+4. Find **FrameOS** in the add-on list, click **Install**, then **Start**.
+5. Optionally enable **Start on boot** and **Watchdog**.
+6. Click **Open Web UI**.
+
+## Running via Docker manually
+
+This is what the install script does under the hood:
+
+```bash
+# generate a stable secret key
+SECRET_KEY=$(openssl rand -base64 32)
+mkdir -p db
+
+# run the latest release
+docker run -d --name frameos --restart always \
+    -p 8989:8989 \
+    -v ./db:/app/db \
+    -e SECRET_KEY="$SECRET_KEY" \
+    frameos/frameos:latest
+```
+
+Then open `http://localhost:8989` and create your local account.
+
+To keep the container automatically up to date, add
+[watchtower](https://containrrr.dev/watchtower/):
+
+```bash
+docker run -d --name watchtower \
+    -v /var/run/docker.sock:/var/run/docker.sock \
+    containrrr/watchtower --interval 86400 frameos
+```
+
+### Faster builds with Docker access
+
+SD card image generation works in the default container without extra privileges. If you also want
+the backend to **cross-compile FrameOS from source** in local build containers (instead of using
+precompiled binaries or building on the device), give it access to Docker:
+
+```bash
+SECRET_KEY=$(openssl rand -base64 32)
+mkdir -p db /tmp/frameos-cross
+
+docker run -d --name frameos --restart always \
+    -p 8989:8989 \
+    -v ./db:/app/db \
+    -v /tmp/frameos-cross:/tmp/frameos-cross \
+    -v /var/run/docker.sock:/var/run/docker.sock \
+    --privileged \
+    -e TMPDIR=/tmp/frameos-cross \
+    -e SECRET_KEY="$SECRET_KEY" \
+    frameos/frameos:latest
+```
+
+This is optional: for common targets FrameOS ships **precompiled binaries**, and you can also
+configure remote SSH build servers, or build on the frame itself, under **Settings → Builds**.
+
+## Installing without Docker
+
+Each [release](https://github.com/FrameOS/frameos/releases) also ships `.tar.gz` bundles for
+Debian (bookworm/trixie), and Ubuntu (24.04/26.04) on amd64/arm64 — useful if you want to run the
+backend bare-metal, for example on the same Raspberry Pi that drives a display.
+
+## Next step
+
+Time to prepare your Raspberry Pi: [set up the Raspberry](/guide/raspberry).

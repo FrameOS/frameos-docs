@@ -1,0 +1,14 @@
+{
+  "title": "Devices",
+  "pages": [
+    "index",
+    "framebuffer-hdmi",
+    "waveshare-other-displays",
+    "waveshare-7.5inch-800x480-epaper",
+    "waveshare-2.13inch-250x122-epaper",
+    "waveshare-5inch-round-1080x1080-lcd",
+    "pimoroni-inky-impression-5.7inch-eink",
+    "pimoroni-inky-impression-7.3inch-eink",
+    "pimoroni-hyperpixel-2.1inch-round-480x480-lcd"
+  ]
+}

@@ -1,0 +1,15 @@
+{
+  "title": "Guide",
+  "defaultOpen": true,
+  "pages": [
+    "index",
+    "backend",
+    "raspberry",
+    "first-deploy",
+    "scenes",
+    "apps",
+    "control",
+    "settings",
+    "agent"
+  ]
+}

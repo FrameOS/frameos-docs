@@ -1,0 +1,18 @@
+---
+title: The agent
+description: An optional on-device companion that connects frames to the backend without open SSH ports.
+---
+
+Frames optionally run a small companion binary called the **agent**. It opens an outbound
+WebSocket connection to your backend, which means:
+
+- The backend can deploy to and manage frames **without inbound SSH access** — useful for frames
+  behind NAT, on another network, or with SSH locked down.
+- Logs and metrics stream to the backend in real time.
+- The backend's **Terminal** panel gives you a shell on the frame from the browser.
+
+The agent is installed automatically when you deploy, authenticated with a shared secret per
+frame, and updates itself over the air. On FrameOS SD card images it's part of the system.
+
+Like everything else, it's optional: frames render fine without the agent, without SSH, and
+without the backend. It exists to make managing a fleet of frames pleasant.

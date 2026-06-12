@@ -1,0 +1,27 @@
+---
+title: Framebuffer & HDMI
+description: Drive any HDMI screen, TV or LCD panel straight from the Raspberry Pi's video output.
+---
+
+- Status: 🟢 Working
+
+The **HDMI / Framebuffer** driver renders straight to the Raspberry Pi's video output. Anything
+you can plug into the HDMI port works: TVs, computer monitors, small HDMI LCD panels, projectors.
+
+This is also the fast path: on a Raspberry Pi 5, FrameOS can push **60 frames per second** to an
+HDMI display, while the same scene system also runs e-ink panels at one frame per minute.
+
+## Setup
+
+1. Connect the display to the Pi's HDMI port.
+2. Select the **HDMI / Framebuffer** driver when adding the frame.
+3. Set the width and height to match the display's resolution, then deploy.
+
+## Power control
+
+You can turn the display output on and off from the command line — handy in schedules:
+
+```bash
+vcgencmd display_power 0   # off
+vcgencmd display_power 1   # on
+```
