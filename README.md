@@ -9,16 +9,16 @@ fully static site.
 
 All content is plain Markdown/MDX:
 
-- `content/docs/guide/` — the guide (`/guide/...`)
-- `content/docs/devices/` — device pages (`/devices/...`)
-- `content/docs/cases/`, `content/docs/faq.mdx` — `/cases`, `/faq`
-- `content/blog/` — blog posts; the file name is the URL slug, the date lives in frontmatter
+- `content/docs/guide/` - the guide (`/guide/...`)
+- `content/docs/devices/` - device pages (`/devices/...`)
+- `content/docs/cases/`, `content/docs/faq.mdx` - `/cases`, `/faq`
+- `content/blog/` - blog posts; the file name is the URL slug, the date lives in frontmatter
 - `meta.json` files control sidebar order
 
 Frontmatter is `title` + `description` (+ `date` for blog posts). Images live in `public/images/`
 and are referenced as `/images/...`.
 
-The landing page is `app/(home)/page.tsx` — the photo slideshow, app-tour slides, and feature
+The landing page is `app/(home)/page.tsx` - the photo slideshow, app-tour slides, and feature
 cards are plain data arrays at the top of that file.
 
 ## Development
@@ -31,4 +31,4 @@ npm run start        # serve out/ locally
 ```
 
 Deploy by serving the `out/` directory from any static host. `public/install.sh` is served at
-https://frameos.net/install.sh — keep that path intact, the main repo's README curls it.
+https://frameos.net/install.sh - keep that path intact, the main repo's README curls it.

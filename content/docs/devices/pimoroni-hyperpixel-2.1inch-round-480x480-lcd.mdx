@@ -1,9 +1,23 @@
 ---
 title: Pimoroni HyperPixel 2.1" round LCD
 description: A round 480×480 touch LCD on the Pi's GPIO header.
+device:
+  vendor: "Pimoroni"
+  model: "HyperPixel 2.1\" Round"
+  driver: "pimoroni.hyperpixel2r_native"
+  label: "Pimoroni HyperPixel 2.1\" Round (native)"
+  technology: "LCD"
+  interface: "GPIO (DPI)"
+  diagonal: 2.1
+  width: 480
+  height: 480
+  colors: "262K (18-bit RGB)"
+  colorCount: 262144
+  colorClass: "rgb"
+  status: "tested"
+  productUrl: "https://shop.pimoroni.com/products/hyperpixel-round"
 ---
 
-- Status: 🟢 Working
 - Manufacturer: [Pimoroni](https://shop.pimoroni.com/)
 - Device: [HyperPixel 2.1" Round 480×480 LCD with touch](https://shop.pimoroni.com/products/hyperpixel-round)
 - Extra: touch input
@@ -12,18 +26,18 @@ description: A round 480×480 touch LCD on the Pi's GPIO header.
 
 - The HyperPixel 2.1" Round display from Pimoroni.
 - A Raspberry Pi Zero 2 W (preferred) or Zero W.
-- A 40-pin GPIO header to solder onto the Pi — or buy the pre-pinned Zero WH/W2H and skip the
+- A 40-pin GPIO header to solder onto the Pi - or buy the pre-pinned Zero WH/W2H and skip the
   soldering.
 
 ## Setup
 
 FrameOS has two drivers for this panel:
 
-- **Pimoroni HyperPixel 2.1 Round (native)** — try this first on current Raspberry Pi OS.
-- **Pimoroni HyperPixel 2.1 Round** — the legacy framebuffer driver, for the Bullseye-based setup
+- **Pimoroni HyperPixel 2.1 Round (native)** - try this first on current Raspberry Pi OS.
+- **Pimoroni HyperPixel 2.1 Round** - the legacy framebuffer driver, for the Bullseye-based setup
   below.
 
-For the legacy route, install **Raspberry Pi OS (Legacy) Lite — "Bullseye"**, then SSH in and run:
+For the legacy route, install **Raspberry Pi OS (Legacy) Lite - "Bullseye"**, then SSH in and run:
 
 ```bash
 sudo apt -y update

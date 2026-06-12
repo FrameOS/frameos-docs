@@ -4,7 +4,7 @@ description: An operating system for single-function smart frames. Runs on a Ras
 ---
 
 FrameOS turns a Raspberry Pi and a display into a **single-function smart frame**: a kitchen
-calendar, a hallway dashboard, a daily art frame, a meeting room display, a thermostat — anything
+calendar, a hallway dashboard, a daily art frame, a meeting room display, a thermostat - anything
 that should show one thing, reliably, for years.
 
 It works with screens that update **60 times per second** (HDMI, LCD) and with screens that update
@@ -20,18 +20,18 @@ FrameOS has two parts:
 1. **The frame** runs a single compiled binary (written in [Nim](https://nim-lang.org/)) on a
    Raspberry Pi. It renders scenes, drives the display, and serves a small web app + HTTP API on
    port `8787` so you can view and control it from your phone or any browser. Everything runs
-   **on the device** — there is no cloud, no subscription, and nothing stops working when your
+   **on the device** - there is no cloud, no subscription, and nothing stops working when your
    internet goes down.
 
 2. **The backend** is a self-hosted control panel (a Docker container, or a Home Assistant add-on)
    where you design scenes in a visual editor and deploy them to frames over SSH. It can run on a
-   server, a NAS, or just your laptop — and once your frames are deployed, **you can turn it off**.
+   server, a NAS, or just your laptop - and once your frames are deployed, **you can turn it off**.
    The frames keep running on their own.
 
-<Callout title="No microcontrollers — on purpose">
+<Callout title="No microcontrollers - on purpose">
   FrameOS targets the Raspberry Pi (from the $15 Zero 2 W up) instead of ESP32-class
   microcontrollers. A full Linux system gives you WiFi + SSH deploys, real fonts and image
-  processing, scheduling, a local web server, and room to run real apps — things that are painful
+  processing, scheduling, a local web server, and room to run real apps - things that are painful
   or impossible on a microcontroller. [Read the full rationale](/faq#why-no-microcontrollers).
 </Callout>
 
@@ -46,13 +46,13 @@ FrameOS has two parts:
 
 ## Getting started
 
-1. [Install the backend](/guide/backend) — one command:
+1. [Install the backend](/guide/backend) - one command:
    ```bash
    bash <(curl -fsSL https://frameos.net/install.sh)
    ```
-2. [Set up the Raspberry Pi](/guide/raspberry) — flash a prebuilt FrameOS SD image, or use stock
+2. [Set up the Raspberry Pi](/guide/raspberry) - flash a prebuilt FrameOS SD image, or use stock
    Raspberry Pi OS Lite.
-3. [Deploy your first scene](/guide/first-deploy) — pick from the built-in gallery and sample
+3. [Deploy your first scene](/guide/first-deploy) - pick from the built-in gallery and sample
    scenes, then make your own in the [scene editor](/guide/scenes).
 4. For a professional finish, [3D print a custom case](/cases).
 
@@ -61,7 +61,7 @@ FrameOS has two parts:
 FrameOS is open source ([AGPL-3.0](https://github.com/FrameOS/frameos/blob/main/LICENSE)) and under
 very active development, with versioned releases on
 [GitHub](https://github.com/FrameOS/frameos/releases) and Docker Hub (`frameos/frameos`). It's
-stable enough that frames run for months unattended — but expect the occasional rough edge, and
+stable enough that frames run for months unattended - but expect the occasional rough edge, and
 [report it](https://github.com/FrameOS/frameos/issues) when you find one.
 
 - Join the [FrameOS Discord](https://discord.gg/9dT9y7EzUw)

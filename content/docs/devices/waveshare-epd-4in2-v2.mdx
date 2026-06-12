@@ -1,0 +1,47 @@
+---
+title: "Waveshare 4.2\" (V2) e-Paper"
+description: "400×300 4-level grayscale e-ink display for FrameOS - specs, setup and driver details."
+device:
+  vendor: "Waveshare"
+  model: "4.2\" (V2) e-Paper"
+  driver: "waveshare.EPD_4in2_V2"
+  label: "Waveshare 4.2\" (V2) 400x300 4 Grayscale"
+  technology: "E-ink"
+  interface: "SPI"
+  diagonal: 4.2
+  width: 400
+  height: 300
+  colors: "4-level grayscale"
+  colorCount: 4
+  colorClass: "gray"
+  status: "untested"
+---
+
+The **Waveshare 4.2" (V2) e-Paper** is a 4.2″ e-ink panel with a resolution of
+**400×300 pixels** showing **4-level grayscale**. Grayscale e-ink renders dithered photos noticeably better than pure black-and-white panels, while keeping a quick refresh.
+Like all e-paper, it keeps the last image with zero power - the frame only wakes up to render.
+
+## How it works
+
+FrameOS ships a [native Nim driver](https://github.com/FrameOS/frameos/tree/main/frameos/src/drivers/waveshare)
+(`waveshare.EPD_4in2_V2`) compiled straight into the binary that runs on your Raspberry Pi - no Python, no
+vendor libraries. Each render pass draws your [scene](/guide/scenes) into a full-color image,
+dithers it to the panel's palette, and pushes the result to the display over SPI.
+
+## Setup
+
+1. Connect the panel to the Raspberry Pi - plug the HAT onto the GPIO header, or hook up the
+   separate driver board with the bundled ribbon cable.
+2. [Add a frame](/guide/first-deploy) in the FrameOS backend and select the
+   **Waveshare 4.2" (V2) 400x300 4 Grayscale** driver.
+3. Save & deploy. The panel blinks through a refresh cycle and shows your scene.
+
+Make sure the letter suffix on your panel's ribbon cable matches the driver - Waveshare reuses
+product names across revisions. More tips in the
+[Waveshare buying guide](/devices/waveshare-other-displays).
+
+## Status
+
+🟡 **Should work, not yet confirmed on real hardware.** The driver shares its controller logic
+with panels that are confirmed working. If you have this display,
+[report your results with a photo](https://github.com/FrameOS/frameos/issues/65) and we'll mark it confirmed.

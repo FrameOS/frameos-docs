@@ -1,0 +1,47 @@
+---
+title: "Waveshare 12.48\" (B V2) e-Paper"
+description: "1304×984 black/white/red e-ink display for FrameOS - specs, setup and driver details."
+device:
+  vendor: "Waveshare"
+  model: "12.48\" (B V2) e-Paper"
+  driver: "waveshare.EPD_12in48b_V2"
+  label: "Waveshare 12.48\" (B V2) 1304x984 Black/White/Red"
+  technology: "E-ink"
+  interface: "SPI (dual driver boards)"
+  diagonal: 12.48
+  width: 1304
+  height: 984
+  colors: "Black / White / Red"
+  colorCount: 3
+  colorClass: "accent"
+  status: "tested"
+---
+
+The **Waveshare 12.48" (B V2) e-Paper** is a 12.48″ e-ink panel with a resolution of
+**1304×984 pixels** showing **black, white and red**. Panels with an accent ink run a multi-pass refresh that takes roughly 15-30 seconds, so they suit art, calendars and dashboards that update every few minutes rather than every second.
+Like all e-paper, it keeps the last image with zero power - the frame only wakes up to render.
+
+The 12.48" panel uses two driver boards and its own wiring - follow [the 12.48" build video](/blog/frameos-2024) for assembly.
+
+## How it works
+
+FrameOS ships a [native Nim driver](https://github.com/FrameOS/frameos/tree/main/frameos/src/drivers/waveshare)
+(`waveshare.EPD_12in48b_V2`) compiled straight into the binary that runs on your Raspberry Pi - no Python, no
+vendor libraries. Each render pass draws your [scene](/guide/scenes) into a full-color image,
+dithers it to the panel's palette, and pushes the result to the display over SPI.
+
+## Setup
+
+1. Connect the panel to the Raspberry Pi - plug the HAT onto the GPIO header, or hook up the
+   separate driver board with the bundled ribbon cable.
+2. [Add a frame](/guide/first-deploy) in the FrameOS backend and select the
+   **Waveshare 12.48" (B V2) 1304x984 Black/White/Red** driver.
+3. Save & deploy. The panel blinks through a refresh cycle and shows your scene.
+
+Make sure the letter suffix on your panel's ribbon cable matches the driver - Waveshare reuses
+product names across revisions. More tips in the
+[Waveshare buying guide](/devices/waveshare-other-displays).
+
+## Status
+
+🟢 **Confirmed working** - tested on real hardware by the maintainers or the community.

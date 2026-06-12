@@ -1,9 +1,24 @@
 ---
 title: Pimoroni Inky Impression 5.7" 7-colour
 description: A 7-colour e-ink HAT with four physical buttons, driven natively by FrameOS.
+device:
+  vendor: "Pimoroni"
+  model: "Inky Impression 5.7\" (7-colour)"
+  driver: "pimoroni.inky_impression_5_7"
+  label: "Pimoroni Inky Impression - 5.7\" 7-colour"
+  technology: "E-ink"
+  interface: "SPI HAT"
+  diagonal: 5.7
+  width: 600
+  height: 448
+  colors: "7 colors (ACeP)"
+  colorCount: 7
+  colorClass: "acep"
+  buttons: 4
+  status: "tested"
+  productUrl: "https://shop.pimoroni.com/products/inky-impression-5-7"
 ---
 
-- Status: 🟢 Working
 - Manufacturer: [Pimoroni](https://shop.pimoroni.com/)
 - Device: [Inky Impression 5.7"](https://shop.pimoroni.com/products/inky-impression-5-7?variant=32298701324371)
 - Extra: 4 physical buttons (usable as scene event triggers in FrameOS)
@@ -22,5 +37,5 @@ Recent Inky Impression models have native Nim drivers in FrameOS (fast, no extra
 Older or unusual Inky models can use the **Python driver** fallback, which installs Pimoroni's
 Python library during the first deploy.
 
-The four side buttons are registered automatically and can trigger events in your scenes — switch
+The four side buttons are registered automatically and can trigger events in your scenes - switch
 scenes, cycle images, anything.

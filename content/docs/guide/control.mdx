@@ -11,10 +11,10 @@ from any browser or script on your network. The backend can be off. The internet
 
 Open `http://<frame-ip>:8787/` for the frame's own web UI:
 
-- **`/`** — view the current image, live (updates over a WebSocket).
-- **`/c`** — the control page: switch scenes and edit the active scene's state fields (the yellow
+- **`/`** - view the current image, live (updates over a WebSocket).
+- **`/c`** - the control page: switch scenes and edit the active scene's state fields (the yellow
   nodes you added in the [scene editor](/guide/scenes)).
-- **`/admin`** — the on-device admin panel: settings, logs, metrics, assets, scene management.
+- **`/admin`** - the on-device admin panel: settings, logs, metrics, assets, scene management.
   This is a full management UI served by the frame itself.
 
 By default the frame also renders its control URL as a **QR code on the display**, so anyone
@@ -26,16 +26,16 @@ standing in front of the frame can scan and control it.
 
 Under the frame's settings you choose who can do what without a key:
 
-- **Private** (default) — a key is required to view and to control.
-- **Protected** — anyone on the network can view the image; the key is required to change
+- **Private** (default) - a key is required to view and to control.
+- **Protected** - anyone on the network can view the image; the key is required to change
   anything.
-- **Public** — no key needed for anything. Makes for the smallest QR codes.
+- **Public** - no key needed for anything. Makes for the smallest QR codes.
 
 The access key travels as a `?k=...` query parameter (or a cookie after the first visit).
 
 <Callout type="warn">
-  Traffic is plain HTTP on your local network. If you need real security — frames on a shared
-  network, remote access — put the frames on a [Tailscale](https://tailscale.com/) tailnet or
+  Traffic is plain HTTP on your local network. If you need real security - frames on a shared
+  network, remote access - put the frames on a [Tailscale](https://tailscale.com/) tailnet or
   enable the HTTPS options in the frame's settings.
 </Callout>
 
@@ -67,7 +67,7 @@ curl -X POST "http://frame:8787/event/setCurrentScene?k=KEY" \
 curl -X POST "http://frame:8787/event/render?k=KEY" -d '{}'
 ```
 
-`POST /event/<name>` dispatches any event into the running scene graph — the same mechanism
+`POST /event/<name>` dispatches any event into the running scene graph - the same mechanism
 buttons, schedules, and apps use internally. This makes integrations trivial: a Home Assistant
 automation, a cron job, a shell script, or a doorbell webhook can all drive your frame.
 
@@ -77,6 +77,6 @@ There's also a full admin REST API (config, logs, metrics, restart, reboot) unde
 ## Scheduling
 
 Frames have their own on-device scheduler: render intervals per scene, plus cron-like schedules
-(minute/hour/weekday) that can switch scenes or fire events — for example, a calendar during the
+(minute/hour/weekday) that can switch scenes or fire events - for example, a calendar during the
 day and art in the evening. Configure it under the frame's **Schedule** tab. The schedule runs on
 the frame, so it keeps working with the backend off.

@@ -1,0 +1,40 @@
+---
+title: "Pimoroni Inky Impression - other models (Python driver)"
+description: "Python fallback driver for Inky panels without a dedicated FrameOS driver - auto-detects the panel."
+device:
+  vendor: "Pimoroni"
+  model: "Inky Impression - other models (Python driver)"
+  driver: "pimoroni.inky_impression"
+  label: "Pimoroni Inky Impression - all others (Python driver)"
+  technology: "E-ink"
+  interface: "SPI HAT (Python driver)"
+  colors: "Varies by model"
+  colorClass: "varies"
+  status: "tested"
+---
+
+The **Pimoroni Inky Impression - other models (Python driver)** driver is a catch-all for Inky panels that don't have a dedicated
+native driver in FrameOS. It uses [Pimoroni's official Python library](https://github.com/pimoroni/inky),
+which auto-detects most Inky boards via the EEPROM on the HAT.
+
+## How it works
+
+On the first deploy, FrameOS installs the Inky Python library on the Raspberry Pi and renders
+through a small helper process. This is slower to deploy and uses a bit more memory than the
+native Nim drivers, but it supports every panel the official library supports - resolution and
+colors are detected from the board itself.
+
+If your panel has a dedicated entry in the [device database](/devices), prefer that driver.
+
+## Setup
+
+1. Plug the board onto the Pi's GPIO header.
+2. [Add a frame](/guide/first-deploy) in the FrameOS backend and select the
+   **Pimoroni Inky Impression - all others (Python driver)** driver.
+3. Save & deploy. The first deploy takes longer while the Python dependencies install.
+
+## Status
+
+🟡 **Should work, not yet confirmed on real hardware.** The driver shares its controller logic
+with panels that are confirmed working. If you have this display,
+[report your results with a photo](https://github.com/FrameOS/frameos/issues/65) and we'll mark it confirmed.

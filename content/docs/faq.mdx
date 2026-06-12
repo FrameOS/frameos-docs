@@ -12,34 +12,34 @@ and your frames keep rendering, keep their schedules, and stay controllable over
 
 ## Why no microcontrollers? [#why-no-microcontrollers]
 
-The most common question: "can I run this on an ESP32?" No — and it's a deliberate trade-off, not
+The most common question: "can I run this on an ESP32?" No - and it's a deliberate trade-off, not
 an oversight.
 
 FrameOS leans hard on having a real Linux system underneath:
 
-- **Deploys over SSH / OTA** — push new scenes and binaries to a frame over WiFi in seconds. No
+- **Deploys over SSH / OTA** - push new scenes and binaries to a frame over WiFi in seconds. No
   USB cable, no re-flashing firmware.
-- **Real rendering** — TrueType fonts, SVGs, JPEG/PNG decoding at any resolution, dithering for
+- **Real rendering** - TrueType fonts, SVGs, JPEG/PNG decoding at any resolution, dithering for
   color e-ink. A 13.3" Spectra 6 panel is a 1600×1200 image with six ink colors; processing that
   comfortably takes more RAM than most microcontrollers have in total.
-- **A web server on the frame** — the control page, admin panel, QR-code control, and HTTP API
+- **A web server on the frame** - the control page, admin panel, QR-code control, and HTTP API
   all run on the device itself.
-- **Real apps** — query APIs over TLS, parse iCal feeds, screenshot web pages with headless
+- **Real apps** - query APIs over TLS, parse iCal feeds, screenshot web pages with headless
   Chromium, run JavaScript in QuickJS, store assets on disk.
 
 The price for that is power draw: a Pi Zero 2 W idles around one watt, so FrameOS frames are
 wall-powered, not coin-cell devices. For an always-on display in your home that's the right
-trade — a $15 Pi gives you the capabilities above for the price of a couple of AA battery packs.
+trade - a $15 Pi gives you the capabilities above for the price of a couple of AA battery packs.
 
 If you need months of battery life and one refresh per day, a microcontroller frame is genuinely
-the better tool — it's just a different tool than FrameOS.
+the better tool - it's just a different tool than FrameOS.
 
 ## Can the backend and the frame run on the same Raspberry Pi?
 
 Yes, on a Pi 4/5 with some patience. Install the backend via the
 [release tarballs or Docker](/guide/backend) on the Pi, then add the frame with `localhost` as its
 address. For e-ink frames a more common setup is: run the backend on your laptop only when you
-want to change something — the frame doesn't need it day to day.
+want to change something - the frame doesn't need it day to day.
 
 ## What happens when my WiFi or internet goes down?
 
@@ -50,7 +50,7 @@ the frame on the network. When connectivity returns, everything catches up on th
 ## How fast can it render?
 
 On a Raspberry Pi 5 over HDMI: up to **60 frames per second**. On e-ink, the panel itself is the
-bottleneck — color e-ink takes ~15-30 seconds per refresh, monochrome panels a second or two.
+bottleneck - color e-ink takes ~15-30 seconds per refresh, monochrome panels a second or two.
 FrameOS only refreshes the physical display when the rendered image actually changed, so e-ink
 panels don't flash needlessly.
 
@@ -64,12 +64,12 @@ Wikimedia Commons, OpenAI image generation).
 
 Three ways: the backend runs as a [Home Assistant add-on](/guide/backend#home-assistant-add-on);
 the **HA Sensor** app pulls any Home Assistant entity into a scene; and HA automations can drive
-frames through the [HTTP API](/guide/control) — change text, switch scenes, trigger renders.
+frames through the [HTTP API](/guide/control) - change text, switch scenes, trigger renders.
 
 ## How do I share scenes or apps I made?
 
 Scenes export as JSON (and as ZIP templates with preview images) you can share anywhere. The
-community hangs out on [Discord](https://discord.gg/9dT9y7EzUw) — show off your builds, get help,
+community hangs out on [Discord](https://discord.gg/9dT9y7EzUw) - show off your builds, get help,
 and propose contributions. Code lives at
 [github.com/FrameOS/frameos](https://github.com/FrameOS/frameos); PRs welcome.
 
@@ -82,5 +82,5 @@ $250.
 ## Is there a hosted/cloud option coming?
 
 The core promise stays: frames run locally, forever, with no account. A hosted backend (for those
-who don't want to self-host one) is being explored — follow the
+who don't want to self-host one) is being explored - follow the
 [blog](/blog) and [newsletter](https://buttondown.com/frameos) for news.

@@ -12,7 +12,7 @@ your own.
 ## Edit any app
 
 Click the **edit** button next to any app on a scene to open its source. You can edit all apps,
-including the built-in ones — saved changes are forked onto that scene, leaving the original
+including the built-in ones - saved changes are forked onto that scene, leaving the original
 untouched.
 
 ![Editing an app](/images/app/apps-edit.gif)
@@ -24,7 +24,7 @@ untouched.
 
 ## Nim apps
 
-Built-in apps are written in [Nim](https://nim-lang.org/) and compiled into the frame's binary —
+Built-in apps are written in [Nim](https://nim-lang.org/) and compiled into the frame's binary -
 this is how a $15 Pi Zero 2 W stays fast. A minimal render app:
 
 ```python title="color.nim"
@@ -61,7 +61,7 @@ proc get*(self: App, context: ExecutionContext): Image =
 
 Things to know:
 
-- The `render` event is your starting point — it fires on the scene's timer, or when dispatched
+- The `render` event is your starting point - it fires on the scene's timer, or when dispatched
   by another app.
 - The `context` carries the `image` you draw on (via [pixie](https://github.com/treeform/pixie))
   and the scene's `state`, a standard Nim
@@ -78,7 +78,7 @@ Things to know:
 ## JavaScript apps
 
 You can also write apps in **JavaScript/TypeScript**. They run on the frame inside an embedded
-[QuickJS](https://bellard.org/quickjs/) runtime — no Node.js needed on the device. Create one from
+[QuickJS](https://bellard.org/quickjs/) runtime - no Node.js needed on the device. Create one from
 the code templates (text, logic, SVG, or image), define its fields in `config.json`, and export
 plain functions:
 

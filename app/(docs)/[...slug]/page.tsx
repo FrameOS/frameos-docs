@@ -12,6 +12,9 @@ import { getMDXComponents } from '@/components/mdx';
 import type { Metadata } from 'next';
 import { createRelativeLink } from 'fumadocs-ui/mdx';
 import { gitConfig } from '@/lib/shared';
+import { getDeviceRows } from '@/lib/devices';
+import { DeviceTable } from '@/components/device-table';
+import { DeviceSpecs } from '@/components/device-specs';
 
 interface Props {
   params: Promise<{ slug: string[] }>;
@@ -36,11 +39,14 @@ export default async function Page(props: Props) {
           githubUrl={`https://github.com/${gitConfig.user}/${gitConfig.repo}/blob/${gitConfig.branch}/content/docs/${page.path}`}
         />
       </div>
+      {page.data.device ? <DeviceSpecs device={page.data.device} /> : null}
       <DocsBody>
         <MDX
           components={getMDXComponents({
             // this allows you to link to other pages with relative file paths
             a: createRelativeLink(source, page),
+            // the searchable device database table, used on /devices
+            DeviceTable: () => <DeviceTable rows={getDeviceRows()} />,
           })}
         />
       </DocsBody>

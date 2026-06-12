@@ -1,0 +1,37 @@
+---
+title: "HTTP upload (bring your own display)"
+description: "Push every rendered FrameOS image to any URL - drive displays FrameOS has never heard of."
+device:
+  vendor: "Generic"
+  model: "HTTP upload"
+  driver: "http.upload"
+  label: "HTTP upload"
+  technology: "HTTP"
+  interface: "Network (HTTP POST)"
+  colors: "Full RGB"
+  colorCount: 16777216
+  colorClass: "rgb"
+  status: "tested"
+---
+
+**HTTP upload** pushes every rendered image to a URL of your choosing as an HTTP
+POST - so you can drive displays FrameOS has never heard of. Anything that can receive an image
+over the network becomes a FrameOS frame: custom microcontroller displays, digital signage
+players, other servers, you name it.
+
+## How it works
+
+The frame renders your [scene](/guide/scenes) on its normal schedule. Instead of talking to a
+panel over SPI or HDMI, the driver POSTs the rendered PNG to the endpoint you configure in the
+frame's settings. Your receiver decides what to do with it.
+
+## Setup
+
+1. [Add a frame](/guide/first-deploy) in the FrameOS backend and select the **HTTP upload**
+   driver.
+2. Set the width and height to match your target display, and configure the upload URL.
+3. Save & deploy. Each render is delivered to your endpoint.
+
+## Status
+
+🟢 **Confirmed working** - tested on real hardware by the maintainers or the community.

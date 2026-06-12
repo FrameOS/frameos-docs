@@ -21,7 +21,7 @@ const frameSlides: Slide[] = [
   {
     src: '/images/photos/IMG_6030.jpg',
     alt: '13.3 inch Spectra 6 e-ink panel in a 3D-printed case on a wall',
-    caption: '13.3" Spectra 6 color e-ink on the wall — refreshes a few times a day',
+    caption: '13.3" Spectra 6 color e-ink on the wall - refreshes a few times a day',
   },
   {
     src: '/images/photos/kitchen-calendar2.jpg',
@@ -36,12 +36,12 @@ const frameSlides: Slide[] = [
   {
     src: '/images/photos/ukseraam.jpg',
     alt: 'Hallway dashboard on a 5.7 inch e-ink display by the front door',
-    caption: 'Hallway dashboard: weather, windows, and the next bus — by the front door',
+    caption: 'Hallway dashboard: weather, windows, and the next bus - by the front door',
   },
   {
     src: '/images/photos/phone-pasta-2.jpg',
     alt: 'Phone scanning the QR code shown on a frame to control it',
-    caption: 'Scan the QR code on any frame to control it — served by the frame itself',
+    caption: 'Scan the QR code on any frame to control it - served by the frame itself',
   },
   {
     src: '/images/photos/slop.jpg',
@@ -69,7 +69,7 @@ const appSlides: Slide[] = [
   {
     src: '/images/app/control-fields.gif',
     alt: 'Scene control fields in the FrameOS backend',
-    caption: 'Scenes expose controls — change them live without redeploying',
+    caption: 'Scenes expose controls - change them live without redeploying',
   },
   {
     src: '/images/guide/fork-openai.png',
@@ -79,7 +79,7 @@ const appSlides: Slide[] = [
   {
     src: '/images/app/frame-settings-new.png',
     alt: 'Frame settings in the on-device admin panel',
-    caption: 'Every frame serves its own admin panel on port 8787 — no backend needed',
+    caption: 'Every frame serves its own admin panel on port 8787 - no backend needed',
   },
 ];
 
@@ -157,7 +157,7 @@ export default function HomePage() {
             The operating system for smart frames
           </h1>
           <p className="text-lg text-fd-muted-foreground">
-            Turn a Raspberry Pi and any display — e-ink, HDMI or LCD — into a calendar, dashboard
+            Turn a Raspberry Pi and any display - e-ink, HDMI or LCD - into a calendar, dashboard
             or art frame that runs itself. Everything renders <strong>on the device</strong>. No
             cloud, no subscriptions, no microcontroller limitations.
           </p>
@@ -203,7 +203,7 @@ export default function HomePage() {
               </span>
               <h3 className="mb-2 font-semibold">Run the backend anywhere</h3>
               <p className="text-sm text-fd-muted-foreground">
-                One command on your laptop, server or NAS — or install the Home Assistant add-on.
+                One command on your laptop, server or NAS - or install the Home Assistant add-on.
                 It&apos;s a local web app, not a service you sign up for.
               </p>
             </li>
@@ -214,7 +214,7 @@ export default function HomePage() {
               <h3 className="mb-2 font-semibold">Connect a Pi to a display</h3>
               <p className="text-sm text-fd-muted-foreground">
                 Flash a prebuilt FrameOS SD image, or stock Raspberry Pi OS Lite. Plug in any of
-                120+ supported panels — or just an HDMI cable.
+                120+ supported panels - or just an HDMI cable.
               </p>
             </li>
             <li className="rounded-xl border bg-fd-background p-6">
@@ -269,14 +269,14 @@ export default function HomePage() {
             </h2>
             <div className="flex flex-col gap-3 text-fd-muted-foreground">
               <p>
-                FrameOS runs on real Linux — from the $15 Pi Zero 2 W up — because smart frames
+                FrameOS runs on real Linux - from the $15 Pi Zero 2 W up - because smart frames
                 deserve real software: deploys over WiFi instead of re-flashing firmware, TrueType
                 fonts and SVGs at any resolution, dithering for six-color e-ink, TLS, iCal parsing,
                 headless Chromium screenshots, and a web server on the frame itself.
               </p>
               <p>
                 The trade-off is about one watt of power instead of months on a battery. For an
-                always-on display in your home, that&apos;s the right trade — and why frames you
+                always-on display in your home, that&apos;s the right trade - and why frames you
                 deploy today will still be easy to update years from now.
               </p>
             </div>

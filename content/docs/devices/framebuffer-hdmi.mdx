@@ -1,9 +1,18 @@
 ---
 title: Framebuffer & HDMI
 description: Drive any HDMI screen, TV or LCD panel straight from the Raspberry Pi's video output.
+device:
+  vendor: "Generic"
+  model: "HDMI / Framebuffer"
+  driver: "framebuffer"
+  label: "HDMI / Framebuffer"
+  technology: "HDMI"
+  interface: "HDMI / composite"
+  colors: "Full RGB"
+  colorCount: 16777216
+  colorClass: "rgb"
+  status: "tested"
 ---
-
-- Status: 🟢 Working
 
 The **HDMI / Framebuffer** driver renders straight to the Raspberry Pi's video output. Anything
 you can plug into the HDMI port works: TVs, computer monitors, small HDMI LCD panels, projectors.
@@ -19,7 +28,7 @@ HDMI display, while the same scene system also runs e-ink panels at one frame pe
 
 ## Power control
 
-You can turn the display output on and off from the command line — handy in schedules:
+You can turn the display output on and off from the command line - handy in schedules:
 
 ```bash
 vcgencmd display_power 0   # off
