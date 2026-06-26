@@ -30,5 +30,11 @@ npm run build        # static export into out/
 npm run start        # serve out/ locally
 ```
 
+## Deployment
+
+Cloudflare Pages should use build system v3 with Node.js 22. The repository pins Node.js to
+22.16.0 via `.nvmrc` and `wrangler.toml` sets the Pages output directory to `out/`; keep the
+Pages build command as `npm run build`.
+
 Deploy by serving the `out/` directory from any static host. `public/install.sh` is served at
 https://frameos.net/install.sh - keep that path intact, the main repo's README curls it.
