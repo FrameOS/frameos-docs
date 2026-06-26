@@ -1,0 +1,48 @@
+---
+title: "Waveshare 2.9\" (B) e-Paper"
+description: "296×128 black/white/red e-ink display for FrameOS - specs, setup and driver details."
+device:
+  vendor: "Waveshare"
+  model: "2.9\" (B) e-Paper"
+  driver: "waveshare.EPD_2in9b"
+  label: "Waveshare 2.9\" (B) 296x128 Black/White/Red"
+  technology: "E-ink"
+  interface: "SPI"
+  diagonal: 2.9
+  width: 296
+  height: 128
+  colors: "Black / White / Red"
+  colorCount: 3
+  colorClass: "accent"
+  productUrl: "https://www.waveshare.com/2.9inch-e-Paper-Module-B.htm?&aff_id=79380"
+  status: "untested"
+---
+
+The **Waveshare 2.9" (B) e-Paper** is a 2.9″ e-ink panel with a resolution of
+**296×128 pixels** showing **black, white and red**. Panels with an accent ink run a multi-pass refresh that takes roughly 15-30 seconds, so they suit art, calendars and dashboards that update every few minutes rather than every second.
+Like all e-paper, it keeps the last image with zero power - the frame only wakes up to render.
+
+## How it works
+
+FrameOS ships a [native Nim driver](https://github.com/FrameOS/frameos/tree/main/frameos/src/drivers/waveshare)
+(`waveshare.EPD_2in9b`) compiled straight into the binary that runs on your Raspberry Pi - no Python, no
+vendor libraries. Each render pass draws your [scene](/guide/scenes) into a full-color image,
+dithers it to the panel's palette, and pushes the result to the display over SPI.
+
+## Setup
+
+1. Connect the panel to the Raspberry Pi - plug the HAT onto the GPIO header, or hook up the
+   separate driver board with the bundled ribbon cable.
+2. [Add a frame](/guide/first-deploy) in the FrameOS backend and select the
+   **Waveshare 2.9" (B) 296x128 Black/White/Red** driver.
+3. Save & deploy. The panel blinks through a refresh cycle and shows your scene.
+
+Make sure the letter suffix on your panel's ribbon cable matches the driver - Waveshare reuses
+product names across revisions. More tips in the
+[Waveshare buying guide](/devices/waveshare-other-displays).
+
+## Status
+
+🟡 **Should work, not yet confirmed on real hardware.** The driver shares its controller logic
+with panels that are confirmed working. If you have this display,
+[report your results with a photo](https://github.com/FrameOS/frameos/issues/65) and we'll mark it confirmed.

@@ -1,0 +1,24 @@
+---
+title: FrameOS Remote
+description: The optional on-device companion that connects frames back to the backend for logs, metrics, terminal access and remote management.
+---
+
+Frames can optionally run **FrameOS Remote**, a small companion process that opens an outbound
+WebSocket connection to your backend. Older FrameOS releases and some old docs called this the
+"agent"; the current name is Remote.
+
+Remote means:
+
+- The backend can manage frames **without inbound SSH access** once Remote is installed - useful
+  for frames behind NAT, on another network, or with SSH locked down.
+- Logs and metrics stream to the backend in real time.
+- The backend's **Terminal** panel can open a browser shell on the frame.
+- Deploy, restart and maintenance actions can go through the existing Remote connection.
+
+Remote is installed and updated automatically when you deploy to a Raspberry Pi frame. On
+FrameOS SD card images it's part of the system from first boot. It authenticates with a per-frame
+shared secret, so a Remote connection only controls the frame it belongs to.
+
+Like everything else in FrameOS, Remote is optional. A frame renders fine without Remote, without
+SSH, and without the backend running. Remote exists to make managing frames easier, especially
+when they are no longer on the same network as your laptop.

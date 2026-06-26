@@ -1,0 +1,44 @@
+---
+title: "Pimoroni Inky wHAT 4.2\" black/white/yellow (SSD1683)"
+description: "400×300 black/white/yellow e-ink HAT for FrameOS - specs, setup and driver details."
+device:
+  vendor: "Pimoroni"
+  model: "Inky wHAT 4.2\" black/white/yellow (SSD1683)"
+  driver: "pimoroni.inky_what_ssd1683_yellow"
+  label: "Pimoroni Inky wHAT - 4.2\" black/white/yellow (SSD1683)"
+  technology: "E-ink"
+  interface: "SPI HAT"
+  diagonal: 4.2
+  width: 400
+  height: 300
+  colors: "Black / White / Yellow"
+  colorCount: 3
+  colorClass: "accent"
+  productUrl: "https://shop.pimoroni.com/products/inky-what"
+  status: "untested"
+---
+
+The **Pimoroni Inky wHAT 4.2" black/white/yellow (SSD1683)** is a 4.2″ e-ink panel with a resolution of
+**400×300 pixels** showing **black, white and yellow**. Panels with an accent ink run a multi-pass refresh that takes roughly 15-30 seconds, so they suit art, calendars and dashboards that update every few minutes rather than every second.
+Pimoroni's boards are the easiest e-ink hardware to start with: panel and driver electronics come
+as one unit that plugs straight onto the Pi's GPIO header - no soldering, no separate driver board.
+
+## How it works
+
+FrameOS ships a [native Nim driver](https://github.com/FrameOS/frameos/tree/main/frameos/src/drivers/inky)
+(`pimoroni.inky_what_ssd1683_yellow`) compiled straight into the binary that runs on your Raspberry Pi - no Python, no
+vendor libraries. Each render pass draws your [scene](/guide/scenes) into a full-color image,
+dithers it to the panel's palette, and pushes the result to the display over SPI.
+
+## Setup
+
+1. Plug the board onto the Pi's GPIO header.
+2. [Add a frame](/guide/first-deploy) in the FrameOS backend and select the
+   **Pimoroni Inky wHAT - 4.2" black/white/yellow (SSD1683)** driver.
+3. Save & deploy. The panel blinks through a refresh cycle and shows your scene.
+
+## Status
+
+🟡 **Should work, not yet confirmed on real hardware.** The driver shares its controller logic
+with panels that are confirmed working. If you have this display,
+[report your results with a photo](https://github.com/FrameOS/frameos/issues/65) and we'll mark it confirmed.

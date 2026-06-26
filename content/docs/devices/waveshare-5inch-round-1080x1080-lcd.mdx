@@ -1,0 +1,49 @@
+---
+title: Waveshare 5" round 1080×1080 LCD
+description: A round HDMI LCD, configured via custom HDMI timings.
+device:
+  vendor: "Waveshare"
+  model: "5\" round 1080×1080 LCD"
+  driver: "framebuffer"
+  label: "HDMI / Framebuffer"
+  technology: "LCD"
+  interface: "HDMI"
+  diagonal: 5
+  width: 1080
+  height: 1080
+  colors: "Full RGB"
+  colorCount: 16777216
+  colorClass: "rgb"
+  status: "tested"
+  productUrl: "https://www.waveshare.com/5inch-1080x1080-lcd.htm?&aff_id=79380"
+---
+
+- Device: [Waveshare 5" round 1080×1080 LCD](https://www.waveshare.com/5inch-1080x1080-lcd.htm?&aff_id=79380)
+  ([wiki](https://www.waveshare.com/wiki/5inch_1080x1080_LCD))
+- Driver: [HDMI / Framebuffer](/devices/framebuffer-hdmi)
+
+This display connects over HDMI, so it uses the framebuffer driver. It needs custom HDMI timings:
+add the following to the end of `/boot/config.txt` and reboot:
+
+```ini
+hdmi_group=2
+hdmi_mode=87
+hdmi_pixel_freq_limit=356000000
+hdmi_timings=1080 0 68 32 100 1080 0 12 4 16 0 0 0 60 0 85500000 0
+```
+
+## Power control
+
+Enable the Fake KMS driver:
+
+```bash
+sudo sed -i '/dtoverlay=vc4-kms-v3d/s/kms/fkms/' /boot/config.txt
+```
+
+Then toggle the display from the command line:
+
+```bash
+vcgencmd display_power 0   # off
+vcgencmd display_power 1   # on
+vcgencmd display_power | grep "display_power=0" >/dev/null && echo "off" || echo "on"
+```

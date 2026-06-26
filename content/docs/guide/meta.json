@@ -1,0 +1,16 @@
+{
+  "title": "Guide",
+  "defaultOpen": true,
+  "pages": [
+    "index",
+    "backend",
+    "raspberry",
+    "esp32",
+    "first-deploy",
+    "scenes",
+    "apps",
+    "control",
+    "settings",
+    "remote"
+  ]
+}

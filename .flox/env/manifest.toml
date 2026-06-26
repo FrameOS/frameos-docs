@@ -1,0 +1,9 @@
+schema-version = "1.10.0"
+
+# Restored after the original manifest went missing — the previously built
+# environment (.flox/run) contained nodejs 20.20.1.
+[install]
+nodejs_20.pkg-path = "nodejs_20"
+
+[options]
+systems = ["aarch64-darwin", "x86_64-darwin", "aarch64-linux", "x86_64-linux"]

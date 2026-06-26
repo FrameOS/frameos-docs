@@ -1,41 +1,40 @@
-# Website
+# frameos.net
 
-This website is built using [Docusaurus 2](https://docusaurus.io/), a modern static website generator.
+The FrameOS website and documentation, served at [frameos.net](https://frameos.net).
 
-### Installation
+Built with [Next.js](https://nextjs.org/) and [Fumadocs](https://fumadocs.dev/), exported as a
+fully static site.
 
-```
-$ yarn
-```
+## Editing content
 
-### Local Development
+All content is plain Markdown/MDX:
 
-```
-$ yarn start
-```
+- `content/docs/guide/` - the guide (`/guide/...`)
+- `content/docs/devices/` - device pages (`/devices/...`)
+- `content/docs/cases/`, `content/docs/faq.mdx` - `/cases`, `/faq`
+- `content/blog/` - blog posts; the file name is the URL slug, the date lives in frontmatter
+- `meta.json` files control sidebar order
 
-This command starts a local development server and opens up a browser window. Most changes are reflected live without having to restart the server.
+Frontmatter is `title` + `description` (+ `date` for blog posts). Images live in `public/images/`
+and are referenced as `/images/...`.
 
-### Build
+The landing page is `app/(home)/page.tsx` - the photo slideshow, app-tour slides, and feature
+cards are plain data arrays at the top of that file.
 
-```
-$ yarn build
-```
+## Development
 
-This command generates static content into the `build` directory and can be served using any static contents hosting service.
-
-### Deployment
-
-Using SSH:
-
-```
-$ USE_SSH=true yarn deploy
+```bash
+npm install
+npm run dev          # dev server on http://localhost:3000
+npm run build        # static export into out/
+npm run start        # serve out/ locally
 ```
 
-Not using SSH:
+## Deployment
 
-```
-$ GIT_USER=<Your GitHub username> yarn deploy
-```
+Cloudflare Pages should use build system v3 with Node.js 22. The repository pins Node.js to
+22.16.0 via `.nvmrc` and `wrangler.toml` sets the Pages output directory to `out/`; keep the
+Pages build command as `npm run build`.
 
-If you are using GitHub pages for hosting, this command is a convenient way to build the website and push to the `gh-pages` branch.
+Deploy by serving the `out/` directory from any static host. `public/install.sh` is served at
+https://frameos.net/install.sh - keep that path intact, the main repo's README curls it.

@@ -1,0 +1,39 @@
+---
+title: "Web only (no physical display)"
+description: "Run a FrameOS frame with no physical display - render scenes and view them in the browser."
+device:
+  vendor: "Generic"
+  model: "Web only"
+  driver: "web_only"
+  label: "Web only"
+  technology: "Web"
+  interface: "None (browser)"
+  colors: "Full RGB"
+  colorCount: 16777216
+  colorClass: "rgb"
+  esp32: true
+  status: "tested"
+---
+
+**Web only** runs a frame with no physical display attached. The frame renders your
+[scenes](/guide/scenes) on schedule, and you view the result in any browser - straight from the
+frame, or mirrored in the FrameOS backend.
+
+Great for:
+
+- Trying out FrameOS before any e-ink hardware arrives.
+- Kiosk setups where another machine fullscreens the frame's URL.
+- Debugging scenes without waiting for an e-ink refresh.
+
+The [ESP32 firmware](/guide/esp32) supports this mode too ("No display / headless") - handy for
+testing a board before the panel arrives.
+
+## Setup
+
+1. [Add a frame](/guide/first-deploy) in the FrameOS backend and select the **Web only** driver.
+2. Set any width and height you like - the canvas is fully RGB at whatever resolution you choose.
+3. Save & deploy, then open the frame's URL in a browser.
+
+## Status
+
+🟢 **Confirmed working** - tested on real hardware by the maintainers or the community.

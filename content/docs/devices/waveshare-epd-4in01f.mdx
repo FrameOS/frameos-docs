@@ -1,0 +1,48 @@
+---
+title: "Waveshare 4.01\" (F) e-Paper"
+description: "640×400 7-color ACeP e-ink display for FrameOS - specs, setup and driver details."
+device:
+  vendor: "Waveshare"
+  model: "4.01\" (F) e-Paper"
+  driver: "waveshare.EPD_4in01f"
+  label: "Waveshare 4.01\" (F) 640x400 7 Color"
+  technology: "E-ink"
+  interface: "SPI"
+  diagonal: 4.01
+  width: 640
+  height: 400
+  colors: "7 colors (ACeP)"
+  colorCount: 7
+  colorClass: "acep"
+  productUrl: "https://www.waveshare.com/4.01inch-e-Paper-HAT-F.htm?&aff_id=79380"
+  status: "tested"
+---
+
+The **Waveshare 4.01" (F) e-Paper** is a 4.01″ e-ink panel with a resolution of
+**640×400 pixels** showing **seven ACeP ink colors**. ACeP ("Advanced Color ePaper") packs seven real ink colors into every pixel. A full refresh takes around 30 seconds, and the palette is softer than a backlit screen - ideal for photos and generative art with a paper-like look.
+Like all e-paper, it keeps the last image with zero power - the frame only wakes up to render.
+
+See the [Spectra 6 build video](/blog/eink-spectra-waveshare-pimoroni) for a side-by-side look at color e-ink generations.
+
+## How it works
+
+FrameOS ships a [native Nim driver](https://github.com/FrameOS/frameos/tree/main/frameos/src/drivers/waveshare)
+(`waveshare.EPD_4in01f`) compiled straight into the binary that runs on your Raspberry Pi - no Python, no
+vendor libraries. Each render pass draws your [scene](/guide/scenes) into a full-color image,
+dithers it to the panel's palette, and pushes the result to the display over SPI.
+
+## Setup
+
+1. Connect the panel to the Raspberry Pi - plug the HAT onto the GPIO header, or hook up the
+   separate driver board with the bundled ribbon cable.
+2. [Add a frame](/guide/first-deploy) in the FrameOS backend and select the
+   **Waveshare 4.01" (F) 640x400 7 Color** driver.
+3. Save & deploy. The panel blinks through a refresh cycle and shows your scene.
+
+Make sure the letter suffix on your panel's ribbon cable matches the driver - Waveshare reuses
+product names across revisions. More tips in the
+[Waveshare buying guide](/devices/waveshare-other-displays).
+
+## Status
+
+🟢 **Confirmed working** - tested on real hardware by the maintainers or the community.

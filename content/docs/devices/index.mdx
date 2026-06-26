@@ -1,0 +1,45 @@
+---
+title: Device database
+description: Every display FrameOS can drive - 110+ e-ink, LCD and HDMI displays with specs, colors, resolution and setup notes.
+full: true
+---
+
+FrameOS ships with **110+ display drivers**, selectable when you add a frame in the backend.
+Native Nim drivers cover most e-ink panels by **Waveshare** and **Pimoroni**, three generic
+drivers cover everything with a video output - and every display below has its own page with
+full specs and setup instructions.
+
+<DeviceTable />
+
+## How the drivers work
+
+- **E-ink panels** are driven over SPI by drivers compiled directly into the FrameOS binary -
+  no Python, no vendor libraries. FrameOS renders your [scene](/guide/scenes), dithers it to the
+  panel's exact ink palette, and pushes the result to the display.
+- **[HDMI / Framebuffer](/devices/framebuffer-hdmi)** renders straight to the Pi's video output -
+  TVs, monitors, any HDMI panel. On a Pi 5 it pushes 60 frames per second.
+- **[Web only](/devices/web-only)** runs a frame with no physical display: view it in the
+  browser, perfect for trying FrameOS or kiosk setups.
+- **[HTTP upload](/devices/http-upload)** POSTs each rendered image to a URL of your choosing -
+  drive displays FrameOS has never heard of.
+- Older or unusual **Pimoroni Inky** boards fall back to a
+  [Python driver](/devices/pimoroni-inky-python) that auto-detects the panel.
+- Panels marked **ESP32** also work without a Raspberry Pi, driven by the
+  [FrameOS ESP32-S3 firmware](/guide/esp32). ESP32 currently targets Waveshare SPI e-paper
+  panels and headless builds; each firmware image contains one selected panel driver.
+
+## Picking a panel
+
+New to e-ink? Start with the [Waveshare buying guide](/devices/waveshare-other-displays), or jump
+straight to a crowd favourite: the [Pimoroni Inky Impression 7.3"](/devices/pimoroni-inky-impression-7.3inch-eink)
+for plug-and-play color, or the [Waveshare 13.3" Spectra 6](/devices/waveshare-epd-13in3e) for a
+big, vivid art frame.
+
+## Your panel is missing?
+
+- Displays not in this database: [open an issue](https://github.com/FrameOS/frameos/issues), or
+  try the closest driver - controller boards are often shared between panels.
+- Tested a panel marked "should work"? [Tell us, with a photo](https://github.com/FrameOS/frameos/issues/65).
+- Each device page is a markdown file in
+  [`content/docs/devices/`](https://github.com/FrameOS/frameos-docs/tree/main/content/docs/devices),
+  so corrections and additions are one pull request away.

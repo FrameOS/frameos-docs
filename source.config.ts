@@ -1,0 +1,42 @@
+import { defineConfig, defineDocs } from 'fumadocs-mdx/config';
+import { metaSchema, pageSchema } from 'fumadocs-core/source/schema';
+import { z } from 'zod';
+
+import { deviceSchema } from './lib/device-schema';
+
+// You can customize Zod schemas for frontmatter and `meta.json` here
+// see https://fumadocs.dev/docs/mdx/collections
+export const docs = defineDocs({
+  dir: 'content/docs',
+  docs: {
+    schema: pageSchema.extend({
+      device: deviceSchema.optional(),
+    }),
+    postprocess: {
+      includeProcessedMarkdown: true,
+    },
+  },
+  meta: {
+    schema: metaSchema,
+  },
+});
+
+export const blog = defineDocs({
+  dir: 'content/blog',
+  docs: {
+    schema: pageSchema.extend({
+      date: z.coerce.date(),
+      author: z.string().default('Marius Andra'),
+      image: z.string().optional(),
+    }),
+  },
+  meta: {
+    schema: metaSchema,
+  },
+});
+
+export default defineConfig({
+  mdxOptions: {
+    // MDX options
+  },
+});

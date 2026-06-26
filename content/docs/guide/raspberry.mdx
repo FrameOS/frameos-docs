@@ -1,0 +1,80 @@
+---
+title: The Raspberry Pi
+description: Choose a Raspberry Pi, then flash either a prebuilt FrameOS SD image or stock Raspberry Pi OS Lite.
+---
+
+<Callout>
+  Check the [device-specific instructions](/devices) for your display - a few panels need extra
+  steps.
+</Callout>
+
+## Which Pi to choose?
+
+- **Raspberry Pi Zero 2 W** - the sweet spot for e-ink frames. Four 64-bit cores, tiny, ~1 W of
+  power, around $15-20. This is what most FrameOS frames run on.
+- **Raspberry Pi 5 / 4** - use these for fast HDMI/LCD output (up to 60 FPS) or when size doesn't
+  matter.
+- **Raspberry Pi Zero W (v1)** - works, but it has a single 32-bit core. Cheaper, slightly lower
+  power draw, much slower to deploy to.
+
+Not a Pi person, or dreaming of a battery-powered frame? FrameOS also runs on the
+[ESP32-S3 microcontroller](/guide/esp32) for supported Waveshare SPI e-paper panels.
+
+## Option 1: prebuilt FrameOS SD image (recommended)
+
+For the Raspberry Pi Zero 2 W, FrameOS ships a purpose-built SD card image - a minimal
+Buildroot-based Linux that boots straight into FrameOS. No Raspberry Pi OS, no manual SSH setup.
+
+You can get it two ways:
+
+- **Generate it in the backend**: when you add a new frame, choose the SD card image option. The
+  image comes out preconfigured with your WiFi credentials and frame settings - flash it, insert,
+  done.
+- **Download a generic image** from the
+  [latest release](https://github.com/FrameOS/frameos/releases) (look for
+  `frameos-*-raspberry-pi-zero-2-w-buildroot.img.gz`). On first boot the frame starts a WiFi
+  hotspot called `FrameOS-Setup` (password `frame1234`). Join it from your phone, enter your WiFi
+  credentials, and the frame connects to your network.
+
+Flash the image with [Raspberry Pi Imager](https://www.raspberrypi.com/software/) ("Use custom
+image"), [balenaEtcher](https://etcher.balena.io/), or plain `dd`. The partitions expand to fill
+your SD card on first boot.
+
+## Option 2: stock Raspberry Pi OS Lite
+
+For all other Pi models, or if you prefer a standard OS underneath:
+
+1. Download the [Raspberry Pi Imager](https://www.raspberrypi.com/software/) and pick the **Lite**
+   version of Raspberry Pi OS (no desktop needed).
+   - 64-bit for Pi 3, 4, 5, Zero 2 W.
+   - 32-bit for Pi 1, 2 and the original Zero W.
+
+   ![Raspberry Pi Imager OS selection](/images/guide/pi-os.gif)
+
+2. When prompted, **edit the OS customisation settings**: set a hostname, your WiFi credentials,
+   and enable SSH. Use a password, or better, generate an SSH keypair and paste the public key.
+
+   ![SSH key settings in the imager](/images/guide/ssh-key-imager.gif)
+
+3. Write the card, insert it into the Pi, connect the display, and power up.
+
+4. Wait for the Pi to appear on your network, then verify you can reach it:
+
+   ```bash
+   ping frame.local        # or check your router's client list for the IP
+   ssh pi@frame.local
+   ```
+
+5. Once connected, bring the OS up to date:
+
+   ```bash
+   sudo apt update -y && sudo apt upgrade -y
+   ```
+
+That's all. Given SSH access, the FrameOS backend does the rest - including installing
+dependencies and (for most targets) deploying **precompiled binaries**, so there's no slow
+on-device compilation.
+
+## Next step
+
+[Deploy your first scene](/guide/first-deploy).
