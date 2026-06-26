@@ -1,0 +1,140 @@
+---
+title: The ESP32
+description: Run FrameOS on an ESP32-S3 microcontroller - flash from the browser, render scenes on-device, update over the air.
+---
+
+FrameOS also runs on **ESP32-S3 microcontrollers** - no Linux, no SD card, no SSH. The backend
+builds a firmware image for your frame, you flash it over USB (straight from the browser), and
+from then on the device renders scenes on its own and updates itself over the air.
+
+<Callout title="ESP32 support">
+  ESP32 builds target Waveshare SPI e-paper panels plus a headless mode. Each firmware image
+  contains one selected panel driver. The Raspberry Pi remains the broadest platform for HDMI/LCD,
+  Pimoroni panels, Python-backed drivers, and OS-dependent apps - see
+  [which to pick](#raspberry-pi-or-esp32) below.
+</Callout>
+
+## What you need
+
+- **An ESP32-S3 board with PSRAM.** The reference board is the
+  [Seeed XIAO ESP32-S3](https://www.seeedstudio.com/XIAO-ESP32S3-p-5627.html)
+  (8MB flash, 8MB octal PSRAM) - rendering happens in PSRAM, so don't skip it.
+- **A supported panel**: a Waveshare SPI e-paper panel, wired over SPI - or no display at all.
+  IT8951 and 12.48" Waveshare panels still need a Raspberry Pi.
+- **The [backend](/guide/backend)**, with the ESP-IDF toolchain available (see below).
+
+## Backend toolchain
+
+Firmware images are built by the backend, which needs
+[ESP-IDF](https://docs.espressif.com/projects/esp-idf/) v5.5.x on its host:
+
+If you run the FrameOS backend with Docker, you are already set: the Docker image includes
+ESP-IDF and Nim, so browser flashing and firmware builds work without installing the toolchain on
+your host machine.
+
+For non-Docker backend installs, install ESP-IDF manually:
+
+```bash
+mkdir -p ~/esp && cd ~/esp
+git clone --depth 1 --branch v5.5.4 --recursive --shallow-submodules \
+  https://github.com/espressif/esp-idf.git
+cd esp-idf && ./install.sh esp32s3
+```
+
+The backend finds it via the `IDF_PATH` environment variable, falling back to `~/esp/esp-idf`.
+For non-Docker installs, the firmware build also needs **Nim 2.2+** on the backend's PATH.
+
+## Flash the device
+
+1. Click **New frame** in the backend and choose **Flash embedded device**.
+2. Pick the **ESP32-S3** platform, your display panel, and enter your WiFi credentials.
+3. The backend builds the firmware image, baking in the WiFi details, backend address, frame API
+   key and panel config.
+4. Connect the board over USB and click **Flash from browser**. This uses Web Serial, so it works
+   in Chrome and Edge. Alternatively, download the image and flash it by hand:
+
+   ```bash
+   esptool.py --chip esp32s3 --port /dev/tty.usbmodem* --baud 460800 write_flash 0x0 frameos-esp32-s3.bin
+   ```
+
+The device boots fully provisioned: it joins your WiFi, registers with the backend, and starts
+rendering.
+
+### Provisioning by hand
+
+Flashing a generic image instead? Two more ways to configure the device:
+
+- **Captive portal**: an unprovisioned device starts a WiFi hotspot called `FrameOS-XXXX`. Join
+  it and any web page redirects to the setup form (WiFi, backend URL, frame ID/API key, panel,
+  and GPIO pins).
+- **Serial console** (115200 baud) - always available, and quickest for tinkering:
+
+  ```
+  frameos> status
+  frameos> wifi MySSID MyPassword          # saves and reboots
+  frameos> set panel EPD_7in5_V2
+  frameos> render                          # render immediately
+  frameos> ota                             # check for an OTA update now
+  frameos> factory-reset
+  ```
+
+## Scenes on a microcontroller
+
+Install scenes exactly like on any other frame. The device syncs them from the backend as JSON
+and renders them **on-device**: the same scene interpreter that runs on Linux frames runs on the
+ESP32, with code nodes and expressions on QuickJS and the standard apps compiled into the
+firmware. Scene updates arrive over WiFi - no reflashing.
+
+On the S3, an 800×480 scene renders in about 400 ms, plus ~530 ms for dithering down to the
+panel's 1-bit palette. The default refresh interval is 5 minutes; scenes can request their own.
+
+Apps that need a real OS - headless Chromium screenshots, Python-based drivers, local asset
+storage - are not available on the microcontroller. Use a Raspberry Pi for scenes that depend on
+those OS-backed features.
+
+## Updates and control
+
+- **Over-the-air updates**: the firmware uses A/B partitions with automatic rollback - if a new
+  build fails to come up, the next reset boots the previous one. The device checks the backend
+  for new firmware daily, or on demand.
+- **HTTP**: the device serves `GET /status` (heap, PSRAM, WiFi and render stats as JSON), plus
+  `POST /api/action/render` and `POST /api/action/ota` on port 80.
+- **Battery mode**: `set deep_sleep 1` on the console makes the device deep-sleep between
+  refreshes - this is where a microcontroller frame beats a Pi on power.
+
+## Wiring
+
+Default pins target the XIAO ESP32-S3:
+
+| Signal | GPIO | XIAO label |
+| ------ | ---- | ---------- |
+| CS     | 3    | D2         |
+| DC     | 4    | D3         |
+| RST    | 5    | D4         |
+| BUSY   | 6    | D5         |
+| SCK    | 7    | D8         |
+| MOSI   | 9    | D10        |
+
+Remap at runtime with `set pins rst=5,dc=4,cs=3,busy=6,sck=7,mosi=9,pwr=-1` on the serial
+console, in the captive portal, or per-frame in the backend.
+
+## Raspberry Pi or ESP32? [#raspberry-pi-or-esp32]
+
+| | Raspberry Pi | ESP32-S3 |
+| --- | --- | --- |
+| Displays | [110+ drivers](/devices): e-ink, HDMI, LCD | Waveshare SPI e-paper (one panel driver per firmware image) or headless |
+| Scenes | Everything | Interpreted scenes, standard apps |
+| Apps needing an OS | Chromium screenshots, Python drivers, assets | Not available |
+| Power | ~1 W, wall-powered | Deep sleep between refreshes - battery is viable |
+| Updates | SSH deploys | OTA with A/B rollback |
+| Price | ~$15-20 (Zero 2 W) | ~$8-10 (XIAO ESP32-S3) |
+
+In short: pick the Pi unless you specifically want a battery-powered frame or have a soft spot
+for microcontrollers. More panels and capabilities are on the
+[roadmap](https://github.com/FrameOS/frameos/blob/main/TODO.md); want to help port a panel? See
+the [firmware README](https://github.com/FrameOS/frameos/tree/main/embedded/esp32) and say hi on
+[Discord](https://discord.gg/9dT9y7EzUw).
+
+## Next step
+
+[Deploy your first scene](/guide/first-deploy).

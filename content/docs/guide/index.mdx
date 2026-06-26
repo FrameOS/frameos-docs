@@ -1,11 +1,11 @@
 ---
 title: What is FrameOS?
-description: An operating system for single-function smart frames. Runs on a Raspberry Pi, renders on e-ink, HDMI and LCD displays. No cloud required.
+description: An operating system for single-function smart frames. Runs on a Raspberry Pi or ESP32, renders on e-ink, HDMI and LCD displays. No cloud required.
 ---
 
-FrameOS turns a Raspberry Pi and a display into a **single-function smart frame**: a kitchen
-calendar, a hallway dashboard, a daily art frame, a meeting room display, a thermostat - anything
-that should show one thing, reliably, for years.
+FrameOS turns a Raspberry Pi (or an [ESP32](/guide/esp32)) and a display into a
+**single-function smart frame**: a kitchen calendar, a hallway dashboard, a daily art frame, a
+meeting room display, a thermostat - anything that should show one thing, reliably, for years.
 
 It works with screens that update **60 times per second** (HDMI, LCD) and with screens that update
 **once every 60 seconds or slower** (e-ink). Over a hundred display drivers are built in, covering
@@ -18,29 +18,32 @@ most Waveshare and Pimoroni e-ink panels, plus anything you can plug into HDMI.
 FrameOS has two parts:
 
 1. **The frame** runs a single compiled binary (written in [Nim](https://nim-lang.org/)) on a
-   Raspberry Pi. It renders scenes, drives the display, and serves a small web app + HTTP API on
-   port `8787` so you can view and control it from your phone or any browser. Everything runs
-   **on the device** - there is no cloud, no subscription, and nothing stops working when your
-   internet goes down.
+   Raspberry Pi - or as firmware on an [ESP32-S3](/guide/esp32). It renders scenes, drives the
+   display, and serves a small web app + HTTP API so you can view and control it from your phone
+   or any browser. Everything runs **on the device** - there is no cloud, no subscription, and
+   nothing stops working when your internet goes down.
 
 2. **The backend** is a self-hosted control panel (a Docker container, or a Home Assistant add-on)
-   where you design scenes in a visual editor and deploy them to frames over SSH. It can run on a
-   server, a NAS, or just your laptop - and once your frames are deployed, **you can turn it off**.
-   The frames keep running on their own.
+   where you design scenes in a visual editor and deploy them to frames over SSH or
+   [FrameOS Remote](/guide/remote). It can run on a server, a NAS, or just your laptop - and once
+   your frames are deployed, **you can turn it off**. The frames keep running on their own.
 
-<Callout title="No microcontrollers - on purpose">
-  FrameOS targets the Raspberry Pi (from the $15 Zero 2 W up) instead of ESP32-class
-  microcontrollers. A full Linux system gives you WiFi + SSH deploys, real fonts and image
-  processing, scheduling, a local web server, and room to run real apps - things that are painful
-  or impossible on a microcontroller. [Read the full rationale](/faq#why-no-microcontrollers).
+<Callout title="ESP32 support">
+  FrameOS primarily targets the Raspberry Pi (from the $15 Zero 2 W up) - a full Linux system
+  gives you SSH deploys, real fonts and image processing, a local web server, and room to run
+  real apps. It also runs on the **ESP32-S3** microcontroller, rendering scenes on-device and
+  updating over the air for supported Waveshare SPI e-paper panels.
+  [See the ESP32 guide](/guide/esp32).
 </Callout>
 
 ## What you need
 
 - **A Raspberry Pi.** A [Zero 2 W](https://www.raspberrypi.com/products/raspberry-pi-zero-2-w/) is
-  perfect for e-ink frames. Use a Pi 4/5 for fast HDMI output (up to 60 FPS).
+  perfect for e-ink frames. Use a Pi 4/5 for fast HDMI output (up to 60 FPS). Or go smaller with
+  an [ESP32-S3](/guide/esp32) for supported panels.
 - **A display.** Any [supported e-ink panel](/devices) from Waveshare or Pimoroni, an HDMI screen,
-  or no display at all ("web only" mode).
+  or no display at all ("web only" and "http push" modes). ESP32 builds currently target
+  Waveshare SPI e-paper panels or headless mode.
 - **Somewhere to run the backend**, at least while deploying: your computer, a server, or Home
   Assistant.
 
@@ -51,7 +54,7 @@ FrameOS has two parts:
    bash <(curl -fsSL https://frameos.net/install.sh)
    ```
 2. [Set up the Raspberry Pi](/guide/raspberry) - flash a prebuilt FrameOS SD image, or use stock
-   Raspberry Pi OS Lite.
+   Raspberry Pi OS Lite. (Or [flash an ESP32](/guide/esp32) instead.)
 3. [Deploy your first scene](/guide/first-deploy) - pick from the built-in gallery and sample
    scenes, then make your own in the [scene editor](/guide/scenes).
 4. For a professional finish, [3D print a custom case](/cases).

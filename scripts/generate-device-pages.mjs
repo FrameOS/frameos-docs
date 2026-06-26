@@ -23,6 +23,21 @@ const devices = JSON.parse(fs.readFileSync(dataFile, 'utf8'));
 
 const reportUrl = 'https://github.com/FrameOS/frameos/issues/65';
 
+const esp32UnsupportedWavesharePanels = new Set([
+  'EPD_10in3',
+  'EPD_12in48',
+  'EPD_12in48b',
+  'EPD_12in48b_V2',
+]);
+
+function supportsEsp32(d) {
+  if (d.driver === 'web_only') return true;
+  if (!d.driver.startsWith('waveshare.')) return Boolean(d.esp32);
+
+  const panel = d.driver.slice('waveshare.'.length);
+  return !esp32UnsupportedWavesharePanels.has(panel);
+}
+
 const titleOverrides = {
   web_only: 'Web only (no physical display)',
   'http.upload': 'HTTP upload (bring your own display)',
@@ -97,6 +112,8 @@ function frontmatter(d, title, description) {
   if (d.colorCount != null) lines.push(`  colorCount: ${d.colorCount}`);
   if (d.colorClass) lines.push(`  colorClass: ${yamlString(d.colorClass)}`);
   if (d.buttons) lines.push(`  buttons: 4`);
+  if (supportsEsp32(d)) lines.push(`  esp32: true`);
+  if (d.productUrl) lines.push(`  productUrl: ${yamlString(d.productUrl)}`);
   lines.push(`  status: ${yamlString(d.status)}`);
   lines.push('---');
   return lines.join('\n');

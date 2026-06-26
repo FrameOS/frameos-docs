@@ -5,11 +5,12 @@
     "index",
     "backend",
     "raspberry",
+    "esp32",
     "first-deploy",
     "scenes",
     "apps",
     "control",
     "settings",
-    "agent"
+    "remote"
   ]
 }

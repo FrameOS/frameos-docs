@@ -3,17 +3,18 @@ title: The backend
 description: Install the self-hosted FrameOS backend with one command, via Docker, or as a Home Assistant add-on.
 ---
 
-The backend is the control panel for your frames. You use it to design scenes and deploy them onto
-frames over SSH. It's a single self-hosted web app - there is no hosted cloud version and no
-account to sign up for anywhere.
+The backend is the control panel for your frames. You use it to design scenes, deploy them over
+SSH, and manage them through [FrameOS Remote](/guide/remote) when they connect back to the
+backend. It's a single self-hosted web app - there is no hosted cloud version and no account to
+sign up for anywhere.
 
 ![The FrameOS backend](/images/app/frameos-backend.gif)
 
 A few things worth knowing up front:
 
-- The backend needs **network access to your frames** (SSH for deploys, HTTP for status). If your
-  backend runs far away from your frames, [Tailscale](https://tailscale.com/) is a nice way to
-  punch through firewalls.
+- The backend needs **network access to your frames** for first deploys and direct status checks
+  (SSH and HTTP). After [FrameOS Remote](/guide/remote) is installed, frames can also connect
+  back to the backend over an outbound WebSocket.
 - The backend **does not need to stay running**. Frames work fully standalone after a deploy.
   Keeping it running gets you log aggregation, metrics, and one-click redeploys.
 
@@ -90,11 +91,46 @@ docker run -d --name frameos --restart always \
 This is optional: for common targets FrameOS ships **precompiled binaries**, and you can also
 configure remote SSH build servers, or build on the frame itself, under **Settings → Builds**.
 
-## Installing without Docker
+## Local development with Flox
 
-Each [release](https://github.com/FrameOS/frameos/releases) also ships `.tar.gz` bundles for
-Debian (bookworm/trixie), and Ubuntu (24.04/26.04) on amd64/arm64 - useful if you want to run the
-backend bare-metal, for example on the same Raspberry Pi that drives a display.
+Use this path when you want to work on FrameOS itself instead of running the released Docker
+image. The repository ships a checked-in [Flox](https://flox.dev/) environment that installs the
+Python, Node, pnpm, Nim and Redis tooling used by the backend and frontend.
+
+```bash
+git clone https://github.com/FrameOS/frameos.git
+cd frameos
+flox activate
+pnpm dev
+```
+
+`flox activate` creates a repo-local `.venv`, installs `backend/requirements.txt`, runs
+`pnpm install --frozen-lockfile`, and installs the Nim dependencies for both the frame runtime
+and FrameOS Remote. The activation hook reruns only when the lockfiles or package definitions
+change.
+
+`pnpm dev` opens an `mprocs` dashboard with the local services:
+
+- **backend** - FastAPI on `http://localhost:8989` with `DEBUG=1`.
+- **worker** - the ARQ background worker used for deploys and builds.
+- **vite** - the live frontend on `http://localhost:8616`, proxying `/api` and `/ws` to the
+  backend.
+- **kea** - frontend type generation in watch mode.
+- **redis** - local Redis for jobs, logs, websockets and Remote connections.
+
+Open `http://localhost:8616` once the backend and Vite panes are ready. In development mode the
+backend runs database migrations before startup and creates a local `.env` with a development
+`SECRET_KEY` if you do not already have one.
+
+If you prefer to run processes manually, start Redis with either the `redis` pane in `pnpm dev`
+or Flox services:
+
+```bash
+flox services start redis
+pnpm run dev:backend
+pnpm run dev:worker
+pnpm --dir frontend run dev
+```
 
 ## Next step
 

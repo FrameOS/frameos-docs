@@ -16,7 +16,7 @@ export const metadata: Metadata = {
     template: `%s | ${appName}`,
   },
   description: appDescription,
-  icons: { icon: '/img/favicon.ico' },
+  icons: { icon: '/img/logo.svg' },
   openGraph: {
     siteName: appName,
     images: '/img/social-card.jpg',

@@ -72,6 +72,7 @@ export function DeviceTable({ rows }: { rows: DeviceRow[] }) {
         row.interface,
         row.width && row.height ? `${row.width}x${row.height} ${row.width}×${row.height}` : '',
         row.diagonal ? `${row.diagonal}"` : '',
+        row.esp32 ? 'esp32 esp32-s3' : '',
       ]
         .join(' ')
         .toLowerCase();
@@ -177,6 +178,11 @@ export function DeviceTable({ rows }: { rows: DeviceRow[] }) {
                   <Link href={row.url} className="font-medium text-fd-primary hover:underline">
                     {row.vendor !== 'Generic' ? `${row.vendor} ${row.model}` : row.model}
                   </Link>
+                  {row.esp32 ? (
+                    <span className="ms-2 rounded bg-fd-muted px-1.5 py-0.5 text-[10px] font-medium text-fd-muted-foreground align-middle whitespace-nowrap">
+                      ESP32
+                    </span>
+                  ) : null}
                 </td>
                 <td className="px-3 py-2 whitespace-nowrap">{row.diagonal ? `${row.diagonal}"` : '-'}</td>
                 <td className="px-3 py-2 whitespace-nowrap">

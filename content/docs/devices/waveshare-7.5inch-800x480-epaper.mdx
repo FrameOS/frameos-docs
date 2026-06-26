@@ -14,11 +14,13 @@ device:
   colors: "Black / White"
   colorCount: 2
   colorClass: "bw"
+  esp32: true
+  productUrl: "https://www.waveshare.com/7.5inch-e-Paper-HAT.htm?&aff_id=79380"
   status: "tested"
-  productUrl: "https://www.waveshare.com/7.5inch-e-Paper-HAT.htm"
+
 ---
 
-- Device: [Waveshare 7.5" e-Paper HAT](https://www.waveshare.com/7.5inch-e-Paper-HAT.htm)
+- Device: [Waveshare 7.5" e-Paper HAT](https://www.waveshare.com/7.5inch-e-Paper-HAT.htm?&aff_id=79380)
 - Variants: black/white (V2), black/white/red (B V2)
 
 A popular, affordable starter panel. The HAT plugs directly onto the Pi's GPIO header - or connect
@@ -33,3 +35,10 @@ the included adapter board with the supplied cable.
 
 If the image looks wrong, try the other 7.5" driver variants - Waveshare has shipped several
 revisions under the same product name.
+
+## ESP32 support
+
+This panel is supported by the [FrameOS ESP32 firmware](/guide/esp32): wire it to an ESP32-S3 over
+SPI, flash from the browser, and scenes render on the microcontroller itself - with over-the-air
+updates and an optional deep-sleep battery mode. Pick the exact Waveshare 7.5" driver variant when
+building firmware; each ESP32 image contains one selected panel driver.

@@ -1,4 +1,5 @@
 import { source } from './source';
+import { deviceSupportsEsp32 } from './device-support';
 
 // A flattened, serializable device record for the searchable table on /devices.
 export interface DeviceRow {
@@ -15,6 +16,7 @@ export interface DeviceRow {
   colors: string;
   colorCount?: number;
   colorClass?: 'bw' | 'accent' | 'gray' | 'acep' | 'spectra' | 'rgb' | 'varies';
+  esp32?: boolean;
   status: 'tested' | 'untested';
 }
 
@@ -40,6 +42,7 @@ export function getDeviceRows(): DeviceRow[] {
         colors: device.colors,
         colorCount: device.colorCount,
         colorClass: device.colorClass,
+        esp32: deviceSupportsEsp32(device),
         status: device.status,
       };
     })

@@ -4,6 +4,7 @@ import {
   Blocks,
   CloudOff,
   Cpu,
+  ExternalLink,
   Gauge,
   Monitor,
   Printer,
@@ -157,9 +158,9 @@ export default function HomePage() {
             The operating system for smart frames
           </h1>
           <p className="text-lg text-fd-muted-foreground">
-            Turn a Raspberry Pi and any display - e-ink, HDMI or LCD - into a calendar, dashboard
-            or art frame that runs itself. Everything renders <strong>on the device</strong>. No
-            cloud, no subscriptions, no microcontroller limitations.
+            Turn a Raspberry Pi or ESP32, and any display - e-ink, HDMI or LCD - into a calendar,
+            dashboard or art frame that runs itself. Everything renders{' '}
+            <strong>on the device</strong>. No cloud, no subscriptions, no compromises.
           </p>
           <div className="flex flex-wrap items-center gap-3">
             <Link
@@ -177,12 +178,16 @@ export default function HomePage() {
           </div>
           <div className="w-full">
             <p className="mb-2 text-xs font-medium uppercase tracking-wider text-fd-muted-foreground">
-              Install the backend
+              Install the backend (via docker)
             </p>
             <CopyCommand command={INSTALL_COMMAND} className="w-full" />
           </div>
           <p className="text-sm text-fd-muted-foreground">
-            Free &amp; open source (AGPL-3.0) · Works offline · Yours forever
+            Free &amp; open source{' '}
+            <Link href="/blog/why-frameos" className="text-fd-primary hover:underline">
+              since 2023
+            </Link>{' '}
+            (AGPL-3.0) · Works offline · Yours forever
           </p>
         </div>
         <Slideshow slides={frameSlides} aspect="aspect-[4/3]" />
@@ -211,10 +216,13 @@ export default function HomePage() {
               <span className="mb-3 inline-flex size-8 items-center justify-center rounded-full bg-fd-primary font-semibold text-fd-primary-foreground">
                 2
               </span>
-              <h3 className="mb-2 font-semibold">Connect a Pi to a display</h3>
+              <h3 className="mb-2 font-semibold">Connect a Pi or ESP32 to a display</h3>
               <p className="text-sm text-fd-muted-foreground">
-                Flash a prebuilt FrameOS SD image, or stock Raspberry Pi OS Lite. Plug in any of
-                120+ supported panels - or just an HDMI cable.
+                Flash a prebuilt FrameOS SD image, stock Raspberry Pi OS Lite - or an ESP32-S3,
+                straight from the browser. Plug in any of <Link href="/devices" className="text-fd-primary hover:underline">
+                  120+ supported panels
+                </Link>, or just an HDMI
+                cable (Pi only).
               </p>
             </li>
             <li className="rounded-xl border bg-fd-background p-6">
@@ -224,7 +232,7 @@ export default function HomePage() {
               <h3 className="mb-2 font-semibold">Deploy scenes, then walk away</h3>
               <p className="text-sm text-fd-muted-foreground">
                 Pick prebuilt scenes or design your own, hit deploy, and you&apos;re done. The
-                frame renders on-device and is controlled from its own QR code and HTTP API.
+                frame renders on-device and is controlled from its own QR code and HTTP API (still experimental for ESP32).
               </p>
             </li>
           </ol>
@@ -234,54 +242,39 @@ export default function HomePage() {
       {/* The app */}
       <section className="mx-auto w-full max-w-6xl px-6 py-20">
         <SectionTitle
-          kicker="The app"
+          kicker="The backend"
           title="A visual editor backed by real code"
           sub="Scenes are node graphs: red events, green data apps, blue render apps, yellow state. They compile to a single binary that runs on the frame."
         />
         <Slideshow slides={appSlides} aspect="aspect-[16/10]" fit="contain" interval={6000} className="mx-auto max-w-4xl" />
       </section>
 
-      {/* Features */}
-      <section className="border-t bg-fd-card/50">
-        <div className="mx-auto w-full max-w-6xl px-6 py-20">
-          <SectionTitle kicker="Why FrameOS" title="Built to be unplugged from everything but power" />
-          <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
-            {features.map((f) => (
-              <div key={f.title} className="rounded-xl border bg-fd-background p-5">
-                <f.icon className="mb-3 size-6 text-fd-primary" />
-                <h3 className="mb-1.5 font-semibold">{f.title}</h3>
-                <p className="text-sm text-fd-muted-foreground">{f.body}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Why no microcontrollers */}
+      {/* Raspberry Pi or ESP32 */}
       <section className="mx-auto w-full max-w-6xl px-6 py-20">
         <div className="mx-auto grid max-w-5xl items-center gap-10 md:grid-cols-2">
           <div>
             <p className="mb-2 text-sm font-semibold uppercase tracking-wider text-fd-primary">
-              No microcontrollers
+              Pick your hardware
             </p>
             <h2 className="mb-4 text-3xl font-bold tracking-tight">
-              Why a Raspberry Pi and not an ESP32?
+              Raspberry Pi or ESP32?
             </h2>
             <div className="flex flex-col gap-3 text-fd-muted-foreground">
               <p>
-                FrameOS runs on real Linux - from the $15 Pi Zero 2 W up - because smart frames
-                deserve real software: deploys over WiFi instead of re-flashing firmware, TrueType
-                fonts and SVGs at any resolution, dithering for six-color e-ink, TLS, iCal parsing,
-                headless Chromium screenshots, and a web server on the frame itself.
+                FrameOS runs best on real Linux - from the $15 Pi Zero 2 W up: deploys over WiFi
+                instead of re-flashing firmware, TrueType fonts and SVGs at any resolution,
+                dithering for six-color e-ink, TLS, iCal parsing, headless Chromium screenshots,
+                and a web server on the frame itself.
               </p>
               <p>
-                The trade-off is about one watt of power instead of months on a battery. For an
-                always-on display in your home, that&apos;s the right trade - and why frames you
-                deploy today will still be easy to update years from now.
+                Want a wire-free frame instead? FrameOS runs on the ESP32-S3 for Waveshare SPI
+                e-paper panels: flash it from the browser, render scenes on-device, update over
+                the air, and deep-sleep between refreshes for battery power. Each firmware image
+                contains one selected panel driver.
               </p>
             </div>
-            <Link href="/faq#why-no-microcontrollers" className="mt-4 inline-block font-medium text-fd-primary hover:underline">
-              Read the full rationale →
+            <Link href="/guide/esp32" className="mt-4 inline-block font-medium text-fd-primary hover:underline">
+              Read the ESP32 guide →
             </Link>
           </div>
           <Image
@@ -291,6 +284,62 @@ export default function HomePage() {
             height={1575}
             className="rounded-xl border"
           />
+        </div>
+      </section>
+
+      {/* Case Maker */}
+      <section className="border-t bg-fd-card/50">
+        <div className="mx-auto grid w-full max-w-6xl items-center gap-10 px-6 py-20 md:grid-cols-2">
+          <div>
+            <p className="mb-2 text-sm font-semibold uppercase tracking-wider text-fd-primary">
+              Case Maker
+            </p>
+            <h2 className="mb-4 text-3xl font-bold tracking-tight">
+              Design a printable case around your exact frame
+            </h2>
+            <div className="flex flex-col gap-3 text-fd-muted-foreground">
+              <p>
+                The FrameOS Case Maker generates parametric, 3D-printable enclosures for supported
+                panels and Raspberry Pi layouts. Pick a template, tune the depth and bezel, add
+                wall mounts, kickstands, USB-C cutouts and screw posts, then download the STL.
+              </p>
+              <p>
+                It is built for the same hardware database as the docs, so common Waveshare and
+                Pimoroni builds start from sane dimensions instead of a blank CAD file.
+              </p>
+            </div>
+            <div className="mt-5 flex flex-wrap gap-3">
+              <Link
+                href={links.caseMaker}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-2 rounded-lg bg-fd-primary px-5 py-2.5 font-medium text-fd-primary-foreground transition-opacity hover:opacity-90"
+              >
+                Open Case Maker
+                <ExternalLink className="size-4" aria-hidden="true" />
+              </Link>
+              <Link
+                href="/cases"
+                className="inline-flex items-center rounded-lg border px-5 py-2.5 font-medium transition-colors hover:bg-fd-accent"
+              >
+                Read the case guide
+              </Link>
+            </div>
+          </div>
+          <Link
+            href={links.caseMaker}
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="Open the FrameOS Case Maker"
+          >
+            <Image
+              src="/images/guide/casemaker.png"
+              alt="The FrameOS Case Maker interface for configuring a 3D-printed frame enclosure"
+              width={2558}
+              height={1970}
+              className="aspect-[4/3] w-full rounded-xl border object-cover object-top"
+            />
+          </Link>
         </div>
       </section>
 
@@ -341,7 +390,7 @@ export default function HomePage() {
         <div className="mx-auto flex w-full max-w-3xl flex-col items-center gap-6 px-6 py-20 text-center">
           <h2 className="text-3xl font-bold tracking-tight">Build your first frame this weekend</h2>
           <p className="text-fd-muted-foreground">
-            A Raspberry Pi, a display, and one command to get going.
+            A Raspberry Pi or ESP32, a display, and one command to get going.
           </p>
           <CopyCommand command={INSTALL_COMMAND} />
           <div className="flex flex-wrap items-center justify-center gap-4 text-sm">

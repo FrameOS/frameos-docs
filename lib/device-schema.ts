@@ -19,6 +19,8 @@ export const deviceSchema = z.object({
   colorCount: z.number().optional(),
   colorClass: z.enum(['bw', 'accent', 'gray', 'acep', 'spectra', 'rgb', 'varies']).optional(),
   buttons: z.number().optional(),
+  // also works with the ESP32-S3 firmware (embedded/esp32 in the main repo)
+  esp32: z.boolean().optional(),
   status: z.enum(['tested', 'untested']).default('untested'),
   productUrl: z.string().optional(),
 });

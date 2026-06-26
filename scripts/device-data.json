@@ -10,7 +10,8 @@
     "colorClass": "rgb",
     "label": "Web only",
     "status": "tested",
-    "slug": "web-only"
+    "slug": "web-only",
+    "esp32": true
   },
   {
     "driver": "framebuffer",
@@ -53,6 +54,7 @@
     "colorClass": "spectra",
     "buttons": true,
     "label": "Pimoroni Inky Impression - 4.0\" 2025 edition",
+    "productUrl": "https://shop.pimoroni.com/products/inky-impression?variant=56039376912763",
     "status": "untested",
     "slug": "pimoroni-inky-impression-4-2025"
   },
@@ -70,6 +72,7 @@
     "colorClass": "acep",
     "buttons": true,
     "label": "Pimoroni Inky Impression - 4.0\" 7-colour",
+    "productUrl": "https://shop.pimoroni.com/products/inky-impression-4?variant=39599238807635",
     "status": "untested",
     "slug": "pimoroni-inky-impression-4-7-color"
   },
@@ -87,6 +90,7 @@
     "colorClass": "acep",
     "buttons": true,
     "label": "Pimoroni Inky Impression - 5.7\" 7-colour",
+    "productUrl": "https://shop.pimoroni.com/products/inky-impression-5-7?variant=32298701324371",
     "status": "tested",
     "slug": "pimoroni-inky-impression-5.7inch-eink",
     "existingPage": true
@@ -105,6 +109,7 @@
     "colorClass": "acep",
     "buttons": true,
     "label": "Pimoroni Inky Impression - 7.3\" 7-colour",
+    "productUrl": "https://shop.pimoroni.com/products/inky-impression?variant=55186435244411",
     "status": "tested",
     "slug": "pimoroni-inky-impression-7.3inch-eink",
     "existingPage": true
@@ -123,6 +128,7 @@
     "colorClass": "spectra",
     "buttons": true,
     "label": "Pimoroni Inky Impression - 7.3\" 2025 edition",
+    "productUrl": "https://shop.pimoroni.com/products/inky-impression?variant=55186435244411",
     "status": "untested",
     "slug": "pimoroni-inky-impression-7-2025"
   },
@@ -140,6 +146,7 @@
     "colorClass": "spectra",
     "buttons": true,
     "label": "Pimoroni Inky Impression - 13.3\" 2025 edition",
+    "productUrl": "https://shop.pimoroni.com/products/inky-impression?variant=55186435277179",
     "status": "untested",
     "slug": "pimoroni-inky-impression-13-2025"
   },
@@ -156,6 +163,7 @@
     "colorCount": 4,
     "colorClass": "accent",
     "label": "Pimoroni Inky pHAT - 2.13\" 4-colour",
+    "productUrl": "https://shop.pimoroni.com/products/inky-phat?variant=55694721057147",
     "status": "untested",
     "slug": "pimoroni-inky-phat-4"
   },
@@ -172,6 +180,7 @@
     "colorCount": 2,
     "colorClass": "bw",
     "label": "Pimoroni Inky pHAT - 2.13\" black/white",
+    "productUrl": "https://shop.pimoroni.com/products/inky-phat",
     "status": "untested",
     "slug": "pimoroni-inky-phat-black"
   },
@@ -188,6 +197,7 @@
     "colorCount": 3,
     "colorClass": "accent",
     "label": "Pimoroni Inky pHAT - 2.13\" black/white/red",
+    "productUrl": "https://shop.pimoroni.com/products/inky-phat",
     "status": "untested",
     "slug": "pimoroni-inky-phat-red"
   },
@@ -204,6 +214,7 @@
     "colorCount": 3,
     "colorClass": "accent",
     "label": "Pimoroni Inky pHAT - 2.13\" black/white/red high-temp",
+    "productUrl": "https://shop.pimoroni.com/products/inky-phat",
     "status": "untested",
     "slug": "pimoroni-inky-phat-red-ht"
   },
@@ -220,7 +231,8 @@
     "colorCount": 3,
     "colorClass": "accent",
     "label": "Pimoroni Inky pHAT - 2.13\" black/white/yellow",
-    "status": "untested",
+    "productUrl": "https://shop.pimoroni.com/products/inky-phat",
+    "status": "tested",
     "slug": "pimoroni-inky-phat-yellow"
   },
   {
@@ -236,6 +248,7 @@
     "colorCount": 2,
     "colorClass": "bw",
     "label": "Pimoroni Inky pHAT - 2.13\" black/white (SSD1608)",
+    "productUrl": "https://shop.pimoroni.com/products/inky-phat",
     "status": "untested",
     "slug": "pimoroni-inky-phat-ssd1608-black"
   },
@@ -252,6 +265,7 @@
     "colorCount": 3,
     "colorClass": "accent",
     "label": "Pimoroni Inky pHAT - 2.13\" black/white/red (SSD1608)",
+    "productUrl": "https://shop.pimoroni.com/products/inky-phat",
     "status": "untested",
     "slug": "pimoroni-inky-phat-ssd1608-red"
   },
@@ -268,6 +282,7 @@
     "colorCount": 3,
     "colorClass": "accent",
     "label": "Pimoroni Inky pHAT - 2.13\" black/white/yellow (SSD1608)",
+    "productUrl": "https://shop.pimoroni.com/products/inky-phat",
     "status": "untested",
     "slug": "pimoroni-inky-phat-ssd1608-yellow"
   },
@@ -284,6 +299,7 @@
     "colorCount": 4,
     "colorClass": "accent",
     "label": "Pimoroni Inky wHAT - 4.2\" 4-colour",
+    "productUrl": "https://shop.pimoroni.com/products/inky-what?variant=55696156885371",
     "status": "untested",
     "slug": "pimoroni-inky-what-4"
   },
@@ -300,6 +316,7 @@
     "colorCount": 2,
     "colorClass": "bw",
     "label": "Pimoroni Inky wHAT - 4.2\" black/white",
+    "productUrl": "https://shop.pimoroni.com/products/inky-what",
     "status": "untested",
     "slug": "pimoroni-inky-what-black"
   },
@@ -316,6 +333,7 @@
     "colorCount": 3,
     "colorClass": "accent",
     "label": "Pimoroni Inky wHAT - 4.2\" black/white/red",
+    "productUrl": "https://shop.pimoroni.com/products/inky-what",
     "status": "untested",
     "slug": "pimoroni-inky-what-red"
   },
@@ -332,6 +350,7 @@
     "colorCount": 3,
     "colorClass": "accent",
     "label": "Pimoroni Inky wHAT - 4.2\" black/white/red high-temp",
+    "productUrl": "https://shop.pimoroni.com/products/inky-what",
     "status": "untested",
     "slug": "pimoroni-inky-what-red-ht"
   },
@@ -348,6 +367,7 @@
     "colorCount": 3,
     "colorClass": "accent",
     "label": "Pimoroni Inky wHAT - 4.2\" black/white/yellow",
+    "productUrl": "https://shop.pimoroni.com/products/inky-what",
     "status": "untested",
     "slug": "pimoroni-inky-what-yellow"
   },
@@ -364,6 +384,7 @@
     "colorCount": 2,
     "colorClass": "bw",
     "label": "Pimoroni Inky wHAT - 4.2\" black/white (SSD1683)",
+    "productUrl": "https://shop.pimoroni.com/products/inky-what",
     "status": "untested",
     "slug": "pimoroni-inky-what-ssd1683-black"
   },
@@ -380,6 +401,7 @@
     "colorCount": 3,
     "colorClass": "accent",
     "label": "Pimoroni Inky wHAT - 4.2\" black/white/red (SSD1683)",
+    "productUrl": "https://shop.pimoroni.com/products/inky-what",
     "status": "untested",
     "slug": "pimoroni-inky-what-ssd1683-red"
   },
@@ -396,32 +418,35 @@
     "colorCount": 3,
     "colorClass": "accent",
     "label": "Pimoroni Inky wHAT - 4.2\" black/white/yellow (SSD1683)",
+    "productUrl": "https://shop.pimoroni.com/products/inky-what",
     "status": "untested",
     "slug": "pimoroni-inky-what-ssd1683-yellow"
   },
   {
     "driver": "pimoroni.inky_impression",
     "vendor": "Pimoroni",
-    "model": "Inky Impression \u2014 other models (Python driver)",
+    "model": "Inky Impression — other models (Python driver)",
     "technology": "E-ink",
     "interface": "SPI HAT (Python driver)",
     "colors": "Varies by model",
     "colorClass": "varies",
     "python": true,
     "label": "Pimoroni Inky Impression - all others (Python driver)",
+    "productUrl": "https://shop.pimoroni.com/products/inky-impression",
     "status": "untested",
     "slug": "pimoroni-inky-impression-python"
   },
   {
     "driver": "pimoroni.inky_python",
     "vendor": "Pimoroni",
-    "model": "Inky \u2014 other models (Python driver)",
+    "model": "Inky — other models (Python driver)",
     "technology": "E-ink",
     "interface": "SPI HAT (Python driver)",
     "colors": "Varies by model",
     "colorClass": "varies",
     "python": true,
     "label": "Pimoroni Inky other (Python driver)",
+    "productUrl": "https://shop.pimoroni.com/collections/displays",
     "status": "untested",
     "slug": "pimoroni-inky-python"
   },
@@ -438,6 +463,7 @@
     "colorCount": 262144,
     "colorClass": "rgb",
     "label": "Pimoroni HyperPixel 2.1\" Round (native)",
+    "productUrl": "https://shop.pimoroni.com/products/hyperpixel-round?variant=39381081882707",
     "status": "tested",
     "slug": "pimoroni-hyperpixel-2.1inch-round-480x480-lcd",
     "existingPage": true
@@ -455,6 +481,7 @@
     "colorCount": 262144,
     "colorClass": "rgb",
     "label": "Pimoroni HyperPixel 2.1\" Round",
+    "productUrl": "https://shop.pimoroni.com/products/hyperpixel-round?variant=39381081882707",
     "status": "untested",
     "slug": "pimoroni-hyperpixel-2.1inch-round-480x480-lcd",
     "existingPage": true
@@ -472,8 +499,10 @@
     "colorCount": 2,
     "colorClass": "bw",
     "label": "Waveshare 1.02\" (D) 128x80 Black/White",
+    "productUrl": "https://www.waveshare.com/1.02inch-e-Paper-Module.htm?&aff_id=79380",
     "status": "untested",
-    "slug": "waveshare-epd-1in02d"
+    "slug": "waveshare-epd-1in02d",
+    "esp32": true
   },
   {
     "driver": "waveshare.EPD_1in54_DES",
@@ -489,7 +518,8 @@
     "colorClass": "bw",
     "label": "Waveshare 1.54\" (DES) 152x152 Black/White",
     "status": "untested",
-    "slug": "waveshare-epd-1in54-des"
+    "slug": "waveshare-epd-1in54-des",
+    "esp32": true
   },
   {
     "driver": "waveshare.EPD_1in54c",
@@ -504,8 +534,10 @@
     "colorCount": 3,
     "colorClass": "accent",
     "label": "Waveshare 1.54\" (C) 152x152 Black/White/Yellow",
+    "productUrl": "https://www.waveshare.com/1.54inch-e-Paper-Module-C.htm?&aff_id=79380",
     "status": "untested",
-    "slug": "waveshare-epd-1in54c"
+    "slug": "waveshare-epd-1in54c",
+    "esp32": true
   },
   {
     "driver": "waveshare.EPD_1in54",
@@ -520,8 +552,10 @@
     "colorCount": 2,
     "colorClass": "bw",
     "label": "Waveshare 1.54\" 200x200 Black/White",
+    "productUrl": "https://www.waveshare.com/1.54inch-e-Paper-Module.htm?&aff_id=79380",
     "status": "untested",
-    "slug": "waveshare-epd-1in54"
+    "slug": "waveshare-epd-1in54",
+    "esp32": true
   },
   {
     "driver": "waveshare.EPD_1in54_V2",
@@ -536,8 +570,10 @@
     "colorCount": 2,
     "colorClass": "bw",
     "label": "Waveshare 1.54\" (V2) 200x200 Black/White",
+    "productUrl": "https://www.waveshare.com/1.54inch-e-Paper-Module.htm?&aff_id=79380",
     "status": "untested",
-    "slug": "waveshare-epd-1in54-v2"
+    "slug": "waveshare-epd-1in54-v2",
+    "esp32": true
   },
   {
     "driver": "waveshare.EPD_1in54b",
@@ -552,8 +588,10 @@
     "colorCount": 3,
     "colorClass": "accent",
     "label": "Waveshare 1.54\" (B) 200x200 Black/White/Red",
+    "productUrl": "https://www.waveshare.com/1.54inch-e-Paper-Module-B.htm?&aff_id=79380",
     "status": "untested",
-    "slug": "waveshare-epd-1in54b"
+    "slug": "waveshare-epd-1in54b",
+    "esp32": true
   },
   {
     "driver": "waveshare.EPD_1in54b_V2",
@@ -568,8 +606,10 @@
     "colorCount": 3,
     "colorClass": "accent",
     "label": "Waveshare 1.54\" (B V2) 200x200 Black/White/Red",
+    "productUrl": "https://www.waveshare.com/1.54inch-e-Paper-Module-B.htm?&aff_id=79380",
     "status": "untested",
-    "slug": "waveshare-epd-1in54b-v2"
+    "slug": "waveshare-epd-1in54b-v2",
+    "esp32": true
   },
   {
     "driver": "waveshare.EPD_1in64g",
@@ -584,8 +624,10 @@
     "colorCount": 4,
     "colorClass": "accent",
     "label": "Waveshare 1.64\" (G) 168x168 Black/White/Yellow/Red",
+    "productUrl": "https://www.waveshare.com/1.64inch-e-Paper-Module-G.htm?&aff_id=79380",
     "status": "untested",
-    "slug": "waveshare-epd-1in64g"
+    "slug": "waveshare-epd-1in64g",
+    "esp32": true
   },
   {
     "driver": "waveshare.EPD_2in13_DES",
@@ -600,8 +642,10 @@
     "colorCount": 2,
     "colorClass": "bw",
     "label": "Waveshare 2.13\" (DES) 212x104 Black/White",
+    "productUrl": "https://www.waveshare.com/2.13inch-e-Paper-HAT-D.htm?&aff_id=79380",
     "status": "untested",
-    "slug": "waveshare-epd-2in13-des"
+    "slug": "waveshare-epd-2in13-des",
+    "esp32": true
   },
   {
     "driver": "waveshare.EPD_2in13b",
@@ -617,7 +661,8 @@
     "colorClass": "accent",
     "label": "Waveshare 2.13\" (B) 212x104 Black/White/Red",
     "status": "untested",
-    "slug": "waveshare-epd-2in13b"
+    "slug": "waveshare-epd-2in13b",
+    "esp32": true
   },
   {
     "driver": "waveshare.EPD_2in13b_V3",
@@ -633,7 +678,8 @@
     "colorClass": "accent",
     "label": "Waveshare 2.13\" (B V3) 212x104 Black/White/Red",
     "status": "untested",
-    "slug": "waveshare-epd-2in13b-v3"
+    "slug": "waveshare-epd-2in13b-v3",
+    "esp32": true
   },
   {
     "driver": "waveshare.EPD_2in13bc",
@@ -648,8 +694,10 @@
     "colorCount": 3,
     "colorClass": "accent",
     "label": "Waveshare 2.13\" (BC) 212x104 Black/White/Yellow",
+    "productUrl": "https://www.waveshare.com/2.13inch-e-Paper-HAT-C.htm?&aff_id=79380",
     "status": "untested",
-    "slug": "waveshare-epd-2in13bc"
+    "slug": "waveshare-epd-2in13bc",
+    "esp32": true
   },
   {
     "driver": "waveshare.EPD_2in13c",
@@ -664,8 +712,10 @@
     "colorCount": 3,
     "colorClass": "accent",
     "label": "Waveshare 2.13\" (C) 212x104 Black/White/Yellow",
+    "productUrl": "https://www.waveshare.com/2.13inch-e-Paper-HAT-C.htm?&aff_id=79380",
     "status": "untested",
-    "slug": "waveshare-epd-2in13c"
+    "slug": "waveshare-epd-2in13c",
+    "esp32": true
   },
   {
     "driver": "waveshare.EPD_2in13d",
@@ -680,8 +730,10 @@
     "colorCount": 2,
     "colorClass": "bw",
     "label": "Waveshare 2.13\" (D) 212x104 Black/White",
+    "productUrl": "https://www.waveshare.com/2.13inch-e-Paper-HAT-D.htm?&aff_id=79380",
     "status": "untested",
-    "slug": "waveshare-epd-2in13d"
+    "slug": "waveshare-epd-2in13d",
+    "esp32": true
   },
   {
     "driver": "waveshare.EPD_2in13",
@@ -696,8 +748,10 @@
     "colorCount": 2,
     "colorClass": "bw",
     "label": "Waveshare 2.13\" 250x122 Black/White",
+    "productUrl": "https://www.waveshare.com/2.13inch-e-Paper-HAT.htm?&aff_id=79380",
     "status": "tested",
-    "slug": "waveshare-epd-2in13"
+    "slug": "waveshare-epd-2in13",
+    "esp32": true
   },
   {
     "driver": "waveshare.EPD_2in13_V2",
@@ -712,8 +766,10 @@
     "colorCount": 2,
     "colorClass": "bw",
     "label": "Waveshare 2.13\" (V2) 250x122 Black/White",
+    "productUrl": "https://www.waveshare.com/2.13inch-e-Paper-HAT.htm?&aff_id=79380",
     "status": "untested",
-    "slug": "waveshare-epd-2in13-v2"
+    "slug": "waveshare-epd-2in13-v2",
+    "esp32": true
   },
   {
     "driver": "waveshare.EPD_2in13_V3",
@@ -728,8 +784,10 @@
     "colorCount": 2,
     "colorClass": "bw",
     "label": "Waveshare 2.13\" (V3) 250x122 Black/White",
+    "productUrl": "https://www.waveshare.com/2.13inch-e-Paper-HAT.htm?&aff_id=79380",
     "status": "untested",
-    "slug": "waveshare-epd-2in13-v3"
+    "slug": "waveshare-epd-2in13-v3",
+    "esp32": true
   },
   {
     "driver": "waveshare.EPD_2in13_V4",
@@ -744,9 +802,11 @@
     "colorCount": 2,
     "colorClass": "bw",
     "label": "Waveshare 2.13\" (V4) 250x122 Black/White",
+    "productUrl": "https://www.waveshare.com/2.13inch-e-Paper-HAT.htm?&aff_id=79380",
     "status": "tested",
     "slug": "waveshare-2.13inch-250x122-epaper",
-    "existingPage": true
+    "existingPage": true,
+    "esp32": true
   },
   {
     "driver": "waveshare.EPD_2in13b_V4",
@@ -761,8 +821,10 @@
     "colorCount": 3,
     "colorClass": "accent",
     "label": "Waveshare 2.13\" (B V4) 250x122 Black/White/Red",
+    "productUrl": "https://www.waveshare.com/2.13inch-e-Paper-HAT-B.htm?&aff_id=79380",
     "status": "untested",
-    "slug": "waveshare-epd-2in13b-v4"
+    "slug": "waveshare-epd-2in13b-v4",
+    "esp32": true
   },
   {
     "driver": "waveshare.EPD_2in13g",
@@ -777,8 +839,10 @@
     "colorCount": 4,
     "colorClass": "accent",
     "label": "Waveshare 2.13\" (G) 250x122 Black/White/Yellow/Red",
+    "productUrl": "https://www.waveshare.com/2.13inch-e-Paper-HAT-G.htm?&aff_id=79380",
     "status": "untested",
-    "slug": "waveshare-epd-2in13g"
+    "slug": "waveshare-epd-2in13g",
+    "esp32": true
   },
   {
     "driver": "waveshare.EPD_2in13g_V2",
@@ -793,8 +857,10 @@
     "colorCount": 4,
     "colorClass": "accent",
     "label": "Waveshare 2.13\" (G V2) 250x122 Black/White/Yellow/Red",
+    "productUrl": "https://www.waveshare.com/2.13inch-e-Paper-HAT-G.htm?&aff_id=79380",
     "status": "untested",
-    "slug": "waveshare-epd-2in13g-v2"
+    "slug": "waveshare-epd-2in13g-v2",
+    "esp32": true
   },
   {
     "driver": "waveshare.EPD_2in15b",
@@ -809,8 +875,10 @@
     "colorCount": 3,
     "colorClass": "accent",
     "label": "Waveshare 2.15\" (B) 296x160 Black/White/Red",
+    "productUrl": "https://www.waveshare.com/2.15inch-e-paper-hat-plus-b.htm?sku=28916&aff_id=79380",
     "status": "untested",
-    "slug": "waveshare-epd-2in15b"
+    "slug": "waveshare-epd-2in15b",
+    "esp32": true
   },
   {
     "driver": "waveshare.EPD_2in15g",
@@ -825,8 +893,10 @@
     "colorCount": 4,
     "colorClass": "accent",
     "label": "Waveshare 2.15\" (G) 296x160 Black/White/Yellow/Red",
+    "productUrl": "https://www.waveshare.com/2.15inch-e-paper-hat-plus-g.htm?sku=28995&aff_id=79380",
     "status": "untested",
-    "slug": "waveshare-epd-2in15g"
+    "slug": "waveshare-epd-2in15g",
+    "esp32": true
   },
   {
     "driver": "waveshare.EPD_2in36g",
@@ -841,8 +911,10 @@
     "colorCount": 4,
     "colorClass": "accent",
     "label": "Waveshare 2.36\" (G) 296x168 Black/White/Yellow/Red",
+    "productUrl": "https://www.waveshare.com/2.36inch-e-Paper-Module-G.htm?&aff_id=79380",
     "status": "untested",
-    "slug": "waveshare-epd-2in36g"
+    "slug": "waveshare-epd-2in36g",
+    "esp32": true
   },
   {
     "driver": "waveshare.EPD_2in66",
@@ -857,8 +929,10 @@
     "colorCount": 2,
     "colorClass": "bw",
     "label": "Waveshare 2.66\" 296x152 Black/White",
+    "productUrl": "https://www.waveshare.com/2.66inch-e-Paper-Module.htm?&aff_id=79380",
     "status": "untested",
-    "slug": "waveshare-epd-2in66"
+    "slug": "waveshare-epd-2in66",
+    "esp32": true
   },
   {
     "driver": "waveshare.EPD_2in66b",
@@ -873,8 +947,10 @@
     "colorCount": 3,
     "colorClass": "accent",
     "label": "Waveshare 2.66\" (B) 296x152 Black/White/Red",
+    "productUrl": "https://www.waveshare.com/2.66inch-e-Paper-Module-B.htm?&aff_id=79380",
     "status": "untested",
-    "slug": "waveshare-epd-2in66b"
+    "slug": "waveshare-epd-2in66b",
+    "esp32": true
   },
   {
     "driver": "waveshare.EPD_2in66g",
@@ -889,8 +965,10 @@
     "colorCount": 4,
     "colorClass": "accent",
     "label": "Waveshare 2.66\" (G) 360x184 Black/White/Yellow/Red",
+    "productUrl": "https://www.waveshare.com/2.66inch-e-Paper-Module-G.htm?&aff_id=79380",
     "status": "untested",
-    "slug": "waveshare-epd-2in66g"
+    "slug": "waveshare-epd-2in66g",
+    "esp32": true
   },
   {
     "driver": "waveshare.EPD_2in7",
@@ -905,8 +983,10 @@
     "colorCount": 4,
     "colorClass": "gray",
     "label": "Waveshare 2.7\" 264x176 4 Grayscale",
+    "productUrl": "https://www.waveshare.com/2.7inch-e-Paper-HAT.htm?&aff_id=79380",
     "status": "untested",
-    "slug": "waveshare-epd-2in7"
+    "slug": "waveshare-epd-2in7",
+    "esp32": true
   },
   {
     "driver": "waveshare.EPD_2in7_V2",
@@ -921,8 +1001,10 @@
     "colorCount": 4,
     "colorClass": "gray",
     "label": "Waveshare 2.7\" (V2) 264x176 4 Grayscale",
+    "productUrl": "https://www.waveshare.com/2.7inch-e-Paper-HAT.htm?&aff_id=79380",
     "status": "untested",
-    "slug": "waveshare-epd-2in7-v2"
+    "slug": "waveshare-epd-2in7-v2",
+    "esp32": true
   },
   {
     "driver": "waveshare.EPD_2in7b",
@@ -937,8 +1019,10 @@
     "colorCount": 3,
     "colorClass": "accent",
     "label": "Waveshare 2.7\" (B) 264x176 Black/White/Red",
+    "productUrl": "https://www.waveshare.com/2.7inch-e-Paper-HAT-B.htm?&aff_id=79380",
     "status": "untested",
-    "slug": "waveshare-epd-2in7b"
+    "slug": "waveshare-epd-2in7b",
+    "esp32": true
   },
   {
     "driver": "waveshare.EPD_2in7b_V2",
@@ -953,8 +1037,10 @@
     "colorCount": 3,
     "colorClass": "accent",
     "label": "Waveshare 2.7\" (B V2) 264x176 Black/White/Red",
+    "productUrl": "https://www.waveshare.com/2.7inch-e-Paper-HAT-B.htm?&aff_id=79380",
     "status": "untested",
-    "slug": "waveshare-epd-2in7b-v2"
+    "slug": "waveshare-epd-2in7b-v2",
+    "esp32": true
   },
   {
     "driver": "waveshare.EPD_2in9",
@@ -969,8 +1055,10 @@
     "colorCount": 2,
     "colorClass": "bw",
     "label": "Waveshare 2.9\" 296x128 Black/White",
+    "productUrl": "https://www.waveshare.com/2.9inch-e-Paper-Module.htm?&aff_id=79380",
     "status": "untested",
-    "slug": "waveshare-epd-2in9"
+    "slug": "waveshare-epd-2in9",
+    "esp32": true
   },
   {
     "driver": "waveshare.EPD_2in9_DES",
@@ -985,8 +1073,10 @@
     "colorCount": 2,
     "colorClass": "bw",
     "label": "Waveshare 2.9\" (DES) 296x128 Black/White",
+    "productUrl": "https://www.waveshare.com/2.9inch-e-Paper-HAT-D.htm?&aff_id=79380",
     "status": "untested",
-    "slug": "waveshare-epd-2in9-des"
+    "slug": "waveshare-epd-2in9-des",
+    "esp32": true
   },
   {
     "driver": "waveshare.EPD_2in9_V2",
@@ -1001,8 +1091,10 @@
     "colorCount": 4,
     "colorClass": "gray",
     "label": "Waveshare 2.9\" (V2) 296x128 4 Grayscale",
+    "productUrl": "https://www.waveshare.com/2.9inch-e-Paper-Module.htm?&aff_id=79380",
     "status": "untested",
-    "slug": "waveshare-epd-2in9-v2"
+    "slug": "waveshare-epd-2in9-v2",
+    "esp32": true
   },
   {
     "driver": "waveshare.EPD_2in9b",
@@ -1017,8 +1109,10 @@
     "colorCount": 3,
     "colorClass": "accent",
     "label": "Waveshare 2.9\" (B) 296x128 Black/White/Red",
+    "productUrl": "https://www.waveshare.com/2.9inch-e-Paper-Module-B.htm?&aff_id=79380",
     "status": "untested",
-    "slug": "waveshare-epd-2in9b"
+    "slug": "waveshare-epd-2in9b",
+    "esp32": true
   },
   {
     "driver": "waveshare.EPD_2in9b_V3",
@@ -1033,8 +1127,10 @@
     "colorCount": 3,
     "colorClass": "accent",
     "label": "Waveshare 2.9\" (B V3) 296x128 Black/White/Red",
+    "productUrl": "https://www.waveshare.com/2.9inch-e-Paper-Module-B.htm?&aff_id=79380",
     "status": "untested",
-    "slug": "waveshare-epd-2in9b-v3"
+    "slug": "waveshare-epd-2in9b-v3",
+    "esp32": true
   },
   {
     "driver": "waveshare.EPD_2in9b_V4",
@@ -1049,8 +1145,10 @@
     "colorCount": 3,
     "colorClass": "accent",
     "label": "Waveshare 2.9\" (B V4) 296x128 Black/White/Red",
+    "productUrl": "https://www.waveshare.com/2.9inch-e-Paper-Module-B.htm?&aff_id=79380",
     "status": "untested",
-    "slug": "waveshare-epd-2in9b-v4"
+    "slug": "waveshare-epd-2in9b-v4",
+    "esp32": true
   },
   {
     "driver": "waveshare.EPD_2in9bc",
@@ -1065,8 +1163,10 @@
     "colorCount": 3,
     "colorClass": "accent",
     "label": "Waveshare 2.9\" (BC) 296x128 Black/White/Yellow",
+    "productUrl": "https://www.waveshare.com/2.9inch-e-Paper-C.htm?&aff_id=79380",
     "status": "untested",
-    "slug": "waveshare-epd-2in9bc"
+    "slug": "waveshare-epd-2in9bc",
+    "esp32": true
   },
   {
     "driver": "waveshare.EPD_2in9c",
@@ -1081,8 +1181,10 @@
     "colorCount": 3,
     "colorClass": "accent",
     "label": "Waveshare 2.9\" (C) 296x128 Black/White/Yellow",
+    "productUrl": "https://www.waveshare.com/2.9inch-e-Paper-C.htm?&aff_id=79380",
     "status": "untested",
-    "slug": "waveshare-epd-2in9c"
+    "slug": "waveshare-epd-2in9c",
+    "esp32": true
   },
   {
     "driver": "waveshare.EPD_2in9d",
@@ -1097,8 +1199,10 @@
     "colorCount": 2,
     "colorClass": "bw",
     "label": "Waveshare 2.9\" (D) 296x128 Black/White",
+    "productUrl": "https://www.waveshare.com/2.9inch-e-Paper-HAT-D.htm?&aff_id=79380",
     "status": "untested",
-    "slug": "waveshare-epd-2in9d"
+    "slug": "waveshare-epd-2in9d",
+    "esp32": true
   },
   {
     "driver": "waveshare.EPD_3in0g",
@@ -1113,8 +1217,10 @@
     "colorCount": 4,
     "colorClass": "accent",
     "label": "Waveshare 3\" (G) 400x168 Black/White/Yellow/Red",
+    "productUrl": "https://www.waveshare.com/3inch-e-Paper-Module-G.htm?&aff_id=79380",
     "status": "untested",
-    "slug": "waveshare-epd-3in0g"
+    "slug": "waveshare-epd-3in0g",
+    "esp32": true
   },
   {
     "driver": "waveshare.EPD_3in52",
@@ -1129,8 +1235,10 @@
     "colorCount": 2,
     "colorClass": "bw",
     "label": "Waveshare 3.52\" 360x240 Black/White",
+    "productUrl": "https://www.waveshare.com/3.52inch-e-Paper-HAT.htm?&aff_id=79380",
     "status": "untested",
-    "slug": "waveshare-epd-3in52"
+    "slug": "waveshare-epd-3in52",
+    "esp32": true
   },
   {
     "driver": "waveshare.EPD_3in52b",
@@ -1145,8 +1253,10 @@
     "colorCount": 3,
     "colorClass": "accent",
     "label": "Waveshare 3.52\" (B) 360x240 Black/White/Red",
+    "productUrl": "https://www.waveshare.com/3.52inch-e-paper-hat-b.htm?sku=28811&aff_id=79380",
     "status": "untested",
-    "slug": "waveshare-epd-3in52b"
+    "slug": "waveshare-epd-3in52b",
+    "esp32": true
   },
   {
     "driver": "waveshare.EPD_3in7",
@@ -1161,8 +1271,10 @@
     "colorCount": 4,
     "colorClass": "gray",
     "label": "Waveshare 3.7\" 480x280 4 Grayscale",
+    "productUrl": "https://www.waveshare.com/3.7inch-e-Paper-HAT.htm?&aff_id=79380",
     "status": "untested",
-    "slug": "waveshare-epd-3in7"
+    "slug": "waveshare-epd-3in7",
+    "esp32": true
   },
   {
     "driver": "waveshare.EPD_4in0e",
@@ -1177,8 +1289,10 @@
     "colorCount": 6,
     "colorClass": "spectra",
     "label": "Waveshare 4\" (E) 600x400 Spectra 6 Color",
+    "productUrl": "https://www.waveshare.com/4inch-e-paper-hat-plus-e.htm?sku=27367&aff_id=79380",
     "status": "tested",
-    "slug": "waveshare-epd-4in0e"
+    "slug": "waveshare-epd-4in0e",
+    "esp32": true
   },
   {
     "driver": "waveshare.EPD_4in01f",
@@ -1193,8 +1307,10 @@
     "colorCount": 7,
     "colorClass": "acep",
     "label": "Waveshare 4.01\" (F) 640x400 7 Color",
+    "productUrl": "https://www.waveshare.com/4.01inch-e-Paper-HAT-F.htm?&aff_id=79380",
     "status": "tested",
-    "slug": "waveshare-epd-4in01f"
+    "slug": "waveshare-epd-4in01f",
+    "esp32": true
   },
   {
     "driver": "waveshare.EPD_4in2",
@@ -1209,8 +1325,10 @@
     "colorCount": 4,
     "colorClass": "gray",
     "label": "Waveshare 4.2\" 400x300 4 Grayscale",
+    "productUrl": "https://www.waveshare.com/4.2inch-e-Paper-Module.htm?&aff_id=79380",
     "status": "untested",
-    "slug": "waveshare-epd-4in2"
+    "slug": "waveshare-epd-4in2",
+    "esp32": true
   },
   {
     "driver": "waveshare.EPD_4in2_V2",
@@ -1225,8 +1343,10 @@
     "colorCount": 4,
     "colorClass": "gray",
     "label": "Waveshare 4.2\" (V2) 400x300 4 Grayscale",
+    "productUrl": "https://www.waveshare.com/4.2inch-e-Paper-Module.htm?&aff_id=79380",
     "status": "untested",
-    "slug": "waveshare-epd-4in2-v2"
+    "slug": "waveshare-epd-4in2-v2",
+    "esp32": true
   },
   {
     "driver": "waveshare.EPD_4in2b",
@@ -1241,8 +1361,10 @@
     "colorCount": 3,
     "colorClass": "accent",
     "label": "Waveshare 4.2\" (B) 400x300 Black/White/Red",
+    "productUrl": "https://www.waveshare.com/4.2inch-e-Paper-Module-B.htm?&aff_id=79380",
     "status": "untested",
-    "slug": "waveshare-epd-4in2b"
+    "slug": "waveshare-epd-4in2b",
+    "esp32": true
   },
   {
     "driver": "waveshare.EPD_4in2b_V2",
@@ -1257,8 +1379,10 @@
     "colorCount": 3,
     "colorClass": "accent",
     "label": "Waveshare 4.2\" (B V2) 400x300 Black/White/Red",
+    "productUrl": "https://www.waveshare.com/4.2inch-e-Paper-Module-B.htm?&aff_id=79380",
     "status": "untested",
-    "slug": "waveshare-epd-4in2b-v2"
+    "slug": "waveshare-epd-4in2b-v2",
+    "esp32": true
   },
   {
     "driver": "waveshare.EPD_4in2b_V2_old",
@@ -1273,8 +1397,10 @@
     "colorCount": 3,
     "colorClass": "accent",
     "label": "Waveshare 4.2\" (B V2 OLD) 400x300 Black/White/Red",
+    "productUrl": "https://www.waveshare.com/4.2inch-e-Paper-Module-B.htm?&aff_id=79380",
     "status": "untested",
-    "slug": "waveshare-epd-4in2b-v2-old"
+    "slug": "waveshare-epd-4in2b-v2-old",
+    "esp32": true
   },
   {
     "driver": "waveshare.EPD_4in2bc",
@@ -1289,8 +1415,10 @@
     "colorCount": 3,
     "colorClass": "accent",
     "label": "Waveshare 4.2\" (BC) 400x300 Black/White/Yellow",
+    "productUrl": "https://www.waveshare.com/4.2inch-e-Paper-Module-C.htm?&aff_id=79380",
     "status": "untested",
-    "slug": "waveshare-epd-4in2bc"
+    "slug": "waveshare-epd-4in2bc",
+    "esp32": true
   },
   {
     "driver": "waveshare.EPD_4in2c",
@@ -1305,8 +1433,10 @@
     "colorCount": 3,
     "colorClass": "accent",
     "label": "Waveshare 4.2\" (C) 400x300 Black/White/Yellow",
+    "productUrl": "https://www.waveshare.com/4.2inch-e-Paper-Module-C.htm?&aff_id=79380",
     "status": "untested",
-    "slug": "waveshare-epd-4in2c"
+    "slug": "waveshare-epd-4in2c",
+    "esp32": true
   },
   {
     "driver": "waveshare.EPD_4in26",
@@ -1321,8 +1451,10 @@
     "colorCount": 4,
     "colorClass": "gray",
     "label": "Waveshare 4.26\" 800x480 4 Grayscale",
+    "productUrl": "https://www.waveshare.com/4.26inch-e-Paper-HAT.htm?&aff_id=79380",
     "status": "untested",
-    "slug": "waveshare-epd-4in26"
+    "slug": "waveshare-epd-4in26",
+    "esp32": true
   },
   {
     "driver": "waveshare.EPD_4in37b",
@@ -1338,7 +1470,8 @@
     "colorClass": "accent",
     "label": "Waveshare 4.37\" (B) 480x176 Black/White/Red",
     "status": "untested",
-    "slug": "waveshare-epd-4in37b"
+    "slug": "waveshare-epd-4in37b",
+    "esp32": true
   },
   {
     "driver": "waveshare.EPD_4in37g",
@@ -1353,8 +1486,10 @@
     "colorCount": 4,
     "colorClass": "accent",
     "label": "Waveshare 4.37\" (G) 512x368 Black/White/Yellow/Red",
+    "productUrl": "https://www.waveshare.com/4.37inch-e-Paper-Module-G.htm?&aff_id=79380",
     "status": "untested",
-    "slug": "waveshare-epd-4in37g"
+    "slug": "waveshare-epd-4in37g",
+    "esp32": true
   },
   {
     "driver": "waveshare.EPD_5in65f",
@@ -1369,8 +1504,10 @@
     "colorCount": 7,
     "colorClass": "acep",
     "label": "Waveshare 5.65\" (F) 600x448 7 Color",
+    "productUrl": "https://www.waveshare.com/5.65inch-e-Paper-Module-F.htm?&aff_id=79380",
     "status": "untested",
-    "slug": "waveshare-epd-5in65f"
+    "slug": "waveshare-epd-5in65f",
+    "esp32": true
   },
   {
     "driver": "waveshare.EPD_5in79",
@@ -1385,8 +1522,10 @@
     "colorCount": 4,
     "colorClass": "gray",
     "label": "Waveshare 5.79\" 792x272 4 Grayscale",
+    "productUrl": "https://www.waveshare.com/5.79inch-e-Paper-Module.htm?&aff_id=79380",
     "status": "untested",
-    "slug": "waveshare-epd-5in79"
+    "slug": "waveshare-epd-5in79",
+    "esp32": true
   },
   {
     "driver": "waveshare.EPD_5in79b",
@@ -1401,8 +1540,10 @@
     "colorCount": 3,
     "colorClass": "accent",
     "label": "Waveshare 5.79\" (B) 792x272 Black/White/Red",
+    "productUrl": "https://www.waveshare.com/5.79inch-e-Paper-Module-B.htm?&aff_id=79380",
     "status": "untested",
-    "slug": "waveshare-epd-5in79b"
+    "slug": "waveshare-epd-5in79b",
+    "esp32": true
   },
   {
     "driver": "waveshare.EPD_5in79g",
@@ -1417,8 +1558,10 @@
     "colorCount": 4,
     "colorClass": "accent",
     "label": "Waveshare 5.79\" (G) 792x272 Black/White/Yellow/Red",
+    "productUrl": "https://www.waveshare.com/5.79inch-e-paper-module-g.htm?sku=27846&aff_id=79380",
     "status": "untested",
-    "slug": "waveshare-epd-5in79g"
+    "slug": "waveshare-epd-5in79g",
+    "esp32": true
   },
   {
     "driver": "waveshare.EPD_5in83",
@@ -1434,7 +1577,8 @@
     "colorClass": "bw",
     "label": "Waveshare 5.83\" 600x448 Black/White",
     "status": "untested",
-    "slug": "waveshare-epd-5in83"
+    "slug": "waveshare-epd-5in83",
+    "esp32": true
   },
   {
     "driver": "waveshare.EPD_5in83b",
@@ -1450,7 +1594,8 @@
     "colorClass": "accent",
     "label": "Waveshare 5.83\" (B) 600x448 Black/White/Red",
     "status": "untested",
-    "slug": "waveshare-epd-5in83b"
+    "slug": "waveshare-epd-5in83b",
+    "esp32": true
   },
   {
     "driver": "waveshare.EPD_5in83bc",
@@ -1466,7 +1611,8 @@
     "colorClass": "accent",
     "label": "Waveshare 5.83\" (BC) 600x448 Black/White/Yellow",
     "status": "untested",
-    "slug": "waveshare-epd-5in83bc"
+    "slug": "waveshare-epd-5in83bc",
+    "esp32": true
   },
   {
     "driver": "waveshare.EPD_5in83c",
@@ -1482,7 +1628,8 @@
     "colorClass": "accent",
     "label": "Waveshare 5.83\" (C) 600x448 Black/White/Yellow",
     "status": "untested",
-    "slug": "waveshare-epd-5in83c"
+    "slug": "waveshare-epd-5in83c",
+    "esp32": true
   },
   {
     "driver": "waveshare.EPD_5in83_V2",
@@ -1497,8 +1644,10 @@
     "colorCount": 4,
     "colorClass": "gray",
     "label": "Waveshare 5.83\" (V2) 648x480 4 Grayscale",
+    "productUrl": "https://www.waveshare.com/5.83inch-e-Paper-HAT.htm?&aff_id=79380",
     "status": "untested",
-    "slug": "waveshare-epd-5in83-v2"
+    "slug": "waveshare-epd-5in83-v2",
+    "esp32": true
   },
   {
     "driver": "waveshare.EPD_5in83b_V2",
@@ -1513,8 +1662,10 @@
     "colorCount": 3,
     "colorClass": "accent",
     "label": "Waveshare 5.83\" (B V2) 648x480 Black/White/Red",
+    "productUrl": "https://www.waveshare.com/5.83inch-e-Paper-HAT-B.htm?&aff_id=79380",
     "status": "untested",
-    "slug": "waveshare-epd-5in83b-v2"
+    "slug": "waveshare-epd-5in83b-v2",
+    "esp32": true
   },
   {
     "driver": "waveshare.EPD_5in84",
@@ -1530,7 +1681,8 @@
     "colorClass": "bw",
     "label": "Waveshare 5.84\" 768x256 Black/White",
     "status": "untested",
-    "slug": "waveshare-epd-5in84"
+    "slug": "waveshare-epd-5in84",
+    "esp32": true
   },
   {
     "driver": "waveshare.EPD_7in3e",
@@ -1545,8 +1697,10 @@
     "colorCount": 6,
     "colorClass": "spectra",
     "label": "Waveshare 7.3\" (E) 800x480 Spectra 6 Color",
+    "productUrl": "https://www.waveshare.com/7.3inch-e-paper-hat-e.htm?sku=27875&aff_id=79380",
     "status": "tested",
-    "slug": "waveshare-epd-7in3e"
+    "slug": "waveshare-epd-7in3e",
+    "esp32": true
   },
   {
     "driver": "waveshare.EPD_7in3f",
@@ -1561,8 +1715,10 @@
     "colorCount": 7,
     "colorClass": "acep",
     "label": "Waveshare 7.3\" (F) 800x480 7 Color",
+    "productUrl": "https://www.waveshare.com/7.3inch-e-Paper-HAT-F.htm?&aff_id=79380",
     "status": "untested",
-    "slug": "waveshare-epd-7in3f"
+    "slug": "waveshare-epd-7in3f",
+    "esp32": true
   },
   {
     "driver": "waveshare.EPD_7in3g",
@@ -1577,8 +1733,10 @@
     "colorCount": 4,
     "colorClass": "accent",
     "label": "Waveshare 7.3\" (G) 800x480 Black/White/Yellow/Red",
+    "productUrl": "https://www.waveshare.com/7.3inch-e-Paper-HAT-G.htm?&aff_id=79380",
     "status": "untested",
-    "slug": "waveshare-epd-7in3g"
+    "slug": "waveshare-epd-7in3g",
+    "esp32": true
   },
   {
     "driver": "waveshare.EPD_7in5",
@@ -1594,7 +1752,8 @@
     "colorClass": "bw",
     "label": "Waveshare 7.5\" 640x384 Black/White",
     "status": "untested",
-    "slug": "waveshare-epd-7in5"
+    "slug": "waveshare-epd-7in5",
+    "esp32": true
   },
   {
     "driver": "waveshare.EPD_7in5b",
@@ -1610,7 +1769,8 @@
     "colorClass": "accent",
     "label": "Waveshare 7.5\" (B) 640x384 Black/White/Red",
     "status": "untested",
-    "slug": "waveshare-epd-7in5b"
+    "slug": "waveshare-epd-7in5b",
+    "esp32": true
   },
   {
     "driver": "waveshare.EPD_7in5bc",
@@ -1625,8 +1785,10 @@
     "colorCount": 3,
     "colorClass": "accent",
     "label": "Waveshare 7.5\" (BC) 640x384 Black/White/Yellow",
+    "productUrl": "https://www.waveshare.com/7.5inch-e-Paper-HAT-C.htm?&aff_id=79380",
     "status": "untested",
-    "slug": "waveshare-epd-7in5bc"
+    "slug": "waveshare-epd-7in5bc",
+    "esp32": true
   },
   {
     "driver": "waveshare.EPD_7in5c",
@@ -1641,8 +1803,10 @@
     "colorCount": 3,
     "colorClass": "accent",
     "label": "Waveshare 7.5\" (C) 640x384 Black/White/Yellow",
+    "productUrl": "https://www.waveshare.com/7.5inch-e-Paper-HAT-C.htm?&aff_id=79380",
     "status": "untested",
-    "slug": "waveshare-epd-7in5c"
+    "slug": "waveshare-epd-7in5c",
+    "esp32": true
   },
   {
     "driver": "waveshare.EPD_7in5_V2",
@@ -1657,9 +1821,11 @@
     "colorCount": 2,
     "colorClass": "bw",
     "label": "Waveshare 7.5\" (V2) 800x480 Black/White",
+    "productUrl": "https://www.waveshare.com/7.5inch-e-Paper-HAT.htm?&aff_id=79380",
     "status": "tested",
     "slug": "waveshare-7.5inch-800x480-epaper",
-    "existingPage": true
+    "existingPage": true,
+    "esp32": true
   },
   {
     "driver": "waveshare.EPD_7in5_V2_gray",
@@ -1674,8 +1840,10 @@
     "colorCount": 4,
     "colorClass": "gray",
     "label": "Waveshare 7.5\" (V2 GRAY) 800x480 4 Grayscale",
+    "productUrl": "https://www.waveshare.com/7.5inch-e-Paper-HAT.htm?&aff_id=79380",
     "status": "untested",
-    "slug": "waveshare-epd-7in5-v2-gray"
+    "slug": "waveshare-epd-7in5-v2-gray",
+    "esp32": true
   },
   {
     "driver": "waveshare.EPD_7in5b_V2",
@@ -1690,8 +1858,10 @@
     "colorCount": 3,
     "colorClass": "accent",
     "label": "Waveshare 7.5\" (B V2) 800x480 Black/White/Red",
+    "productUrl": "https://www.waveshare.com/7.5inch-e-Paper-HAT-B.htm?&aff_id=79380",
     "status": "tested",
-    "slug": "waveshare-epd-7in5b-v2"
+    "slug": "waveshare-epd-7in5b-v2",
+    "esp32": true
   },
   {
     "driver": "waveshare.EPD_7in5b_V2_old",
@@ -1706,8 +1876,10 @@
     "colorCount": 3,
     "colorClass": "accent",
     "label": "Waveshare 7.5\" (B V2 OLD) 800x480 Black/White/Red",
+    "productUrl": "https://www.waveshare.com/7.5inch-e-Paper-HAT-B.htm?&aff_id=79380",
     "status": "untested",
-    "slug": "waveshare-epd-7in5b-v2-old"
+    "slug": "waveshare-epd-7in5b-v2-old",
+    "esp32": true
   },
   {
     "driver": "waveshare.EPD_7in5_HD",
@@ -1722,8 +1894,10 @@
     "colorCount": 2,
     "colorClass": "bw",
     "label": "Waveshare 7.5\" (HD) 880x528 Black/White",
+    "productUrl": "https://www.waveshare.com/7.5inch-HD-e-Paper-HAT.htm?&aff_id=79380",
     "status": "untested",
-    "slug": "waveshare-epd-7in5-hd"
+    "slug": "waveshare-epd-7in5-hd",
+    "esp32": true
   },
   {
     "driver": "waveshare.EPD_7in5b_HD",
@@ -1738,8 +1912,10 @@
     "colorCount": 3,
     "colorClass": "accent",
     "label": "Waveshare 7.5\" (B HD) 880x528 Black/White/Red",
+    "productUrl": "https://www.waveshare.com/7.5inch-HD-e-Paper-HAT-B.htm?&aff_id=79380",
     "status": "untested",
-    "slug": "waveshare-epd-7in5b-hd"
+    "slug": "waveshare-epd-7in5b-hd",
+    "esp32": true
   },
   {
     "driver": "waveshare.EPD_10in2b",
@@ -1755,7 +1931,8 @@
     "colorClass": "accent",
     "label": "Waveshare 10.2\" (B) 960x640 Black/White/Red",
     "status": "untested",
-    "slug": "waveshare-epd-10in2b"
+    "slug": "waveshare-epd-10in2b",
+    "esp32": true
   },
   {
     "driver": "waveshare.EPD_10in3",
@@ -1770,6 +1947,7 @@
     "colorCount": 16,
     "colorClass": "gray",
     "label": "Waveshare 10.3\" 1872x1404 16 Grayscale",
+    "productUrl": "https://www.waveshare.com/10.3inch-e-Paper-HAT.htm?&aff_id=79380",
     "status": "tested",
     "slug": "waveshare-epd-10in3"
   },
@@ -1786,6 +1964,7 @@
     "colorCount": 2,
     "colorClass": "bw",
     "label": "Waveshare 12.48\" 1304x984 Black/White",
+    "productUrl": "https://www.waveshare.com/12.48inch-e-Paper-Module.htm?&aff_id=79380",
     "status": "untested",
     "slug": "waveshare-epd-12in48"
   },
@@ -1802,6 +1981,7 @@
     "colorCount": 3,
     "colorClass": "accent",
     "label": "Waveshare 12.48\" (B) 1304x984 Black/White/Red",
+    "productUrl": "https://www.waveshare.com/12.48inch-e-Paper-Module-B.htm?&aff_id=79380",
     "status": "tested",
     "slug": "waveshare-epd-12in48b"
   },
@@ -1818,6 +1998,7 @@
     "colorCount": 3,
     "colorClass": "accent",
     "label": "Waveshare 12.48\" (B V2) 1304x984 Black/White/Red",
+    "productUrl": "https://www.waveshare.com/12.48inch-e-Paper-Module-B.htm?&aff_id=79380",
     "status": "tested",
     "slug": "waveshare-epd-12in48b-v2"
   },
@@ -1834,8 +2015,10 @@
     "colorCount": 3,
     "colorClass": "accent",
     "label": "Waveshare 13.3\" (B) 960x680 Black/White/Red",
+    "productUrl": "https://www.waveshare.com/13.3inch-e-paper-hat-b.htm?sku=27236&aff_id=79380",
     "status": "untested",
-    "slug": "waveshare-epd-13in3b"
+    "slug": "waveshare-epd-13in3b",
+    "esp32": true
   },
   {
     "driver": "waveshare.EPD_13in3k",
@@ -1850,8 +2033,10 @@
     "colorCount": 2,
     "colorClass": "bw",
     "label": "Waveshare 13.3\" (K) 960x680 Black/White",
+    "productUrl": "https://www.waveshare.com/13.3inch-e-Paper-HAT-K.htm?&aff_id=79380",
     "status": "untested",
-    "slug": "waveshare-epd-13in3k"
+    "slug": "waveshare-epd-13in3k",
+    "esp32": true
   },
   {
     "driver": "waveshare.EPD_13in3e",
@@ -1866,7 +2051,9 @@
     "colorCount": 6,
     "colorClass": "spectra",
     "label": "Waveshare 13.3\" (E) 1600x1200 Spectra 6 Color",
+    "productUrl": "https://www.waveshare.com/13.3inch-e-paper-hat-plus-e.htm?sku=29355&aff_id=79380",
     "status": "tested",
-    "slug": "waveshare-epd-13in3e"
+    "slug": "waveshare-epd-13in3e",
+    "esp32": true
   }
 ]

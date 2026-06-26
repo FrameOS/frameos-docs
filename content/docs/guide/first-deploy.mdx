@@ -6,14 +6,16 @@ description: Add a frame to the backend, install a few scenes, and deploy them t
 <Callout>
   This assumes you have the [backend running](/guide/backend) and a
   [Raspberry Pi reachable over SSH](/guide/raspberry) (or booted from a FrameOS SD image).
+  Using an [ESP32](/guide/esp32) instead? Flash it first - the scenes and deploy flow below work
+  the same way.
 </Callout>
 
 ## Add the frame
 
-Click "New frame" in the backend. Give the frame a name, enter its IP address or hostname and SSH
-credentials, and select the right **display driver** for your panel - there are over 120 to choose
-from, organised by vendor. Pick "Web only" if you just want to try FrameOS without any display
-hardware.
+Click "New frame" in the backend. Give the frame a name and select the right **display driver**
+for your panel - there are over 120 to choose from, organised by vendor. For Raspberry Pi frames,
+enter the frame's IP address or hostname and SSH credentials for the first deploy. Pick "Web only"
+if you just want to try FrameOS without any display hardware.
 
 ![Adding a frame](/images/app/add-frame.gif)
 
