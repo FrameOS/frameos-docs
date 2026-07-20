@@ -199,7 +199,13 @@ if [ "$(docker ps -q -f name=frameos)" ]; then
 fi
 
 echo "Pulling and running the FrameOS backend container..."
-docker run -d -p "$PORT:8989" -v "$PROJECT_ROOT/db:/app/db" --name frameos --restart always --env-file "$ENV_FILE" frameos/frameos
+if ! docker run -d -p "$PORT:8989" -v "$PROJECT_ROOT/db:/app/db" --name frameos --restart always --env-file "$ENV_FILE" frameos/frameos; then
+  echo ""
+  echo "ERROR: Failed to start the FrameOS container."
+  echo "Common causes: not enough disk space for the image (~2 GB), or the port $PORT is already in use."
+  echo "Check the output above for details, fix the issue, and re-run this script."
+  exit 1
+fi
 
 # Ask the user if they want automatic updates
 read -p "Do you want to enable automatic updates for FrameOS? (Y/n): " enable_updates
@@ -221,5 +227,38 @@ if [[ "$enable_updates" =~ ^[Yy]$ ]]; then
   fi
 fi
 
-echo "Installation complete!"
-echo "You can access the FrameOS backend at http://localhost:$PORT"
+# Wait for the backend to actually respond before declaring success
+echo "Waiting for the FrameOS backend to start on port $PORT (this can take a minute)..."
+BACKEND_UP=0
+for _ in $(seq 1 90); do
+  if curl -fs -o /dev/null "http://localhost:$PORT"; then
+    BACKEND_UP=1
+    break
+  fi
+  sleep 2
+done
+
+# Figure out this machine's LAN address so the URL works from other devices too
+if [ "$OS" = "Linux" ]; then
+  LAN_IP=$(hostname -I 2>/dev/null | awk '{print $1}')
+else
+  LAN_IP=$(ipconfig getifaddr en0 2>/dev/null || ipconfig getifaddr en1 2>/dev/null)
+fi
+
+if [ "$BACKEND_UP" -eq 1 ]; then
+  echo ""
+  echo "Installation complete!"
+  echo "You can access the FrameOS backend at http://localhost:$PORT"
+  if [ -n "$LAN_IP" ]; then
+    echo "From other devices on your network: http://$LAN_IP:$PORT"
+  fi
+else
+  echo ""
+  echo "ERROR: The FrameOS container was started, but nothing is responding on port $PORT yet."
+  echo "Container status:"
+  docker ps -a -f name=frameos --format "  {{.Names}}: {{.Status}}"
+  echo "Inspect the logs with:"
+  echo "  docker logs frameos"
+  echo "If the container keeps restarting, the machine may be low on memory or disk space."
+  exit 1
+fi

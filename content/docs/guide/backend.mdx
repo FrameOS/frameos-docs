@@ -20,6 +20,13 @@ A few things worth knowing up front:
 
 ## Quick install
 
+<Callout type="warn" title="Run this on your computer, not on the frame's Raspberry Pi">
+  The backend is the control panel that **deploys to** your frames - it is not the software that
+  runs on the frame itself. Run the command below on the machine that will manage your frames:
+  your laptop, a server, or a NAS. The frame's Raspberry Pi is set up separately in the
+  [next step](/guide/raspberry), and never listens on port 8989.
+</Callout>
+
 The easiest way to install on a Mac or a Debian/Ubuntu Linux machine:
 
 ```bash
@@ -27,6 +34,8 @@ bash <(curl -fsSL https://frameos.net/install.sh)
 ```
 
 The script installs Docker if needed, then runs the `frameos/frameos` container on port `8989`.
+Once it's up, open `http://localhost:8989` on that same machine (or `http://<its-ip>:8989` from
+another device) and create your local account.
 
 ## Home Assistant add-on
 
