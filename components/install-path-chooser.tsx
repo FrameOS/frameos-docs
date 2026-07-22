@@ -88,6 +88,13 @@ export function InstallPathChooser({ className }: { className?: string }) {
                 8989.
               </p>
               <CopyCommand command={INSTALL_COMMAND} className="mt-3 w-full" />
+              <p className="mt-3 text-sm text-fd-muted-foreground">
+                Prefer another method? See{' '}
+                <Link href="/guide/backend" className="text-fd-primary hover:underline">
+                  the backend docs
+                </Link>{' '}
+                for the Home Assistant add-on, manual Docker, and local development.
+              </p>
             </>
           ) : (
             <>
@@ -139,6 +146,14 @@ export function InstallPathChooser({ className }: { className?: string }) {
                   3. Open <code>http://10.42.0.1/</code> to connect WiFi and set up the frame.
                 </li>
               </ol>
+              <p className="mt-3 border-t pt-3 text-sm text-fd-muted-foreground">
+                Prefer another method? See{' '}
+                <Link href="/guide/raspberry" className="text-fd-primary hover:underline">
+                  the Raspberry Pi docs
+                </Link>{' '}
+                for generating a preconfigured image in the backend, or installing on stock
+                Raspberry Pi OS Lite.
+              </p>
             </>
           )}
         </div>
