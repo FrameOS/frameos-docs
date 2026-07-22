@@ -1,0 +1,62 @@
+---
+title: "Waveshare ESP32-S3 ePaper 13.3E6"
+description: "Standalone ESP32-S3 preset for the 13.3\" Spectra 6 Waveshare e-ink panel."
+device:
+  vendor: "Waveshare"
+  model: "ESP32-S3 ePaper 13.3E6"
+  driver: "waveshare.EPD_13in3e"
+  label: "Waveshare ESP32-S3 ePaper 13.3E6"
+  technology: "E-ink"
+  interface: "ESP32-S3 board"
+  diagonal: 13.3
+  width: 1600
+  height: 1200
+  colors: "6 colors (Spectra 6)"
+  colorCount: 6
+  colorClass: "spectra"
+  platforms:
+    - "esp32-s3"
+  status: "tested"
+---
+
+The **Waveshare ESP32-S3 ePaper 13.3E6** preset is for Waveshare's ESP32-S3 board paired with the
+13.3" 1600×1200 Spectra 6 panel. In FrameOS it uses the hardware preset
+`waveshare_esp32_s3_epaper_13_3e6`, which selects the `waveshare.EPD_13in3e` panel driver, the
+13.3E6 GPIO map, and the TF card asset mount.
+
+Use this page for the ESP32-S3 13.3E6 hardware. If you are driving the same panel from a
+Raspberry Pi, use the [Waveshare 13.3" (E)](/devices/waveshare-epd-13in3e) page instead.
+
+## How it works
+
+FrameOS builds a dedicated ESP32-S3 firmware image for the board. The 13.3E6 preset uses 32MB
+flash, 16MB PSRAM, dual chip-select wiring for the large panel, and `/srv/assets` on the TF card
+for local assets.
+
+The firmware renders [scenes](/guide/scenes) on-device, dithers them to the Spectra 6 palette,
+and refreshes the panel over the board's SPI wiring.
+
+## Setup
+
+1. In the FrameOS backend, create a frame with **Flash embedded device**.
+2. Choose **ESP32-S3**, select the **Waveshare ESP32-S3 ePaper 13.3E6** hardware preset, and
+   enter WiFi details.
+3. Build the firmware and flash it over USB from the browser.
+4. Install scenes as usual. The device syncs scene JSON and renders without SSH or Linux.
+
+## Pin map
+
+| Signal | GPIO |
+| ------ | ---- |
+| PWR    | 1    |
+| RST    | 2    |
+| CS2    | 3    |
+| SCK    | 9    |
+| CS     | 10   |
+| DC     | 11   |
+| BUSY   | 12   |
+| MOSI   | 46   |
+
+## Status
+
+🟢 **Confirmed working** - tested on real hardware by the maintainers or the community.

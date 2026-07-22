@@ -30,7 +30,13 @@ function Spec({ label, children }: { label: string; children: React.ReactNode })
 
 export function DeviceSpecs({ device }: { device: Device }) {
   const supportsEsp32 = deviceSupportsEsp32(device);
+  const platforms = device.platforms?.length
+    ? device.platforms
+    : supportsEsp32
+      ? ['raspberry-pi', 'esp32-s3']
+      : ['raspberry-pi'];
   const affiliateProductUrl = device.productUrl ? productUrl(device.productUrl) : null;
+  const caseOptions = device.cases ?? [];
   const isKnownStore = device.vendor === 'Waveshare' || device.vendor === 'Pimoroni';
   const productCtaLabel = isKnownStore ? `Buy from ${device.vendor}` : 'Open product page';
   const productCtaTitle = isKnownStore ? `Official ${device.vendor} store` : 'Product page';
@@ -57,6 +63,42 @@ export function DeviceSpecs({ device }: { device: Device }) {
           </Link>
         </div>
       ) : null}
+      {caseOptions.length > 0 ? (
+        <div className="mb-4 border-b pb-4">
+          <div className="mb-3">
+            <p className="text-xs uppercase tracking-wide text-fd-muted-foreground">3D-printable case</p>
+            <p className="text-sm font-medium text-fd-foreground">
+              Exact FrameOS Case Maker preset{caseOptions.length === 1 ? '' : 's'} for this display.
+            </p>
+          </div>
+          <div className={`grid gap-4 ${caseOptions.length > 1 ? 'lg:grid-cols-2' : ''}`}>
+            {caseOptions.map((caseOption) => (
+              <div key={caseOption.url} className="flex gap-3">
+                {caseOption.image ? (
+                  <img
+                    src={caseOption.image}
+                    alt={`${caseOption.label} preview`}
+                    loading="lazy"
+                    className="h-24 w-32 flex-none rounded-md border bg-fd-muted object-cover"
+                  />
+                ) : null}
+                <div className="min-w-0 flex flex-col justify-center gap-2">
+                  <p className="text-sm font-medium text-fd-foreground">{caseOption.label}</p>
+                  <Link
+                    href={caseOption.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex w-fit items-center justify-center gap-2 rounded-md border px-3 py-2 text-sm font-medium transition-colors hover:bg-fd-accent"
+                  >
+                    Open Case Maker
+                    <ExternalLink className="size-4" aria-hidden="true" />
+                  </Link>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      ) : null}
       <dl className="grid grid-cols-2 gap-x-6 gap-y-4 sm:grid-cols-3 lg:grid-cols-4">
         <Spec label="Vendor">{device.vendor}</Spec>
         <Spec label="Model">{device.model}</Spec>
@@ -68,13 +110,16 @@ export function DeviceSpecs({ device }: { device: Device }) {
         <Spec label="Size">{device.diagonal ? `${device.diagonal}″ diagonal` : '-'}</Spec>
         <Spec label="Interface">{device.interface}</Spec>
         <Spec label="Platforms">
-          {supportsEsp32 ? (
-            <>
-              Raspberry Pi · <Link href="/guide/esp32" className="text-fd-primary hover:underline">ESP32-S3</Link>
-            </>
-          ) : (
-            'Raspberry Pi'
-          )}
+          {platforms.map((platform, index) => (
+            <span key={platform}>
+              {index > 0 ? ' · ' : null}
+              {platform === 'esp32-s3' ? (
+                <Link href="/guide/esp32" className="text-fd-primary hover:underline">ESP32-S3</Link>
+              ) : (
+                'Raspberry Pi'
+              )}
+            </span>
+          ))}
         </Spec>
         <Spec label="Status">
           {device.status === 'tested' ? (

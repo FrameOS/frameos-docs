@@ -1,5 +1,13 @@
 import { z } from 'zod';
 
+const deviceCaseSchema = z.object({
+  label: z.string(),
+  url: z.string(),
+  image: z.string().optional(),
+});
+
+const devicePlatformSchema = z.enum(['raspberry-pi', 'esp32-s3']);
+
 // Structured specs for pages in content/docs/devices - these power the
 // searchable device database on /devices and the spec card on each page.
 export const deviceSchema = z.object({
@@ -23,6 +31,8 @@ export const deviceSchema = z.object({
   esp32: z.boolean().optional(),
   status: z.enum(['tested', 'untested']).default('untested'),
   productUrl: z.string().optional(),
+  cases: z.array(deviceCaseSchema).optional(),
+  platforms: z.array(devicePlatformSchema).optional(),
 });
 
 export type Device = z.infer<typeof deviceSchema>;

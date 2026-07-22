@@ -31,6 +31,7 @@ const esp32UnsupportedWavesharePanels = new Set([
 ]);
 
 function supportsEsp32(d) {
+  if (d.platforms) return d.platforms.includes('esp32-s3');
   if (d.driver === 'web_only') return true;
   if (!d.driver.startsWith('waveshare.')) return Boolean(d.esp32);
 
@@ -114,6 +115,20 @@ function frontmatter(d, title, description) {
   if (d.buttons) lines.push(`  buttons: 4`);
   if (supportsEsp32(d)) lines.push(`  esp32: true`);
   if (d.productUrl) lines.push(`  productUrl: ${yamlString(d.productUrl)}`);
+  if (d.cases?.length) {
+    lines.push('  cases:');
+    for (const caseOption of d.cases) {
+      lines.push(`    - label: ${yamlString(caseOption.label)}`);
+      lines.push(`      url: ${yamlString(caseOption.url)}`);
+      if (caseOption.image) lines.push(`      image: ${yamlString(caseOption.image)}`);
+    }
+  }
+  if (d.platforms?.length) {
+    lines.push('  platforms:');
+    for (const platform of d.platforms) {
+      lines.push(`    - ${yamlString(platform)}`);
+    }
+  }
   lines.push(`  status: ${yamlString(d.status)}`);
   lines.push('---');
   return lines.join('\n');

@@ -129,6 +129,13 @@
     "buttons": true,
     "label": "Pimoroni Inky Impression - 7.3\" 2025 edition",
     "productUrl": "https://shop.pimoroni.com/products/inky-impression?variant=55186435244411",
+    "cases": [
+      {
+        "label": "FrameOS Case Maker preset",
+        "url": "https://cases.frameos.net/#path=pimoroni.7in3.spectra.12mm.scad",
+        "image": "/images/cases/pimoroni-7in3-spectra-12mm-case.png"
+      }
+    ],
     "status": "untested",
     "slug": "pimoroni-inky-impression-7-2025"
   },
@@ -147,6 +154,18 @@
     "buttons": true,
     "label": "Pimoroni Inky Impression - 13.3\" 2025 edition",
     "productUrl": "https://shop.pimoroni.com/products/inky-impression?variant=55186435277179",
+    "cases": [
+      {
+        "label": "12 mm electronics depth",
+        "url": "https://cases.frameos.net/#path=pimoroni.13in3.spectra.12mm.scad",
+        "image": "/images/cases/pimoroni-13in3-spectra-12mm-case.png"
+      },
+      {
+        "label": "6 mm electronics depth",
+        "url": "https://cases.frameos.net/#path=pimoroni.13in3.spectra.6mm.scad",
+        "image": "/images/cases/pimoroni-13in3-spectra-6mm-case.png"
+      }
+    ],
     "status": "untested",
     "slug": "pimoroni-inky-impression-13-2025"
   },
@@ -1290,6 +1309,13 @@
     "colorClass": "spectra",
     "label": "Waveshare 4\" (E) 600x400 Spectra 6 Color",
     "productUrl": "https://www.waveshare.com/4inch-e-paper-hat-plus-e.htm?sku=27367&aff_id=79380",
+    "cases": [
+      {
+        "label": "Desk case preset",
+        "url": "https://cases.frameos.net/#path=waveshare.4in0e.desk.scad",
+        "image": "/images/cases/waveshare-4in0e-desk-case.png"
+      }
+    ],
     "status": "tested",
     "slug": "waveshare-epd-4in0e",
     "esp32": true
@@ -1308,6 +1334,13 @@
     "colorClass": "acep",
     "label": "Waveshare 4.01\" (F) 640x400 7 Color",
     "productUrl": "https://www.waveshare.com/4.01inch-e-Paper-HAT-F.htm?&aff_id=79380",
+    "cases": [
+      {
+        "label": "Desk case preset",
+        "url": "https://cases.frameos.net/#path=waveshare.4in01f.desk.scad",
+        "image": "/images/cases/waveshare-4in01f-desk-case.png"
+      }
+    ],
     "status": "tested",
     "slug": "waveshare-epd-4in01f",
     "esp32": true
@@ -1698,9 +1731,56 @@
     "colorClass": "spectra",
     "label": "Waveshare 7.3\" (E) 800x480 Spectra 6 Color",
     "productUrl": "https://www.waveshare.com/7.3inch-e-paper-hat-e.htm?sku=27875&aff_id=79380",
+    "cases": [
+      {
+        "label": "FrameOS Case Maker preset",
+        "url": "https://cases.frameos.net/#path=waveshare.7in3e.scad",
+        "image": "/images/cases/waveshare-7in3e-case.png"
+      }
+    ],
     "status": "tested",
     "slug": "waveshare-epd-7in3e",
     "esp32": true
+  },
+  {
+    "driver": "waveshare.EPD_7in3e",
+    "vendor": "Waveshare",
+    "model": "ESP32-S3 PhotoPainter",
+    "technology": "E-ink",
+    "interface": "ESP32-S3 board",
+    "diagonal": 7.3,
+    "width": 800,
+    "height": 480,
+    "colors": "6 colors (Spectra 6)",
+    "colorCount": 6,
+    "colorClass": "spectra",
+    "label": "Waveshare ESP32-S3 PhotoPainter",
+    "status": "tested",
+    "slug": "waveshare-esp32-s3-photopainter",
+    "platforms": [
+      "esp32-s3"
+    ],
+    "existingPage": true
+  },
+  {
+    "driver": "waveshare.rpi_zero_photopainter_7in3e",
+    "vendor": "Waveshare",
+    "model": "RPi Zero PhotoPainter 7.3\"",
+    "technology": "E-ink",
+    "interface": "Raspberry Pi Zero GPIO",
+    "diagonal": 7.3,
+    "width": 800,
+    "height": 480,
+    "colors": "6 colors (Spectra 6)",
+    "colorCount": 6,
+    "colorClass": "spectra",
+    "label": "Waveshare 7.3\" RPi Zero PhotoPainter - 800x480 Spectra 6 Color",
+    "status": "tested",
+    "slug": "waveshare-rpi-zero-photopainter-7in3e",
+    "platforms": [
+      "raspberry-pi"
+    ],
+    "existingPage": true
   },
   {
     "driver": "waveshare.EPD_7in3f",
@@ -1751,6 +1831,13 @@
     "colorCount": 2,
     "colorClass": "bw",
     "label": "Waveshare 7.5\" 640x384 Black/White",
+    "cases": [
+      {
+        "label": "FrameOS Case Maker preset",
+        "url": "https://cases.frameos.net/#path=waveshare.7in5.scad",
+        "image": "/images/cases/waveshare-7in5-case.png"
+      }
+    ],
     "status": "untested",
     "slug": "waveshare-epd-7in5",
     "esp32": true
@@ -1948,6 +2035,13 @@
     "colorClass": "gray",
     "label": "Waveshare 10.3\" 1872x1404 16 Grayscale",
     "productUrl": "https://www.waveshare.com/10.3inch-e-Paper-HAT.htm?&aff_id=79380",
+    "cases": [
+      {
+        "label": "FrameOS Case Maker preset",
+        "url": "https://cases.frameos.net/#path=waveshare.10in3.scad",
+        "image": "/images/cases/waveshare-10in3-case.png"
+      }
+    ],
     "status": "tested",
     "slug": "waveshare-epd-10in3"
   },
@@ -2052,8 +2146,35 @@
     "colorClass": "spectra",
     "label": "Waveshare 13.3\" (E) 1600x1200 Spectra 6 Color",
     "productUrl": "https://www.waveshare.com/13.3inch-e-paper-hat-plus-e.htm?sku=29355&aff_id=79380",
+    "cases": [
+      {
+        "label": "FrameOS Case Maker preset",
+        "url": "https://cases.frameos.net/#path=waveshare.13in3e.scad",
+        "image": "/images/cases/waveshare-13in3e-case.png"
+      }
+    ],
     "status": "tested",
     "slug": "waveshare-epd-13in3e",
     "esp32": true
+  },
+  {
+    "driver": "waveshare.EPD_13in3e",
+    "vendor": "Waveshare",
+    "model": "ESP32-S3 ePaper 13.3E6",
+    "technology": "E-ink",
+    "interface": "ESP32-S3 board",
+    "diagonal": 13.3,
+    "width": 1600,
+    "height": 1200,
+    "colors": "6 colors (Spectra 6)",
+    "colorCount": 6,
+    "colorClass": "spectra",
+    "label": "Waveshare ESP32-S3 ePaper 13.3E6",
+    "status": "tested",
+    "slug": "waveshare-esp32-s3-epaper-13in3e6",
+    "platforms": [
+      "esp32-s3"
+    ],
+    "existingPage": true
   }
 ]

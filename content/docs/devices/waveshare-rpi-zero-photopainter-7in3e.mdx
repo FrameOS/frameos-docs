@@ -1,0 +1,56 @@
+---
+title: "Waveshare RPi Zero PhotoPainter 7.3\""
+description: "Raspberry Pi Zero PhotoPainter profile for the 7.3\" Spectra 6 Waveshare e-ink panel."
+device:
+  vendor: "Waveshare"
+  model: "RPi Zero PhotoPainter 7.3\""
+  driver: "waveshare.rpi_zero_photopainter_7in3e"
+  label: "Waveshare 7.3\" RPi Zero PhotoPainter - 800x480 Spectra 6 Color"
+  technology: "E-ink"
+  interface: "Raspberry Pi Zero GPIO"
+  diagonal: 7.3
+  width: 800
+  height: 480
+  colors: "6 colors (Spectra 6)"
+  colorCount: 6
+  colorClass: "spectra"
+  platforms:
+    - "raspberry-pi"
+  status: "tested"
+---
+
+The **Waveshare RPi Zero PhotoPainter 7.3"** profile drives the same 800×480 Spectra 6 panel as
+the [Waveshare 7.3" (E)](/devices/waveshare-epd-7in3e) page, but with the GPIO defaults used by
+the Raspberry Pi Zero PhotoPainter wiring.
+
+Use this driver profile when the display is attached through the PhotoPainter Pi wiring. For the
+standard Waveshare HAT or driver board, use `waveshare.EPD_7in3e` instead.
+
+## How it works
+
+FrameOS maps `waveshare.rpi_zero_photopainter_7in3e` to the native `EPD_7in3e` panel driver and
+applies PhotoPainter-specific pin defaults:
+
+| Signal | GPIO |
+| ------ | ---- |
+| RST    | 17   |
+| DC     | 25   |
+| CS     | 8    |
+| BUSY   | 24   |
+| SCLK   | 11   |
+| MOSI   | 10   |
+| PWR    | 27   |
+
+Each render pass draws your [scene](/guide/scenes), dithers it to the Spectra 6 palette, and
+pushes it to the panel over SPI.
+
+## Setup
+
+1. Install FrameOS on the Raspberry Pi Zero or Zero 2 W.
+2. [Add a frame](/guide/first-deploy) in the FrameOS backend and select the
+   **Waveshare 7.3" RPi Zero PhotoPainter - 800x480 Spectra 6 Color** driver.
+3. Save & deploy. FrameOS uses the PhotoPainter pin map automatically.
+
+## Status
+
+🟢 **Confirmed working** - tested on real hardware by the maintainers or the community.

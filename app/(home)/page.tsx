@@ -11,11 +11,9 @@ import {
   QrCode,
   Server,
 } from 'lucide-react';
-import { CopyCommand } from '@/components/copy-command';
+import { InstallPathChooser } from '@/components/install-path-chooser';
 import { Slideshow, type Slide } from '@/components/slideshow';
 import { links } from '@/lib/shared';
-
-const INSTALL_COMMAND = 'bash <(curl -fsSL https://frameos.net/install.sh)';
 
 // Swap or reorder freely - the slideshows render whatever is listed here.
 const frameSlides: Slide[] = [
@@ -176,12 +174,7 @@ export default function HomePage() {
               GitHub
             </Link>
           </div>
-          <div className="w-full">
-            <p className="mb-2 text-xs font-medium uppercase tracking-wider text-fd-muted-foreground">
-              Install the backend (via docker)
-            </p>
-            <CopyCommand command={INSTALL_COMMAND} className="w-full" />
-          </div>
+          <InstallPathChooser />
           <p className="text-sm text-fd-muted-foreground">
             Free &amp; open source{' '}
             <Link href="/blog/why-frameos" className="text-fd-primary hover:underline">
@@ -198,18 +191,18 @@ export default function HomePage() {
         <div className="mx-auto w-full max-w-6xl px-6 py-20">
           <SectionTitle
             kicker="How it works"
-            title="Three steps to a frame that runs itself"
-            sub="The backend deploys over SSH or a flashed SD card. After that, the frame is on its own - the backend can go back to sleep."
+            title="Two setup paths, one standalone frame"
+            sub="Use the backend when you want a webapp for designing and managing frames, or flash the Pi Zero 2 W image when you want a frame that can set itself up."
           />
           <ol className="grid gap-8 md:grid-cols-3">
             <li className="rounded-xl border bg-fd-background p-6">
               <span className="mb-3 inline-flex size-8 items-center justify-center rounded-full bg-fd-primary font-semibold text-fd-primary-foreground">
                 1
               </span>
-              <h3 className="mb-2 font-semibold">Run the backend anywhere</h3>
+              <h3 className="mb-2 font-semibold">Choose your install path</h3>
               <p className="text-sm text-fd-muted-foreground">
-                One command on your laptop, server or NAS - or install the Home Assistant add-on.
-                It&apos;s a local web app, not a service you sign up for.
+                Run the Dockerized backend on your laptop, server or NAS, or flash the standalone
+                Buildroot image directly to a Raspberry Pi Zero 2 W.
               </p>
             </li>
             <li className="rounded-xl border bg-fd-background p-6">
@@ -229,10 +222,10 @@ export default function HomePage() {
               <span className="mb-3 inline-flex size-8 items-center justify-center rounded-full bg-fd-primary font-semibold text-fd-primary-foreground">
                 3
               </span>
-              <h3 className="mb-2 font-semibold">Deploy scenes, then walk away</h3>
+              <h3 className="mb-2 font-semibold">Set up scenes, then walk away</h3>
               <p className="text-sm text-fd-muted-foreground">
-                Pick prebuilt scenes or design your own, hit deploy, and you&apos;re done. The
-                frame renders on-device and is controlled from its own QR code and HTTP API (still experimental for ESP32).
+                Pick prebuilt scenes or design your own in the backend or on the frame. The frame
+                renders on-device and is controlled from its own QR code and HTTP API (still experimental for ESP32).
               </p>
             </li>
           </ol>
@@ -390,18 +383,24 @@ export default function HomePage() {
         <div className="mx-auto flex w-full max-w-3xl flex-col items-center gap-6 px-6 py-20 text-center">
           <h2 className="text-3xl font-bold tracking-tight">Build your first frame this weekend</h2>
           <p className="text-fd-muted-foreground">
-            A Raspberry Pi or ESP32, a display, and one command to get going.
+            The guide walks through both paths: a backend webapp for managing frames, or a
+            standalone Pi Zero 2 W image for direct setup.
           </p>
-          <CopyCommand command={INSTALL_COMMAND} />
+          <div className="flex flex-wrap items-center justify-center gap-3">
+            <Link
+              href="/guide"
+              className="rounded-lg bg-fd-primary px-5 py-2.5 font-medium text-fd-primary-foreground transition-opacity hover:opacity-90"
+            >
+              Read the setup guide
+            </Link>
+            <Link
+              href={links.github}
+              className="rounded-lg border px-5 py-2.5 font-medium transition-colors hover:bg-fd-accent"
+            >
+              GitHub
+            </Link>
+          </div>
           <div className="flex flex-wrap items-center justify-center gap-4 text-sm">
-            <Link href="/guide" className="font-medium text-fd-primary hover:underline">
-              Read the guide
-            </Link>
-            <span className="text-fd-muted-foreground">·</span>
-            <Link href={links.github} className="font-medium text-fd-primary hover:underline">
-              Star on GitHub
-            </Link>
-            <span className="text-fd-muted-foreground">·</span>
             <Link href={links.discord} className="font-medium text-fd-primary hover:underline">
               Join the Discord
             </Link>

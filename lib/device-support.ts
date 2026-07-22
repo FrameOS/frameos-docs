@@ -5,7 +5,8 @@ const esp32UnsupportedWavesharePanels = new Set([
   'EPD_12in48b_V2',
 ]);
 
-export function deviceSupportsEsp32(device: { driver: string; esp32?: boolean }): boolean {
+export function deviceSupportsEsp32(device: { driver: string; esp32?: boolean; platforms?: string[] }): boolean {
+  if (device.platforms) return device.platforms.includes('esp32-s3');
   if (device.driver === 'web_only') return true;
   if (!device.driver.startsWith('waveshare.')) return device.esp32 === true;
 
