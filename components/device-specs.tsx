@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import { ExternalLink } from 'lucide-react';
 import type { Device } from '@/lib/device-schema';
+import { DevicePhoto } from '@/components/device-photo';
 import { deviceSupportsEsp32, platformLabels } from '@/lib/device-support';
 
 const waveshareAffiliateId = '79380';
@@ -71,11 +72,10 @@ export function DeviceSpecs({ device }: { device: Device }) {
         <div className="mb-4 flex flex-col gap-3 border-b pb-4 sm:flex-row sm:items-center sm:justify-between">
           <div className="flex min-w-0 items-center gap-3">
             {device.image ? (
-              <img
+              <DevicePhoto
                 src={device.image}
                 alt={`${device.vendor} ${device.model}`}
-                loading="lazy"
-                className="h-28 w-36 flex-none rounded-md border bg-white object-contain p-1"
+                className="h-28 w-44 flex-none"
               />
             ) : null}
             <div className="min-w-0">
