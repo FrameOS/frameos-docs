@@ -1,0 +1,44 @@
+---
+title: "XTEINK X4"
+description: "The XTEINK X4 4.26\" e-ink reader running FrameOS as a thin client - the backend renders, the ESP32-C3 draws."
+device:
+  vendor: "XTEINK"
+  model: "X4"
+  driver: "waveshare.EPD_4in26"
+  label: "XTEINK X4 (4.26\" ESP32-C3)"
+  technology: "E-ink"
+  interface: "ESP32-C3 board"
+  diagonal: 4.26
+  width: 800
+  height: 480
+  colors: "4-level grayscale"
+  colorCount: 4
+  colorClass: "gray"
+  buttons: 1
+  platforms:
+    - "esp32-c3"
+  status: "untested"
+---
+
+The **XTEINK X4** is a small 4.26" four-grayscale e-ink reader on an **ESP32-C3** with
+16&nbsp;MB of flash. Reflashed with FrameOS it becomes a pocket-sized frame - and 800×480 on a
+4.26" panel is a lot of pixels per inch, so small text stays legible.
+
+The C3 has no PSRAM, so FrameOS runs this board as a **thin client**: your
+[backend](/guide/backend) renders the scene and the device streams the packed panel bytes. The
+backend has to be reachable when the frame renders.
+
+The X4's card slot shares its SPI bus with the e-paper controller, so SD-card assets are turned
+off on this board.
+
+## Setup
+
+1. In the FrameOS backend, create a frame with **Flash embedded device**.
+2. Choose **ESP32-C3**, select the **XTEINK X4** preset, and enter your WiFi details.
+3. Build the firmware and flash it over USB from the browser.
+4. Install scenes as usual.
+
+## Status
+
+🟡 **Should work, not yet confirmed on real hardware.**
+Tell us on [GitHub](https://github.com/FrameOS/frameos/issues/new) or [Discord](https://discord.gg/9dT9y7EzUw) if you try it.

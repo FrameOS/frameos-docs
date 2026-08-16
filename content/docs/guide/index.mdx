@@ -1,6 +1,6 @@
 ---
 title: What is FrameOS?
-description: An operating system for single-function smart frames. Runs on a Raspberry Pi or ESP32, renders on e-ink, HDMI and LCD displays. No cloud required.
+description: An operating system for single-function smart frames. Runs on a Raspberry Pi or an ESP32, renders on e-ink, HDMI and LCD displays. No cloud required.
 ---
 
 FrameOS turns a Raspberry Pi (or an [ESP32](/guide/esp32)) and a display into a
@@ -24,28 +24,44 @@ FrameOS has two parts:
    nothing stops working when your internet goes down.
 
 2. **The backend** is a self-hosted control panel (a Docker container, or a Home Assistant add-on)
-   where you design scenes in a visual editor and deploy them to frames over SSH or
-   [FrameOS Remote](/guide/remote). It can run on a server, a NAS, or just your laptop - and once
-   your frames are deployed, **you can turn it off**. The frames keep running on their own.
+   where you design scenes in a visual editor and deploy them to frames over SSH,
+   [FrameOS Remote](/guide/remote) or USB. It can run on a server, a NAS, or just your laptop -
+   and once your frames are deployed, **you can turn it off**. The frames keep running on their
+   own.
 
-<Callout title="ESP32 support">
-  FrameOS primarily targets the Raspberry Pi (from the $15 Zero 2 W up) - a full Linux system
-  gives you SSH deploys, real fonts and image processing, a local web server, and room to run
-  real apps. It also runs on the **ESP32-S3** microcontroller, rendering scenes on-device and
-  updating over the air for supported Waveshare SPI e-paper panels.
-  [See the ESP32 guide](/guide/esp32).
+## Pick your hardware
+
+| | Best for | Notes |
+| --- | --- | --- |
+| **[Raspberry Pi](/guide/raspberry)** | Everything | 120+ panels, HDMI and LCD, any font, custom apps in JavaScript or Nim. Zero 2 W upward, Pi 5 for 60 FPS |
+| **[ESP32-S3](/guide/esp32)** | Battery frames, all-in-one boards | Renders scenes on-device, deep-sleeps between refreshes, updates over the air. Waveshare SPI e-paper |
+| **[ESP32-C3](/guide/esp32) / [Pico W](/guide/pico)** | Boards without PSRAM | Thin clients: the backend renders, the device draws. Covers the TRMNL, XTEINK X4 and Pimoroni Inky Frame |
+| **[Virtual frame](/guide/virtual)** | No hardware at all | The backend renders to an image URL and a kiosk page - for tablets, browsers and signage players |
+
+You also need **somewhere to run the backend**, at least while deploying: your computer, a
+server, or Home Assistant.
+
+<Callout title="Which one should I get?">
+  If you're starting from nothing, get a **Raspberry Pi Zero 2 W** and an e-ink panel: it's the
+  best-supported combination and nothing is off limits. Choose an **ESP32-S3** if you want a
+  frame that runs off a battery, or if you already own one of the all-in-one boards like the
+  Waveshare PhotoPainter, a TRMNL or a Seeed reTerminal.
 </Callout>
 
-## What you need
+## What you get
 
-- **A Raspberry Pi.** A [Zero 2 W](https://www.raspberrypi.com/products/raspberry-pi-zero-2-w/) is
-  perfect for e-ink frames. Use a Pi 4/5 for fast HDMI output (up to 60 FPS). Or go smaller with
-  an [ESP32-S3](/guide/esp32) for supported panels.
-- **A display.** Any [supported e-ink panel](/devices) from Waveshare or Pimoroni, an HDMI screen,
-  or no display at all ("web only" and "http push" modes). ESP32 builds currently target
-  Waveshare SPI e-paper panels or headless mode.
-- **Somewhere to run the backend**, at least while deploying: your computer, a server, or Home
-  Assistant.
+- **A visual scene editor** with ~40 built-in apps - calendars, weather, Home Assistant sensors,
+  photo galleries, Immich and Google Photos, OpenAI text and images, QR codes, charts, SVG - and
+  every one of them forkable down to its source.
+- **Scenes that run on the device**, deployed in seconds without a rebuild, with live state fields
+  you can change from your phone without redeploying at all.
+- **[Images of any size](/guide/images)**, decoded straight into the panel. A 12-megapixel photo
+  renders on a microcontroller with 8&nbsp;MB of RAM.
+- **A control page and HTTP API on every frame**, on port 8787, plus a QR code on the display so
+  anyone standing in front of it can take over.
+- **Prebuilt SD images** for the Pi and browser flashing for the ESP32, both preconfigured with
+  your WiFi.
+- **[3D-printable cases](/cases)** generated around your exact panel and board.
 
 ## Getting started
 
@@ -55,7 +71,8 @@ FrameOS has two parts:
    bash <(curl -fsSL https://frameos.net/install.sh)
    ```
 2. [Set up the Raspberry Pi](/guide/raspberry) - flash a prebuilt FrameOS SD image, or use stock
-   Raspberry Pi OS Lite. (Or [flash an ESP32](/guide/esp32) instead.)
+   Raspberry Pi OS Lite. (Or [flash an ESP32](/guide/esp32), a [Pico](/guide/pico), or start with
+   a [virtual frame](/guide/virtual) instead.)
 3. [Deploy your first scene](/guide/first-deploy) - pick from the built-in gallery and sample
    scenes, then make your own in the [scene editor](/guide/scenes).
 4. For a professional finish, [3D print a custom case](/cases).

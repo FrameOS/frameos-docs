@@ -7,6 +7,13 @@ Every frame runs its own web server on port `8787`. This is the heart of FrameOS
 design: viewing, controlling, and even administering a frame works **directly against the device**,
 from any browser or script on your network. The backend can be off. The internet can be down.
 
+<Callout title="On a microcontroller">
+  [ESP32 frames](/guide/esp32) serve the same kind of API on port `80` - the image, the scene
+  state, `POST /event/<name>`, logs, metrics and assets - but not the browser UI below. Manage
+  those from the backend. [Pico](/guide/pico) and [virtual](/guide/virtual) frames have no
+  on-device server at all.
+</Callout>
+
 ## The frame's web app
 
 Open `http://<frame-ip>:8787/` for the frame's own web UI:

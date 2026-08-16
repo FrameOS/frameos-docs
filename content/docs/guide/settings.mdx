@@ -1,6 +1,6 @@
 ---
 title: Useful settings
-description: Access keys, QR codes, asset storage, nightly reboots and debug logging.
+description: Access keys, QR codes, asset storage, power management, nightly reboots and debug logging.
 ---
 
 A tour of the most useful options under a frame's **Settings** tab.
@@ -16,12 +16,25 @@ Each frame's HTTP server (port `8787`) has three access modes - **private**, **p
 By default the frame overlays its control URL as a QR code on the display. You can position it,
 restyle it, or turn it off entirely.
 
-## Assets
+## Assets [#assets]
 
 Downloaded images (OpenAI, Unsplash, galleries…) are saved to `/srv/assets` on the frame's SD card
 when there's enough free space. This avoids re-downloading (and re-paying for) the same images
-after a reboot. Browse them under the frame's **Assets** tab, and reuse them with the
-**Local image** app.
+after a reboot. Browse, upload, rename and delete them under the frame's **Assets** tab, reuse
+them with the **Local image** app, or point a `path` state field at a file or folder so the
+control page gets a picker.
+
+This works the same way on [ESP32 boards with a TF card slot](/guide/esp32#assets-and-the-sd-card).
+Images too large to decode in memory also spool here on their way to the screen - see
+[Big images on small devices](/guide/images).
+
+## Power and battery
+
+Frames that can sleep - the [ESP32-S3](/guide/esp32#power) and the
+[Pico W boards](/guide/pico#battery-mode) - get a **Power** section: deep sleep between refreshes,
+sleeping only while on battery, aligning wake-ups to wall-clock boundaries, waking periodically to
+pick up queued commands, and battery voltage sensing. A Raspberry Pi is always awake and always
+wall-powered, so it has none of this.
 
 ## Nightly reboot
 

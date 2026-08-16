@@ -1,0 +1,48 @@
+---
+title: "Pimoroni Inky Frame 7.3\" Spectra 6"
+description: "The Spectra 6 Pimoroni Inky Frame 7.3\" (Pico 2 W) running FrameOS as a thin client."
+device:
+  vendor: "Pimoroni"
+  model: "Inky Frame 7.3\" Spectra 6"
+  driver: "waveshare.EPD_7in3e"
+  label: "Pimoroni Inky Frame 7.3\" Spectra 6 (Pico 2 W)"
+  technology: "E-ink"
+  interface: "Pico 2 W board"
+  diagonal: 7.3
+  width: 800
+  height: 480
+  colors: "6 colors (Spectra 6)"
+  colorCount: 6
+  colorClass: "spectra"
+  platforms:
+    - "pico-2w"
+  status: "untested"
+---
+
+The **Spectra 6 Inky Frame 7.3"** (August 2025 onwards) replaces the seven-colour ACeP panel with
+a **Spectra 6** one - deeper, more saturated colours and a much better black - on a Raspberry Pi
+Pico 2 W. You can tell it apart from the older
+[ACeP version](/devices/pimoroni-inky-frame-7-3-pico2) by the black border along the top of the
+panel.
+
+FrameOS runs it as a [thin client](/guide/pico): the [backend](/guide/backend) renders and dithers
+the scene to the Spectra 6 palette, and the Pico streams the packed panel bytes into the
+controller. The backend has to be reachable when the frame renders.
+
+## Setup
+
+1. Download `frameos-<version>-pico-2w.uf2` (note the **2w**) from the
+   [latest release](https://github.com/FrameOS/frameos/releases).
+2. Hold **BOOTSEL** while plugging in USB and copy the file onto the `RP2350` drive.
+3. Add a frame in the backend with **Flash embedded device** and the
+   **Pimoroni Inky Frame 7.3" Spectra 6** preset.
+4. Provision it over the USB serial console - see the [Pico guide](/guide/pico).
+
+FrameOS ships several Spectra 6 palettes, so you can tune how saturated the render looks against
+your particular panel.
+
+## Status
+
+🟡 **Should work, not yet confirmed on real hardware.** The Spectra 6 driver itself is confirmed on
+other boards.
+Tell us on [GitHub](https://github.com/FrameOS/frameos/issues/new) or [Discord](https://discord.gg/9dT9y7EzUw) if you try it.

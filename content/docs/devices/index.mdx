@@ -1,13 +1,13 @@
 ---
 title: Device database
-description: Every display FrameOS can drive - 110+ e-ink, LCD and HDMI displays with specs, colors, resolution and setup notes.
+description: Every display FrameOS can drive - 120+ e-ink, LCD and HDMI displays with specs, colors, resolution and setup notes.
 full: true
 ---
 
-FrameOS ships with **110+ display drivers**, selectable when you add a frame in the backend.
+FrameOS ships with **120+ display drivers**, selectable when you add a frame in the backend.
 Native Nim drivers cover most e-ink panels by **Waveshare** and **Pimoroni**, three generic
-drivers cover everything with a video output - and every display below has its own page with
-full specs and setup instructions.
+drivers cover everything with a video output, and all-in-one microcontroller boards get their own
+entries - every display below has its own page with full specs and setup instructions.
 
 <DeviceTable />
 
@@ -25,8 +25,16 @@ full specs and setup instructions.
 - Older or unusual **Pimoroni Inky** boards fall back to a
   [Python driver](/devices/pimoroni-inky-python) that auto-detects the panel.
 - Panels marked **ESP32** also work without a Raspberry Pi, driven by the
-  [FrameOS ESP32-S3 firmware](/guide/esp32). ESP32 currently targets Waveshare SPI e-paper
-  panels and headless builds; each firmware image contains one selected panel driver.
+  [FrameOS ESP32 firmware](/guide/esp32): that's every Waveshare-family SPI e-paper panel except
+  the 10.3" IT8951 and the 12.48" family. Every supported driver is compiled into one firmware
+  image and the panel is picked at runtime, so switching panels needs no rebuild.
+- **All-in-one boards** - a panel with a microcontroller already attached - have their own pages
+  naming the hardware preset to choose: the
+  [Waveshare PhotoPainter](/devices/waveshare-esp32-s3-photopainter) and
+  [13.3E6](/devices/waveshare-esp32-s3-epaper-13in3e6), the
+  [Seeed reTerminals](/devices/seeed-reterminal-e1001), the [TRMNL](/devices/trmnl-og), the
+  [XTEINK X4](/devices/xteink-x4), the [Elecrow CrowPanel](/devices/elecrow-crowpanel-5in79) and
+  the [Pimoroni Inky Frames](/devices/pimoroni-inky-frame-5-7).
 
 ## Picking a panel
 
@@ -39,7 +47,7 @@ big, vivid art frame.
 
 - Displays not in this database: [open an issue](https://github.com/FrameOS/frameos/issues), or
   try the closest driver - controller boards are often shared between panels.
-- Tested a panel marked "should work"? [Tell us, with a photo](https://github.com/FrameOS/frameos/issues/65).
+- Tested a panel marked "should work"? Tell us on [GitHub](https://github.com/FrameOS/frameos/issues/new) or [Discord](https://discord.gg/9dT9y7EzUw).
 - Each device page is a markdown file in
   [`content/docs/devices/`](https://github.com/FrameOS/frameos-docs/tree/main/content/docs/devices),
   so corrections and additions are one pull request away.

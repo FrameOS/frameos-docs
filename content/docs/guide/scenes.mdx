@@ -4,7 +4,7 @@ description: Build scenes visually with the node-based editor - events, apps, da
 ---
 
 A **scene** is what a frame shows: a graph of connected nodes that runs on the device. Scenes are
-built in a visual editor in the backend, then compiled and deployed onto the frame.
+built in a visual editor in the backend, then deployed onto the frame, where it runs.
 
 ## Create a scene
 
@@ -50,13 +50,54 @@ frame's control page, the backend, or the [HTTP API](/guide/control).
 
 ![Editing state live](/images/app/edit-set-message.gif)
 
+Fields are typed, and the type decides what the control page shows: text, long text, numbers,
+booleans, a colour picker, a date picker, a select box, raw JSON, a font picker, an image, a
+scene picker - or a **path**, which is a file and folder browser over the frame's own
+[assets](/guide/settings#assets). "Which photo folder should this play?" becomes a picker instead
+of a typed-in string.
+
 ## Code nodes
 
 For quick data plumbing there are inline **code nodes** (green when not selected): single
-expressions in Nim that combine or transform values mid-graph - string concatenation, math,
-formatting.
+JavaScript or TypeScript expressions that combine or transform values mid-graph - string
+concatenation, math, formatting. (In an older [compiled scene](#execution) they are Nim
+expressions instead.)
 
 ![Code nodes](/images/app/code-nodes.gif)
+
+## How scenes run [#execution]
+
+Scenes are **interpreted**: the frame runs the graph as you drew it. New scenes are created that
+way, every scene FrameOS ships is built that way, and it's the only way [ESP32](/guide/esp32) and
+[Pico](/guide/pico) frames can work at all. What you get:
+
+- **Deploys are near-instant** - nothing is recompiled, so a change is on the frame in seconds.
+- **Code nodes are JavaScript, TypeScript or JSX**, and apps can be customised in JavaScript.
+- It costs a little more per render, which matters very little on a display that takes 20 seconds
+  to refresh anyway.
+
+There is a second, older mode - **compiled** - which turns the scene into native code inside the
+frame's binary. It's faster per render and it's the only mode that can run custom **Nim** app
+source and Nim code nodes, but every change needs a full rebuild and redeploy, and it only works
+on a Raspberry Pi.
+
+<Callout title="Compiled scenes are on the way out">
+  Scenes made before the switch may still be set to compiled, and you can still choose it under a
+  scene's settings on a Pi frame. It is not where FrameOS is heading, though - build new scenes
+  interpreted unless you specifically need Nim. If you switch an existing scene between modes, do
+  a full deploy afterwards; the editor warns you when a scene still contains Nim source that
+  interpreted mode can't run.
+</Callout>
+
+## Preview before you deploy
+
+Two ways to see a scene without committing to it:
+
+- **Preview in browser** runs the scene *in your browser*. The frame's renderer is compiled to
+  WebAssembly, so you get the real thing - same apps, same layout engine, same resolution -
+  without deploying to a device, or before you own one.
+- **Preview on frame** temporarily shows the scene on the actual frame without saving or
+  deploying it. Good for checking how a colour dithers on real e-ink.
 
 ## How to learn
 

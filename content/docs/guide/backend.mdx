@@ -100,6 +100,12 @@ docker run -d --name frameos --restart always \
 This is optional: for common targets FrameOS ships **precompiled binaries**, and you can also
 configure remote SSH build servers, or build on the frame itself, under **Settings → Builds**.
 
+<Callout title="ESP32 firmware needs no extra setup with Docker">
+  The `frameos/frameos` image bundles the ESP-IDF and Nim toolchains, so building and
+  browser-flashing [ESP32 firmware](/guide/esp32) works out of the box. Non-Docker installs need
+  [ESP-IDF and Nim installed by hand](/guide/esp32#backend-toolchain).
+</Callout>
+
 ## Local development with Flox
 
 Use this path when you want to work on FrameOS itself instead of running the released Docker

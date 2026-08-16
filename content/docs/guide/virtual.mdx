@@ -1,0 +1,52 @@
+---
+title: Virtual frames
+description: Run a frame with no hardware at all - the backend renders the scene and serves it as an image URL and a self-refreshing kiosk page.
+---
+
+A **virtual frame** is a frame with no device behind it. The backend renders its scenes and
+serves the result two ways:
+
+- **An image URL** - one PNG per request, at whatever size and colour mode you picked.
+- **A self-refreshing page** - a black, full-bleed kiosk page that swaps the image in place on
+  the frame's interval, without the white flash a meta-refresh would cause.
+
+Both URLs appear in the frame's settings once it is added.
+
+## What it's for
+
+- **Old tablets, browser kiosks and signage players.** Anything that can show a web page becomes
+  a frame - no FrameOS software on the device at all.
+- **Trying FrameOS**, or designing scenes, before any hardware arrives.
+- **Feeding other software**: a Home Assistant dashboard card, a Slack unfurl, a wallpaper
+  script, an e-ink display driven by something else entirely - anything that can fetch a PNG.
+- **Previewing what a panel will look like.** Pick the colour mode of the panel you're
+  considering and the render is quantised the same way, dithering included.
+
+## Add one
+
+Click **New frame → Virtual frame**, then set:
+
+- **Width and height** in pixels.
+- **Colour mode**: full colour, black & white, 4-level grayscale, black/white/yellow/red,
+  7-colour ACeP, or Spectra 6. Anything but full colour is dithered to that palette, exactly as a
+  real panel would be.
+
+From there it's an ordinary frame: install scenes, edit them in the
+[scene editor](/guide/scenes), set a render interval, change its state fields live.
+
+## How it differs from a real frame
+
+- **The backend does the rendering**, so a virtual frame stops updating when the backend does.
+  Every other kind of frame keeps going.
+- **Assets and scene state live on the backend** rather than on a device.
+- **Anything tied to real hardware** - GPIO buttons, the frame's own web server and QR code,
+  panel-specific behaviour - has nothing to talk to.
+
+Everything else works: the same apps, the same scenes, the same state fields.
+
+## Sharing the URLs
+
+The image and page URLs carry the frame's access key as a `?k=` parameter, and the page never
+prints the key in its markup - only inside the image URL it already arrived with. Anyone with the
+link can see the frame, so treat it like any other unlisted URL: fine for a tablet on your wall,
+not something to post publicly.

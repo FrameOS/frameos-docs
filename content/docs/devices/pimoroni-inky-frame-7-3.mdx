@@ -1,0 +1,45 @@
+---
+title: "Pimoroni Inky Frame 7.3\""
+description: "Pimoroni Inky Frame 7.3\" (Pico W) running FrameOS as a thin client - the backend renders, the Pico draws."
+device:
+  vendor: "Pimoroni"
+  model: "Inky Frame 7.3\""
+  driver: "waveshare.EPD_7in3f"
+  label: "Pimoroni Inky Frame 7.3\" (Pico W)"
+  technology: "E-ink"
+  interface: "Pico W board"
+  diagonal: 7.3
+  width: 800
+  height: 480
+  colors: "7 colors (ACeP)"
+  colorCount: 7
+  colorClass: "acep"
+  platforms:
+    - "pico-w"
+  status: "untested"
+---
+
+The **Pimoroni Inky Frame 7.3"** is an 800×480 seven-colour ACeP display with a Raspberry Pi
+Pico W on the back - the biggest of the original Inky Frames, and a natural art frame.
+
+FrameOS runs it as a [thin client](/guide/pico): the [backend](/guide/backend) renders and dithers
+the scene, and the Pico streams the packed panel bytes into the controller. The backend has to be
+reachable when the frame renders.
+
+If your board says **Pico 2 W** on the back, use the
+[2024 refresh page](/devices/pimoroni-inky-frame-7-3-pico2) instead; if the panel has a black top
+border it is the [Spectra 6 version](/devices/pimoroni-inky-frame-7-3-spectra).
+
+## Setup
+
+1. Download `frameos-<version>-pico-w.uf2` from the
+   [latest release](https://github.com/FrameOS/frameos/releases).
+2. Hold **BOOTSEL** while plugging in USB and copy the file onto the `RPI-RP2` drive.
+3. Add a frame in the backend with **Flash embedded device** and the
+   **Pimoroni Inky Frame 7.3"** preset.
+4. Provision it over the USB serial console - see the [Pico guide](/guide/pico).
+
+## Status
+
+🟡 **Should work, not yet confirmed on real hardware.**
+Tell us on [GitHub](https://github.com/FrameOS/frameos/issues/new) or [Discord](https://discord.gg/9dT9y7EzUw) if you try it.

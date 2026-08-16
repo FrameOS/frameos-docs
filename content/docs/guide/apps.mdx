@@ -1,13 +1,22 @@
 ---
 title: Editing apps
-description: Every node on a scene is an app you can fork and edit - in Nim or JavaScript.
+description: Every node on a scene is an app you can fork and edit - in JavaScript, or in Nim.
 ---
 
 Every blue and green node on a scene is an **app**: a small program with typed config fields, an
-optional image output, and access to the scene's state. FrameOS ships with ~40 built-in apps
-(clocks, calendars, weather, Home Assistant sensors, OpenAI text & images, QR codes, RTSP camera
-snapshots, web page screenshots, image manipulation, layout splitting…), and you can edit or write
-your own.
+optional image output, and access to the scene's state. FrameOS ships with ~40 built-in apps, and
+you can edit or write your own.
+
+What's in the box, roughly:
+
+- **Data**: clocks, iCal calendars and agendas, weather, Home Assistant sensors, waste-collection
+  schedules, JSON/XML parsing, HTTP downloads.
+- **Images**: photo galleries, Unsplash, Wikimedia Commons, Immich, Google Photos, images from any
+  URL, files off the frame's own SD card, OpenAI image generation, RTSP camera snapshots, headless
+  Chromium screenshots.
+- **Render**: text, QR codes, calendars, charts, SVG, gradients and colour fills, opacity, split
+  layouts, zoom/pan (Ken Burns), resize and rotate.
+- **Logic**: if/else, set state, log, sleep control.
 
 ## Edit any app
 
@@ -22,10 +31,40 @@ untouched.
   strangers.
 </Callout>
 
+## JavaScript apps
+
+This is the normal way to write an app. They run on the frame inside an embedded
+[QuickJS](https://bellard.org/quickjs/) runtime - no Node.js needed on the device, and no
+compiler, so your change is live on the frame seconds after you save it. Create one from the code
+templates (text, logic, SVG, or image), define its fields in `config.json`, and export plain
+functions:
+
+```ts title="app.ts"
+export function init(app: FrameOSApp): void {
+  app.initialized = true
+}
+
+export function get(app: FrameOSApp, context: FrameOSContext): string {
+  return `${app.config.prefix}: ${app.config.message}`
+}
+```
+
+JS apps can fetch data with `frameos.fetchText()` / `frameos.fetchJson()`, return text, JSON, SVG
+markup, or images, and plug into scenes exactly like the built-in ones. They work on every kind of
+frame, and they're the **only** option on [ESP32](/guide/esp32) and [Pico](/guide/pico) boards.
+
+Scene JavaScript runs sandboxed: bounded memory and run time, no filesystem, and network access
+only through the FrameOS fetch helpers.
+
 ## Nim apps
 
-Built-in apps are written in [Nim](https://nim-lang.org/) and compiled into the frame's binary -
-this is how a $15 Pi Zero 2 W stays fast. A minimal render app:
+The built-in apps are written in [Nim](https://nim-lang.org/) and compiled into the frame's binary
+- this is how a $15 Pi Zero 2 W stays fast. Reading them is the best way to learn what an app can
+do.
+
+Editing that Nim source is a different matter: it only takes effect in a
+[compiled scene](/guide/scenes#execution) on a Raspberry Pi, and every change means a rebuild. For
+new work, reach for JavaScript first. A minimal render app looks like this:
 
 ```python title="color.nim"
 import pixie
@@ -75,23 +114,23 @@ Things to know:
   [utils/](https://github.com/FrameOS/frameos/tree/main/frameos/src/frameos/utils) folder show
   what's available.
 
-## JavaScript apps
+## Where each kind runs
 
-You can also write apps in **JavaScript/TypeScript**. They run on the frame inside an embedded
-[QuickJS](https://bellard.org/quickjs/) runtime - no Node.js needed on the device. Create one from
-the code templates (text, logic, SVG, or image), define its fields in `config.json`, and export
-plain functions:
+| | Raspberry Pi | ESP32-S3 | Pico W / ESP32-C3 |
+| --- | --- | --- | --- |
+| Built-in apps | All of them | All but Chromium screenshots and RTSP | Rendered on the backend |
+| Custom JavaScript apps | ✅ | ✅ | Rendered on the backend |
+| Custom Nim apps | Compiled scenes only | ❌ | ❌ |
+| Nim code nodes | Compiled scenes only | ❌ - use JS code nodes | ❌ |
 
-```ts title="app.ts"
-export function init(app: FrameOSApp): void {
-  app.initialized = true
-}
+## SVG, fonts and text
 
-export function get(app: FrameOSApp, context: FrameOSContext): string {
-  return `${app.config.prefix}: ${app.config.message}`
-}
-```
+The `render/svg` app rasterises SVG markup - a very practical way to lay out a panel, especially
+from a JavaScript app that generates the markup. `<text>` elements are typeset with the frame's
+own fonts and drawn as outlines, so labels come out sharp at any size. FrameOS implements a subset
+of SVG rather than the whole spec: `<defs>` and external references are ignored, and on a
+microcontroller everything renders in the one built-in typeface.
 
-JS apps can fetch data with `frameos.fetchText()` / `frameos.fetchJson()`, return text, JSON, SVG
-markup, or images, and plug into scenes exactly like Nim apps. They're the fastest way to write
-custom logic without touching a compiler.
+On a Raspberry Pi you can upload your own TrueType fonts under the frame's assets and pick them in
+any text or font field. Drop a `NotoColorEmoji.ttf` in there and it's used automatically as a
+fallback for characters your font doesn't cover.

@@ -1,0 +1,104 @@
+---
+title: Big images on small devices
+description: How FrameOS renders a 12-megapixel photo on a device with 8 MB of RAM - streaming decoders, bounded decodes, spooling and caching.
+---
+
+Frames are small computers. A Pi Zero 2 W has 512&nbsp;MB of RAM; an
+[ESP32-S3](/guide/esp32) has 8. A single 4000×3000 photo, decoded the ordinary way, is
+**48&nbsp;MB of pixels** - six times everything the microcontroller has, and enough to push a Pi
+Zero into swapping and dying.
+
+The usual workarounds are all bad. Resize everything by hand. Run a proxy server that shrinks
+images before the frame sees them. Add `?width=800` to every URL and hope the host honours it.
+Each one puts a machine between your frame and the thing it's showing, which is exactly what
+FrameOS exists to avoid.
+
+So FrameOS does the other thing: **it decodes big images without ever holding them.**
+
+<Callout title="Nothing to configure">
+  This is not a setting. Point any app at any image and it works. This page exists so you know
+  why it works, and where the real limits are.
+</Callout>
+
+## Scale while decoding, not after
+
+The naive pipeline is *decode → resize → draw*, and the peak cost is the decode. FrameOS folds
+the resize into the decoder: it reads the compressed bytes through a small rolling window and
+writes finished, correctly scaled rows straight into the frame's canvas. The full-size image
+never exists.
+
+What that costs on an 800×480 frame:
+
+| | Ordinary decode | FrameOS |
+| --- | --- | --- |
+| 4000×3000 JPEG | 48 MB | canvas + a few hundred KB |
+| 2.6 MB PNG, 1024×1024 | 4 MB + the compressed body | streamed, ~64 KB window |
+| 1920×1280 photo through a resize node | 9.8 MB | 540 KB |
+
+Streaming decoders exist for **JPEG, PNG, WebP, BMP and PPM**. GIF, QOI, TIFF and SVG decode the
+regular way, bounded by a memory budget (below). SVG rasterises straight into the canvas, and
+gradients rasterise band by band when memory is tight.
+
+The scaling is a proper area filter - each output pixel is the average of the source pixels it
+covers - so downscaling stays smooth. It matters more than it sounds: nearest-neighbour
+decimation of line art (an XKCD comic, a chart, a thin font) deletes whole columns of pixels and
+eats letter stems. Axes that aren't being downscaled are untouched, byte for byte.
+
+## Ask for only what you need
+
+The frame knows how many pixels it can actually show, and that number travels **up** the scene
+graph before anything is fetched.
+
+If a photo feeds a rotate node feeding an 800×480 canvas, the rotation tells the decoder the
+useful resolution is 480×800 - so a 1920×1280 source decodes at 450×300 instead of full size. A
+zoom/pan node asks for its canvas times its maximum zoom, and no more. Where a node draws
+directly onto the canvas, the decoder is handed *the canvas itself* as its output buffer, so
+there is no intermediate image at all.
+
+The result is that adding nodes to a scene doesn't ratchet memory up the way it would in a
+conventional pipeline, and the pixels you get are the pixels you would have got the expensive
+way.
+
+## Spool to storage, cache to storage
+
+Two more tiers, both automatic:
+
+- **Downloads too large to hold in RAM spool to disk** - the SD card on a Pi, the TF card on an
+  ESP32 board - and the decoder streams from the file. The image cache does the same: a cached
+  photo that's too big for memory is kept on the card as raw pixels, so a 4-hour cache actually
+  caches instead of silently re-downloading every render. On the bench, serving a cached 13.3"
+  image from the card takes 7 seconds against 23 for the miss.
+- **Large text feeds are folded as they arrive.** A multi-megabyte iCal subscription used to be
+  buffered whole to extract a handful of events; now it's read a line at a time through an 8&nbsp;KB
+  window, with events outside your export range dropped as they're parsed.
+
+Frames with no writable storage lose the tiers, not the feature - everything falls back to
+memory, and nothing that used to work starts failing.
+
+## When it really is too big
+
+Every decode is planned against the memory the device actually has free at that moment. If the
+plan doesn't fit, FrameOS doesn't error out - it **degrades**: it retries at half resolution,
+then a quarter, and upscales the result. A slightly soft image beats an error frame on a wall.
+
+Beyond that, honest limits:
+
+- **Progressive JPEGs and interlaced PNGs can't be streamed** - the format interleaves the whole
+  image, so there is nothing to stream. They're decoded buffered and refused, gracefully, if they
+  don't fit. Save photos as baseline JPEG if you control the source.
+- **Some panels are the problem.** A 13.3" 1600×1200 six-colour canvas is 7.7&nbsp;MB on its own,
+  before any image exists. That's why that board carries 16&nbsp;MB of PSRAM.
+- **On a microcontroller, a failed allocation is contained, not fatal.** The render fails, the
+  device keeps running, and the next render tries again.
+
+## Why not just use a proxy?
+
+Because a frame that depends on a resize server is a frame that stops working when the server
+does - and the whole point of FrameOS is that the frame keeps working when everything else is
+off. Image proxying has been built here before, and taken back out again. The fix for "this image
+is too big" is always on the device.
+
+If you want to dig into the design and the measurements behind all of this, the engineering
+record lives in
+[docs/value-pipeline.md](https://github.com/FrameOS/frameos/blob/main/docs/value-pipeline.md) in
+the main repo.

@@ -1,0 +1,43 @@
+---
+title: "Elecrow CrowPanel 5.79\""
+description: "Elecrow CrowPanel 5.79\" - a dual-controller 4-grayscale e-ink board with an ESP32-S3, running FrameOS on-device."
+device:
+  vendor: "Elecrow"
+  model: "CrowPanel 5.79\""
+  driver: "waveshare.EPD_5in79"
+  label: "Elecrow CrowPanel 5.79\" (ESP32-S3)"
+  technology: "E-ink"
+  interface: "ESP32-S3 board"
+  diagonal: 5.79
+  width: 792
+  height: 272
+  colors: "4-level grayscale"
+  colorCount: 4
+  colorClass: "gray"
+  buttons: 5
+  platforms:
+    - "esp32-s3"
+  status: "untested"
+---
+
+The **Elecrow CrowPanel 5.79"** is a wide 792×272 four-grayscale e-ink board with an ESP32-S3
+(8&nbsp;MB PSRAM). The panel is driven by two SSD1683 controllers side by side; FrameOS handles
+that for you. Its shape suits a status strip - departures, a now-playing bar, a single-line
+dashboard.
+
+FrameOS runs on it as a full [ESP32-S3 frame](/guide/esp32) - scenes render on the device. Pick
+the **Elecrow CrowPanel 5.79"** hardware preset and the panel, GPIO map and all five front
+buttons (HOME, EXIT, NEXT, OK, PREV) are configured for you. Buttons dispatch scene events, so
+you can wire them to scene switches or anything else in the editor.
+
+## Setup
+
+1. In the FrameOS backend, create a frame with **Flash embedded device**.
+2. Choose **ESP32-S3**, select the **Elecrow CrowPanel 5.79"** preset, and enter your WiFi details.
+3. Build the firmware and flash it over USB from the browser.
+4. Install scenes as usual - they sync over WiFi, and the device updates itself over the air.
+
+## Status
+
+🟡 **Should work, not yet confirmed on real hardware.**
+Tell us on [GitHub](https://github.com/FrameOS/frameos/issues/new) or [Discord](https://discord.gg/9dT9y7EzUw) if you try it.

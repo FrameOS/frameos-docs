@@ -1,0 +1,46 @@
+---
+title: "Seeed reTerminal E1002"
+description: "Seeed Studio reTerminal E1002 - a 7.3\" Spectra 6 colour e-ink terminal with an ESP32-S3, running FrameOS on-device."
+device:
+  vendor: "Seeed Studio"
+  model: "reTerminal E1002"
+  driver: "waveshare.EPD_7in3e"
+  label: "Seeed reTerminal E1002 (7.3\" color ESP32-S3)"
+  technology: "E-ink"
+  interface: "ESP32-S3 board"
+  diagonal: 7.3
+  width: 800
+  height: 480
+  colors: "6 colors (Spectra 6)"
+  colorCount: 6
+  colorClass: "spectra"
+  buttons: 3
+  platforms:
+    - "esp32-s3"
+  status: "untested"
+---
+
+The **Seeed reTerminal E1002** is the colour sibling of the
+[E1001](/devices/seeed-reterminal-e1001): the same ESP32-S3 terminal, with a 7.3" **Spectra 6**
+six-colour panel instead of black and white. FrameOS runs on it as a full
+[ESP32-S3 frame](/guide/esp32), rendering and dithering scenes on the device.
+
+Pick the **Seeed reTerminal E1002** hardware preset when you add the frame; the panel, GPIO map,
+flash profile and the three front buttons (REFRESH, LEFT, RIGHT) come with it. The buttons
+dispatch scene events, so they can switch scenes or trigger a render.
+
+Spectra 6 panels take roughly half a minute per refresh - normal for the technology, and worth
+knowing before you plan anything that updates often.
+
+## Setup
+
+1. In the FrameOS backend, create a frame with **Flash embedded device**.
+2. Choose **ESP32-S3**, select the **Seeed reTerminal E1002** preset, and enter your WiFi details.
+3. Build the firmware and flash it over USB from the browser.
+4. Install scenes as usual - they sync over WiFi, and the device updates itself over the air.
+
+## Status
+
+🟡 **Should work, not yet confirmed on real hardware.** The Spectra 6 driver is confirmed on other
+boards; this specific terminal has not been reported back yet.
+Tell us on [GitHub](https://github.com/FrameOS/frameos/issues/new) or [Discord](https://discord.gg/9dT9y7EzUw) if you try it.

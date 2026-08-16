@@ -1,0 +1,44 @@
+---
+title: "Pimoroni Inky Frame 4.0\""
+description: "Pimoroni Inky Frame 4.0\" (Pico W) running FrameOS as a thin client - the backend renders, the Pico draws."
+device:
+  vendor: "Pimoroni"
+  model: "Inky Frame 4.0\""
+  driver: "waveshare.EPD_4in01f"
+  label: "Pimoroni Inky Frame 4.0\" (Pico W)"
+  technology: "E-ink"
+  interface: "Pico W board"
+  diagonal: 4.0
+  width: 640
+  height: 400
+  colors: "7 colors (ACeP)"
+  colorCount: 7
+  colorClass: "acep"
+  platforms:
+    - "pico-w"
+  status: "untested"
+---
+
+The **Pimoroni Inky Frame 4.0"** is a 640×400 seven-colour ACeP e-ink display with a Raspberry Pi
+Pico W soldered to the back. FrameOS runs on it as a [thin client](/guide/pico): the
+[backend](/guide/backend) renders and dithers the scene, and the Pico streams the packed panel
+bytes into the controller. A Pico W has 264&nbsp;KB of RAM - far too little for an on-device
+renderer, but plenty to stream a picture.
+
+The board's own battery latch is supported, so `deep_sleep` powers it right down between refreshes
+and cold-boots on the next interval or a button press.
+
+## Setup
+
+1. Download `frameos-<version>-pico-w.uf2` from the
+   [latest release](https://github.com/FrameOS/frameos/releases).
+2. Hold **BOOTSEL** while plugging in USB and copy the file onto the `RPI-RP2` drive.
+3. Add a frame in the backend with **Flash embedded device** and the
+   **Pimoroni Inky Frame 4.0"** preset.
+4. Provision it over the USB serial console - see the [Pico guide](/guide/pico).
+
+## Status
+
+🟡 **Should work, not yet confirmed on real hardware.** This panel's initialisation is derived from
+the Waveshare 4.01" (F) reference; if yours comes up mirrored or offset,
+[open an issue](https://github.com/FrameOS/frameos/issues).

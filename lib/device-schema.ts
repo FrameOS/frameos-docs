@@ -6,7 +6,14 @@ const deviceCaseSchema = z.object({
   image: z.string().optional(),
 });
 
-const devicePlatformSchema = z.enum(['raspberry-pi', 'esp32-s3']);
+const devicePlatformSchema = z.enum([
+  'raspberry-pi',
+  'esp32-s3',
+  // Thin clients: no on-device renderer, the backend renders and the board draws.
+  'esp32-c3',
+  'pico-w',
+  'pico-2w',
+]);
 
 // Structured specs for pages in content/docs/devices - these power the
 // searchable device database on /devices and the spec card on each page.

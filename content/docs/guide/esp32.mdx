@@ -1,38 +1,88 @@
 ---
 title: The ESP32
-description: Run FrameOS on an ESP32-S3 microcontroller - flash from the browser, render scenes on-device, update over the air.
+description: Run FrameOS on an ESP32-S3 microcontroller - flash from the browser, render full scenes on-device, sleep on a battery, update over the air.
 ---
 
-FrameOS also runs on **ESP32-S3 microcontrollers** - no Linux, no SD card, no SSH. The backend
-builds a firmware image for your frame, you flash it over USB (straight from the browser), and
-from then on the device renders scenes on its own and updates itself over the air.
+FrameOS runs on **ESP32-S3 microcontrollers** - no Linux, no SD card, no SSH. The backend builds a
+firmware image for your frame, you flash it over USB straight from the browser, and from then on
+the device fetches scenes over WiFi, renders them **itself**, drives the e-paper panel, and
+updates its own firmware over the air.
 
-<Callout title="ESP32 support">
-  ESP32 builds target Waveshare SPI e-paper panels plus a headless mode. Each firmware image
-  contains one selected panel driver. The Raspberry Pi remains the broadest platform for HDMI/LCD,
-  Pimoroni panels, Python-backed drivers, and OS-dependent apps - see
-  [which to pick](#raspberry-pi-or-esp32) below.
+This is not a cut-down mode. The same scene interpreter that runs on a Raspberry Pi runs on the
+S3, with the same apps, the same JavaScript runtime, the same image pipeline, and the same
+assets, logs, metrics and scheduler the backend shows for a Pi frame. What a $6 board *cannot*
+do is a short, specific list - it's [at the bottom of this page](#what-it-cannot-do).
+
+<Callout title="Two kinds of microcontroller frame">
+  An **ESP32-S3 with PSRAM** renders scenes on the device itself. A **PSRAM-less board**
+  (ESP32-C3, and the [Pico W boards](/guide/pico)) can't hold a renderer, so it runs as a *thin
+  client*: the backend renders the scene and the device streams the finished panel bytes. Both
+  are set up the same way and look identical in the backend.
 </Callout>
 
 ## What you need
 
-- **An ESP32-S3 board with PSRAM.** The reference board is the
+- **An ESP32-S3 board with PSRAM.** Rendering happens in PSRAM, so don't skip it. 8&nbsp;MB is
+  enough for panels up to 800×480; a 13.3" 1600×1200 six-colour panel wants 16&nbsp;MB.
+  The reference bare board is the
   [Seeed XIAO ESP32-S3](https://www.seeedstudio.com/XIAO-ESP32S3-p-5627.html)
-  (8MB flash, 8MB octal PSRAM) - rendering happens in PSRAM, so don't skip it.
-- **A supported panel**: a Waveshare SPI e-paper panel, wired over SPI - or no display at all.
-  IT8951 and 12.48" Waveshare panels still need a Raspberry Pi.
-- **The [backend](/guide/backend)**, with the ESP-IDF toolchain available (see below).
+  (8&nbsp;MB flash, 8&nbsp;MB octal PSRAM), but most people start from an
+  [all-in-one board](#supported-boards) that already has a panel attached.
+- **A panel**: any Waveshare-family SPI e-paper panel, wired over SPI - or no display at all.
+  The 10.3" IT8951 and 12.48" panels use different controller stacks and still need a Pi.
+- **The [backend](/guide/backend)**, to build the firmware and design scenes. Ready-made generic
+  images are also published with every [release](https://github.com/FrameOS/frameos/releases) if
+  you'd rather provision by hand.
 
-## Backend toolchain
+## Supported boards [#supported-boards]
+
+FrameOS ships **hardware presets** - pick one in the backend and the panel, GPIO map, buttons,
+battery divider, SD slot and flash size are all filled in for you:
+
+| Preset | Chip | Panel | Notes |
+| --- | --- | --- | --- |
+| [Waveshare ESP32-S3 PhotoPainter](/devices/waveshare-esp32-s3-photopainter) | S3 | 7.3" Spectra 6 | 8&nbsp;MB PSRAM, TF card slot, battery header, 2 buttons |
+| [Waveshare ESP32-S3 ePaper 13.3E6](/devices/waveshare-esp32-s3-epaper-13in3e6) | S3 | 13.3" Spectra 6 | 16&nbsp;MB PSRAM, 32&nbsp;MB flash, TF card, battery sensing |
+| [Seeed reTerminal E1001](/devices/seeed-reterminal-e1001) | S3 | 7.5" black/white | 3 front buttons, 32&nbsp;MB flash |
+| [Seeed reTerminal E1002](/devices/seeed-reterminal-e1002) | S3 | 7.3" Spectra 6 | 3 front buttons, 32&nbsp;MB flash |
+| [Seeed reTerminal Sticky](/devices/seeed-reterminal-sticky) | S3 | 3.97" black/white | Small desk/fridge frame |
+| [Elecrow CrowPanel 5.79"](/devices/elecrow-crowpanel-5in79) | S3 | 5.79" 4-grey | 5 buttons, dual SSD1683 |
+| [TRMNL 7.5" DIY Kit](/devices/trmnl-og-diy-kit) | S3 | 7.5" black/white | XIAO ePaper driver board |
+| [TRMNL 4.26" DIY Kit](/devices/trmnl-4in26-diy-kit) | S3 | 4.26" 4-grey | XIAO ePaper driver board |
+| [TRMNL OG](/devices/trmnl-og) | C3 | 7.5" black/white | Thin client - backend renders |
+| [TRMNL BWRY](/devices/trmnl-bwry) | C3 | 7.5" 4-colour | Thin client - backend renders |
+| [XTEINK X4](/devices/xteink-x4) | C3 | 4.26" 4-grey | Thin client - backend renders |
+
+Anything else is a **Custom ESP32 board**: pick the panel, set the pins, done. The
+[Pimoroni Inky Frame](/guide/pico) boards carry a Pico instead of an ESP32 and have
+[their own page](/guide/pico).
+
+## Flash the device
+
+1. Click **New frame** in the backend and choose **Flash embedded device**.
+2. Pick the platform (**ESP32-S3** or **ESP32-C3**), your hardware preset or panel, and enter
+   your WiFi credentials.
+3. The backend builds a firmware image, baking in the WiFi details, backend address, frame API
+   key, panel and pin map.
+4. Connect the board over USB and click **Flash from browser**. This uses Web Serial, so it works
+   in Chrome and Edge. Or download the image and flash it by hand:
+
+   ```bash
+   esptool.py --chip esp32s3 --port /dev/tty.usbmodem* --baud 460800 \
+     --flash_size 8MB write_flash 0x0 frameos-esp32-s3.bin
+   ```
+
+The device boots fully provisioned: it joins your WiFi, registers with the backend, pulls its
+scenes, and renders.
+
+### Backend toolchain
 
 Firmware images are built by the backend, which needs
-[ESP-IDF](https://docs.espressif.com/projects/esp-idf/) v5.5.x on its host:
+[ESP-IDF](https://docs.espressif.com/projects/esp-idf/) v5.5.x on its host. **If you run the
+FrameOS backend with Docker, you are already set** - the image ships ESP-IDF and Nim, so browser
+flashing and firmware builds work with nothing installed on your machine.
 
-If you run the FrameOS backend with Docker, you are already set: the Docker image includes
-ESP-IDF and Nim, so browser flashing and firmware builds work without installing the toolchain on
-your host machine.
-
-For non-Docker backend installs, install ESP-IDF manually:
+For non-Docker installs, install ESP-IDF manually and keep **Nim 2.2+** on the backend's PATH:
 
 ```bash
 mkdir -p ~/esp && cd ~/esp
@@ -41,70 +91,140 @@ git clone --depth 1 --branch v5.5.4 --recursive --shallow-submodules \
 cd esp-idf && ./install.sh esp32s3
 ```
 
-The backend finds it via the `IDF_PATH` environment variable, falling back to `~/esp/esp-idf`.
-For non-Docker installs, the firmware build also needs **Nim 2.2+** on the backend's PATH.
-
-## Flash the device
-
-1. Click **New frame** in the backend and choose **Flash embedded device**.
-2. Pick the **ESP32-S3** platform, your display panel, and enter your WiFi credentials.
-3. The backend builds the firmware image, baking in the WiFi details, backend address, frame API
-   key and panel config.
-4. Connect the board over USB and click **Flash from browser**. This uses Web Serial, so it works
-   in Chrome and Edge. Alternatively, download the image and flash it by hand:
-
-   ```bash
-   esptool.py --chip esp32s3 --port /dev/tty.usbmodem* --baud 460800 write_flash 0x0 frameos-esp32-s3.bin
-   ```
-
-The device boots fully provisioned: it joins your WiFi, registers with the backend, and starts
-rendering.
+The backend finds it via `IDF_PATH`, falling back to `~/esp/esp-idf`. Without Nim, the firmware
+still builds - as a thin client, without the on-device renderer.
 
 ### Provisioning by hand
 
-Flashing a generic image instead? Two more ways to configure the device:
+You can also flash the **generic image** published with every
+[release](https://github.com/FrameOS/frameos/releases)
+(`frameos-*-esp32-s3-generic.bin`) and configure the device afterwards. Every supported panel
+driver is compiled into that one image - you pick the panel at runtime, no rebuild:
 
-- **Captive portal**: an unprovisioned device starts a WiFi hotspot called `FrameOS-XXXX`. Join
-  it and any web page redirects to the setup form (WiFi, backend URL, frame ID/API key, panel,
-  and GPIO pins).
+- **Captive portal**: an unprovisioned device raises a WiFi hotspot called `FrameOS-XXXX`. Join
+  it and any web page redirects to the setup form (WiFi, backend URL, frame ID and API key,
+  panel, GPIO pins).
 - **Serial console** (115200 baud) - always available, and quickest for tinkering:
 
   ```
   frameos> status
+  frameos> set hardware waveshare_esp32_s3_photopainter   # apply a board preset
   frameos> wifi MySSID MyPassword          # saves and reboots
   frameos> set panel EPD_7in5_V2
-  frameos> render                          # render immediately
-  frameos> ota                             # check for an OTA update now
+  frameos> set pins rst=5,dc=4,cs=3,cs2=-1,busy=6,sck=7,mosi=9,pwr=-1
+  frameos> render                          # render right now
+  frameos> ota                             # check for a firmware update
   frameos> factory-reset
   ```
 
 ## Scenes on a microcontroller
 
 Install scenes exactly like on any other frame. The device syncs them from the backend as JSON
-and renders them **on-device**: the same scene interpreter that runs on Linux frames runs on the
-ESP32, with code nodes and expressions on QuickJS and the standard apps compiled into the
-firmware. Scene updates arrive over WiFi - no reflashing.
+and runs them **on-device**: the same interpreter as Linux frames, with the standard apps
+compiled into the firmware and code nodes, expressions and JavaScript apps running on an embedded
+[QuickJS](https://bellard.org/quickjs/). Scene changes arrive over WiFi in seconds - no
+reflashing, no compiler.
 
-On the S3, an 800×480 scene renders in about 400 ms, plus ~530 ms for dithering down to the
-panel's 1-bit palette. The default refresh interval is 5 minutes; scenes can request their own.
+Scenes are stored one file per scene, so a frame can hold many of them (up to 32, or 512&nbsp;KB
+of scene JSON) while keeping only the active one parsed in memory. Switching scenes - from the
+backend, an event, a button or the schedule - loads the new one and drops the old.
 
-Apps that need a real OS - headless Chromium screenshots, Python-based drivers, local asset
-storage - are not available on the microcontroller. Use a Raspberry Pi for scenes that depend on
-those OS-backed features.
+**Every built-in app works** except two that need a real operating system: *Chromium screenshot*
+and *RTSP camera snapshot*. Calendars, weather, Home Assistant sensors, OpenAI text and images,
+Immich, Google Photos, Unsplash, Wikimedia Commons, QR codes, charts, SVG, gradients, splits,
+zoom/pan - all of it runs on the microcontroller, over TLS, straight from the device.
 
-## Updates and control
+### Any-size images, natively
 
-- **Over-the-air updates**: the firmware uses A/B partitions with automatic rollback - if a new
-  build fails to come up, the next reset boots the previous one. The device checks the backend
-  for new firmware daily, or on demand.
-- **HTTP**: the device serves `GET /status` (heap, PSRAM, WiFi and render stats as JSON), plus
-  `POST /api/action/render` and `POST /api/action/ota` on port 80.
-- **Battery mode**: `set deep_sleep 1` on the console makes the device deep-sleep between
-  refreshes - this is where a microcontroller frame beats a Pi on power.
+This is the part people don't expect from a microcontroller: **you can point an ESP32 frame at a
+4000×3000 photo and it just renders it.** No proxy, no resize server, no "please host a smaller
+version".
+
+A naive decode of that JPEG needs 48&nbsp;MB of pixels - roughly six times the PSRAM on the
+board. FrameOS never materialises it. The decoder scales *while* it decodes, straight into the
+panel-sized canvas: a rolling window of compressed bytes goes in, correctly box-filtered target
+rows come out, and the peak cost is the canvas plus a few hundred kilobytes. Downloads too big to
+hold in RAM spool to the SD card and stream from there. It works for JPEG, PNG, WebP, BMP and
+PPM, and it applies to the whole chain - a rotation or a resize downstream tells the decoder how
+few pixels it actually needs before a single byte is fetched.
+
+There's a whole page on how this works and why it matters:
+[Big images on small devices](/guide/images).
+
+## Assets and the SD card
+
+Boards with a TF/SD slot mount it at `/srv/assets`, and it behaves like the assets folder on a
+Pi:
+
+- Downloaded images are cached there instead of being re-fetched (and re-paid for) every render.
+- Browse, upload, rename and delete files from the frame's **Assets** tab in the backend.
+- The **Local image** app plays files or folders straight off the card.
+- Images that are too big to decode in memory spool to the card and stream from it.
+
+Boards without a card slot work fine - the cache and the spool degrade to memory, and nothing
+starts failing that used to work.
+
+## Updates, control and telemetry
+
+- **Over-the-air updates**: A/B partitions with automatic rollback - if a new build fails to come
+  up, the next reset boots the previous one. The device checks the backend daily, or on demand,
+  and verifies the image's SHA-256 against the manifest before installing it. (The 4&nbsp;MB
+  flash profile has no OTA slot; those boards update over USB.)
+- **A real HTTP API on the device**: `GET /status`, `/image`, `/state`, `/states`, and
+  `POST /event/<name>` to dispatch any event into the running scene, plus logs, metrics and asset
+  routes under `/api/frames/<id>/` - much the same surface the
+  [Pi's local API](/guide/control) exposes. Native HTTPS is available when the frame is built
+  with certificates.
+- **Logs and metrics** stream to the backend, and the last 128 lines are kept in a ring buffer on
+  the device, readable over the serial console when the network is down.
+- **An on-device scheduler**: per-scene render intervals plus minute/hour/weekday schedules that
+  switch scenes or fire events, evaluated on the device in frame-local time.
+- **Buttons**: GPIO buttons (the board presets know where they are) dispatch scene events, so a
+  press can change a scene, re-render, or run anything you wire up in the editor.
+
+## Battery and deep sleep [#power]
+
+This is where a microcontroller frame beats a Pi. Configure it under the frame's **Power**
+settings, or on the console:
+
+| Setting | What it does |
+| --- | --- |
+| `deep_sleep` | Power the chip down between refreshes and cold-boot for the next one |
+| `deep_sleep_on_battery` | Only sleep while running on a battery; stay connected on USB power |
+| `wake_schedule` | Align wakes to wall-clock boundaries, so a clock or calendar updates *on* the hour |
+| `wake_check` | Wake at least this often to pick up queued commands, without refreshing the panel |
+| `battery_pin` / `battery_divider` | Read cell voltage on an ADC1 pin; percentage shows in the backend |
+
+Without `wake_schedule` the time already spent awake - boot, WiFi, render - is subtracted from
+the interval, so the cadence doesn't drift by however long the render took. Below 3% battery the
+frame skips the refresh and sleeps for six hours rather than cycling a flat cell into damage.
+
+The all-in-one boards with battery headers (PhotoPainter, 13.3E6) come with their battery wiring
+already in the preset.
+
+## How fast is it? [#performance]
+
+Slower than a Pi, and mostly irrelevant - the panel is the bottleneck either way. Measured on the
+7.3" Spectra 6 PhotoPainter board (8&nbsp;MB PSRAM), rendering *Weather*, the heaviest sample
+scene:
+
+| Step | Time |
+| --- | --- |
+| Cold-boot scene load + JS transpile | ~3.3 s (once, at boot) |
+| SVG rasterisation | 7-8 s |
+| Dither + pack to the Spectra 6 palette | ~3.2 s |
+| Panel refresh (the panel's own hardware) | ~29 s |
+
+Simpler scenes are much quicker; a black/white panel dithers and refreshes in a fraction of that.
+A frame that updates a few times an hour, or a few times a day on battery, never notices.
+
+Memory on the same board: 7.1&nbsp;MB PSRAM free with a scene resident, 4.2&nbsp;MB still free at
+the worst point of a render. If a panel is too large for a board's PSRAM, the backend says so
+when you build the firmware rather than shipping you an image that can't render.
 
 ## Wiring
 
-Default pins target the XIAO ESP32-S3:
+Default pins target the XIAO ESP32-S3 (a board preset overrides all of these):
 
 | Signal | GPIO | XIAO label |
 | ------ | ---- | ---------- |
@@ -116,23 +236,47 @@ Default pins target the XIAO ESP32-S3:
 | MOSI   | 9    | D10        |
 
 Remap at runtime with `set pins rst=5,dc=4,cs=3,busy=6,sck=7,mosi=9,pwr=-1` on the serial
-console, in the captive portal, or per-frame in the backend.
+console, in the captive portal, or per-frame in the backend. The 13.3" Spectra 6 panel has two
+controllers and needs `cs2` as well.
+
+## What it cannot do [#what-it-cannot-do]
+
+Straight, so you can decide before you buy:
+
+- **Panels**: Waveshare-family SPI e-paper only. No HDMI, no LCD, no Pimoroni Inky HATs, no
+  Python-backed drivers. The 10.3" IT8951 and the 12.48" multi-controller panels need a Pi.
+- **Two apps are missing**: *Chromium screenshot* and *RTSP camera snapshot*. Both need to launch
+  a real program on a real OS.
+- **No Nim app editing.** Scenes run [interpreted](/guide/scenes#execution), like everywhere else.
+  You can write and fork apps in **JavaScript/TypeScript** and use JS code nodes, but editing an
+  app's Nim source means compiling, which means a Pi. The backend warns you when a scene contains
+  compiled-only content.
+- **One font.** The firmware carries a single typeface (Ubuntu Regular) and no emoji fallback;
+  custom fonts uploaded to a frame are a Pi feature.
+- **No on-device admin web app.** The frame answers the HTTP API and serves a setup page, but the
+  full `/admin` panel and the control page with the QR code are Pi-side. Manage ESP32 frames from
+  the backend.
+- **It's slow.** Seconds per render, not milliseconds. Fine for e-ink, useless for anything that
+  needs to move.
+- **PSRAM is the ceiling.** No PSRAM means thin-client mode, where the backend has to be reachable
+  at render time.
 
 ## Raspberry Pi or ESP32? [#raspberry-pi-or-esp32]
 
 | | Raspberry Pi | ESP32-S3 |
 | --- | --- | --- |
-| Displays | [110+ drivers](/devices): e-ink, HDMI, LCD | Waveshare SPI e-paper (one panel driver per firmware image) or headless |
-| Scenes | Everything | Interpreted scenes, standard apps |
-| Apps needing an OS | Chromium screenshots, Python drivers, assets | Not available |
+| Displays | [120+ drivers](/devices): e-ink, HDMI, LCD | Waveshare SPI e-paper, every driver in one image |
+| Custom code | JavaScript, or Nim in a compiled scene | JavaScript/TypeScript |
+| Apps | All of them | All but Chromium screenshots and RTSP |
+| Fonts | Any TTF you upload, emoji fallback | One built-in typeface |
 | Power | ~1 W, wall-powered | Deep sleep between refreshes - battery is viable |
-| Updates | SSH deploys | OTA with A/B rollback |
-| Price | ~$15-20 (Zero 2 W) | ~$8-10 (XIAO ESP32-S3) |
+| Updates | SSH / Remote deploys | Signed OTA with A/B rollback |
+| Price | ~$15-20 (Zero 2 W) | ~$6-10 (bare S3), or an all-in-one board |
 
-In short: pick the Pi unless you specifically want a battery-powered frame or have a soft spot
-for microcontrollers. More panels and capabilities are on the
-[roadmap](https://github.com/FrameOS/frameos/blob/main/TODO.md); want to help port a panel? See
-the [firmware README](https://github.com/FrameOS/frameos/tree/main/embedded/esp32) and say hi on
+In short: pick the Pi for the broadest hardware and the deepest customisation, and the ESP32 for
+a battery-powered, self-contained frame - or because you already own one of the
+[all-in-one boards](#supported-boards). Want to help port a panel? See the
+[firmware README](https://github.com/FrameOS/frameos/tree/main/embedded/esp32) and say hi on
 [Discord](https://discord.gg/9dT9y7EzUw).
 
 ## Next step

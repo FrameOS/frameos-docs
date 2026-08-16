@@ -1,0 +1,45 @@
+---
+title: "TRMNL OG"
+description: "The original 7.5\" TRMNL device running FrameOS as a thin client - the backend renders, the ESP32-C3 draws."
+device:
+  vendor: "TRMNL"
+  model: "OG (7.5\")"
+  driver: "waveshare.EPD_7in5_V2"
+  label: "TRMNL OG (7.5\" ESP32-C3)"
+  technology: "E-ink"
+  interface: "ESP32-C3 board"
+  diagonal: 7.5
+  width: 800
+  height: 480
+  colors: "Black/White"
+  colorCount: 2
+  colorClass: "bw"
+  buttons: 1
+  platforms:
+    - "esp32-c3"
+  status: "untested"
+---
+
+The **TRMNL OG** is the original 7.5" black/white TRMNL device, built on an **ESP32-C3**. The C3
+has no PSRAM and about 380&nbsp;KB of usable RAM, which is not enough for an on-device renderer -
+so FrameOS runs it as a **thin client**: your [backend](/guide/backend) renders the scene and the
+device streams the finished panel bytes straight into the e-paper controller.
+
+That means one real trade-off compared to an [ESP32-S3 frame](/guide/esp32): the backend has to be
+reachable when the frame renders. Everything else - scenes, apps, schedules, state fields - works
+the same way.
+
+## Setup
+
+1. In the FrameOS backend, create a frame with **Flash embedded device**.
+2. Choose **ESP32-C3**, select the **TRMNL OG** preset, and enter your WiFi details.
+3. Build the firmware and flash it over USB from the browser.
+4. Install scenes as usual.
+
+Flashing FrameOS replaces the TRMNL firmware, and needs no TRMNL account or servers. The C3 image
+uses a 4&nbsp;MB single-slot layout with no OTA partition, so firmware updates go over USB.
+
+## Status
+
+🟡 **Should work, not yet confirmed on real hardware.**
+Tell us on [GitHub](https://github.com/FrameOS/frameos/issues/new) or [Discord](https://discord.gg/9dT9y7EzUw) if you try it.

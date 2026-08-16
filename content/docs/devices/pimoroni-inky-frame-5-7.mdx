@@ -1,0 +1,46 @@
+---
+title: "Pimoroni Inky Frame 5.7\""
+description: "Pimoroni Inky Frame 5.7\" (Pico W) running FrameOS as a thin client - the backend renders, the Pico draws."
+device:
+  vendor: "Pimoroni"
+  model: "Inky Frame 5.7\""
+  driver: "waveshare.EPD_5in65f"
+  label: "Pimoroni Inky Frame 5.7\" (Pico W)"
+  technology: "E-ink"
+  interface: "Pico W board"
+  diagonal: 5.7
+  width: 600
+  height: 448
+  colors: "7 colors (ACeP)"
+  colorCount: 7
+  colorClass: "acep"
+  platforms:
+    - "pico-w"
+  status: "untested"
+---
+
+The **Pimoroni Inky Frame 5.7"** is a 600×448 seven-colour ACeP display with a Raspberry Pi Pico W
+on the back - the most common Inky Frame, and a lovely bit of hardware that has always been
+limited by what fits on its microcontroller.
+
+FrameOS runs it as a [thin client](/guide/pico): the [backend](/guide/backend) renders and dithers
+the scene, and the Pico streams the packed panel bytes into the controller. So you get the full
+FrameOS scene editor, apps and state fields on a board with 264&nbsp;KB of RAM - as long as the
+backend is reachable when the frame renders.
+
+`deep_sleep` uses the board's RTC and power latch to shut it down completely between refreshes,
+waking on the next interval or a front button.
+
+## Setup
+
+1. Download `frameos-<version>-pico-w.uf2` from the
+   [latest release](https://github.com/FrameOS/frameos/releases).
+2. Hold **BOOTSEL** while plugging in USB and copy the file onto the `RPI-RP2` drive.
+3. Add a frame in the backend with **Flash embedded device** and the
+   **Pimoroni Inky Frame 5.7"** preset.
+4. Provision it over the USB serial console - see the [Pico guide](/guide/pico).
+
+## Status
+
+🟡 **Should work, not yet confirmed on real hardware.**
+Tell us on [GitHub](https://github.com/FrameOS/frameos/issues/new) or [Discord](https://discord.gg/9dT9y7EzUw) if you try it.

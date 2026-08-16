@@ -12,25 +12,38 @@ and your frames keep rendering, keep their schedules, and stay controllable over
 
 ## Can I run this on an ESP32? [#why-no-microcontrollers]
 
-Yes. FrameOS runs on the **ESP32-S3**: the backend builds a firmware image, you
-[flash it from the browser](/guide/esp32), and the device renders scenes on-device with the same
-scene interpreter as Linux frames, plus QuickJS for code nodes. It syncs scene changes over WiFi
-and updates its firmware over the air with automatic rollback. It can even deep-sleep between
-refreshes, which makes battery-powered frames viable.
+Yes, and it's a full frame rather than a demo. FrameOS runs on the **ESP32-S3**: the backend
+builds a firmware image, you [flash it from the browser](/guide/esp32), and the device renders
+scenes itself - the same interpreter as Linux frames, the same apps, JavaScript on QuickJS, its
+own scheduler, assets on an SD card, logs and metrics back to the backend, and firmware updates
+over the air with automatic rollback. It deep-sleeps between refreshes, so battery-powered frames
+are real.
 
-That said, the **Raspberry Pi is still the recommended platform**. A full Linux system gives
-FrameOS room a microcontroller can't match:
+The short list of what a microcontroller frame *can't* do: Waveshare-family SPI e-paper only (no
+HDMI, no LCD, no Pimoroni HATs), no custom Nim apps (JavaScript instead), one
+built-in font, and no headless Chromium screenshots or RTSP camera snapshots. The full picture is
+on the [ESP32 page](/guide/esp32#what-it-cannot-do).
 
-- **Displays** - the Pi drives [110+ panels](/devices) including 1600×1200 six-color Spectra 6;
-  the ESP32 firmware targets Waveshare SPI e-paper panels and headless builds.
-- **Real rendering at any size** - dithering a 13.3" color panel takes more RAM than most
-  microcontrollers have in total. The S3's 8MB PSRAM handles 800×480 in black/white.
-- **Apps that need an OS** - headless Chromium screenshots, Python-based drivers, on-disk
-  assets. Use a Raspberry Pi for scenes that depend on those features.
+The **Raspberry Pi is still the broadest platform** - [120+ panels](/devices), HDMI at 60 FPS,
+custom Nim, any font you upload. Pick the Pi if you want everything; pick the ESP32 if you want a
+wire-free frame, or if you already own one of the
+[all-in-one boards](/guide/esp32#supported-boards) like a Waveshare PhotoPainter, a TRMNL or a
+Seeed reTerminal.
 
-A Pi Zero 2 W idles around one watt, so Pi frames are wall-powered. If you want a wire-free
-frame that refreshes a few times a day, the [ESP32 build](/guide/esp32) is now the better tool -
-and it's the same backend, the same scenes, and no cloud either way.
+## Can it really render a huge photo on a microcontroller? [#big-images]
+
+Yes. Point a frame at a 4000×3000 photo and it shows it, on a board with 8&nbsp;MB of RAM. The
+decoder scales *while* it decodes, straight into the panel-sized canvas, so the full-size image
+never exists; downloads too big to hold at all spool to the SD card and stream from there. No
+proxy, no resize server, no `?width=` parameters. See
+[Big images on small devices](/guide/images).
+
+## Can I run a frame with no hardware? [#virtual]
+
+Yes - a [virtual frame](/guide/virtual) is rendered by the backend and served as an image URL and
+a self-refreshing kiosk page. Point an old tablet, a browser or a signage player at it and you
+have a frame with nothing installed on the device. It's also the fastest way to try FrameOS while
+you wait for a panel to arrive.
 
 ## Can the backend and the frame run on the same Raspberry Pi?
 
@@ -54,9 +67,12 @@ panels don't flash needlessly.
 
 ## Can I show my own photos?
 
-Yes. Upload images to the frame's **Assets** and use the *Local image* app, point the *Image from
-URL* app at any address, sync a folder over SSH, or use gallery apps (FrameOS Gallery, Unsplash,
-Wikimedia Commons, OpenAI image generation).
+Yes, several ways. Upload images to the frame's **Assets** (or drop them on its SD card) and use
+the *Local image* app - point it at a folder and it plays the folder. Pull from
+**Immich** or **Google Photos**. Point the *Image from URL* app at any address. Or use the gallery
+apps: FrameOS Gallery, Unsplash, Wikimedia Commons, OpenAI image generation.
+
+You don't need to resize anything first - see [Big images on small devices](/guide/images).
 
 ## Does it integrate with Home Assistant?
 

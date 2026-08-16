@@ -1,7 +1,7 @@
 import Link from 'next/link';
 import { ExternalLink } from 'lucide-react';
 import type { Device } from '@/lib/device-schema';
-import { deviceSupportsEsp32 } from '@/lib/device-support';
+import { deviceSupportsEsp32, platformLabels } from '@/lib/device-support';
 
 const waveshareAffiliateId = '79380';
 
@@ -110,16 +110,21 @@ export function DeviceSpecs({ device }: { device: Device }) {
         <Spec label="Size">{device.diagonal ? `${device.diagonal}″ diagonal` : '-'}</Spec>
         <Spec label="Interface">{device.interface}</Spec>
         <Spec label="Platforms">
-          {platforms.map((platform, index) => (
-            <span key={platform}>
-              {index > 0 ? ' · ' : null}
-              {platform === 'esp32-s3' ? (
-                <Link href="/guide/esp32" className="text-fd-primary hover:underline">ESP32-S3</Link>
-              ) : (
-                'Raspberry Pi'
-              )}
-            </span>
-          ))}
+          {platforms.map((platform, index) => {
+            const entry = platformLabels[platform] ?? { label: platform, href: '/guide' };
+            return (
+              <span key={platform}>
+                {index > 0 ? ' · ' : null}
+                {platform === 'raspberry-pi' ? (
+                  entry.label
+                ) : (
+                  <Link href={entry.href} className="text-fd-primary hover:underline">
+                    {entry.label}
+                  </Link>
+                )}
+              </span>
+            );
+          })}
         </Spec>
         <Spec label="Status">
           {device.status === 'tested' ? (

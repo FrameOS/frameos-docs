@@ -1,0 +1,44 @@
+---
+title: "TRMNL 4.26\" DIY Kit"
+description: "The TRMNL 4.26\" DIY Kit (XIAO ESP32-S3 + ePaper driver board) running FrameOS, rendering scenes on-device."
+device:
+  vendor: "TRMNL"
+  model: "4.26\" DIY Kit"
+  driver: "waveshare.EPD_4in26"
+  label: "TRMNL 4.26\" DIY Kit (XIAO ESP32-S3)"
+  technology: "E-ink"
+  interface: "ESP32-S3 board"
+  diagonal: 4.26
+  width: 800
+  height: 480
+  colors: "4-level grayscale"
+  colorCount: 4
+  colorClass: "gray"
+  buttons: 2
+  platforms:
+    - "esp32-s3"
+  status: "untested"
+---
+
+The **TRMNL 4.26" DIY Kit** pairs a 4.26" 800×480 four-grayscale e-ink panel with a Seeed XIAO
+ESP32-S3 on the XIAO ePaper driver board. 800×480 on a small panel means unusually crisp text, and
+grayscale dithers photos noticeably better than a pure black/white panel.
+
+With 8&nbsp;MB of PSRAM on the XIAO S3, this kit runs the **full on-device renderer**. Pick the
+**TRMNL 4.26" DIY Kit** hardware preset when you add the frame and the panel, GPIO map, flash
+profile and the two buttons are set up for you.
+
+## Setup
+
+1. In the FrameOS backend, create a frame with **Flash embedded device**.
+2. Choose **ESP32-S3**, select the **TRMNL 4.26" DIY Kit** preset, and enter your WiFi details.
+3. Build the firmware and flash it over USB from the browser.
+4. Install scenes as usual - they sync over WiFi, and the device updates itself over the air.
+
+Flashing FrameOS replaces the TRMNL firmware on the board, and needs no TRMNL account - the frame
+talks to your own [backend](/guide/backend).
+
+## Status
+
+🟡 **Should work, not yet confirmed on real hardware.**
+Tell us on [GitHub](https://github.com/FrameOS/frameos/issues/new) or [Discord](https://discord.gg/9dT9y7EzUw) if you try it.

@@ -6,6 +6,8 @@ import {
   Cpu,
   ExternalLink,
   Gauge,
+  HardDrive,
+  Image as ImageIcon,
   Monitor,
   Printer,
   QrCode,
@@ -97,7 +99,7 @@ const features = [
   {
     icon: CloudOff,
     title: 'No cloud. Really.',
-    body: 'Scenes run as a compiled binary on the frame itself. Unplug your router, shut down the backend - the frame keeps doing its job.',
+    body: 'Scenes run on the frame itself, in a single native binary. Unplug your router, shut down the backend - the frame keeps doing its job.',
   },
   {
     icon: QrCode,
@@ -126,8 +128,18 @@ const features = [
   },
   {
     icon: Cpu,
+    title: 'Microcontrollers too',
+    body: 'An ESP32-S3 renders full scenes on-device and deep-sleeps between refreshes, so a frame can run on a battery. Flash it from the browser.',
+  },
+  {
+    icon: ImageIcon,
+    title: 'Images of any size',
+    body: 'A 12-megapixel photo renders on a board with 8 MB of RAM: the decoder scales as it decodes, straight into the panel. No proxy, no resize server.',
+  },
+  {
+    icon: HardDrive,
     title: 'Prebuilt SD images',
-    body: 'Flash a ready-made FrameOS image - WiFi preconfigured or set up via the frame’s own hotspot. Precompiled binaries mean no slow on-device builds.',
+    body: 'Flash a ready-made FrameOS image for any Pi - WiFi preconfigured or set up via the frame’s own hotspot. Precompiled binaries mean no slow on-device builds.',
   },
   {
     icon: Printer,
@@ -192,7 +204,7 @@ export default function HomePage() {
           <SectionTitle
             kicker="How it works"
             title="Two setup paths, one standalone frame"
-            sub="Use the backend when you want a webapp for designing and managing frames, or flash the Pi Zero 2 W image when you want a frame that can set itself up."
+            sub="Use the backend when you want a webapp for designing and managing frames, or flash a ready-made SD image when you want a frame that can set itself up."
           />
           <ol className="grid gap-8 md:grid-cols-3">
             <li className="rounded-xl border bg-fd-background p-6">
@@ -201,8 +213,8 @@ export default function HomePage() {
               </span>
               <h3 className="mb-2 font-semibold">Choose your install path</h3>
               <p className="text-sm text-fd-muted-foreground">
-                Run the Dockerized backend on your laptop, server or NAS, or flash the standalone
-                Buildroot image directly to a Raspberry Pi Zero 2 W.
+                Run the Dockerized backend on your laptop, server or NAS, or flash a standalone
+                Buildroot image directly to a Raspberry Pi.
               </p>
             </li>
             <li className="rounded-xl border bg-fd-background p-6">
@@ -224,8 +236,9 @@ export default function HomePage() {
               </span>
               <h3 className="mb-2 font-semibold">Set up scenes, then walk away</h3>
               <p className="text-sm text-fd-muted-foreground">
-                Pick prebuilt scenes or design your own in the backend or on the frame. The frame
-                renders on-device and is controlled from its own QR code and HTTP API (still experimental for ESP32).
+                Pick prebuilt scenes or design your own in the backend or on the frame. Preview
+                them in your browser, then deploy. The frame renders on-device and is controlled
+                from its own QR code and HTTP API.
               </p>
             </li>
           </ol>
@@ -237,7 +250,7 @@ export default function HomePage() {
         <SectionTitle
           kicker="The backend"
           title="A visual editor backed by real code"
-          sub="Scenes are node graphs: red events, green data apps, blue render apps, yellow state. They compile to a single binary that runs on the frame."
+          sub="Scenes are node graphs: red events, green data apps, blue render apps, yellow state. Deploy one and it runs on the frame, seconds later."
         />
         <Slideshow slides={appSlides} aspect="aspect-[16/10]" fit="contain" interval={6000} className="mx-auto max-w-4xl" />
       </section>
@@ -261,9 +274,11 @@ export default function HomePage() {
               </p>
               <p>
                 Want a wire-free frame instead? FrameOS runs on the ESP32-S3 for Waveshare SPI
-                e-paper panels: flash it from the browser, render scenes on-device, update over
-                the air, and deep-sleep between refreshes for battery power. Each firmware image
-                contains one selected panel driver.
+                e-paper panels, and it is a full frame there: scenes render on the device,
+                JavaScript and all, with assets on an SD card, an on-device scheduler and
+                over-the-air updates. Flash it from the browser, then deep-sleep between refreshes
+                and run it off a battery. Boards without PSRAM - the TRMNL, XTEINK X4, Pimoroni
+                Inky Frame - run as thin clients the backend renders for.
               </p>
             </div>
             <Link href="/guide/esp32" className="mt-4 inline-block font-medium text-fd-primary hover:underline">
@@ -384,7 +399,7 @@ export default function HomePage() {
           <h2 className="text-3xl font-bold tracking-tight">Build your first frame this weekend</h2>
           <p className="text-fd-muted-foreground">
             The guide walks through both paths: a backend webapp for managing frames, or a
-            standalone Pi Zero 2 W image for direct setup.
+            standalone Raspberry Pi image for direct setup.
           </p>
           <div className="flex flex-wrap items-center justify-center gap-3">
             <Link

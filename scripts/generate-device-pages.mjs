@@ -21,7 +21,8 @@ const force = process.argv.includes('--force');
 
 const devices = JSON.parse(fs.readFileSync(dataFile, 'utf8'));
 
-const reportUrl = 'https://github.com/FrameOS/frameos/issues/65';
+const reportUrl = 'https://github.com/FrameOS/frameos/issues/new';
+const discordUrl = 'https://discord.gg/9dT9y7EzUw';
 
 const esp32UnsupportedWavesharePanels = new Set([
   'EPD_10in3',
@@ -144,7 +145,7 @@ function statusSection(d) {
 
 🟡 **Should work, not yet confirmed on real hardware.** The driver shares its controller logic
 with panels that are confirmed working. If you have this display,
-[report your results with a photo](${reportUrl}) and we'll mark it confirmed.`;
+tell us on [GitHub](${reportUrl}) or [Discord](${discordUrl}) and we'll mark it confirmed.`;
 }
 
 function waveshareBody(d, title) {

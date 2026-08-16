@@ -12,10 +12,20 @@ description: Add a frame to the backend, install a few scenes, and deploy them t
 
 ## Add the frame
 
-Click "New frame" in the backend. Give the frame a name and select the right **display driver**
-for your panel - there are over 120 to choose from, organised by vendor. For Raspberry Pi frames,
-enter the frame's IP address or hostname and SSH credentials for the first deploy. Pick "Web only"
-if you just want to try FrameOS without any display hardware.
+Click "New frame" in the backend and pick how this frame gets set up:
+
+- **Download SD card** - build a preconfigured [Raspberry Pi image](/guide/raspberry).
+- **Install over SSH** - deploy to a Pi the backend can already reach. Enter its IP or hostname
+  and SSH credentials.
+- **Install with a script** - one command to paste on the device when SSH isn't an option.
+- **Flash embedded device** - build and flash [ESP32](/guide/esp32) or [Pico](/guide/pico)
+  firmware, straight from the browser.
+- **Virtual frame** - [no hardware at all](/guide/virtual); the backend renders to an image URL.
+- **Import frame** - restore a frame you exported earlier as JSON.
+
+Then name the frame and select the right **display driver** for your panel - there are over 120 to
+choose from, organised by vendor. Pick "Web only" if you just want to try FrameOS without any
+display hardware.
 
 ![Adding a frame](/images/app/add-frame.gif)
 
@@ -34,7 +44,9 @@ Install a few scenes onto the frame. Good first picks:
 
 Press **Deploy**. The backend shows a deploy plan - what gets uploaded, what gets installed - and
 streams the progress log. The first deploy takes the longest (it installs dependencies and uploads
-the FrameOS binary); subsequent deploys are fast and only ship what changed.
+the FrameOS binary); subsequent deploys are fast and only ship what changed. Editing a scene
+afterwards is quicker still - [scenes are interpreted](/guide/scenes#execution), so nothing is
+rebuilt, and [ESP32](/guide/esp32) frames simply receive the new scene JSON over WiFi.
 
 When it finishes, a preview image appears in the backend, followed by the same image on the frame
 itself.

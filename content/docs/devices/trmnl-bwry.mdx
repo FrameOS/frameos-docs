@@ -1,0 +1,45 @@
+---
+title: "TRMNL BWRY"
+description: "The 7.5\" four-colour TRMNL BWRY running FrameOS as a thin client - the backend renders, the ESP32-C3 draws."
+device:
+  vendor: "TRMNL"
+  model: "BWRY (7.5\")"
+  driver: "waveshare.EPD_7in5yr"
+  label: "TRMNL BWRY 7.5\" (YR) 800x480 Black/White/Yellow/Red"
+  technology: "E-ink"
+  interface: "ESP32-C3 board"
+  diagonal: 7.5
+  width: 800
+  height: 480
+  colors: "Black/White/Yellow/Red"
+  colorCount: 4
+  colorClass: "accent"
+  buttons: 1
+  platforms:
+    - "esp32-c3"
+  status: "untested"
+---
+
+The **TRMNL BWRY** is the four-colour (black, white, yellow, red) 7.5" TRMNL device on an
+**ESP32-C3**. Four-colour e-ink gives you headlines and highlights without the long refresh of a
+six-colour Spectra panel.
+
+Like the [TRMNL OG](/devices/trmnl-og), the C3 has no PSRAM, so FrameOS runs this board as a
+**thin client**: your [backend](/guide/backend) renders and dithers the scene to the panel's
+four-colour palette, and the device streams the packed result into the controller. The backend
+therefore has to be reachable when the frame renders.
+
+## Setup
+
+1. In the FrameOS backend, create a frame with **Flash embedded device**.
+2. Choose **ESP32-C3**, select the **TRMNL BWRY** preset, and enter your WiFi details.
+3. Build the firmware and flash it over USB from the browser.
+4. Install scenes as usual.
+
+Flashing FrameOS replaces the TRMNL firmware, and needs no TRMNL account or servers. The C3 image
+uses a 4&nbsp;MB single-slot layout with no OTA partition, so firmware updates go over USB.
+
+## Status
+
+🟡 **Should work, not yet confirmed on real hardware.**
+Tell us on [GitHub](https://github.com/FrameOS/frameos/issues/new) or [Discord](https://discord.gg/9dT9y7EzUw) if you try it.

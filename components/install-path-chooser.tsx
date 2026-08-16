@@ -7,8 +7,10 @@ import { cn } from '@/lib/cn';
 import { CopyCommand } from '@/components/copy-command';
 
 const INSTALL_COMMAND = 'bash <(curl -fsSL https://frameos.net/install.sh)';
-const PI_ZERO_2W_IMAGE_URL =
-  'https://github.com/FrameOS/frameos/releases/download/v2026.6.27/frameos-2026.6.27-raspberry-pi-zero-2-w-buildroot.img.gz';
+// Release assets are versioned, so link the release page rather than pinning a
+// filename that goes stale: raspberry-pi-64 (Zero 2 W / 3 / 4), raspberry-pi-5
+// (Pi 5 / CM5) and raspberry-pi-32 (Zero / Zero W / Pi 1) images live there.
+const PI_IMAGE_URL = 'https://github.com/FrameOS/frameos/releases/latest';
 
 type InstallPath = 'backend' | 'frame';
 
@@ -23,7 +25,7 @@ const installOptions = [
     id: 'frame',
     icon: Cpu,
     title: 'Frame',
-    description: 'Standalone Pi Zero 2 W image for setting up one frame directly.',
+    description: 'Standalone Raspberry Pi image for setting up one frame directly.',
   },
 ] as const;
 
@@ -102,12 +104,14 @@ export function InstallPathChooser({ className }: { className?: string }) {
                 <div>
                   <p className="text-sm font-medium">Flash the standalone image</p>
                   <p className="mt-1 text-sm text-fd-muted-foreground">
-                    This direct image is only for Raspberry Pi Zero 2 W for now. For ESP32, HDMI,
-                    other Pis, and custom devices, use the backend instead.
+                    Pick <code>raspberry-pi-64</code> for a Zero 2 W, Pi 3 or Pi 4,{' '}
+                    <code>raspberry-pi-5</code> for a Pi 5 or CM5, or{' '}
+                    <code>raspberry-pi-32</code> for a Zero, Zero W or Pi 1. For ESP32 boards and
+                    custom devices, use the backend instead.
                   </p>
                 </div>
                 <Link
-                  href={PI_ZERO_2W_IMAGE_URL}
+                  href={PI_IMAGE_URL}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="inline-flex items-center gap-2 rounded-lg border px-3 py-1.5 text-sm font-medium transition-colors hover:bg-fd-accent"

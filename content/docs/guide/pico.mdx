@@ -1,0 +1,78 @@
+---
+title: Pico W & Inky Frame
+description: Run FrameOS on a Raspberry Pi Pico W or Pico 2 W - including the Pimoroni Inky Frame - as a thin client that renders on the backend.
+---
+
+FrameOS also runs on the **Raspberry Pi Pico W** (RP2040) and **Pico 2 W** (RP2350) - most
+usefully on the [Pimoroni Inky Frame](https://shop.pimoroni.com/), which carries a Pico on the
+back of the panel and is otherwise a lovely piece of hardware with nowhere to run.
+
+<Callout title="Thin client, not a renderer">
+  A Pico W has 2&nbsp;MB of flash and 264&nbsp;KB of RAM - it cannot hold a renderer, a
+  JavaScript engine and a font. So it doesn't: **the backend renders the scene** and the device
+  streams the finished, packed panel bytes straight into the e-paper controller. No framebuffer
+  is ever allocated on the device. Unlike an [ESP32-S3](/guide/esp32) frame, a Pico frame needs
+  the backend to be reachable when it renders.
+</Callout>
+
+## Supported boards
+
+| Preset | Board | Panel |
+| --- | --- | --- |
+| [Inky Frame 4.0"](/devices/pimoroni-inky-frame-4) | Pico W | 640×400, 7 colour |
+| [Inky Frame 5.7"](/devices/pimoroni-inky-frame-5-7) | Pico W | 600×448, 7 colour |
+| [Inky Frame 7.3"](/devices/pimoroni-inky-frame-7-3) | Pico W | 800×480, 7 colour |
+| [Inky Frame 7.3" (2024)](/devices/pimoroni-inky-frame-7-3-pico2) | Pico 2 W | 800×480, 7 colour |
+| [Inky Frame 7.3" Spectra 6](/devices/pimoroni-inky-frame-7-3-spectra) | Pico 2 W | 800×480, Spectra 6 |
+
+A bare Pico W or Pico 2 W wired to a supported panel works too - set the pins and the panel on
+the serial console instead of picking a preset.
+
+## Flash it
+
+The Pico firmware is a plain UF2, the same for every board of a given chip - the backend does not
+build per-frame images for it.
+
+1. Download `frameos-<version>-pico-w.uf2` (or `-pico-2w.uf2`) from the
+   [latest release](https://github.com/FrameOS/frameos/releases).
+2. Hold **BOOTSEL** while plugging the board into USB, then copy the `.uf2` onto the `RPI-RP2`
+   (or `RP2350`) drive that appears. The board reboots into FrameOS.
+3. In the backend, add a frame with **Flash embedded device** and pick your Inky Frame preset.
+   Note the frame's id and API key from its settings.
+4. Open the USB serial console at 115200 baud and provision it:
+
+   ```
+   frameos> set hardware pimoroni_inky_frame_5_7
+   frameos> set backend http://192.168.1.10:8989
+   frameos> set frame_id 42
+   frameos> set api_key <the frame's server API key>
+   frameos> wifi MySSID MyPassword          # saves and reboots
+   frameos> status
+   frameos> render                          # fetch and refresh now
+   ```
+
+`https://` backends work: TLS 1.2 with hostname verification against a built-in bundle of the
+major public CA roots.
+
+## Battery mode
+
+`set deep_sleep 1` powers the board off completely after each render, using the Inky Frame's
+onboard RTC and power latch - around 20&nbsp;µA between refreshes. It cold-boots on the next
+interval, or when someone presses a front button. On USB power the latch can't cut the supply, so
+the firmware sleeps in place instead; the behaviour is the same either way.
+
+## Limitations
+
+The Pico support is newer than the rest and honest about it:
+
+- **The backend must be up when the frame renders.** No backend, no picture. If you want a frame
+  that renders standalone, use a [Pi](/guide/raspberry) or an [ESP32-S3](/guide/esp32).
+- **Front buttons trigger an immediate render**, but per-button scene actions aren't wired up
+  yet.
+- **No on-device scenes, JavaScript, assets or scheduler** - all of that happens on the backend
+  side for a thin client.
+- The 4.0" Inky Frame's panel initialisation still wants validation on real glass; if yours comes
+  up mirrored or offset, [tell us](https://github.com/FrameOS/frameos/issues).
+
+Details and build instructions live in the
+[Pico firmware README](https://github.com/FrameOS/frameos/tree/main/embedded/pico).

@@ -1,0 +1,44 @@
+---
+title: "Seeed reTerminal E1001"
+description: "Seeed Studio reTerminal E1001 - a 7.5\" black/white e-ink terminal with an ESP32-S3, running FrameOS on-device."
+device:
+  vendor: "Seeed Studio"
+  model: "reTerminal E1001"
+  driver: "waveshare.EPD_7in5_V2"
+  label: "Seeed reTerminal E1001 (7.5\" ESP32-S3)"
+  technology: "E-ink"
+  interface: "ESP32-S3 board"
+  diagonal: 7.5
+  width: 800
+  height: 480
+  colors: "Black/White"
+  colorCount: 2
+  colorClass: "bw"
+  buttons: 3
+  platforms:
+    - "esp32-s3"
+  status: "untested"
+---
+
+The **Seeed reTerminal E1001** is an all-in-one 7.5" black/white e-ink terminal built around an
+ESP32-S3 with 8&nbsp;MB of PSRAM and 32&nbsp;MB of flash. FrameOS runs on it as a full
+[ESP32-S3 frame](/guide/esp32): scenes render on the device, not on a server.
+
+Pick the **Seeed reTerminal E1001** hardware preset when you add the frame and the panel, GPIO
+map, flash profile and the three front buttons (REFRESH, LEFT, RIGHT) are configured for you. The
+buttons dispatch scene events, so they can switch scenes or trigger a render.
+
+## Setup
+
+1. In the FrameOS backend, create a frame with **Flash embedded device**.
+2. Choose **ESP32-S3**, select the **Seeed reTerminal E1001** preset, and enter your WiFi details.
+3. Build the firmware and flash it over USB from the browser.
+4. Install scenes as usual - they sync over WiFi, and the device updates itself over the air.
+
+See the [ESP32 guide](/guide/esp32) for what a microcontroller frame can and cannot do.
+
+## Status
+
+🟡 **Should work, not yet confirmed on real hardware.** The preset and panel driver are in place,
+but nobody has reported back from this exact board yet. If you have one,
+tell us on [GitHub](https://github.com/FrameOS/frameos/issues/new) or [Discord](https://discord.gg/9dT9y7EzUw).

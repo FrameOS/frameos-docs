@@ -6,9 +6,12 @@
     "backend",
     "raspberry",
     "esp32",
+    "pico",
+    "virtual",
     "first-deploy",
     "scenes",
     "apps",
+    "images",
     "control",
     "settings",
     "remote"

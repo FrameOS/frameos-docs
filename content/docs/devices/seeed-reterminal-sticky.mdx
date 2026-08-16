@@ -1,0 +1,44 @@
+---
+title: "Seeed reTerminal Sticky"
+description: "Seeed Studio reTerminal Sticky - a small 3.97\" black/white e-ink board with an ESP32-S3, running FrameOS on-device."
+device:
+  vendor: "Seeed Studio"
+  model: "reTerminal Sticky"
+  driver: "waveshare.EPD_3in97"
+  label: "Seeed reTerminal Sticky (3.97\" ESP32-S3)"
+  technology: "E-ink"
+  interface: "ESP32-S3 board"
+  diagonal: 3.97
+  width: 800
+  height: 480
+  colors: "Black/White"
+  colorCount: 2
+  colorClass: "bw"
+  buttons: 1
+  platforms:
+    - "esp32-s3"
+  status: "untested"
+---
+
+The **Seeed reTerminal Sticky** is a pocket-sized 3.97" e-ink board with an ESP32-S3
+(8&nbsp;MB PSRAM, 32&nbsp;MB flash) - 800×480 pixels on a small panel, so text stays crisp. It
+makes a good desk or fridge frame: a day's agenda, a shopping list, the next bus.
+
+FrameOS runs on it as a full [ESP32-S3 frame](/guide/esp32) - scenes render on the device.
+Pick the **Seeed reTerminal Sticky** hardware preset and the panel, GPIO map, flash profile and
+the POWER button are configured for you.
+
+## Setup
+
+1. In the FrameOS backend, create a frame with **Flash embedded device**.
+2. Choose **ESP32-S3**, select the **Seeed reTerminal Sticky** preset, and enter your WiFi details.
+3. Build the firmware and flash it over USB from the browser.
+4. Install scenes as usual - they sync over WiFi, and the device updates itself over the air.
+
+Small panel, small battery: this is a good candidate for
+[deep sleep between refreshes](/guide/esp32#power).
+
+## Status
+
+🟡 **Should work, not yet confirmed on real hardware.**
+Tell us on [GitHub](https://github.com/FrameOS/frameos/issues/new) or [Discord](https://discord.gg/9dT9y7EzUw) if you try it.

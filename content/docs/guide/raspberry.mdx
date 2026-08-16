@@ -13,36 +13,51 @@ description: Choose a Raspberry Pi, then flash either a prebuilt FrameOS SD imag
 - **Raspberry Pi Zero 2 W** - the sweet spot for e-ink frames. Four 64-bit cores, tiny, ~1 W of
   power, around $15-20. This is what most FrameOS frames run on.
 - **Raspberry Pi 5 / 4** - use these for fast HDMI/LCD output (up to 60 FPS) or when size doesn't
-  matter.
-- **Raspberry Pi Zero W (v1)** - works, but it has a single 32-bit core. Cheaper, slightly lower
-  power draw, much slower to deploy to.
+  matter. The Pi 5 and CM5 have their own SD image.
+- **Raspberry Pi Zero W (v1), Pi 1, CM1** - a single 32-bit ARMv6 core. Slow to deploy to, but
+  supported all the way down, prebuilt SD image included.
 
 Not a Pi person, or dreaming of a battery-powered frame? FrameOS also runs on the
-[ESP32-S3 microcontroller](/guide/esp32) for supported Waveshare SPI e-paper panels.
+[ESP32-S3 microcontroller](/guide/esp32), on [Pico W boards](/guide/pico), and with
+[no hardware at all](/guide/virtual).
 
 ## Option 1: prebuilt FrameOS SD image (recommended)
 
-For the Raspberry Pi Zero 2 W, FrameOS ships a purpose-built SD card image - a minimal
-Buildroot-based Linux that boots straight into FrameOS. No Raspberry Pi OS, no manual SSH setup.
+FrameOS ships purpose-built SD card images: a minimal Buildroot-based Linux that boots straight
+into FrameOS. No Raspberry Pi OS, no manual SSH setup, nothing to install afterwards.
 
-You can get it two ways:
+There are three, one per board family - each covers every board in its family, so you match a
+family rather than an exact model:
 
-- **Generate it in the backend**: when you add a new frame, choose the SD card image option. The
-  image comes out preconfigured with your WiFi credentials and frame settings - flash it, insert,
-  done.
+| Image | Boards |
+| --- | --- |
+| `raspberry-pi-64` | Zero 2 W, Pi 3, Pi 4, CM3/CM4 |
+| `raspberry-pi-5` | Pi 5, CM5 |
+| `raspberry-pi-32` | Zero, Zero W, Pi 1, CM1 (32-bit ARMv6) |
+
+You can get an image two ways:
+
+- **Generate it in the backend**: when you add a new frame, choose **Download SD card**. Pick your
+  board, and the image comes out preconfigured with your WiFi credentials, timezone, display
+  driver and frame settings - flash it, insert, done. Whether root login is enabled, and with
+  which password, is an explicit choice on that screen.
 - **Download a generic image** from the
   [latest release](https://github.com/FrameOS/frameos/releases) (look for
-  `frameos-*-raspberry-pi-zero-2-w-buildroot.img.gz`). On first boot the frame starts a WiFi
-  hotspot called `FrameOS-Setup` (password `frame1234`). Join it from your phone, enter your WiFi
-  credentials, and the frame connects to your network.
+  `frameos-*-raspberry-pi-64-buildroot.img.gz` and its siblings). On first boot the frame starts a
+  WiFi hotspot called `FrameOS-Setup` (password `frame1234`). Join it from your phone, enter your
+  WiFi credentials, and the frame connects to your network.
 
 Flash the image with [Raspberry Pi Imager](https://www.raspberrypi.com/software/) ("Use custom
 image"), [balenaEtcher](https://etcher.balena.io/), or plain `dd`. The partitions expand to fill
 your SD card on first boot.
 
+SD-image frames can also **upgrade themselves in place**: the frame downloads a new release,
+verifies its signature against a key baked into the build, and swaps it in on the next reboot -
+no re-flashing, no SSH.
+
 ## Option 2: stock Raspberry Pi OS Lite
 
-For all other Pi models, or if you prefer a standard OS underneath:
+If you prefer a standard OS underneath - or you want to run other things on the same Pi:
 
 1. Download the [Raspberry Pi Imager](https://www.raspberrypi.com/software/) and pick the **Lite**
    version of Raspberry Pi OS (no desktop needed).
@@ -74,6 +89,14 @@ For all other Pi models, or if you prefer a standard OS underneath:
 That's all. Given SSH access, the FrameOS backend does the rest - including installing
 dependencies and (for most targets) deploying **precompiled binaries**, so there's no slow
 on-device compilation.
+
+## Option 3: no SSH? install with a script
+
+When the backend can't reach the Pi over SSH - a locked-down machine, a different network, a
+device you only have a keyboard on - add the frame with **Install with a script**. The backend
+hands you a single command to paste on the device. It installs FrameOS, starts
+[FrameOS Remote](/guide/remote), and the frame connects **back** to the backend over an outbound
+WebSocket. Deploys, logs, metrics and the terminal all work from there without an inbound route.
 
 ## Next step
 

@@ -2176,5 +2176,39 @@
       "esp32-s3"
     ],
     "existingPage": true
+  },
+  {
+    "driver": "waveshare.EPD_3in97",
+    "vendor": "Good Display",
+    "model": "3.97\" e-Paper",
+    "technology": "E-ink",
+    "interface": "SPI",
+    "diagonal": 3.97,
+    "width": 800,
+    "height": 480,
+    "colors": "Black/White",
+    "colorCount": 2,
+    "colorClass": "bw",
+    "label": "Good Display 3.97\" 800x480 Black/White",
+    "status": "untested",
+    "slug": "good-display-3in97",
+    "existingPage": true
+  },
+  {
+    "driver": "waveshare.EPD_7in5yr",
+    "vendor": "TRMNL",
+    "model": "BWRY (7.5\")",
+    "technology": "E-ink",
+    "interface": "ESP32-C3 board",
+    "diagonal": 7.5,
+    "width": 800,
+    "height": 480,
+    "colors": "Black/White/Yellow/Red",
+    "colorCount": 4,
+    "colorClass": "accent",
+    "label": "TRMNL BWRY 7.5\" (YR) 800x480 Black/White/Yellow/Red",
+    "status": "untested",
+    "slug": "trmnl-bwry",
+    "existingPage": true
   }
 ]
