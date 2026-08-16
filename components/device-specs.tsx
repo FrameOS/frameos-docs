@@ -67,23 +67,41 @@ export function DeviceSpecs({ device }: { device: Device }) {
 
   return (
     <div className="not-prose rounded-lg border bg-fd-card p-4">
-      {affiliateProductUrl ? (
+      {device.image || affiliateProductUrl ? (
         <div className="mb-4 flex flex-col gap-3 border-b pb-4 sm:flex-row sm:items-center sm:justify-between">
-          <div>
-            <p className="text-xs uppercase tracking-wide text-fd-muted-foreground">{productCtaTitle}</p>
-            <p className="text-sm font-medium text-fd-foreground">
-              {isKnownStore ? 'Official store page for this device.' : (productHost ?? device.productUrl)}
-            </p>
+          <div className="flex min-w-0 items-center gap-3">
+            {device.image ? (
+              <img
+                src={device.image}
+                alt={`${device.vendor} ${device.model}`}
+                loading="lazy"
+                className="h-28 w-36 flex-none rounded-md border bg-white object-contain p-1"
+              />
+            ) : null}
+            <div className="min-w-0">
+              <p className="text-xs uppercase tracking-wide text-fd-muted-foreground">
+                {affiliateProductUrl ? productCtaTitle : 'Product photo'}
+              </p>
+              <p className="text-sm font-medium text-fd-foreground">
+                {affiliateProductUrl
+                  ? isKnownStore
+                    ? 'Official store page for this device.'
+                    : (productHost ?? device.productUrl)
+                  : `${device.vendor} ${device.model}`}
+              </p>
+            </div>
           </div>
-          <Link
-            href={affiliateProductUrl}
-            target="_blank"
-            rel={productRel}
-            className="inline-flex items-center justify-center gap-2 rounded-md bg-fd-primary px-3 py-2 text-sm font-medium text-fd-primary-foreground transition-opacity hover:opacity-90"
-          >
-            {productCtaLabel}
-            <ExternalLink className="size-4" aria-hidden="true" />
-          </Link>
+          {affiliateProductUrl ? (
+            <Link
+              href={affiliateProductUrl}
+              target="_blank"
+              rel={productRel}
+              className="inline-flex flex-none items-center justify-center gap-2 rounded-md bg-fd-primary px-3 py-2 text-sm font-medium text-fd-primary-foreground transition-opacity hover:opacity-90"
+            >
+              {productCtaLabel}
+              <ExternalLink className="size-4" aria-hidden="true" />
+            </Link>
+          ) : null}
         </div>
       ) : null}
       {vendorLinks.length > 0 ? (

@@ -17,6 +17,7 @@ export interface DeviceRow {
   colorCount?: number;
   colorClass?: 'bw' | 'accent' | 'gray' | 'acep' | 'spectra' | 'rgb' | 'varies';
   esp32?: boolean;
+  image?: string;
   status: 'tested' | 'untested';
 }
 
@@ -43,6 +44,7 @@ export function getDeviceRows(): DeviceRow[] {
         colorCount: device.colorCount,
         colorClass: device.colorClass,
         esp32: deviceSupportsEsp32(device),
+        image: device.image,
         status: device.status,
       };
     })

@@ -45,6 +45,8 @@ export const deviceSchema = z.object({
   esp32: z.boolean().optional(),
   status: z.enum(['tested', 'untested']).default('untested'),
   productUrl: z.string().optional(),
+  // product photo under public/images/devices, e.g. "/images/devices/trmnl-og.jpg"
+  image: z.string().optional(),
   links: z.array(deviceLinkSchema).optional(),
   cases: z.array(deviceCaseSchema).optional(),
   platforms: z.array(devicePlatformSchema).optional(),

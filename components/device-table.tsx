@@ -175,14 +175,28 @@ export function DeviceTable({ rows }: { rows: DeviceRow[] }) {
             {filtered.map((row) => (
               <tr key={row.url} className="border-b last:border-b-0 hover:bg-fd-accent/50">
                 <td className="px-3 py-2">
-                  <Link href={row.url} className="font-medium text-fd-primary hover:underline">
-                    {row.vendor !== 'Generic' ? `${row.vendor} ${row.model}` : row.model}
-                  </Link>
-                  {row.esp32 ? (
-                    <span className="ms-2 rounded bg-fd-muted px-1.5 py-0.5 text-[10px] font-medium text-fd-muted-foreground align-middle whitespace-nowrap">
-                      ESP32
+                  <div className="flex items-center gap-2.5">
+                    {row.image ? (
+                      <img
+                        src={row.image}
+                        alt=""
+                        loading="lazy"
+                        className="h-9 w-12 flex-none rounded border bg-white object-contain p-0.5 max-sm:hidden"
+                      />
+                    ) : (
+                      <span className="h-9 w-12 flex-none max-sm:hidden" aria-hidden="true" />
+                    )}
+                    <span>
+                      <Link href={row.url} className="font-medium text-fd-primary hover:underline">
+                        {row.vendor !== 'Generic' ? `${row.vendor} ${row.model}` : row.model}
+                      </Link>
+                      {row.esp32 ? (
+                        <span className="ms-2 rounded bg-fd-muted px-1.5 py-0.5 text-[10px] font-medium text-fd-muted-foreground align-middle whitespace-nowrap">
+                          ESP32
+                        </span>
+                      ) : null}
                     </span>
-                  ) : null}
+                  </div>
                 </td>
                 <td className="px-3 py-2 whitespace-nowrap">{row.diagonal ? `${row.diagonal}"` : '-'}</td>
                 <td className="px-3 py-2 whitespace-nowrap">
