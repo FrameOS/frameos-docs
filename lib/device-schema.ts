@@ -6,6 +6,13 @@ const deviceCaseSchema = z.object({
   image: z.string().optional(),
 });
 
+// Manufacturer wikis, datasheets, docs, firmware repos - anything worth linking
+// besides the store page in productUrl.
+const deviceLinkSchema = z.object({
+  label: z.string(),
+  url: z.string(),
+});
+
 const devicePlatformSchema = z.enum([
   'raspberry-pi',
   'esp32-s3',
@@ -38,6 +45,7 @@ export const deviceSchema = z.object({
   esp32: z.boolean().optional(),
   status: z.enum(['tested', 'untested']).default('untested'),
   productUrl: z.string().optional(),
+  links: z.array(deviceLinkSchema).optional(),
   cases: z.array(deviceCaseSchema).optional(),
   platforms: z.array(devicePlatformSchema).optional(),
 });

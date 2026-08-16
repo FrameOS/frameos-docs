@@ -116,6 +116,13 @@ function frontmatter(d, title, description) {
   if (d.buttons) lines.push(`  buttons: 4`);
   if (supportsEsp32(d)) lines.push(`  esp32: true`);
   if (d.productUrl) lines.push(`  productUrl: ${yamlString(d.productUrl)}`);
+  if (d.links?.length) {
+    lines.push('  links:');
+    for (const link of d.links) {
+      lines.push(`    - label: ${yamlString(link.label)}`);
+      lines.push(`      url: ${yamlString(link.url)}`);
+    }
+  }
   if (d.cases?.length) {
     lines.push('  cases:');
     for (const caseOption of d.cases) {

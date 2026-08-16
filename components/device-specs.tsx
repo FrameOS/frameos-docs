@@ -19,6 +19,26 @@ function productUrl(url: string): string {
   return url.includes('?') ? `${url}&aff_id=${waveshareAffiliateId}` : `${url}?&aff_id=${waveshareAffiliateId}`;
 }
 
+// Store domains we recognise as the vendor's own shop, so the button can say
+// "Buy from Pimoroni" instead of a bare "Open product page".
+const vendorStoreDomains: Record<string, string> = {
+  Waveshare: 'waveshare.com',
+  Pimoroni: 'pimoroni.com',
+  'Seeed Studio': 'seeedstudio.com',
+  TRMNL: 'trmnl.com',
+  Elecrow: 'elecrow.com',
+  XTEINK: 'xteink.com',
+  'Good Display': 'good-display.com',
+};
+
+function hostname(url: string): string | null {
+  try {
+    return new URL(url).hostname;
+  } catch {
+    return null;
+  }
+}
+
 function Spec({ label, children }: { label: string; children: React.ReactNode }) {
   return (
     <div className="flex flex-col gap-0.5">
@@ -37,7 +57,10 @@ export function DeviceSpecs({ device }: { device: Device }) {
       : ['raspberry-pi'];
   const affiliateProductUrl = device.productUrl ? productUrl(device.productUrl) : null;
   const caseOptions = device.cases ?? [];
-  const isKnownStore = device.vendor === 'Waveshare' || device.vendor === 'Pimoroni';
+  const vendorLinks = device.links ?? [];
+  const productHost = device.productUrl ? hostname(device.productUrl) : null;
+  const vendorDomain = vendorStoreDomains[device.vendor];
+  const isKnownStore = Boolean(vendorDomain && productHost?.endsWith(vendorDomain));
   const productCtaLabel = isKnownStore ? `Buy from ${device.vendor}` : 'Open product page';
   const productCtaTitle = isKnownStore ? `Official ${device.vendor} store` : 'Product page';
   const productRel = device.vendor === 'Waveshare' ? 'sponsored noopener noreferrer' : 'noopener noreferrer';
@@ -49,7 +72,7 @@ export function DeviceSpecs({ device }: { device: Device }) {
           <div>
             <p className="text-xs uppercase tracking-wide text-fd-muted-foreground">{productCtaTitle}</p>
             <p className="text-sm font-medium text-fd-foreground">
-              {isKnownStore ? 'Official store page for this device.' : device.productUrl}
+              {isKnownStore ? 'Official store page for this device.' : (productHost ?? device.productUrl)}
             </p>
           </div>
           <Link
@@ -61,6 +84,27 @@ export function DeviceSpecs({ device }: { device: Device }) {
             {productCtaLabel}
             <ExternalLink className="size-4" aria-hidden="true" />
           </Link>
+        </div>
+      ) : null}
+      {vendorLinks.length > 0 ? (
+        <div className="mb-4 border-b pb-4">
+          <p className="mb-2 text-xs uppercase tracking-wide text-fd-muted-foreground">
+            Manufacturer docs &amp; datasheets
+          </p>
+          <div className="flex flex-wrap gap-2">
+            {vendorLinks.map((link) => (
+              <Link
+                key={link.url}
+                href={link.url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-1.5 rounded-md border px-2.5 py-1.5 text-sm font-medium transition-colors hover:bg-fd-accent"
+              >
+                {link.label}
+                <ExternalLink className="size-3.5" aria-hidden="true" />
+              </Link>
+            ))}
+          </div>
         </div>
       ) : null}
       {caseOptions.length > 0 ? (
