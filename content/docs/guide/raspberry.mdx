@@ -45,7 +45,10 @@ You can get an image two ways:
   [latest release](https://github.com/FrameOS/frameos/releases) (look for
   `frameos-*-raspberry-pi-64-buildroot.img.gz` and its siblings). On first boot the frame starts a
   WiFi hotspot called `FrameOS-Setup` (password `frame1234`). Join it from your phone, enter your
-  WiFi credentials, and the frame connects to your network.
+  WiFi credentials, and the frame connects to your network. Generic images ship with
+  [FrameOS Remote](/guide/remote) switched off, since there is no backend for it to talk to yet;
+  **Adopt frame** in the backend turns a running generic-image frame into a managed one and
+  enables it.
 
 Flash the image with [Raspberry Pi Imager](https://www.raspberrypi.com/software/) ("Use custom
 image"), [balenaEtcher](https://etcher.balena.io/), or plain `dd`. The partitions expand to fill

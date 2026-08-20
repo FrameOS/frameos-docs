@@ -16,14 +16,15 @@ do is a short, specific list - it's [at the bottom of this page](#what-it-cannot
 <Callout title="Two kinds of microcontroller frame">
   An **ESP32-S3 with PSRAM** renders scenes on the device itself. A **PSRAM-less board**
   (ESP32-C3, and the [Pico W boards](/guide/pico)) can't hold a renderer, so it runs as a *thin
-  client*: the backend renders the scene and the device streams the finished panel bytes. Both
-  are set up the same way and look identical in the backend.
+  client*: the backend renders and dithers the scene and the device streams the finished panel
+  bytes. Both are set up the same way and look identical in the backend.
 </Callout>
 
 ## What you need
 
 - **An ESP32-S3 board with PSRAM.** Rendering happens in PSRAM, so don't skip it. 8&nbsp;MB is
-  enough for panels up to 800×480; a 13.3" 1600×1200 six-colour panel wants 16&nbsp;MB.
+  enough for every supported panel, including the 13.3" 1600×1200 six-colour ones - the render
+  canvas is 16-bit and a 13.3" scene fits in 3.7&nbsp;MB ([details](#performance)).
   The reference bare board is the
   [Seeed XIAO ESP32-S3](https://www.seeedstudio.com/XIAO-ESP32S3-p-5627.html)
   (8&nbsp;MB flash, 8&nbsp;MB octal PSRAM), but most people start from an
@@ -45,6 +46,7 @@ battery divider, SD slot and flash size are all filled in for you:
 | [Waveshare ESP32-S3 ePaper 13.3E6](/devices/waveshare-esp32-s3-epaper-13in3e6) | S3 | 13.3" Spectra 6 | 16&nbsp;MB PSRAM, 32&nbsp;MB flash, TF card, battery sensing |
 | [Seeed reTerminal E1001](/devices/seeed-reterminal-e1001) | S3 | 7.5" black/white | 3 front buttons, 32&nbsp;MB flash |
 | [Seeed reTerminal E1002](/devices/seeed-reterminal-e1002) | S3 | 7.3" Spectra 6 | 3 front buttons, 32&nbsp;MB flash |
+| [Seeed reTerminal E1004](/devices/seeed-reterminal-e1004) | S3 | 13.3" Spectra 6, portrait | 8&nbsp;MB PSRAM, 32&nbsp;MB flash, TF card, battery |
 | [Seeed reTerminal Sticky](/devices/seeed-reterminal-sticky) | S3 | 3.97" black/white | Small desk/fridge frame |
 | [Elecrow CrowPanel 5.79"](/devices/elecrow-crowpanel-5in79) | S3 | 5.79" 4-grey | 5 buttons, dual SSD1683 |
 | [TRMNL 7.5" DIY Kit](/devices/trmnl-og-diy-kit) | S3 | 7.5" black/white | XIAO ePaper driver board |
@@ -65,7 +67,9 @@ Anything else is a **Custom ESP32 board**: pick the panel, set the pins, done. T
 3. The backend builds a firmware image, baking in the WiFi details, backend address, frame API
    key, panel and pin map.
 4. Connect the board over USB and click **Flash from browser**. This uses Web Serial, so it works
-   in Chrome and Edge. Or download the image and flash it by hand:
+   in Chrome and Edge, on `https://` or `localhost` - a backend served over plain `http://` from
+   another machine (the Home Assistant add-on behind ingress, for instance) has no Web Serial; the
+   Logs panel tells you when that's the case. Or download the image and flash it by hand:
 
    ```bash
    esptool.py --chip esp32s3 --port /dev/tty.usbmodem* --baud 460800 \
@@ -74,6 +78,19 @@ Anything else is a **Custom ESP32 board**: pick the panel, set the pins, done. T
 
 The device boots fully provisioned: it joins your WiFi, registers with the backend, pulls its
 scenes, and renders.
+
+### Skip the build: flash the release image
+
+The firmware card also offers **Flash latest release**. Instead of compiling an
+image with your values baked in, the backend writes the published generic image for your chip and
+then configures the board over the USB console - `set hardware` for the preset first, then panel,
+pins, WiFi, backend address and API key. Nothing needs ESP-IDF on the backend's host, and a first
+flash takes a minute instead of however long a cold firmware build takes. Every panel driver is in
+the generic image already, so the result is the same frame.
+
+Four settings exist only as compile-time defaults and can't be set this way: the hostname, the HTTP
+response size limit, the device admin login (all reported as warnings on the button), and a frame
+that terminates TLS with its own certificate, which is refused outright.
 
 ### Backend toolchain
 
@@ -93,6 +110,12 @@ cd esp-idf && ./install.sh esp32s3
 
 The backend finds it via `IDF_PATH`, falling back to `~/esp/esp-idf`. Without Nim, the firmware
 still builds - as a thin client, without the on-device renderer.
+
+A cold build is ~1300 objects, because every panel driver goes into every image - on a small box
+that is tens of minutes. Progress (`[N/M]`) shows in the frame's log while it runs, the browser
+flasher waits on the build's heartbeat rather than a fixed timeout, and `ccache` keeps the second
+build fast. Set `FRAMEOS_EMBEDDED_BUILD_ROOT` to keep the build directory somewhere persistent (the
+Docker image and the Home Assistant add-on already do).
 
 ### Provisioning by hand
 
@@ -160,9 +183,24 @@ Pi:
 - Browse, upload, rename and delete files from the frame's **Assets** tab in the backend.
 - The **Local image** app plays files or folders straight off the card.
 - Images that are too big to decode in memory spool to the card and stream from it.
+- A `.ttf` dropped into `fonts/` on the card shows up in the editor's font picker for that frame;
+  **Sync fonts** copies the backend's font store over in one go. See [Fonts](#fonts).
 
 Boards without a card slot work fine - the cache and the spool degrade to memory, and nothing
 starts failing that used to work.
+
+## Fonts [#fonts]
+
+The firmware carries one typeface (Ubuntu Regular). It can also use fonts from the SD card: the frame lists `fonts/*.ttf` on the card through `GET /api/fonts`, the editor's font
+picker offers them, and the renderer loads the named face off the card - one parsed face at a time,
+files over 1&nbsp;MB refused unparsed, falling back to the built-in face rather than losing the
+drawing. Upload them through the **Assets** tab or use **Sync fonts**, which skips files the card
+already has. A frame without a card, or one that's short of render memory, renders in the built-in
+face.
+
+Two things stay Pi-only: SVG `<text>` always uses the built-in face on a microcontroller
+(a second parsed font would come out of the heap the renderer needs), and there is no emoji
+fallback - `NotoColorEmoji.ttf` is 10&nbsp;MB of bitmaps with no outlines to draw.
 
 ## Updates, control and telemetry
 
@@ -178,7 +216,8 @@ starts failing that used to work.
 - **Logs and metrics** stream to the backend, and the last 128 lines are kept in a ring buffer on
   the device, readable over the serial console when the network is down.
 - **An on-device scheduler**: per-scene render intervals plus minute/hour/weekday schedules that
-  switch scenes or fire events, evaluated on the device in frame-local time.
+  switch scenes, fire events, or restart/reboot the device (a **Maintenance** entry in the
+  Schedule panel), evaluated on the device in frame-local time.
 - **Buttons**: GPIO buttons (the board presets know where they are) dispatch scene events, so a
   press can change a scene, re-render, or run anything you wire up in the editor.
 
@@ -222,6 +261,14 @@ Memory on the same board: 7.1&nbsp;MB PSRAM free with a scene resident, 4.2&nbsp
 the worst point of a render. If a panel is too large for a board's PSRAM, the backend says so
 when you build the firmware rather than shipping you an image that can't render.
 
+The scene canvas is **16-bit RGB565** (2 bytes per pixel) rather than RGBA, claimed once from
+PSRAM before WiFi starts and reused for every render. A 1200×1600 canvas is 3.7&nbsp;MB
+instead of 7.3&nbsp;MB, which is what lets the 13.3" Spectra 6 panels render on an 8&nbsp;MB module
+like the [reTerminal E1004](/devices/seeed-reterminal-e1004). It costs nothing visible: every panel
+the firmware drives is dithered e-paper, the dither keeps full-precision error rows beside the
+canvas, and a photo dithered to Spectra 6 through both canvases lands the same palette within
+0.05% per colour. The Pi, HDMI and the browser preview keep a full RGBA canvas.
+
 ## Wiring
 
 Default pins target the XIAO ESP32-S3 (a board preset overrides all of these):
@@ -251,11 +298,12 @@ Straight, so you can decide before you buy:
   You can write and fork apps in **JavaScript/TypeScript** and use JS code nodes, but editing an
   app's Nim source means compiling, which means a Pi. The backend warns you when a scene contains
   compiled-only content.
-- **One font.** The firmware carries a single typeface (Ubuntu Regular) and no emoji fallback;
-  custom fonts uploaded to a frame are a Pi feature.
+- **Fonts are limited.** One built-in typeface, plus TTFs from the SD card loaded one at a time
+  ([Fonts](#fonts)). No emoji fallback, and SVG `<text>` always renders in the built-in face.
 - **No on-device admin web app.** The frame answers the HTTP API and serves a setup page, but the
   full `/admin` panel and the control page with the QR code are Pi-side. Manage ESP32 frames from
-  the backend.
+  the backend. (`GET /status` does report the chip, the hardware preset, and internal heap and
+  largest-block figures - useful when a thin client runs out of memory.)
 - **It's slow.** Seconds per render, not milliseconds. Fine for e-ink, useless for anything that
   needs to move.
 - **PSRAM is the ceiling.** No PSRAM means thin-client mode, where the backend has to be reachable
@@ -268,7 +316,7 @@ Straight, so you can decide before you buy:
 | Displays | [120+ drivers](/devices): e-ink, HDMI, LCD | Waveshare SPI e-paper, every driver in one image |
 | Custom code | JavaScript, or Nim in a compiled scene | JavaScript/TypeScript |
 | Apps | All of them | All but Chromium screenshots and RTSP |
-| Fonts | Any TTF you upload, emoji fallback | One built-in typeface |
+| Fonts | Any TTF you upload, emoji fallback | Built-in typeface, plus TTFs on the SD card |
 | Power | ~1 W, wall-powered | Deep sleep between refreshes - battery is viable |
 | Updates | SSH / Remote deploys | Signed OTA with A/B rollback |
 | Price | ~$15-20 (Zero 2 W) | ~$6-10 (bare S3), or an all-in-one board |

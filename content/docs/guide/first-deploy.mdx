@@ -22,6 +22,11 @@ Click "New frame" in the backend and pick how this frame gets set up:
   firmware, straight from the browser.
 - **Virtual frame** - [no hardware at all](/guide/virtual); the backend renders to an image URL.
 - **Import frame** - restore a frame you exported earlier as JSON.
+- **Adopt frame** - take over a Pi that is already running FrameOS on its own (booted from a
+  generic SD image, say). Give the backend the frame's address and its admin login; it imports the
+  frame's settings and scenes, keeps its access key so existing links work, and points the frame
+  at this backend. Logs start flowing after the frame's next restart or deploy. ESP32 frames
+  can't be adopted - flash those from the backend instead.
 
 Then name the frame and select the right **display driver** for your panel - there are over 120 to
 choose from, organised by vendor. Pick "Web only" if you just want to try FrameOS without any

@@ -86,8 +86,10 @@ Beyond that, honest limits:
 - **Progressive JPEGs and interlaced PNGs can't be streamed** - the format interleaves the whole
   image, so there is nothing to stream. They're decoded buffered and refused, gracefully, if they
   don't fit. Save photos as baseline JPEG if you control the source.
-- **Some panels are the problem.** A 13.3" 1600×1200 six-colour canvas is 7.7&nbsp;MB on its own,
-  before any image exists. That's why that board carries 16&nbsp;MB of PSRAM.
+- **Some panels are the problem.** A 13.3" 1600×1200 canvas is 7.7&nbsp;MB of RGBA on its own,
+  before any image exists. On the ESP32 the canvas is 16-bit (3.8&nbsp;MB), which is what lets
+  that panel render on an 8&nbsp;MB board - but it's still half the PSRAM before the first byte of
+  a photo arrives.
 - **On a microcontroller, a failed allocation is contained, not fatal.** The render fails, the
   device keeps running, and the next render tries again.
 

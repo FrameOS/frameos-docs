@@ -70,7 +70,8 @@ The Pico support is newer than the rest and honest about it:
 - **Front buttons trigger an immediate render**, but per-button scene actions aren't wired up
   yet.
 - **No on-device scenes, JavaScript, assets or scheduler** - all of that happens on the backend
-  side for a thin client.
+  side for a thin client. The backend dithers the render to the panel's palette before packing
+  it, so thin clients look the same as a frame that renders on-device.
 - The 4.0" Inky Frame's panel initialisation still wants validation on real glass; if yours comes
   up mirrored or offset, [tell us](https://github.com/FrameOS/frameos/issues).
 

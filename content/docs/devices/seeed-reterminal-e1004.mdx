@@ -1,0 +1,78 @@
+---
+title: "Seeed reTerminal E1004"
+description: "Seeed Studio reTerminal E1004 - a 13.3\" Spectra 6 colour e-ink frame with an ESP32-S3 and 8 MB of PSRAM, rendering 1200×1600 scenes on-device."
+device:
+  vendor: "Seeed Studio"
+  model: "reTerminal E1004"
+  driver: "waveshare.EPD_13in3e"
+  label: "Seeed reTerminal E1004 (13.3\" color ESP32-S3)"
+  technology: "E-ink"
+  interface: "ESP32-S3 board"
+  diagonal: 13.3
+  width: 1200
+  height: 1600
+  colors: "6 colors (Spectra 6)"
+  colorCount: 6
+  colorClass: "spectra"
+  productUrl: "https://www.seeedstudio.com/reTerminal-E1004-p-6692.html"
+  image: "/images/devices/seeed-reterminal-e1004.jpg"
+  links:
+    - label: "Seeed wiki"
+      url: "https://wiki.seeedstudio.com/getting_started_with_reterminal_e1004/"
+  platforms:
+    - "esp32-s3"
+  status: "untested"
+---
+
+The **Seeed reTerminal E1004** is the big one in the reTerminal E-series: a portrait 13.3"
+**Spectra 6** six-colour panel at 1200×1600, an ESP32-S3 with 8&nbsp;MB of PSRAM and 32&nbsp;MB of
+flash, a microSD slot, a battery, and touch buttons on the bezel plus physical ones on the back.
+FrameOS runs on it as a full [ESP32-S3 frame](/guide/esp32), rendering and dithering scenes on the
+device.
+
+Pick the **Seeed reTerminal E1004** hardware preset (`seeed_reterminal_e1004`) when you add the
+frame. It selects the `waveshare.EPD_13in3e` panel driver, the E-series SPI bus with the 13.3"
+panel's second chip select, the 32&nbsp;MB flash profile and the TF card asset mount. The panel is
+the same glass as the [Waveshare 13.3" (E)](/devices/waveshare-epd-13in3e), with Seeed's own
+analogue tuning applied by the preset. The preset does not yet map the buttons to scene events.
+
+## Why 8 MB is enough
+
+A 1200×1600 RGBA canvas alone would be 7.3&nbsp;MB - most of this board's PSRAM before a single
+image is decoded. The ESP32 renderer instead composites into a **16-bit canvas** (3.7&nbsp;MB),
+reserved once at boot and reused for every render, and the dither carries its own full-precision
+error rows beside it. Every panel the firmware drives is a dithered e-paper,
+so the 5/6-bit colour the canvas holds is below what the panel can show - side by side with the old
+canvas, a photo dithered to Spectra 6 lands the same palette within 0.05% per colour. That is what
+makes this board render on-device rather than as a thin client.
+
+## Setup
+
+1. In the FrameOS backend, create a frame with **Flash embedded device**.
+2. Choose **ESP32-S3**, select the **Seeed reTerminal E1004** preset, and enter your WiFi details.
+3. Build the firmware and flash it over USB from the browser - or write the generic release image
+   with **Flash latest release** and let the backend configure it over the USB console.
+4. Install scenes as usual - they sync over WiFi, and the device updates itself over the air.
+
+A full Spectra 6 refresh on a panel this size takes around half a minute, and a heavy scene can
+take a similar time to render and dither first. Fine for a frame that updates a few times an hour.
+
+## Pin map
+
+| Signal | GPIO |
+| ------ | ---- |
+| CS     | 10   |
+| CS2    | 2    |
+| DC     | 11   |
+| RST    | 38   |
+| BUSY   | 13   |
+| SCK    | 7    |
+| MOSI   | 9    |
+| PWR    | 12   |
+
+## Status
+
+🟡 **Should work, not yet confirmed on real hardware.** The 13.3" Spectra 6 driver is confirmed on
+the [Waveshare 13.3E6 board](/devices/waveshare-esp32-s3-epaper-13in3e6); this terminal has not
+been reported back yet.
+Tell us on [GitHub](https://github.com/FrameOS/frameos/issues/new) or [Discord](https://discord.gg/9dT9y7EzUw) if you try it.

@@ -127,10 +127,17 @@ Things to know:
 
 The `render/svg` app rasterises SVG markup - a very practical way to lay out a panel, especially
 from a JavaScript app that generates the markup. `<text>` elements are typeset with the frame's
-own fonts and drawn as outlines, so labels come out sharp at any size. FrameOS implements a subset
-of SVG rather than the whole spec: `<defs>` and external references are ignored, and on a
-microcontroller everything renders in the one built-in typeface.
+own fonts and drawn as outlines, so labels come out sharp at any size - no need to layer
+`render/text` on top of an SVG for its labels. `font-family` is matched loosely against
+the fonts on the frame - `"PT Sans"`, `PTSans-Bold.ttf` and `font-weight="bold"` all land on
+`PTSans-Bold.ttf` - and anything the frame doesn't have falls back to the built-in face rather than
+failing the drawing. `text-anchor`, `dominant-baseline`, `<tspan>`, entities and stroked or
+transformed text all work. FrameOS implements a subset of SVG rather than the whole spec: `<defs>`
+and external references are ignored, a Pi holds at most eight typefaces per SVG, and on a
+microcontroller SVG text always renders in the one built-in typeface.
 
 On a Raspberry Pi you can upload your own TrueType fonts under the frame's assets and pick them in
 any text or font field. Drop a `NotoColorEmoji.ttf` in there and it's used automatically as a
-fallback for characters your font doesn't cover.
+fallback for characters your font doesn't cover (SVG text excluded - colour emoji are bitmaps with
+no outlines). An [ESP32 with an SD card](/guide/esp32#fonts) can load TTFs from `fonts/` on the
+card too, one face at a time.

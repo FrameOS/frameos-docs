@@ -40,7 +40,9 @@ Raspberry Pi, use the [Waveshare 13.3" (E)](/devices/waveshare-epd-13in3e) page 
 
 FrameOS builds a dedicated ESP32-S3 firmware image for the board. The 13.3E6 preset uses 32MB
 flash, 16MB PSRAM, dual chip-select wiring for the large panel, and `/srv/assets` on the TF card
-for local assets.
+for local assets. (The render canvas is 16-bit, so the same panel also renders on 8&nbsp;MB boards
+like the [Seeed reTerminal E1004](/devices/seeed-reterminal-e1004); this board's extra PSRAM is
+headroom for big photos.)
 
 The firmware renders [scenes](/guide/scenes) on-device, dithers them to the Spectra 6 palette,
 and refreshes the panel over the board's SPI wiring.

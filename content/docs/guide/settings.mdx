@@ -40,7 +40,14 @@ wall-powered, so it has none of this.
 
 Frames reboot nightly by default - cheap insurance against memory leaks on a device meant to run
 for years. To anyone watching, it looks like a regular re-render. You can disable it or change the
-time.
+time. A reboot or restart can also be a [schedule entry](/guide/control#scheduling), which is how
+ESP32 frames do it.
+
+## Metrics
+
+Frames sample CPU, memory, temperature and disk and ship them to the backend every 60 seconds.
+Change the interval under **Metrics**, or set it to `0` to turn the sampler off entirely. Changes
+apply without a restart.
 
 ## Time zone
 

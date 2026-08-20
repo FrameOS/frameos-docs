@@ -89,6 +89,11 @@ on a Raspberry Pi.
   interpreted mode can't run.
 </Callout>
 
+On the frame side there are two ways a binary gets built: **precompiled** (the release binary plus
+its driver libraries, scenes interpreted - the default) and **static** (everything compiled into
+one binary, which is what a compiled scene forces). Frames still configured with the retired
+`shared` or `shared-scenes` modes are moved to `static` automatically.
+
 ## Preview before you deploy
 
 Two ways to see a scene without committing to it:

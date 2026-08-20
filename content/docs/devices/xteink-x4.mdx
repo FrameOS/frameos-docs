@@ -36,6 +36,14 @@ backend has to be reachable when the frame renders.
 The X4's card slot shares its SPI bus with the e-paper controller, so SD-card assets are turned
 off on this board.
 
+The C3's ~380&nbsp;KB of internal RAM is tight: the firmware reserves the 96&nbsp;KB panel buffer
+at boot, before WiFi fragments the heap, and `GET /status` reports the free heap and largest
+block if you want to keep an eye on it. The backend dithers the four-grey bitmap, so gradients
+and photos come out smooth rather than banded.
+
+The X4 provisions from the 4&nbsp;MB no-OTA generic image, so firmware updates go over USB; a
+16&nbsp;MB C3 release asset that would enable OTA is on the list.
+
 ## Setup
 
 1. In the FrameOS backend, create a frame with **Flash embedded device**.
@@ -45,5 +53,5 @@ off on this board.
 
 ## Status
 
-🟡 **Should work, not yet confirmed on real hardware.**
+🟡 **Boots and renders on real hardware**, but not yet widely reported.
 Tell us on [GitHub](https://github.com/FrameOS/frameos/issues/new) or [Discord](https://discord.gg/9dT9y7EzUw) if you try it.

@@ -87,3 +87,7 @@ Frames have their own on-device scheduler: render intervals per scene, plus cron
 (minute/hour/weekday) that can switch scenes or fire events - for example, a calendar during the
 day and art in the evening. Configure it under the frame's **Schedule** tab. The schedule runs on
 the frame, so it keeps working with the backend off.
+
+The same panel has a **Maintenance** card that schedules a `restart` of the FrameOS
+process or a full `reboot` of the device - the successor to the nightly-reboot setting, on both
+Raspberry Pi and ESP32 frames.

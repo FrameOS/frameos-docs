@@ -26,6 +26,11 @@ HDMI display, while the same scene system also runs e-ink panels at one frame pe
 2. Select the **HDMI / Framebuffer** driver when adding the frame.
 3. Set the width and height to match the display's resolution, then deploy.
 
+On a Pi 5 with a Buildroot SD image, `/dev/fb0` may exist before the display has a mode set
+(or while nothing is plugged in). The driver treats that as "not ready yet" and re-probes on its
+own - every 2 seconds, backing off to a minute - instead of waiting for the next scheduled
+render, so plugging a screen in brings the picture up within seconds even on an hourly frame.
+
 ## Power control
 
 You can turn the display output on and off from the command line - handy in schedules:
