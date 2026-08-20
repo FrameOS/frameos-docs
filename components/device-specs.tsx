@@ -63,6 +63,8 @@ export function DeviceSpecs({ device }: { device: Device }) {
   const vendorDomain = vendorStoreDomains[device.vendor];
   const isKnownStore = Boolean(vendorDomain && productHost?.endsWith(vendorDomain));
   const productCtaLabel = isKnownStore ? `Buy from ${device.vendor}` : 'Open product page';
+  // Generated panel drawings (scripts/generate-device-placeholders.mjs) are not photos: no lightbox, no 'photo' label.
+  const isPlaceholder = device.image?.includes('/placeholders/') ?? false;
   const productCtaTitle = isKnownStore ? `Official ${device.vendor} store` : 'Product page';
   const productRel = device.vendor === 'Waveshare' ? 'sponsored noopener noreferrer' : 'noopener noreferrer';
 
@@ -71,7 +73,13 @@ export function DeviceSpecs({ device }: { device: Device }) {
       {device.image || affiliateProductUrl ? (
         <div className="mb-4 flex flex-col gap-3 border-b pb-4 sm:flex-row sm:items-center sm:justify-between">
           <div className="flex min-w-0 items-center gap-3">
-            {device.image ? (
+            {device.image && isPlaceholder ? (
+              <img
+                src={device.image}
+                alt=""
+                className="h-28 w-44 flex-none rounded border bg-white object-contain p-1"
+              />
+            ) : device.image ? (
               <DevicePhoto
                 src={device.image}
                 alt={`${device.vendor} ${device.model}`}
@@ -80,7 +88,7 @@ export function DeviceSpecs({ device }: { device: Device }) {
             ) : null}
             <div className="min-w-0">
               <p className="text-xs uppercase tracking-wide text-fd-muted-foreground">
-                {affiliateProductUrl ? productCtaTitle : 'Product photo'}
+                {affiliateProductUrl ? productCtaTitle : isPlaceholder ? 'Illustration' : 'Product photo'}
               </p>
               <p className="text-sm font-medium text-fd-foreground">
                 {affiliateProductUrl

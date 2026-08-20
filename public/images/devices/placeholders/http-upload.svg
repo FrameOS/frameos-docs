@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 300" width="400" height="300">
+<rect width="400" height="300" fill="#ffffff"/>
+<path d="M120 190a40 40 0 0 1 6-79 62 62 0 0 1 118-20 48 48 0 0 1 44 99z" fill="#e9eef7" stroke="#2b2b2b" stroke-width="6" stroke-linejoin="round"/>
+<path d="M200 222v-96M164 162l36-36 36 36" fill="none" stroke="#1f6feb" stroke-width="12" stroke-linecap="round" stroke-linejoin="round"/>
+<text x="200" y="286" text-anchor="middle" font-family="ui-sans-serif, system-ui, sans-serif" font-size="15" fill="#555">POSTs each render over HTTP</text>
+</svg>

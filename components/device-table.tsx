@@ -177,12 +177,19 @@ export function DeviceTable({ rows }: { rows: DeviceRow[] }) {
                 <td className="px-3 py-2">
                   <div className="flex items-center gap-2.5">
                     {row.image ? (
-                      <img
-                        src={row.image}
-                        alt=""
-                        loading="lazy"
-                        className="h-9 w-12 flex-none rounded border bg-white object-contain p-0.5 max-sm:hidden"
-                      />
+                      <Link
+                        href={row.url}
+                        tabIndex={-1}
+                        aria-hidden="true"
+                        className="flex-none max-sm:hidden"
+                      >
+                        <img
+                          src={row.image}
+                          alt=""
+                          loading="lazy"
+                          className="h-9 w-12 rounded border bg-white object-contain p-0.5 transition-transform hover:scale-110"
+                        />
+                      </Link>
                     ) : (
                       <span className="h-9 w-12 flex-none max-sm:hidden" aria-hidden="true" />
                     )}
