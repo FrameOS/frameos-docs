@@ -161,6 +161,14 @@ const features = [
   },
 ];
 
+function HeroLink({ href, children }: { href: string; children: React.ReactNode }) {
+  return (
+    <Link href={href} className="text-fd-foreground underline decoration-fd-muted-foreground/50 underline-offset-4 hover:decoration-fd-primary">
+      {children}
+    </Link>
+  );
+}
+
 function SectionTitle({ kicker, title, sub }: { kicker: string; title: string; sub?: string }) {
   return (
     <div className="mx-auto mb-10 max-w-2xl text-center">
@@ -181,10 +189,15 @@ export default function HomePage() {
             The operating system for smart frames
           </h1>
           <p className="text-lg text-fd-muted-foreground">
-            Turn a Raspberry Pi or ESP32, and any display - e-ink, HDMI or LCD - into a calendar,
-            dashboard or art frame that runs itself. Everything renders{' '}
-            <strong>on the device</strong>. Run it standalone, control with a self-hosted backend, or manage it
-            from FrameOS Cloud - the frame works the same either way.
+            Turn a <HeroLink href="/guide/raspberry">Raspberry Pi</HeroLink> or{' '}
+            <HeroLink href="/guide/esp32">ESP32</HeroLink>, and{' '}
+            <HeroLink href="/devices">any display</HeroLink> - e-ink, HDMI or LCD - into a
+            calendar, dashboard or art frame that runs itself. Everything renders{' '}
+            <strong>on the device</strong>. Run it{' '}
+            <HeroLink href="/guide/standalone">standalone</HeroLink>, control it with a{' '}
+            <HeroLink href="/guide/backend">self-hosted backend</HeroLink>, or manage it from{' '}
+            <HeroLink href="/guide/cloud">FrameOS Cloud</HeroLink> - the frame works the same
+            either way.
           </p>
           <InstallPathChooser />
           <p className="text-sm text-fd-muted-foreground">
