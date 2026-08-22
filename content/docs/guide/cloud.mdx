@@ -38,6 +38,12 @@ A cloud-managed frame is also deliberately limited. The cloud:
   [decode them on the device](/guide/images), whatever their size.
 - **never renders for you.** Previews are the frame's own last render, or rendered in your browser.
 - **only sees logs and metrics if you switch that on**, per frame.
+- **never sees your WiFi password.** An SD image built in the cloud is assembled in your browser:
+  the WiFi credentials and root password are written into the image locally and never sent to
+  the server. The same goes for an ESP32 flashed from the browser - WiFi goes straight to the
+  board over USB. The cloud gets the frame name, the display and a claim token, nothing more.
+- **never holds your backups in the clear.** Backups from a linked backend are encrypted before
+  upload with a key only you have; the cloud stores ciphertext.
 - **ships no binaries.** Firmware updates are a nudge: the frame downloads the release itself and
   verifies its signature before installing.
 
