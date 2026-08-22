@@ -38,19 +38,19 @@ const installOptions = [
     id: 'frame',
     icon: Cpu,
     title: 'Just a frame',
-    description: 'Flash a Pi, set it up through its WiFi hotspot. No backend, no account.',
+    description: 'Flash a Pi, set it up through a WiFi hotspot. No backend, no account.',
   },
   {
     id: 'backend',
     icon: Server,
-    title: 'Self-hosted',
-    description: 'Run the frameos/frameos Docker image on your laptop, server or NAS.',
+    title: 'Self-hosted backend',
+    description: 'Run the frameos Docker image on your laptop, server or NAS.',
   },
   {
     id: 'cloud',
     icon: Cloud,
     title: 'FrameOS Cloud',
-    description: 'Manage frames from a browser, nothing to host. Free in beta.',
+    description: 'Manage frames from a browser. Least hassle to setup. Also open source, no lockin.',
   },
 ] as const;
 
@@ -216,7 +216,7 @@ export function InstallPathChooser({ className }: { className?: string }) {
               <p className="mb-2 text-sm font-medium">Run the backend on your computer or server</p>
               <p className="text-sm text-fd-muted-foreground">
                 Copy the one-liner below. It installs Docker if needed, then runs the{' '}
-                <code>frameos/frameos</code> image on port 8989. Then add a frame: flash a
+                <code>frameos</code> image on port 8989. Then add a frame: flash a
                 preconfigured SD image, deploy over SSH, or flash an ESP32 from the browser.
               </p>
               <CopyCommand command={INSTALL_COMMAND} className="mt-3 w-full" />

@@ -183,7 +183,7 @@ export default function HomePage() {
           <p className="text-lg text-fd-muted-foreground">
             Turn a Raspberry Pi or ESP32, and any display - e-ink, HDMI or LCD - into a calendar,
             dashboard or art frame that runs itself. Everything renders{' '}
-            <strong>on the device</strong>. Run it standalone, self-host the backend, or manage it
+            <strong>on the device</strong>. Run it standalone, control with a self-hosted backend, or manage it
             from FrameOS Cloud - the frame works the same either way.
           </p>
           <InstallPathChooser />
