@@ -80,8 +80,12 @@ export function Slideshow({
           <ChevronRight className="size-5" />
         </button>
       </div>
-      <figcaption className="mt-3 flex items-center justify-between gap-4">
-        <span className="text-sm text-fd-muted-foreground">{slides[index].caption}</span>
+      {/* Fixed two-line caption height: captions of different lengths must not
+          resize the figure, or everything below it jumps on every slide change. */}
+      <figcaption className="mt-3 flex items-start justify-between gap-4">
+        <span className="line-clamp-2 min-h-[2.5rem] text-sm leading-5 text-fd-muted-foreground">
+          {slides[index].caption}
+        </span>
         <span className="flex shrink-0 gap-1.5">
           {slides.map((slide, i) => (
             <button
