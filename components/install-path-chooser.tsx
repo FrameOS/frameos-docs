@@ -42,24 +42,40 @@ async function latestImageUrl(board: Exclude<PiImage, 'other'>): Promise<string>
 
 type InstallPath = 'frame' | 'backend' | 'cloud';
 
+// A fine, theme-neutral noise texture layered over each tile's gradient.
+const NOISE_TEXTURE =
+  "url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0.5 0 0 0 0 0.5 0 0 0 0 0.5 0 0 0 0.45 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E\")";
+
 const installOptions = [
   {
     id: 'frame',
     icon: Cpu,
     title: 'Just a frame',
     description: 'Flash a Pi and set it up through a WiFi hotspot, or install on any Linux. No backend, no account.',
+    // logo gold #c8a247
+    tint: 'from-[#c8a247]/30 via-[#c8a247]/10 to-fd-background dark:from-[#c8a247]/25 dark:via-[#c8a247]/10 dark:to-fd-background',
+    glow: 'bg-[#c8a247]/50 dark:bg-[#c8a247]/30',
+    iconColor: 'text-[#8a6c1e] dark:text-[#e2c468]',
   },
   {
     id: 'backend',
     icon: Server,
     title: 'Self-hosted backend',
     description: 'Run the frameos Docker image on your laptop, server or NAS. Use it to manage frames in your network over SSH.',
+    // logo lime #8baa3a
+    tint: 'from-[#8baa3a]/30 via-[#8baa3a]/10 to-fd-background dark:from-[#8baa3a]/25 dark:via-[#8baa3a]/10 dark:to-fd-background',
+    glow: 'bg-[#8baa3a]/50 dark:bg-[#8baa3a]/30',
+    iconColor: 'text-[#5a7320] dark:text-[#b5d45c]',
   },
   {
     id: 'cloud',
     icon: Cloud,
     title: 'FrameOS Cloud',
     description: 'Manage frames from a browser. Least hassle to setup. Free while in beta.',
+    // logo teal #1c7c66
+    tint: 'from-[#1c7c66]/30 via-[#1c7c66]/10 to-fd-background dark:from-[#1c7c66]/35 dark:via-[#1c7c66]/12 dark:to-fd-background',
+    glow: 'bg-[#1c7c66]/50 dark:bg-[#1c7c66]/40',
+    iconColor: 'text-[#1c7c66] dark:text-[#5fc4a8]',
   },
 ] as const;
 
@@ -69,7 +85,7 @@ function ExternalButton({ href, children }: { href: string; children: React.Reac
       href={href}
       target="_blank"
       rel="noopener noreferrer"
-      className="inline-flex items-center gap-2 rounded-lg border px-3 py-1.5 text-sm font-medium transition-colors hover:bg-fd-accent"
+      className="inline-flex items-center gap-2 rounded-lg bg-fd-primary px-3 py-1.5 text-sm font-medium text-fd-primary-foreground transition-opacity hover:opacity-90"
     >
       {children}
       <ExternalLink className="size-3.5" aria-hidden="true" />
@@ -120,25 +136,49 @@ export function InstallPathChooser({
               aria-pressed={selected}
               onClick={() => setSelectedPath(option.id)}
               className={cn(
-                'flex h-full flex-col items-start gap-2 rounded-lg border bg-fd-background p-4 text-left transition-colors',
+                'group relative isolate flex h-full flex-col items-start gap-2 overflow-hidden rounded-xl border p-4 text-left transition-all',
+                'bg-gradient-to-br',
+                option.tint,
                 selected
-                  ? 'border-fd-primary ring-1 ring-fd-primary'
-                  : 'hover:border-fd-primary/50 hover:bg-fd-accent/50',
+                  ? 'border-fd-primary shadow-md ring-1 ring-fd-primary'
+                  : 'hover:-translate-y-0.5 hover:border-fd-primary/50 hover:shadow-md',
               )}
             >
+              {/* noise texture */}
+              <span
+                aria-hidden="true"
+                className="pointer-events-none absolute inset-0 -z-10 opacity-50 mix-blend-overlay dark:opacity-30"
+                style={{ backgroundImage: NOISE_TEXTURE }}
+              />
+              {/* soft glow in the corner */}
+              <span
+                aria-hidden="true"
+                className={cn(
+                  'pointer-events-none absolute -right-10 -top-10 -z-10 size-40 rounded-full blur-2xl transition-opacity group-hover:opacity-100',
+                  selected ? 'opacity-100' : 'opacity-70',
+                  option.glow,
+                )}
+              />
+              {/* large watermark icon */}
+              <Icon
+                aria-hidden="true"
+                strokeWidth={1}
+                className={cn(
+                  'pointer-events-none absolute -bottom-6 -right-6 -z-10 size-32 opacity-[0.08] transition-transform duration-300 group-hover:scale-110 group-hover:opacity-[0.12] dark:opacity-[0.1]',
+                  option.iconColor,
+                )}
+              />
               <span
                 className={cn(
-                  'inline-flex size-8 shrink-0 items-center justify-center rounded-full border',
-                  selected
-                    ? 'border-fd-primary bg-fd-primary text-fd-primary-foreground'
-                    : 'bg-fd-background text-fd-muted-foreground',
+                  'inline-flex size-8 shrink-0 items-center justify-center rounded-full border bg-fd-background/80 backdrop-blur-sm',
+                  selected ? 'border-fd-primary bg-fd-primary text-fd-primary-foreground' : option.iconColor,
                 )}
               >
                 <Icon className="size-4" aria-hidden="true" />
               </span>
               <span>
                 <span className="block font-semibold">{option.title}</span>
-                <span className="mt-1 block text-sm text-fd-muted-foreground">
+                <span className="mt-1 block text-sm text-fd-foreground/80">
                   {option.description}
                 </span>
               </span>
@@ -148,11 +188,11 @@ export function InstallPathChooser({
       </div>
 
       {selectedPath ? (
-        <div className="mt-3 rounded-lg border bg-fd-card/50 p-4 text-left">
+        <div className="mt-3 rounded-xl border border-fd-primary bg-fd-card/50 p-4 text-left shadow-md ring-1 ring-fd-primary">
           {selectedPath === 'frame' ? (
             <>
               <div className="border-b pb-3">
-                <p className="text-sm font-medium">Pick a platform</p>
+                <p className="font-semibold">Pick a platform</p>
                 <div className="mt-2 flex flex-wrap items-center gap-2">
                   <select
                     aria-label="Raspberry Pi model"
@@ -190,14 +230,14 @@ export function InstallPathChooser({
               </div>
               {board === 'other' ? (
                 <>
-                  <p className="mt-3 text-sm text-fd-muted-foreground">
+                  <p className="mt-3 text-fd-muted-foreground">
                     Already running Linux? Prebuilt binaries exist for <strong>Debian</strong>{' '}
                     (buster through trixie) and <strong>Ubuntu</strong> (22.04, 24.04, 26.04) on{' '}
                     <code>arm64</code>, <code>armhf</code>, <code>armv6</code> and <code>amd64</code>{' '}
                     - Raspberry Pi OS included. Run this on the device:
                   </p>
                   <CopyCommand command={LINUX_INSTALL_COMMAND} className="mt-3 w-full" />
-                  <p className="mt-3 text-sm text-fd-muted-foreground">
+                  <p className="mt-3 text-fd-muted-foreground">
                     It asks for your display and an admin password, installs the latest release
                     as a systemd service, and starts the frame. Then open{' '}
                     <code>http://&lt;frame-ip&gt;:8787/admin</code> to add scenes. Connect a
@@ -206,7 +246,7 @@ export function InstallPathChooser({
                   </p>
                 </>
               ) : (
-              <ol className="mt-3 space-y-2 text-sm text-fd-muted-foreground">
+              <ol className="mt-3 space-y-2 text-fd-muted-foreground">
                 <li>
                   1. Flash the image with{' '}
                   <TextLink href="https://www.raspberrypi.com/software/">
@@ -232,7 +272,7 @@ export function InstallPathChooser({
                 </li>
               </ol>
               )}
-              <p className="mt-3 border-t pt-3 text-sm text-fd-muted-foreground">
+              <p className="mt-3 border-t pt-3 text-fd-muted-foreground">
                 Details in <TextLink href="/guide/standalone">the standalone frame guide</TextLink>. You can
                 hand the frame to a <TextLink href="/guide/backend">backend</TextLink> or{' '}
                 <TextLink href="/guide/cloud">the cloud</TextLink> later - no reflash.
@@ -240,8 +280,8 @@ export function InstallPathChooser({
             </>
           ) : selectedPath === 'backend' ? (
             <>
-              <p className="mb-2 text-sm font-medium">Run the backend on your computer or server</p>
-              <p className="text-sm text-fd-muted-foreground">
+              <p className="mb-2 font-semibold">Run the backend on your computer or server</p>
+              <p className="text-fd-muted-foreground">
                 Copy the one-liner below. It installs Docker if needed, then runs the{' '}
                 <TextLink href={DOCKER_HUB_URL}>
                   <code>frameos/frameos</code>
@@ -252,7 +292,7 @@ export function InstallPathChooser({
                 or <TextLink href="/guide/esp32#flash-the-device">flash an ESP32</TextLink> from the browser.
               </p>
               <CopyCommand command={INSTALL_COMMAND} className="mt-3 w-full" />
-              <p className="mt-3 text-sm text-fd-muted-foreground">
+              <p className="mt-3 text-fd-muted-foreground">
                 Prefer another method? There's a{' '}
                 <TextLink href="/guide/backend#home-assistant-add-on">Home Assistant add-on</TextLink>,{' '}
                 <TextLink href="/guide/backend#running-via-docker-manually">manual Docker</TextLink> and{' '}
@@ -265,8 +305,8 @@ export function InstallPathChooser({
             <>
               <div className="flex flex-wrap items-center justify-between gap-3 border-b pb-3">
                 <div>
-                  <p className="text-sm font-medium">Create an account, then add a frame</p>
-                  <p className="mt-1 text-sm text-fd-muted-foreground">
+                  <p className="font-semibold">Create an account, then add a frame</p>
+                  <p className="mt-1 text-fd-muted-foreground">
                     Your browser{' '}
                     <TextLink href="/guide/cloud#sd-card-image-raspberry-pi">builds a personalized SD image</TextLink> for a Pi
                     or <TextLink href="/guide/cloud#flash-an-esp32-from-the-browser">flashes an ESP32</TextLink> over USB,
@@ -277,9 +317,9 @@ export function InstallPathChooser({
                 </div>
                 <ExternalButton href={CLOUD_SIGNUP_URL}>Sign up at cloud.frameos.net</ExternalButton>
               </div>
-              <ul className="mt-3 space-y-2 text-sm text-fd-muted-foreground">
+              <ul className="mt-3 space-y-2 text-fd-muted-foreground">
                 <li>
-                  The quickest way to try FrameOS, and nothing locks you in: a frame can{' '}
+                  This is the quickest way to try FrameOS, and nothing locks you in: a frame can{' '}
                   <TextLink href="/guide/cloud#moving-between-cloud-backend-and-standalone">move to a self-hosted backend or go standalone</TextLink>{' '}
                   at any time, keeping its scenes.
                 </li>
@@ -294,7 +334,7 @@ export function InstallPathChooser({
                   run your own instance, though we don't recommend it (yet).
                 </li>
               </ul>
-              <p className="mt-3 border-t pt-3 text-sm text-fd-muted-foreground">
+              <p className="mt-3 border-t pt-3 text-fd-muted-foreground">
                 Free while in beta. Read the{' '}
                 <TextLink href="/guide/cloud">FrameOS Cloud guide</TextLink> for what it can and
                 cannot do, and its <TextLink href="/guide/cloud#privacy">privacy</TextLink> and{' '}

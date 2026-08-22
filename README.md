@@ -25,7 +25,7 @@ cards are plain data arrays at the top of that file.
 
 ```bash
 npm install
-npm run dev          # dev server on http://localhost:3000
+npm run dev          # dev server on http://localhost:3456
 npm run build        # static export into out/
 npm run start        # serve out/ locally
 ```
