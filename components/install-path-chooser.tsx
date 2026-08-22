@@ -50,7 +50,7 @@ const installOptions = [
   {
     id: 'frame',
     icon: Cpu,
-    title: 'Just a frame',
+    title: 'Standalone frame',
     description: 'Flash a Pi and set it up through a WiFi hotspot, or install on any Linux. No backend, no account.',
     // logo gold #c8a247
     tint: 'from-[#c8a247]/30 via-[#c8a247]/10 to-fd-background dark:from-[#c8a247]/25 dark:via-[#c8a247]/10 dark:to-fd-background',
@@ -61,7 +61,7 @@ const installOptions = [
     id: 'backend',
     icon: Server,
     title: 'Self-hosted backend',
-    description: 'Run the frameos Docker image on your laptop, server or NAS. Use it to manage frames in your network over SSH.',
+    description: 'Run the frameos Docker image on your laptop, server or NAS. Then manage frames in your network over SSH.',
     // logo lime #8baa3a
     tint: 'from-[#8baa3a]/30 via-[#8baa3a]/10 to-fd-background dark:from-[#8baa3a]/25 dark:via-[#8baa3a]/10 dark:to-fd-background',
     glow: 'bg-[#8baa3a]/50 dark:bg-[#8baa3a]/30',
@@ -71,7 +71,7 @@ const installOptions = [
     id: 'cloud',
     icon: Cloud,
     title: 'FrameOS Cloud',
-    description: 'Manage frames from a browser. Least hassle to setup. Free while in beta.',
+    description: 'New! Sign up and start managing frames. Nothing to install. Forever free for personal use. Still in beta.',
     // logo teal #1c7c66
     tint: 'from-[#1c7c66]/30 via-[#1c7c66]/10 to-fd-background dark:from-[#1c7c66]/35 dark:via-[#1c7c66]/12 dark:to-fd-background',
     glow: 'bg-[#1c7c66]/50 dark:bg-[#1c7c66]/40',
