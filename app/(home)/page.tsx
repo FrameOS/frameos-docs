@@ -169,10 +169,10 @@ function HeroLink({ href, children }: { href: string; children: React.ReactNode 
   );
 }
 
-function SectionTitle({ kicker, title, sub }: { kicker: string; title: string; sub?: string }) {
+function SectionTitle({ kicker, title, sub }: { kicker?: string; title: string; sub?: string }) {
   return (
     <div className="mx-auto mb-10 max-w-2xl text-center">
-      <p className="mb-2 text-sm font-semibold uppercase tracking-wider text-fd-primary">{kicker}</p>
+      {kicker && <p className="mb-2 text-sm font-semibold uppercase tracking-wider text-fd-primary">{kicker}</p>}
       <h2 className="text-3xl font-bold tracking-tight">{title}</h2>
       {sub ? <p className="mt-3 text-fd-muted-foreground">{sub}</p> : null}
     </div>
@@ -214,7 +214,6 @@ export default function HomePage() {
       <section className="border-t bg-fd-card/50">
         <div className="mx-auto w-full max-w-4xl px-6 py-20">
           <SectionTitle
-            kicker="Get started"
             title="How do you want to get started?"
             sub="All three render on the device, and a frame can move between them without reflashing."
           />
@@ -236,7 +235,7 @@ export default function HomePage() {
             <div className="flex flex-col gap-3 text-fd-muted-foreground">
               <p>
                 A <strong>Raspberry Pi</strong> is the most capable option. Any model works, from the
-                Pi Zero 2 W to the Pi 5. It drives over 120 e-ink panels as well as HDMI and LCD
+                Pi Zero W to the Pi 5. It drives over 120 e-ink panels as well as HDMI and LCD
                 screens, runs scenes written in JavaScript or compiled Nim, renders TrueType fonts
                 and SVGs, dithers for color e-ink, takes screenshots of web pages with headless
                 Chromium, and serves its own admin page and HTTP API. You can boot it from a

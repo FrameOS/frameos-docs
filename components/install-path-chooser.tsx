@@ -52,13 +52,13 @@ const installOptions = [
     id: 'backend',
     icon: Server,
     title: 'Self-hosted backend',
-    description: 'Run the frameos Docker image on your laptop, server or NAS.',
+    description: 'Run the frameos Docker image on your laptop, server or NAS. Use it to manage frames in your network over SSH.',
   },
   {
     id: 'cloud',
     icon: Cloud,
     title: 'FrameOS Cloud',
-    description: 'Manage frames from a browser. Least hassle to setup. Also open source, no lockin.',
+    description: 'Manage frames from a browser. Least hassle to setup. Free while in beta.',
   },
 ] as const;
 
@@ -282,23 +282,13 @@ export function InstallPathChooser({
               </div>
               <ul className="mt-3 space-y-2 text-sm text-fd-muted-foreground">
                 <li>
-                  · Assign scenes from the{' '}
-                  <Link
-                    href="https://scenes.frameos.net"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-fd-primary hover:underline"
-                  >
-                    scene store
-                  </Link>
-                  , see previews, logs and metrics, queue signed firmware updates.
+                  This is the easiest way to try out FrameOS. You can always self-host later. You're not locked in to anything!
                 </li>
                 <li>
-                  · Already have a frame running? Link it with the code it shows on its display.
+                  The cloud is designed with a different security profile in mind than the self-hosted backend (secure by default, limited verbs). Read more here.
                 </li>
                 <li>
-                  · No shell, no compiled code: the cloud only pushes sandboxed scenes, and the
-                  frame keeps working if the cloud is unreachable.
+                  The cloud is also open source. You can run your own instance if you want to self-host, though we don't recommend it (yet).
                 </li>
               </ul>
               <p className="mt-3 border-t pt-3 text-sm text-fd-muted-foreground">
