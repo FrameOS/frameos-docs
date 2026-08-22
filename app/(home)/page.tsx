@@ -212,18 +212,9 @@ export default function HomePage() {
         <Slideshow slides={frameSlides} aspect="aspect-[4/3]" />
       </section>
 
-      {/* The app */}
-      <section className="mx-auto w-full max-w-6xl px-6 py-20">
-        <SectionTitle
-          kicker="The editor"
-          title="A visual editor backed by real code"
-          sub="Scenes are node graphs: red events, green data apps, blue render apps, yellow state. The same editor runs in the backend, on the frame's own admin page, and in the cloud. Deploy one and it runs on the frame, seconds later."
-        />
-        <Slideshow slides={appSlides} aspect="aspect-[16/10]" fit="contain" interval={6000} className="mx-auto max-w-4xl" />
-      </section>
-
       {/* Raspberry Pi or ESP32 */}
-      <section className="mx-auto w-full max-w-6xl px-6 py-20">
+      <section className="border-t">
+        <div className="mx-auto w-full max-w-6xl px-6 py-20">
         <div className="mx-auto grid max-w-5xl items-center gap-10 md:grid-cols-2">
           <div>
             <p className="mb-2 text-sm font-semibold uppercase tracking-wider text-fd-primary">
@@ -260,6 +251,65 @@ export default function HomePage() {
             className="rounded-xl border"
           />
         </div>
+        </div>
+      </section>
+
+      {/* Scenes strip */}
+      <section className="border-t bg-fd-card/50">
+        <div className="mx-auto w-full max-w-6xl px-6 py-20">
+          <SectionTitle
+            kicker="Batteries included"
+            title="Deploy a scene in your first five minutes"
+            sub="Curated galleries, calendars, agendas, message boards, weather, webcams, AI art - built in, plus a community scene store with live previews. Installable with one click, editable down to the source."
+          />
+          <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">
+            {sceneStrip.map((s) => (
+              <Link
+                key={s.src}
+                href={`${links.sceneStore}/s/${s.slug}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                title={`${s.alt} - open in the scene store`}
+                className="block overflow-hidden rounded-lg border transition-opacity hover:opacity-80"
+              >
+                <Image
+                  src={s.src}
+                  alt={s.alt}
+                  width={400}
+                  height={240}
+                  className="aspect-[5/3] w-full object-cover"
+                />
+              </Link>
+            ))}
+          </div>
+          <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
+            <Link
+              href={links.sceneStore}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-2 rounded-lg bg-fd-primary px-5 py-2.5 font-medium text-fd-primary-foreground transition-opacity hover:opacity-90"
+            >
+              Browse the scene store
+              <ExternalLink className="size-4" aria-hidden="true" />
+            </Link>
+            <Link
+              href="/guide/scene-store"
+              className="inline-flex items-center rounded-lg border px-5 py-2.5 font-medium transition-colors hover:bg-fd-accent"
+            >
+              How installing works
+            </Link>
+          </div>
+        </div>
+      </section>
+
+      {/* The app */}
+      <section className="mx-auto w-full max-w-6xl px-6 py-20">
+        <SectionTitle
+          kicker="The editor"
+          title="A visual editor backed by real code"
+          sub="Scenes are node graphs: red events, green data apps, blue render apps, yellow state. The same editor runs in the backend, on the frame's own admin page, and in the cloud. Deploy one and it runs on the frame, seconds later."
+        />
+        <Slideshow slides={appSlides} aspect="aspect-[16/10]" fit="contain" interval={6000} className="mx-auto max-w-4xl" />
       </section>
 
       {/* Case Maker */}
@@ -315,54 +365,6 @@ export default function HomePage() {
               className="aspect-[4/3] w-full rounded-xl border object-cover object-top"
             />
           </Link>
-        </div>
-      </section>
-
-      {/* Scenes strip */}
-      <section className="border-t bg-fd-card/50">
-        <div className="mx-auto w-full max-w-6xl px-6 py-20">
-          <SectionTitle
-            kicker="Batteries included"
-            title="Deploy a scene in your first five minutes"
-            sub="Curated galleries, calendars, agendas, message boards, weather, webcams, AI art - built in, plus a community scene store with live previews. Installable with one click, editable down to the source."
-          />
-          <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">
-            {sceneStrip.map((s) => (
-              <Link
-                key={s.src}
-                href={`${links.sceneStore}/s/${s.slug}`}
-                target="_blank"
-                rel="noopener noreferrer"
-                title={`${s.alt} - open in the scene store`}
-                className="block overflow-hidden rounded-lg border transition-opacity hover:opacity-80"
-              >
-                <Image
-                  src={s.src}
-                  alt={s.alt}
-                  width={400}
-                  height={240}
-                  className="aspect-[5/3] w-full object-cover"
-                />
-              </Link>
-            ))}
-          </div>
-          <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
-            <Link
-              href={links.sceneStore}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 rounded-lg bg-fd-primary px-5 py-2.5 font-medium text-fd-primary-foreground transition-opacity hover:opacity-90"
-            >
-              Browse the scene store
-              <ExternalLink className="size-4" aria-hidden="true" />
-            </Link>
-            <Link
-              href="/guide/scene-store"
-              className="inline-flex items-center rounded-lg border px-5 py-2.5 font-medium transition-colors hover:bg-fd-accent"
-            >
-              How installing works
-            </Link>
-          </div>
         </div>
       </section>
 
