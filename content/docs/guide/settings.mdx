@@ -51,8 +51,27 @@ apply without a restart.
 
 ## Time zone
 
-Set the frame's time zone so schedules, clocks, and calendars line up. Time sync works out of the
-box on both Raspberry Pi OS and the FrameOS SD images.
+Set the frame's time zone so schedules, clocks and calendars line up: the on-device scheduler
+fires in the frame's zone, and so do clocks in JavaScript apps and the weather forecast. Pick it
+under **Device settings → Timezone** (IANA names like `Europe/Brussels`); on Raspberry Pi OS the
+first option, **Detect from frame**, keeps whatever the OS already has. The backend's
+**Settings → Default timezone** is what a new frame starts with, and an SD image built in the
+backend or the cloud carries the zone with it. Time sync itself works out of the box.
+
+An [ESP32](/guide/esp32) keeps a zone too: it stores the name plus a few-kilobyte slice of time
+zone data for that one zone, so daylight saving switches correctly without a full database on the
+chip. It takes the zone from the backend or the cloud, or from `set time_zone Europe/Brussels` on
+the serial console. Needs firmware 2026.8.34 or newer; older firmware runs on UTC.
+
+## HTTP response size
+
+**Maximum HTTP response size for apps** caps how much any single download - an image, a calendar
+feed, an API reply - may carry. A response that announces a bigger size is refused before the first
+byte; a stream that grows past it is cut off. The default is 64 MiB on a Pi and **4 MiB on an
+ESP32**, where it's read at boot (saving it reboots the frame). Raise it for bigger sources: with an
+SD card in the board, an ESP32 spills anything that won't fit in memory to the card and decodes it
+straight from the file, so a 20 MB gallery JPEG needs nothing but a higher limit. See
+[Big images on small devices](/guide/images).
 
 ## Debug logging
 

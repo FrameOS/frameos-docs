@@ -2,7 +2,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import {
   Blocks,
-  CloudOff,
+  Cloud,
   Cpu,
   ExternalLink,
   Gauge,
@@ -12,6 +12,8 @@ import {
   Printer,
   QrCode,
   Server,
+  Store,
+  WifiOff,
 } from 'lucide-react';
 import { InstallPathChooser } from '@/components/install-path-chooser';
 import { Slideshow, type Slide } from '@/components/slideshow';
@@ -97,9 +99,9 @@ const sceneStrip = [
 
 const features = [
   {
-    icon: CloudOff,
-    title: 'No cloud. Really.',
-    body: 'Scenes run on the frame itself, in a single native binary. Unplug your router, shut down the backend - the frame keeps doing its job.',
+    icon: WifiOff,
+    title: 'Runs on the device',
+    body: 'Scenes run on the frame itself, in a single native binary. Unplug your router, shut down the backend, lose the cloud - the frame keeps doing its job.',
   },
   {
     icon: QrCode,
@@ -110,6 +112,16 @@ const features = [
     icon: Server,
     title: 'Self-hosted backend',
     body: 'One Docker container (or a Home Assistant add-on) to design and deploy scenes over SSH. Run it on a server, or just on your laptop when needed.',
+  },
+  {
+    icon: Cloud,
+    title: 'Or let the cloud manage it',
+    body: 'FrameOS Cloud enrolls a Pi or ESP32 from your browser and assigns scenes from anywhere. Deliberately limited: no shell, no compiled code, only sandboxed scenes. Free in beta.',
+  },
+  {
+    icon: Store,
+    title: 'A scene store',
+    body: 'Browse community scenes with live previews at scenes.frameos.net. One click onto a cloud frame, one pasted link into a self-hosted backend, fork and edit in the browser.',
   },
   {
     icon: Monitor,
@@ -170,7 +182,8 @@ export default function HomePage() {
           <p className="text-lg text-fd-muted-foreground">
             Turn a Raspberry Pi or ESP32, and any display - e-ink, HDMI or LCD - into a calendar,
             dashboard or art frame that runs itself. Everything renders{' '}
-            <strong>on the device</strong>. No cloud, no subscriptions, no compromises.
+            <strong>on the device</strong>. Run it standalone, self-host the backend, or manage it
+            from FrameOS Cloud - the frame works the same either way.
           </p>
           <div className="flex flex-wrap items-center gap-3">
             <Link
@@ -192,65 +205,81 @@ export default function HomePage() {
             <Link href="/blog/why-frameos" className="text-fd-primary hover:underline">
               since 2023
             </Link>{' '}
-            (AGPL-3.0) · Works offline · Yours forever
+            (AGPL-3.0) · Works offline · Cloud optional · Yours forever
           </p>
         </div>
         <Slideshow slides={frameSlides} aspect="aspect-[4/3]" />
       </section>
 
-      {/* How it works */}
+      {/* Three ways to run it */}
       <section className="border-t bg-fd-card/50">
         <div className="mx-auto w-full max-w-6xl px-6 py-20">
           <SectionTitle
             kicker="How it works"
-            title="Two setup paths, one standalone frame"
-            sub="Use the backend when you want a webapp for designing and managing frames, or flash a ready-made SD image when you want a frame that can set itself up."
+            title="Three ways to run it, one standalone frame"
+            sub="The frame renders its own scenes on its own schedule. What you use to set it up is your call - and you can change your mind later without reflashing."
           />
           <ol className="grid gap-8 md:grid-cols-3">
-            <li className="rounded-xl border bg-fd-background p-6">
-              <span className="mb-3 inline-flex size-8 items-center justify-center rounded-full bg-fd-primary font-semibold text-fd-primary-foreground">
-                1
+            <li className="flex flex-col rounded-xl border bg-fd-background p-6">
+              <span className="mb-3 inline-flex size-8 items-center justify-center rounded-full bg-fd-primary text-fd-primary-foreground">
+                <Cpu className="size-4" aria-hidden="true" />
               </span>
-              <h3 className="mb-2 font-semibold">Choose your install path</h3>
-              <p className="text-sm text-fd-muted-foreground">
-                Run the Dockerized backend on your laptop, server or NAS, or flash a standalone
-                Buildroot image directly to a Raspberry Pi.
+              <h3 className="mb-2 font-semibold">Just a frame</h3>
+              <p className="flex-1 text-sm text-fd-muted-foreground">
+                Flash a FrameOS SD image to a Raspberry Pi, join its setup hotspot from your phone,
+                pick a display. The frame serves its own admin page with the scene editor, settings,
+                logs and updates. Nothing else to install, no account anywhere.
               </p>
+              <Link href="/guide/standalone" className="mt-4 text-sm font-medium text-fd-primary hover:underline">
+                Set up a standalone frame →
+              </Link>
             </li>
-            <li className="rounded-xl border bg-fd-background p-6">
-              <span className="mb-3 inline-flex size-8 items-center justify-center rounded-full bg-fd-primary font-semibold text-fd-primary-foreground">
-                2
+            <li className="flex flex-col rounded-xl border bg-fd-background p-6">
+              <span className="mb-3 inline-flex size-8 items-center justify-center rounded-full bg-fd-primary text-fd-primary-foreground">
+                <Server className="size-4" aria-hidden="true" />
               </span>
-              <h3 className="mb-2 font-semibold">Connect a Pi or ESP32 to a display</h3>
-              <p className="text-sm text-fd-muted-foreground">
-                Flash a prebuilt FrameOS SD image, stock Raspberry Pi OS Lite - or an ESP32-S3,
-                straight from the browser. Plug in any of <Link href="/devices" className="text-fd-primary hover:underline">
-                  120+ supported panels
-                </Link>, or just an HDMI
-                cable (Pi only).
+              <h3 className="mb-2 font-semibold">Self-hosted backend</h3>
+              <p className="flex-1 text-sm text-fd-muted-foreground">
+                One Docker container on your laptop, server or NAS - or a Home Assistant add-on.
+                Manage many frames, deploy over SSH, build ESP32 firmware, write apps in Nim, open a
+                terminal on a frame. The most capable option, and it stays that way.
               </p>
+              <Link href="/guide/backend" className="mt-4 text-sm font-medium text-fd-primary hover:underline">
+                Install the backend →
+              </Link>
             </li>
-            <li className="rounded-xl border bg-fd-background p-6">
-              <span className="mb-3 inline-flex size-8 items-center justify-center rounded-full bg-fd-primary font-semibold text-fd-primary-foreground">
-                3
+            <li className="flex flex-col rounded-xl border bg-fd-background p-6">
+              <span className="mb-3 inline-flex size-8 items-center justify-center rounded-full bg-fd-primary text-fd-primary-foreground">
+                <Cloud className="size-4" aria-hidden="true" />
               </span>
-              <h3 className="mb-2 font-semibold">Set up scenes, then walk away</h3>
-              <p className="text-sm text-fd-muted-foreground">
-                Pick prebuilt scenes or design your own in the backend or on the frame. Preview
-                them in your browser, then deploy. The frame renders on-device and is controlled
-                from its own QR code and HTTP API.
+              <h3 className="mb-2 font-semibold">FrameOS Cloud</h3>
+              <p className="flex-1 text-sm text-fd-muted-foreground">
+                Nothing to host. Build an SD image or flash an ESP32 from the browser, then assign
+                scenes from the store, check previews and logs, and queue signed updates - from
+                anywhere. The cloud never gets a shell and never compiles code. Free while in beta.
               </p>
+              <Link href="/guide/cloud" className="mt-4 text-sm font-medium text-fd-primary hover:underline">
+                Read about FrameOS Cloud →
+              </Link>
             </li>
           </ol>
+          <p className="mx-auto mt-8 max-w-2xl text-center text-sm text-fd-muted-foreground">
+            Whichever you pick: connect a Pi or ESP32 to any of{' '}
+            <Link href="/devices" className="text-fd-primary hover:underline">
+              120+ supported panels
+            </Link>{' '}
+            or an HDMI cable, install a scene, and walk away. The frame is controlled from its own
+            QR code and HTTP API.
+          </p>
         </div>
       </section>
 
       {/* The app */}
       <section className="mx-auto w-full max-w-6xl px-6 py-20">
         <SectionTitle
-          kicker="The backend"
+          kicker="The editor"
           title="A visual editor backed by real code"
-          sub="Scenes are node graphs: red events, green data apps, blue render apps, yellow state. Deploy one and it runs on the frame, seconds later."
+          sub="Scenes are node graphs: red events, green data apps, blue render apps, yellow state. The same editor runs in the backend, on the frame's own admin page, and in the cloud. Deploy one and it runs on the frame, seconds later."
         />
         <Slideshow slides={appSlides} aspect="aspect-[16/10]" fit="contain" interval={6000} className="mx-auto max-w-4xl" />
       </section>
@@ -357,7 +386,7 @@ export default function HomePage() {
           <SectionTitle
             kicker="Batteries included"
             title="Deploy a scene in your first five minutes"
-            sub="Curated galleries, calendars, agendas, message boards, weather, webcams, AI art - installable with one click, editable down to the source."
+            sub="Curated galleries, calendars, agendas, message boards, weather, webcams, AI art - built in, plus a community scene store with live previews. Installable with one click, editable down to the source."
           />
           <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">
             {sceneStrip.map((s) => (
@@ -370,6 +399,23 @@ export default function HomePage() {
                 className="aspect-[5/3] w-full rounded-lg border object-cover"
               />
             ))}
+          </div>
+          <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
+            <Link
+              href={links.sceneStore}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-2 rounded-lg bg-fd-primary px-5 py-2.5 font-medium text-fd-primary-foreground transition-opacity hover:opacity-90"
+            >
+              Browse the scene store
+              <ExternalLink className="size-4" aria-hidden="true" />
+            </Link>
+            <Link
+              href="/guide/scene-store"
+              className="inline-flex items-center rounded-lg border px-5 py-2.5 font-medium transition-colors hover:bg-fd-accent"
+            >
+              How installing works
+            </Link>
           </div>
         </div>
       </section>
@@ -398,8 +444,8 @@ export default function HomePage() {
         <div className="mx-auto flex w-full max-w-3xl flex-col items-center gap-6 px-6 py-20 text-center">
           <h2 className="text-3xl font-bold tracking-tight">Build your first frame this weekend</h2>
           <p className="text-fd-muted-foreground">
-            The guide walks through both paths: a backend webapp for managing frames, or a
-            standalone Raspberry Pi image for direct setup.
+            A standalone Pi, a self-hosted backend, or a FrameOS Cloud account - the guide walks
+            through all three, and the frame you end up with is the same.
           </p>
           <div className="flex flex-wrap items-center justify-center gap-3">
             <Link

@@ -1,6 +1,6 @@
 ---
 title: What is FrameOS?
-description: An operating system for single-function smart frames. Runs on a Raspberry Pi or an ESP32, renders on e-ink, HDMI and LCD displays. No cloud required.
+description: An operating system for single-function smart frames. Runs on a Raspberry Pi or an ESP32, renders on e-ink, HDMI and LCD displays. Standalone, self-hosted, or managed from FrameOS Cloud - everything renders on the device.
 ---
 
 FrameOS turns a Raspberry Pi (or an [ESP32](/guide/esp32)) and a display into a
@@ -15,19 +15,26 @@ most Waveshare and Pimoroni e-ink panels, plus anything you can plug into HDMI.
 
 ## How it works
 
-FrameOS has two parts:
+The **frame** runs a single compiled binary (written in [Nim](https://nim-lang.org/)) on a
+Raspberry Pi - or as firmware on an [ESP32-S3](/guide/esp32). It renders scenes, drives the
+display, keeps its own schedule, and serves a small web app + HTTP API so you can view and
+control it from your phone or any browser. Everything runs **on the device**: nothing stops
+working when your internet goes down, and nothing stops working if you turn off whatever manages
+the frame.
 
-1. **The frame** runs a single compiled binary (written in [Nim](https://nim-lang.org/)) on a
-   Raspberry Pi - or as firmware on an [ESP32-S3](/guide/esp32). It renders scenes, drives the
-   display, and serves a small web app + HTTP API so you can view and control it from your phone
-   or any browser. Everything runs **on the device** - there is no cloud, no subscription, and
-   nothing stops working when your internet goes down.
+What manages the frame is up to you. There are three ways to run FrameOS, and a frame can move
+between them without reflashing:
 
-2. **The backend** is a self-hosted control panel (a Docker container, or a Home Assistant add-on)
-   where you design scenes in a visual editor and deploy them to frames over SSH,
-   [FrameOS Remote](/guide/remote) or USB. It can run on a server, a NAS, or just your laptop -
-   and once your frames are deployed, **you can turn it off**. The frames keep running on their
-   own.
+| | Best for | What it is |
+| --- | --- | --- |
+| **[A standalone frame](/guide/standalone)** | One frame, nothing else | Flash a FrameOS SD image to a Pi, set it up from your phone, manage it from the admin page the frame serves itself. No backend, no account. |
+| **[The self-hosted backend](/guide/backend)** | Tinkerers, many frames, custom Nim | A Docker container (or Home Assistant add-on) on your laptop, server or NAS. Designs scenes, builds firmware, deploys over SSH, and can be switched off afterwards. |
+| **[FrameOS Cloud](/guide/cloud)** | Nothing to host, frames anywhere | A hosted account at cloud.frameos.net: build an SD image or flash an ESP32 from the browser, then assign scenes from the [scene store](/guide/scene-store). Free while in beta. |
+
+The cloud is an option, not a requirement - and a deliberately limited one. It never gets a shell
+on your frame, never compiles code, and only pushes sandboxed interpreted scenes. The
+[self-hosted backend](/guide/backend) is the most capable of the three, and the project's promise
+is that it stays that way.
 
 ## Pick your hardware
 
@@ -38,8 +45,8 @@ FrameOS has two parts:
 | **[ESP32-C3](/guide/esp32) / [Pico W](/guide/pico)** | Boards without PSRAM | Thin clients: the backend renders, the device draws. Covers the TRMNL, XTEINK X4 and Pimoroni Inky Frame |
 | **[Virtual frame](/guide/virtual)** | No hardware at all | The backend renders to an image URL and a kiosk page - for tablets, browsers and signage players |
 
-You also need **somewhere to run the backend**, at least while deploying: your computer, a
-server, or Home Assistant.
+With a standalone or cloud-managed Pi you need nothing else. ESP32, Pico and virtual frames are
+set up from a [backend](/guide/backend) or from [FrameOS Cloud](/guide/cloud) (ESP32 only).
 
 <Callout title="Which one should I get?">
   If you're starting from nothing, get a **Raspberry Pi Zero 2 W** and an e-ink panel: it's the
@@ -60,22 +67,29 @@ server, or Home Assistant.
 - **A control page and HTTP API on every frame**, on port 8787, plus a QR code on the display so
   anyone standing in front of it can take over.
 - **Prebuilt SD images** for the Pi and browser flashing for the ESP32, both preconfigured with
-  your WiFi.
+  your WiFi - from the backend or straight from the cloud.
+- **A [scene store](/guide/scene-store)** of community scenes with live previews, installable on
+  any frame.
 - **[3D-printable cases](/cases)** generated around your exact panel and board.
 
 ## Getting started
 
-1. [Install the backend](/guide/backend) on **your computer or server** (not on the frame's
-   Raspberry Pi) - one command:
-   ```bash
-   bash <(curl -fsSL https://frameos.net/install.sh)
-   ```
-2. [Set up the Raspberry Pi](/guide/raspberry) - flash a prebuilt FrameOS SD image, or use stock
-   Raspberry Pi OS Lite. (Or [flash an ESP32](/guide/esp32), a [Pico](/guide/pico), or start with
-   a [virtual frame](/guide/virtual) instead.)
-3. [Deploy your first scene](/guide/first-deploy) - pick from the built-in gallery and sample
-   scenes, then make your own in the [scene editor](/guide/scenes).
-4. For a professional finish, [3D print a custom case](/cases).
+Pick the path that fits, then deploy a scene:
+
+- **Just a frame**: [flash a generic FrameOS image](/guide/standalone), join the `FrameOS-Setup`
+  hotspot from your phone, pick **Nothing (standalone)**, and open the frame's admin page.
+- **Self-hosted**: [install the backend](/guide/backend) on **your computer or server** (not on
+  the frame's Raspberry Pi) with one command, then
+  [set up the Pi](/guide/raspberry) or [flash an ESP32](/guide/esp32):
+  ```bash
+  bash <(curl -fsSL https://frameos.net/install.sh)
+  ```
+- **Cloud**: [create an account](/guide/cloud) at cloud.frameos.net and click **Add frame**; the
+  SD image or ESP32 firmware comes out of your browser already enrolled.
+
+Then [deploy your first scene](/guide/first-deploy) - pick from the built-in gallery and sample
+scenes or the [scene store](/guide/scene-store), then make your own in the
+[scene editor](/guide/scenes). For a professional finish, [3D print a custom case](/cases).
 
 ## Project status
 

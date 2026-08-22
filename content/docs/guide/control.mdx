@@ -1,11 +1,13 @@
 ---
 title: Controlling the frame
-description: Every frame serves its own web app and HTTP API on port 8787. No backend, no cloud - control it from anything that speaks HTTP.
+description: Every frame serves its own web app and HTTP API on port 8787. Whether it's standalone, self-hosted or cloud-managed - control it from anything that speaks HTTP.
 ---
 
-Every frame runs its own web server on port `8787`. This is the heart of FrameOS's cloud-free
-design: viewing, controlling, and even administering a frame works **directly against the device**,
-from any browser or script on your network. The backend can be off. The internet can be down.
+Every frame runs its own web server on port `8787`. This is the heart of FrameOS's design:
+viewing, controlling, and even administering a frame works **directly against the device**, from
+any browser or script on your network. The backend can be off. The internet can be down. It is
+also how a [standalone frame](/guide/standalone) is managed at all, and the escape hatch on a
+[cloud-managed](/guide/cloud) one.
 
 <Callout title="On a microcontroller">
   [ESP32 frames](/guide/esp32) serve the same kind of API on port `80` - the image, the scene
@@ -86,7 +88,8 @@ There's also a full admin REST API (config, logs, metrics, restart, reboot) unde
 Frames have their own on-device scheduler: render intervals per scene, plus cron-like schedules
 (minute/hour/weekday) that can switch scenes or fire events - for example, a calendar during the
 day and art in the evening. Configure it under the frame's **Schedule** tab. The schedule runs on
-the frame, so it keeps working with the backend off.
+the frame, in the frame's own [time zone](/guide/settings#time-zone), so it keeps working with the
+backend off.
 
 The same panel has a **Maintenance** card that schedules a `restart` of the FrameOS
 process or a full `reboot` of the device - the successor to the nightly-reboot setting, on both

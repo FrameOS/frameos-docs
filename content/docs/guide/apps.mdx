@@ -20,9 +20,12 @@ What's in the box, roughly:
 
 ## Edit any app
 
-Click the **edit** button next to any app on a scene to open its source. You can edit all apps,
-including the built-in ones - saved changes are forked onto that scene, leaving the original
-untouched.
+Click the **edit** button next to any app on a scene to open its source. JavaScript apps are
+editable everywhere - saved changes are forked onto that scene, leaving the original untouched.
+The built-in apps are compiled Nim, so in an [interpreted scene](/guide/scenes#execution) their
+source opens **read only**, with an **Open in GitHub** link; to customize one, write a JavaScript
+app or an inline code node instead. In a compiled scene on a Raspberry Pi, Nim apps fork and edit
+the same way.
 
 ![Editing an app](/images/app/apps-edit.gif)
 

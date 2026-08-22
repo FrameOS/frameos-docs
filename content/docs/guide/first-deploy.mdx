@@ -7,7 +7,9 @@ description: Add a frame to the backend, install a few scenes, and deploy them t
   This assumes you have the [backend running](/guide/backend) and a
   [Raspberry Pi reachable over SSH](/guide/raspberry) (or booted from a FrameOS SD image).
   Using an [ESP32](/guide/esp32) instead? Flash it first - the scenes and deploy flow below work
-  the same way.
+  the same way. On a [standalone frame](/guide/standalone) or in [FrameOS Cloud](/guide/cloud)
+  the frame is already added; skip to [installing scenes](#install-some-scenes), which looks the
+  same in all three.
 </Callout>
 
 ## Add the frame
@@ -30,13 +32,19 @@ Click "New frame" in the backend and pick how this frame gets set up:
 
 Then name the frame and select the right **display driver** for your panel - there are over 120 to
 choose from, organised by vendor. Pick "Web only" if you just want to try FrameOS without any
-display hardware.
+display hardware. HDMI frames detect their display's resolution themselves.
+
+Before a scene arrives, the frame shows the **FrameOS status screen**: its name, display and
+resolution, network address, time zone, who manages it and "Waiting for the backend to deploy a
+scene." Once it has scenes, that same screen lists them - handy when a panel looks blank and you
+want to know whether the frame is fine.
 
 ![Adding a frame](/images/app/add-frame.gif)
 
 ## Install some scenes
 
-Install a few scenes onto the frame. Good first picks:
+Install a few scenes onto the frame, from the built-in repositories or the
+[scene store](/guide/scene-store). Good first picks:
 
 - **Gallery scenes** like *Made in Space* or *Masterpieces* - curated art that needs no
   configuration.
@@ -69,6 +77,10 @@ frame's dashboard in the backend, or directly on the frame itself:
 - Or scan the **QR code** shown on the frame.
 
 ![Scene control fields](/images/app/control-fields.gif)
+
+In the backend, clicking a frame in the left rail unfolds its tools right under it - **Scenes,
+Settings, Preview, Schedule, Logs, Metrics, Assets** - and each has its own URL
+(`/frames/<id>/logs`), so you can bookmark a frame's logs.
 
 The frame serves this control page itself, on port `8787`. The backend doesn't need to be
 running - see [Controlling the frame](/guide/control) for the full local HTTP API.

@@ -1,0 +1,214 @@
+---
+title: FrameOS Cloud
+description: Manage frames from cloud.frameos.net without running a backend - enroll a Pi or ESP32 in minutes, assign scenes from the store, see logs and previews. Free while in beta.
+---
+
+[FrameOS Cloud](https://cloud.frameos.net) is the hosted way to run FrameOS. You create an account,
+point a frame at it, and manage that frame from a browser: assign scenes from the
+[scene store](/guide/scene-store), change settings, watch logs and metrics, queue firmware updates.
+There is no backend to install and nothing to keep running at home.
+
+It is **one of three ways to run FrameOS**, next to a [standalone frame](/guide/standalone) and the
+[self-hosted backend](/guide/backend). Pick it when you don't want to host anything, or when your
+frames live somewhere your laptop isn't. Nothing about it is required: a frame set up through the
+cloud keeps rendering its scenes if the cloud is unreachable, and can be moved back to standalone or
+self-hosted operation at any time.
+
+<Callout title="Beta">
+  FrameOS Cloud is new and still changing. It works - frames enroll, scenes deploy - but expect
+  rough edges. It is **free while in beta**, with fixed limits (frames, storage, logs) so one
+  account cannot crowd out the rest. Your data stays yours: scenes, backups and frame settings can
+  be exported from your account at any time. Found a bug? Report it on
+  [GitHub](https://github.com/FrameOS/frameos/issues) or [Discord](https://discord.gg/9dT9y7EzUw).
+</Callout>
+
+## What the cloud does, and deliberately doesn't
+
+The cloud is identity, store, relay and fleet view. **The frame is the product.** Everything still
+renders on the device, from scenes stored on the device, on the device's own schedule.
+
+A cloud-managed frame is also deliberately limited. The cloud:
+
+- **never gets a shell.** There is no SSH, no terminal, no remote command execution. The protocol
+  between frame and cloud has no verbs for it.
+- **never compiles code.** Only sandboxed, [interpreted scenes](/guide/scenes#execution) can be
+  pushed - the same JavaScript-and-node-graph scenes that run on an ESP32. Scenes that run shell
+  commands are refused.
+- **never proxies your images.** Frames fetch images straight from the source and
+  [decode them on the device](/guide/images), whatever their size.
+- **never renders for you.** Previews are the frame's own last render, or rendered in your browser.
+- **only sees logs and metrics if you switch that on**, per frame.
+- **ships no binaries.** Firmware updates are a nudge: the frame downloads the release itself and
+  verifies its signature before installing.
+
+The local escape hatches stay open. A cloud-managed Pi still serves its
+[control page and HTTP API](/guide/control) on port `8787`, and its admin page is where you
+disconnect it from the cloud if you ever want to. If a frame loses its cloud link it simply
+becomes a standalone frame, still showing the scenes it had.
+
+The cloud itself is open source (AGPL-3.0, in the `cloud/` folder of the
+[main repository](https://github.com/FrameOS/frameos)) and the enrollment protocol is documented so
+anyone can reimplement it. Running your own copy is possible but not recommended yet - it is built
+for exactly one deployment.
+
+## Create an account
+
+Sign up at [cloud.frameos.net/signup](https://cloud.frameos.net/signup) with an email address and a
+password, or **Continue with Google**. Verify your email, sign in, and you land on **Frames**.
+
+The header has three sections: **Frames** (your fleet), **Scenes** (the
+[scene store](/guide/scene-store), on `scenes.frameos.net`) and **Account** (linked backends,
+backups, activity log, security). Under Security you can add a passkey or TOTP two-factor
+authentication - recommended for an account that controls physical frames.
+
+## Add a frame
+
+With no frames yet, the Frames page *is* the **Add a frame** panel; later it's the **Add frame**
+button. There are four ways in, matching the hardware you have:
+
+### SD card image (Raspberry Pi)
+
+The cloud builds a personalized SD image **in your browser**:
+
+1. Pick your board: `raspberry-pi-64` (Zero 2 W, Pi 3, Pi 4), `raspberry-pi-5` (Pi 5, CM5) or
+   `raspberry-pi-32` (Zero, Zero W, Pi 1).
+2. Name the frame, pick its display (or choose to pick it later from the frame's setup hotspot),
+   and enter your WiFi network. Optionally set a root password.
+3. Click **Download SD image**.
+
+Your browser downloads the generic release image, writes your settings into its boot partition, and
+hands you a `.img.gz`. WiFi credentials and the root password **never leave your browser** - only
+the frame name, display and a claim token travel to the cloud. Flash the image with
+[Raspberry Pi Imager](https://www.raspberrypi.com/software/) ("Use custom image") or
+[balenaEtcher](https://etcher.balena.io/), insert it, and power up.
+
+On first boot the Pi joins your WiFi (or raises the `FrameOS-Setup` hotspot if it can't), takes its
+hostname from the frame name (`kitchen-frame.local`), and enrolls. The panel shows the FrameOS
+status screen - name, resolution, network, *Managed via: FrameOS Cloud* - until you give it a scene.
+
+You can flash one image to as many cards as you like. The first frame that enrolls is activated
+immediately; every later one appears as **pending** and waits for you to click **Confirm frame**, so
+a lost SD card can't quietly add frames to your account. A dropdown on the builder lets you expire
+the image after a while if you prefer.
+
+### Install script (any Pi, most Linux)
+
+Already have a Pi running Raspberry Pi OS, or some other Debian-flavoured box? Copy the one-liner
+from the **Install script** tile and run it on the device:
+
+```bash
+curl -fsSL https://cloud.frameos.net/install.sh -o /tmp/frameos-install.sh && \
+  sudo FRAMEOS_CLAIM_TOKEN=FRCT_... sh /tmp/frameos-install.sh
+```
+
+It asks for the display, time zone and an admin password, installs prebuilt FrameOS binaries, and
+enrolls the frame on first start. The claim token is single-use and expires after 24 hours; the
+panel mints a fresh one every time you open it.
+
+### Link a frame that already runs
+
+A frame that is already up - flashed from a [generic image](/guide/standalone), say - can be
+claimed without reflashing:
+
+- On the frame's admin page, open **Settings → FrameOS Cloud → Connect to cloud.frameos.net**. The
+  frame shows a short code like `H7LU-JLWN`. While the link is pending, the same code and a QR code
+  are drawn **on the panel itself**, over the current scene.
+- Scan the QR, or open [cloud.frameos.net/device](https://cloud.frameos.net/device), type the code,
+  and click **Connect frame**.
+
+Seeing the code on the display is the proof of ownership, so a frame linked this way is active
+right away. In the `FrameOS-Setup` hotspot you can also pick **Manage via: FrameOS Cloud** and leave
+the claim code empty - the frame shows a link code on its display as soon as it is online.
+
+### Flash an ESP32 from the browser
+
+Plug an [ESP32-S3 board](/guide/esp32#supported-boards) in over USB, pick the hardware preset
+(Waveshare PhotoPainter, TRMNL DIY kit, Seeed reTerminal, CrowPanel…), name the frame, enter WiFi
+and click flash. The browser writes the generic release firmware with Web Serial (Chrome or Edge),
+then provisions the cloud address and a claim token over the serial console. Choose the board's
+*USB JTAG/serial debug unit* port: a plain *USB Single Serial* port can flash but not provision.
+
+ESP32 frames are full frames in the cloud too: scenes render on the chip, with logs, metrics,
+previews, schedules and signed over-the-air updates. PSRAM-less boards (ESP32-C3: the original
+TRMNL, XTEINK X4) can enroll but the cloud does not render for thin clients yet - they show only the
+status screen.
+
+<Callout>
+  Every path offers **Start it with the scenes from…** an existing frame, so a second kitchen frame
+  can be a clone of the first. Scenes are copied; assets on the SD card are not.
+</Callout>
+
+## Managing a frame
+
+Each frame has an overview page at `/frames/<id>` and tools under it: **Settings**, **Preview**,
+**Schedule**, **Logs**, **Metrics**, **Assets** and **Activity**.
+
+- **Scenes.** Install from the [scene store](/guide/scene-store), or open a scene in the built-in
+  editor - the same node-graph editor the backend has - and click **Save & Deploy**. The frame
+  applies the change within seconds while connected; pushes to an offline frame queue and land
+  when it reconnects. A frame holds up to 20 scenes.
+- **Preview.** The frame's own last render, plus per-scene snapshots, fetched while you have the
+  page open. Fleet tiles can also render a scene in your browser on request.
+- **Settings.** The set a cloud-managed frame accepts is declarative: name, rotation, render
+  interval, scaling, time zone, debug logging, the QR control code, metrics interval, HTTP
+  response cap, palette and partial-refresh policy, GPIO buttons, and on ESP32 the
+  [power options](/guide/esp32#power). Everything else about the device - display driver, WiFi,
+  mount points - is owned by the device. A setting newer than the frame's firmware is shown
+  disabled with the version it needs.
+- **Schedule.** Scene switches, events, and `restart`/`reboot` entries, evaluated on the frame in
+  its own time zone.
+- **Logs and metrics.** Off by default for privacy: flip **Ship logs and metrics to the cloud**
+  in the frame's settings. Logs keep the last 5000 lines per frame; metrics charts include reboot
+  markers.
+- **Service API keys.** Enter OpenAI, Unsplash, Immich, Home Assistant and similar keys once under
+  Frames → Settings. Each frame has a **Deliver keys to this frame** switch, and only receives the
+  keys its scenes actually ask for, pulled by the device over HTTPS.
+- **Assets.** Browse and upload files in the frame's assets folder (its SD card on an ESP32).
+- **The ⋯ menu**: rename, render, restart, reboot, **Update firmware**, delete. Deleting a frame
+  revokes its link; the device keeps rendering what it has, as a standalone frame.
+- **Activity.** An audit trail per frame: connections, pushes, firmware changes, renames.
+
+### Local network access
+
+While cloud-managed, a frame blocks HTTP requests to private addresses on your LAN - so a scene
+installed from the store can't poke at your router. To allow it (for the Home Assistant app, for
+instance), confirm a six-digit code shown on the panel from the frame's local admin page, or run
+`set allow_local_network 1` on an ESP32's USB console. It takes a person in front of the frame.
+
+## Linking a self-hosted backend
+
+You can also keep a [self-hosted backend](/guide/backend) and link *it* to your cloud account, for a
+few optional extras: signing in to the backend with your cloud account, end-to-end encrypted
+backups of your frames and scenes, and saving scenes to your private store. See
+[Link the backend to FrameOS Cloud](/guide/backend#cloud). A linked backend still deploys over SSH
+and still works with the cloud switched off.
+
+## Limits
+
+While in beta: 50 frames per account, 20 scenes per frame, 200 scenes and 100 MB of private scene
+storage per account, 100 MB of backups, 100 MB of logs. The account, enrolling and managing frames,
+and installing public store scenes are meant to stay free; nothing security-related (two-factor
+auth, revocation, signed updates, the sandbox) will ever be paywalled.
+
+## Privacy
+
+The cloud stores your account, the frames you linked (name, hardware, version), the scenes and
+settings you give them, and - only if enabled per frame - logs and metrics. Backups from linked
+backends are encrypted in the backend before upload, with a key the cloud never sees. Data lives
+in the EU. Every sign-in, device link and permission change is listed under **Account → Activity**.
+**Download my data** under Security exports everything as JSON, and **Delete my account** is
+immediate and needs no support ticket. The full details are in the
+[privacy policy](https://cloud.frameos.net/legal/privacy).
+
+## Moving between cloud, backend and standalone
+
+A frame is managed by exactly one of them at a time, and switching is always a local action on the
+device:
+
+- **Cloud → standalone**: delete the frame in the cloud, or **Disconnect** on the frame's admin
+  page. The frame keeps its scenes.
+- **Standalone → cloud**: [link it](#link-a-frame-that-already-runs) with the code on its display.
+- **Standalone → backend**: **Adopt frame** in the backend imports its settings and scenes - see
+  [First deploy](/guide/first-deploy#add-the-frame).
+- **Backend → cloud** and back: disconnect from one side, then enroll or adopt from the other.
+  A guided migration is planned but not built yet.
