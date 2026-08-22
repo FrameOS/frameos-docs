@@ -17,6 +17,7 @@ import {
 } from 'lucide-react';
 import { InstallPathChooser } from '@/components/install-path-chooser';
 import { Slideshow, type Slide } from '@/components/slideshow';
+import { TextLink } from '@/components/text-link';
 import { links } from '@/lib/shared';
 
 // Swap or reorder freely - the slideshows render whatever is listed here.
@@ -161,14 +162,6 @@ const features = [
   },
 ];
 
-function HeroLink({ href, children }: { href: string; children: React.ReactNode }) {
-  return (
-    <Link href={href} className="text-fd-foreground underline decoration-fd-muted-foreground/50 underline-offset-4 hover:decoration-fd-primary">
-      {children}
-    </Link>
-  );
-}
-
 function SectionTitle({ kicker, title, sub }: { kicker?: string; title: string; sub?: string }) {
   return (
     <div className="mx-auto mb-10 max-w-2xl text-center">
@@ -189,21 +182,19 @@ export default function HomePage() {
             The operating system for smart frames
           </h1>
           <p className="text-lg text-fd-muted-foreground">
-            Turn a <HeroLink href="/guide/raspberry">Raspberry Pi</HeroLink> or{' '}
-            <HeroLink href="/guide/esp32">ESP32</HeroLink>, and{' '}
-            <HeroLink href="/devices">any display</HeroLink> - e-ink, HDMI or LCD - into a
+            Turn a <TextLink href="/guide/raspberry">Raspberry Pi</TextLink> or{' '}
+            <TextLink href="/guide/esp32">ESP32</TextLink>, and{' '}
+            <TextLink href="/devices">any display</TextLink> - e-ink, HDMI or LCD - into a
             calendar, dashboard or art frame that runs itself. Everything renders{' '}
             <strong>on the device</strong>. Run it{' '}
-            <HeroLink href="/guide/standalone">standalone</HeroLink>, control it with a{' '}
-            <HeroLink href="/guide/backend">self-hosted backend</HeroLink>, or manage it from{' '}
-            <HeroLink href="/guide/cloud">FrameOS Cloud</HeroLink> - the frame works the same
+            <TextLink href="/guide/standalone">standalone</TextLink>, control it with a{' '}
+            <TextLink href="/guide/backend">self-hosted backend</TextLink>, or manage it from{' '}
+            <TextLink href="/guide/cloud">FrameOS Cloud</TextLink> - the frame works the same
             either way.
           </p>
           <p className="text-sm text-fd-muted-foreground">
             Free &amp; open source{' '}
-            <Link href="/blog/why-frameos" className="text-fd-primary hover:underline">
-              since 2023
-            </Link>{' '}
+            <TextLink href="/blog/why-frameos">since 2023</TextLink>{' '}
             (AGPL-3.0) · Works offline · Cloud optional · Yours forever
           </p>
         </div>
@@ -234,27 +225,27 @@ export default function HomePage() {
             </h2>
             <div className="flex flex-col gap-3 text-fd-muted-foreground">
               <p>
-                A <strong>Raspberry Pi</strong> is the most capable option. Any model works, from the
-                Pi Zero W to the Pi 5. It drives over 120 e-ink panels as well as HDMI and LCD
-                screens, runs scenes written in JavaScript or compiled Nim, renders TrueType fonts
-                and SVGs, dithers for color e-ink, takes screenshots of web pages with headless
-                Chromium, and serves its own admin page and HTTP API. You can boot it from a
-                prebuilt FrameOS SD image or install FrameOS on an existing Linux system.
+                A <strong>Raspberry Pi</strong> does it all. Any model from the Zero W to the Pi 5,{' '}
+                <TextLink href="/devices">120+ e-ink panels</TextLink> plus HDMI and LCD, scenes in{' '}
+                <TextLink href="/guide/apps#javascript-apps">JavaScript</TextLink> or compiled{' '}
+                <TextLink href="/guide/apps#nim-apps">Nim</TextLink>, and{' '}
+                <TextLink href="/guide/control">its own admin page and HTTP API</TextLink>. Boot it
+                from a <TextLink href="/guide/raspberry#option-1-prebuilt-frameos-sd-image-recommended">prebuilt SD image</TextLink>{' '}
+                or <TextLink href="/guide/raspberry#option-3-no-ssh-install-with-a-script">install on any Linux</TextLink>.
               </p>
               <p>
-                An <strong>ESP32-S3</strong> is a small microcontroller for a battery-powered,
-                wire-free frame. It renders scenes on the chip itself, with the same JavaScript
-                apps, an on-device scheduler, assets on an SD card, and over-the-air firmware
-                updates. You flash it from the browser over USB, and it deep-sleeps between
-                refreshes. It supports Waveshare SPI e-paper panels and all-in-one boards like the
-                PhotoPainter, TRMNL DIY kits and the Seeed reTerminal. Boards without PSRAM - the
-                original TRMNL, XTEINK X4, Pimoroni Inky Frame - run as thin clients that display
-                what the backend renders.
+                An <strong>ESP32-S3</strong> is for a wire-free frame on a battery. It renders the
+                same scenes on the chip, <TextLink href="/guide/esp32#power">deep-sleeps between refreshes</TextLink>,{' '}
+                <TextLink href="/guide/esp32#flash-the-device">flashes from the browser</TextLink> and updates itself over the
+                air. Works with <TextLink href="/guide/esp32#supported-boards">Waveshare, PhotoPainter, TRMNL and reTerminal boards</TextLink>;
+                boards without PSRAM run as thin clients.
               </p>
             </div>
-            <Link href="/guide/esp32" className="mt-4 inline-block font-medium text-fd-primary hover:underline">
-              Read the ESP32 guide →
-            </Link>
+            <div className="mt-4 flex flex-wrap gap-x-5 gap-y-1 text-sm font-medium">
+              <TextLink href="/guide/raspberry">Raspberry Pi guide →</TextLink>
+              <TextLink href="/guide/esp32">ESP32 guide →</TextLink>
+              <TextLink href="/guide/esp32#raspberry-pi-or-esp32">Which one should I pick?</TextLink>
+            </div>
           </div>
           <Image
             src="/images/photos/IMG_6022.jpg"
@@ -423,13 +414,13 @@ export default function HomePage() {
             </Link>
           </div>
           <div className="flex flex-wrap items-center justify-center gap-4 text-sm">
-            <Link href={links.discord} className="font-medium text-fd-primary hover:underline">
+            <TextLink href={links.discord} className="font-medium">
               Join the Discord
-            </Link>
+            </TextLink>
             <span className="text-fd-muted-foreground">·</span>
-            <Link href={links.newsletter} className="font-medium text-fd-primary hover:underline">
+            <TextLink href={links.newsletter} className="font-medium">
               Newsletter
-            </Link>
+            </TextLink>
           </div>
         </div>
       </section>

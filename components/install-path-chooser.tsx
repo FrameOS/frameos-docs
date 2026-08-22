@@ -5,6 +5,7 @@ import { useState } from 'react';
 import { Cloud, Cpu, Download, ExternalLink, Server } from 'lucide-react';
 import { cn } from '@/lib/cn';
 import { CopyCommand } from '@/components/copy-command';
+import { TextLink } from '@/components/text-link';
 
 const INSTALL_COMMAND = 'bash <(curl -fsSL https://frameos.net/install.sh)';
 // Release assets are versioned (frameos-<version>-<board>-buildroot.img.gz),
@@ -180,9 +181,9 @@ export function InstallPathChooser({
                 {board !== 'other' ? (
                   <p className="mt-2 text-xs text-fd-muted-foreground">
                     Latest release, <code>{board}</code>. All images and checksums are on{' '}
-                    <Link href={RELEASES_URL} target="_blank" rel="noopener noreferrer" className="text-fd-primary hover:underline">
+                    <TextLink href={RELEASES_URL}>
                       GitHub
-                    </Link>
+                    </TextLink>
                     .
                   </p>
                 ) : null}
@@ -200,30 +201,21 @@ export function InstallPathChooser({
                     It asks for your display and an admin password, installs the latest release
                     as a systemd service, and starts the frame. Then open{' '}
                     <code>http://&lt;frame-ip&gt;:8787/admin</code> to add scenes. Connect a
-                    display over SPI, HDMI, or run it with no display at all.
+                    <TextLink href="/devices">display</TextLink> over SPI or HDMI, or run it{' '}
+                    <TextLink href="/devices/http-upload">with no display at all</TextLink>.
                   </p>
                 </>
               ) : (
               <ol className="mt-3 space-y-2 text-sm text-fd-muted-foreground">
                 <li>
                   1. Flash the image with{' '}
-                  <Link
-                    href="https://www.raspberrypi.com/software/"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-fd-primary hover:underline"
-                  >
+                  <TextLink href="https://www.raspberrypi.com/software/">
                     Raspberry Pi Imager
-                  </Link>{' '}
+                  </TextLink>{' '}
                   or{' '}
-                  <Link
-                    href="https://etcher.balena.io/"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-fd-primary hover:underline"
-                  >
+                  <TextLink href="https://etcher.balena.io/">
                     balenaEtcher
-                  </Link>
+                  </TextLink>
                   .
                 </li>
                 <li>
@@ -235,16 +227,15 @@ export function InstallPathChooser({
                   choose <strong>Nothing (standalone)</strong> under <em>Manage via</em>.
                 </li>
                 <li>
-                  4. Open <code>http://&lt;frame-ip&gt;:8787/admin</code> and add scenes.
+                  4. Open <code>http://&lt;frame-ip&gt;:8787/admin</code> and{' '}
+                  <TextLink href="/guide/standalone#3-open-the-admin-page">add scenes</TextLink>.
                 </li>
               </ol>
               )}
               <p className="mt-3 border-t pt-3 text-sm text-fd-muted-foreground">
-                Details in{' '}
-                <Link href="/guide/standalone" className="text-fd-primary hover:underline">
-                  the standalone frame guide
-                </Link>
-                . You can hand the frame to a backend or the cloud later - no reflash.
+                Details in <TextLink href="/guide/standalone">the standalone frame guide</TextLink>. You can
+                hand the frame to a <TextLink href="/guide/backend">backend</TextLink> or{' '}
+                <TextLink href="/guide/cloud">the cloud</TextLink> later - no reflash.
               </p>
             </>
           ) : selectedPath === 'backend' ? (
@@ -252,19 +243,22 @@ export function InstallPathChooser({
               <p className="mb-2 text-sm font-medium">Run the backend on your computer or server</p>
               <p className="text-sm text-fd-muted-foreground">
                 Copy the one-liner below. It installs Docker if needed, then runs the{' '}
-                <Link href={DOCKER_HUB_URL} target="_blank" rel="noopener noreferrer" className="text-fd-primary hover:underline">
+                <TextLink href={DOCKER_HUB_URL}>
                   <code>frameos/frameos</code>
-                </Link>{' '}
-                image on port 8989. Then add a frame: flash a
-                preconfigured SD image, deploy over SSH, or flash an ESP32 from the browser.
+                </TextLink>{' '}
+                image on port 8989. Then add a frame:{' '}
+                <TextLink href="/guide/raspberry#option-1-prebuilt-frameos-sd-image-recommended">flash a preconfigured SD image</TextLink>,{' '}
+                <TextLink href="/guide/raspberry#option-2-stock-raspberry-pi-os-lite">deploy over SSH</TextLink> to a Pi,
+                or <TextLink href="/guide/esp32#flash-the-device">flash an ESP32</TextLink> from the browser.
               </p>
               <CopyCommand command={INSTALL_COMMAND} className="mt-3 w-full" />
               <p className="mt-3 text-sm text-fd-muted-foreground">
-                Prefer another method? See{' '}
-                <Link href="/guide/backend" className="text-fd-primary hover:underline">
-                  the backend docs
-                </Link>{' '}
-                for the Home Assistant add-on, manual Docker, and local development.
+                Prefer another method? There's a{' '}
+                <TextLink href="/guide/backend#home-assistant-add-on">Home Assistant add-on</TextLink>,{' '}
+                <TextLink href="/guide/backend#running-via-docker-manually">manual Docker</TextLink> and{' '}
+                <TextLink href="/guide/backend#local-development-with-flox">local development with Flox</TextLink>,
+                all in <TextLink href="/guide/backend">the backend guide</TextLink>. You can also{' '}
+                <TextLink href="/guide/backend#cloud">link the backend to FrameOS Cloud</TextLink> later.
               </p>
             </>
           ) : (
@@ -273,36 +267,44 @@ export function InstallPathChooser({
                 <div>
                   <p className="text-sm font-medium">Create an account, then add a frame</p>
                   <p className="mt-1 text-sm text-fd-muted-foreground">
-                    Your browser builds a personalized SD image for a Pi or flashes an ESP32 over
-                    USB, or you run a one-line install script on any Linux box. The frame enrolls
-                    on first boot.
+                    Your browser{' '}
+                    <TextLink href="/guide/cloud#sd-card-image-raspberry-pi">builds a personalized SD image</TextLink> for a Pi
+                    or <TextLink href="/guide/cloud#flash-an-esp32-from-the-browser">flashes an ESP32</TextLink> over USB,
+                    or you run a{' '}
+                    <TextLink href="/guide/cloud#install-script-any-pi-most-linux">one-line install script</TextLink> on any
+                    Linux box. The frame enrolls on first boot.
                   </p>
                 </div>
                 <ExternalButton href={CLOUD_SIGNUP_URL}>Sign up at cloud.frameos.net</ExternalButton>
               </div>
               <ul className="mt-3 space-y-2 text-sm text-fd-muted-foreground">
                 <li>
-                  This is the easiest way to try out FrameOS. You can always self-host later. You're not locked in to anything!
+                  The quickest way to try FrameOS, and nothing locks you in: a frame can{' '}
+                  <TextLink href="/guide/cloud#moving-between-cloud-backend-and-standalone">move to a self-hosted backend or go standalone</TextLink>{' '}
+                  at any time, keeping its scenes.
                 </li>
                 <li>
-                  The cloud is designed with a different security profile in mind than the self-hosted backend (secure by default, limited verbs). Read more here.
+                  Built secure by default, with a narrower footprint than the self-hosted backend: no shell, no compiled code,
+                  only <TextLink href="/guide/scenes#execution">sandboxed scenes</TextLink>, and your WiFi password never
+                  leaves the browser. See{' '}
+                  <TextLink href="/guide/cloud#what-the-cloud-does-and-deliberately-doesnt">what the cloud does, and deliberately doesn't</TextLink>.
                 </li>
                 <li>
-                  The cloud is also open source. You can run your own instance if you want to self-host, though we don't recommend it (yet).
+                  The cloud is <TextLink href="https://github.com/FrameOS/frameos">open source</TextLink> too. You can
+                  run your own instance, though we don't recommend it (yet).
                 </li>
               </ul>
               <p className="mt-3 border-t pt-3 text-sm text-fd-muted-foreground">
-                Free while in beta. Read{' '}
-                <Link href="/guide/cloud" className="text-fd-primary hover:underline">
-                  the FrameOS Cloud guide
-                </Link>{' '}
-                for what it can and cannot do.
+                Free while in beta. Read the{' '}
+                <TextLink href="/guide/cloud">FrameOS Cloud guide</TextLink> for what it can and
+                cannot do, and its <TextLink href="/guide/cloud#privacy">privacy</TextLink> and{' '}
+                <TextLink href="/guide/cloud#limits">limits</TextLink>.
               </p>
             </>
           )}
         </div>
       ) : (
-        <p className="mt-2 text-center text-sm text-fd-muted-foreground">
+        <p className="mt-8 text-center text-sm text-fd-muted-foreground">
           Choose a path to see the next step.
         </p>
       )}
