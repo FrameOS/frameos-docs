@@ -212,69 +212,6 @@ export default function HomePage() {
         <Slideshow slides={frameSlides} aspect="aspect-[4/3]" />
       </section>
 
-      {/* Three ways to run it */}
-      <section className="border-t bg-fd-card/50">
-        <div className="mx-auto w-full max-w-6xl px-6 py-20">
-          <SectionTitle
-            kicker="How it works"
-            title="Three ways to run it, one standalone frame"
-            sub="The frame renders its own scenes on its own schedule. What you use to set it up is your call - and you can change your mind later without reflashing."
-          />
-          <ol className="grid gap-8 md:grid-cols-3">
-            <li className="flex flex-col rounded-xl border bg-fd-background p-6">
-              <span className="mb-3 inline-flex size-8 items-center justify-center rounded-full bg-fd-primary text-fd-primary-foreground">
-                <Cpu className="size-4" aria-hidden="true" />
-              </span>
-              <h3 className="mb-2 font-semibold">Just a frame</h3>
-              <p className="flex-1 text-sm text-fd-muted-foreground">
-                Flash a FrameOS SD image to a Raspberry Pi, join its setup hotspot from your phone,
-                pick a display. The frame serves its own admin page with the scene editor, settings,
-                logs and updates. Nothing else to install, no account anywhere.
-              </p>
-              <Link href="/guide/standalone" className="mt-4 text-sm font-medium text-fd-primary hover:underline">
-                Set up a standalone frame →
-              </Link>
-            </li>
-            <li className="flex flex-col rounded-xl border bg-fd-background p-6">
-              <span className="mb-3 inline-flex size-8 items-center justify-center rounded-full bg-fd-primary text-fd-primary-foreground">
-                <Server className="size-4" aria-hidden="true" />
-              </span>
-              <h3 className="mb-2 font-semibold">Self-hosted backend</h3>
-              <p className="flex-1 text-sm text-fd-muted-foreground">
-                One Docker container on your laptop, server or NAS - or a Home Assistant add-on.
-                Manage many frames, deploy over SSH, build ESP32 firmware, write apps in Nim, open a
-                terminal on a frame. The most capable option, and it stays that way.
-              </p>
-              <Link href="/guide/backend" className="mt-4 text-sm font-medium text-fd-primary hover:underline">
-                Install the backend →
-              </Link>
-            </li>
-            <li className="flex flex-col rounded-xl border bg-fd-background p-6">
-              <span className="mb-3 inline-flex size-8 items-center justify-center rounded-full bg-fd-primary text-fd-primary-foreground">
-                <Cloud className="size-4" aria-hidden="true" />
-              </span>
-              <h3 className="mb-2 font-semibold">FrameOS Cloud</h3>
-              <p className="flex-1 text-sm text-fd-muted-foreground">
-                Nothing to host. Build an SD image or flash an ESP32 from the browser, then assign
-                scenes from the store, check previews and logs, and queue signed updates - from
-                anywhere. The cloud never gets a shell and never compiles code. Free while in beta.
-              </p>
-              <Link href="/guide/cloud" className="mt-4 text-sm font-medium text-fd-primary hover:underline">
-                Read about FrameOS Cloud →
-              </Link>
-            </li>
-          </ol>
-          <p className="mx-auto mt-8 max-w-2xl text-center text-sm text-fd-muted-foreground">
-            Whichever you pick: connect a Pi or ESP32 to any of{' '}
-            <Link href="/devices" className="text-fd-primary hover:underline">
-              120+ supported panels
-            </Link>{' '}
-            or an HDMI cable, install a scene, and walk away. The frame is controlled from its own
-            QR code and HTTP API.
-          </p>
-        </div>
-      </section>
-
       {/* The app */}
       <section className="mx-auto w-full max-w-6xl px-6 py-20">
         <SectionTitle
