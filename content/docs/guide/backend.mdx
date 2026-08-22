@@ -36,7 +36,7 @@ The easiest way to install on a Mac or a Debian/Ubuntu Linux machine:
 bash <(curl -fsSL https://frameos.net/install.sh)
 ```
 
-The script installs Docker if needed, then runs the `frameos/frameos` container on port `8989`.
+The script installs Docker if needed, then runs the [`frameos/frameos`](https://hub.docker.com/r/frameos/frameos) container on port `8989`.
 Once it's up, open `http://localhost:8989` on that same machine (or `http://<its-ip>:8989` from
 another device) and create your local account.
 
@@ -104,7 +104,7 @@ This is optional: for common targets FrameOS ships **precompiled binaries**, and
 configure remote SSH build servers, or build on the frame itself, under **Settings → Builds**.
 
 <Callout title="ESP32 firmware needs no extra setup with Docker">
-  The `frameos/frameos` image bundles the ESP-IDF and Nim toolchains, so building and
+  The [`frameos/frameos`](https://hub.docker.com/r/frameos/frameos) image bundles the ESP-IDF and Nim toolchains, so building and
   browser-flashing [ESP32 firmware](/guide/esp32) works out of the box. Non-Docker installs need
   [ESP-IDF and Nim installed by hand](/guide/esp32#backend-toolchain).
 </Callout>

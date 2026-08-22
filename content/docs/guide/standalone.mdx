@@ -33,6 +33,14 @@ Flash it with [Raspberry Pi Imager](https://www.raspberrypi.com/software/) ("Use
 or [balenaEtcher](https://etcher.balena.io/) - both read the `.img.gz` as is. Connect the display,
 insert the card, power up.
 
+<Callout title="Already running Linux?">
+  A Pi on Raspberry Pi OS, or any Debian (buster-trixie) or Ubuntu (22.04-26.04) machine on
+  arm64, armhf, armv6 or amd64, can skip the image. Run
+  `curl -fsSL https://cloud.frameos.net/install.sh | sudo sh` on the device: it asks for the
+  display and an admin password, installs the latest release as a systemd service, and starts the
+  frame standalone. Continue at [step 3](#3-open-the-admin-page).
+</Callout>
+
 ## 2. Set it up from your phone
 
 With no WiFi configured, the frame starts a hotspot called **`FrameOS-Setup`** (password

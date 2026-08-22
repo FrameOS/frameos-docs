@@ -13,16 +13,24 @@ const INSTALL_COMMAND = 'bash <(curl -fsSL https://frameos.net/install.sh)';
 const RELEASES_URL = 'https://github.com/FrameOS/frameos/releases/latest';
 const LATEST_RELEASE_API = 'https://api.github.com/repos/FrameOS/frameos/releases/latest';
 const CLOUD_SIGNUP_URL = 'https://cloud.frameos.net/signup';
+const DOCKER_HUB_URL = 'https://hub.docker.com/r/frameos/frameos';
 
 const piImages = [
   { id: 'raspberry-pi-64', label: 'Raspberry Pi Zero 2 W / 3 / 4 / CM4 (64-bit)' },
   { id: 'raspberry-pi-5', label: 'Raspberry Pi 5 / CM5' },
   { id: 'raspberry-pi-32', label: 'Raspberry Pi Zero / Zero W / 1 / CM1 (32-bit)' },
+  { id: 'other', label: 'Other (Debian or Ubuntu on arm64, armhf, armv6, amd64)' },
 ] as const;
 
 type PiImage = (typeof piImages)[number]['id'];
 
-async function latestImageUrl(board: PiImage): Promise<string> {
+// The standalone installer (scripts/frameos-setup.sh in the main repo), served
+// with the newest release stamped in. Without a claim token it installs a
+// standalone frame - it asks about the display and an admin password, and
+// optionally a self-hosted backend to connect to.
+const LINUX_INSTALL_COMMAND = 'curl -fsSL https://cloud.frameos.net/install.sh | sudo sh';
+
+async function latestImageUrl(board: Exclude<PiImage, 'other'>): Promise<string> {
   const res = await fetch(LATEST_RELEASE_API, { headers: { Accept: 'application/vnd.github+json' } });
   if (!res.ok) throw new Error(`GitHub API ${res.status}`);
   const release = (await res.json()) as { assets?: { name: string; browser_download_url: string }[] };
@@ -74,6 +82,7 @@ export function InstallPathChooser({ className }: { className?: string }) {
   const [downloading, setDownloading] = useState(false);
 
   async function downloadImage() {
+    if (board === 'other') return;
     setDownloading(true);
     try {
       window.location.href = await latestImageUrl(board);
@@ -87,10 +96,7 @@ export function InstallPathChooser({ className }: { className?: string }) {
   return (
     <div className={cn('w-full', className)}>
       <div className="mb-3">
-        <p className="text-xs font-medium uppercase tracking-wider text-fd-muted-foreground">
-          Get started
-        </p>
-        <h2 className="mt-1 text-base font-semibold">How do you want to run it?</h2>
+        <h2 className="mt-1 text-base font-semibold">How do you want to get started?</h2>
       </div>
 
       <div className="grid gap-3 sm:grid-cols-3">
@@ -137,7 +143,7 @@ export function InstallPathChooser({ className }: { className?: string }) {
           {selectedPath === 'frame' ? (
             <>
               <div className="border-b pb-3">
-                <p className="text-sm font-medium">Flash a FrameOS image to a Raspberry Pi</p>
+                <p className="text-sm font-medium">Pick a platform</p>
                 <div className="mt-2 flex flex-wrap items-center gap-2">
                   <select
                     aria-label="Raspberry Pi model"
@@ -151,24 +157,45 @@ export function InstallPathChooser({ className }: { className?: string }) {
                       </option>
                     ))}
                   </select>
-                  <button
-                    type="button"
-                    onClick={downloadImage}
-                    disabled={downloading}
-                    className="inline-flex items-center gap-2 rounded-lg bg-fd-primary px-3 py-1.5 text-sm font-medium text-fd-primary-foreground transition-opacity hover:opacity-90 disabled:opacity-60"
-                  >
-                    <Download className="size-3.5" aria-hidden="true" />
-                    {downloading ? 'Finding latest…' : 'Download .img.gz'}
-                  </button>
+                  {board !== 'other' ? (
+                    <button
+                      type="button"
+                      onClick={downloadImage}
+                      disabled={downloading}
+                      className="inline-flex items-center gap-2 rounded-lg bg-fd-primary px-3 py-1.5 text-sm font-medium text-fd-primary-foreground transition-opacity hover:opacity-90 disabled:opacity-60"
+                    >
+                      <Download className="size-3.5" aria-hidden="true" />
+                      {downloading ? 'Finding latest…' : 'Download'}
+                    </button>
+                  ) : null}
                 </div>
-                <p className="mt-2 text-xs text-fd-muted-foreground">
-                  Latest release, <code>{board}</code>. All images and checksums are on{' '}
-                  <Link href={RELEASES_URL} target="_blank" rel="noopener noreferrer" className="text-fd-primary hover:underline">
-                    GitHub
-                  </Link>
-                  .
-                </p>
+                {board !== 'other' ? (
+                  <p className="mt-2 text-xs text-fd-muted-foreground">
+                    Latest release, <code>{board}</code>. All images and checksums are on{' '}
+                    <Link href={RELEASES_URL} target="_blank" rel="noopener noreferrer" className="text-fd-primary hover:underline">
+                      GitHub
+                    </Link>
+                    .
+                  </p>
+                ) : null}
               </div>
+              {board === 'other' ? (
+                <>
+                  <p className="mt-3 text-sm text-fd-muted-foreground">
+                    Already running Linux? Prebuilt binaries exist for <strong>Debian</strong>{' '}
+                    (buster through trixie) and <strong>Ubuntu</strong> (22.04, 24.04, 26.04) on{' '}
+                    <code>arm64</code>, <code>armhf</code>, <code>armv6</code> and <code>amd64</code>{' '}
+                    - Raspberry Pi OS included. Run this on the device:
+                  </p>
+                  <CopyCommand command={LINUX_INSTALL_COMMAND} className="mt-3 w-full" />
+                  <p className="mt-3 text-sm text-fd-muted-foreground">
+                    It asks for your display and an admin password, installs the latest release
+                    as a systemd service, and starts the frame. Then open{' '}
+                    <code>http://&lt;frame-ip&gt;:8787/admin</code> to add scenes. Connect a
+                    display over SPI, HDMI, or run it with no display at all.
+                  </p>
+                </>
+              ) : (
               <ol className="mt-3 space-y-2 text-sm text-fd-muted-foreground">
                 <li>
                   1. Flash the image with{' '}
@@ -203,6 +230,7 @@ export function InstallPathChooser({ className }: { className?: string }) {
                   4. Open <code>http://&lt;frame-ip&gt;:8787/admin</code> and add scenes.
                 </li>
               </ol>
+              )}
               <p className="mt-3 border-t pt-3 text-sm text-fd-muted-foreground">
                 Details in{' '}
                 <Link href="/guide/standalone" className="text-fd-primary hover:underline">
@@ -216,7 +244,10 @@ export function InstallPathChooser({ className }: { className?: string }) {
               <p className="mb-2 text-sm font-medium">Run the backend on your computer or server</p>
               <p className="text-sm text-fd-muted-foreground">
                 Copy the one-liner below. It installs Docker if needed, then runs the{' '}
-                <code>frameos</code> image on port 8989. Then add a frame: flash a
+                <Link href={DOCKER_HUB_URL} target="_blank" rel="noopener noreferrer" className="text-fd-primary hover:underline">
+                  <code>frameos/frameos</code>
+                </Link>{' '}
+                image on port 8989. Then add a frame: flash a
                 preconfigured SD image, deploy over SSH, or flash an ESP32 from the browser.
               </p>
               <CopyCommand command={INSTALL_COMMAND} className="mt-3 w-full" />
