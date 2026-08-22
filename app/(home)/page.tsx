@@ -86,15 +86,16 @@ const appSlides: Slide[] = [
   },
 ];
 
+// Each thumbnail links to the scene's page in the store: `${links.sceneStore}/s/${slug}`.
 const sceneStrip = [
-  { src: '/images/scenes/gallery/made-in-space.jpg', alt: 'Made in Space gallery scene' },
-  { src: '/images/scenes/samples/calendar.jpg', alt: 'Calendar scene' },
-  { src: '/images/scenes/gallery/masterpieces.jpg', alt: 'Masterpieces gallery scene' },
-  { src: '/images/scenes/samples/message-board.jpg', alt: 'Message board scene' },
-  { src: '/images/scenes/gallery/abstract-architecture.jpg', alt: 'Abstract architecture scene' },
-  { src: '/images/scenes/samples/split-agenda.jpg', alt: 'Split agenda scene' },
-  { src: '/images/scenes/samples/xkcd.jpg', alt: 'XKCD scene' },
-  { src: '/images/scenes/gallery/cyberpunk-eu.jpg', alt: 'CyberPunk EU gallery scene' },
+  { src: '/images/scenes/gallery/made-in-space.jpg', alt: 'Made in Space gallery scene', slug: 'made-in-space' },
+  { src: '/images/scenes/samples/calendar.jpg', alt: 'Calendar scene', slug: 'calendar' },
+  { src: '/images/scenes/gallery/masterpieces.jpg', alt: 'Masterpieces gallery scene', slug: 'masterpieces' },
+  { src: '/images/scenes/samples/message-board.jpg', alt: 'Message board scene', slug: 'message-board' },
+  { src: '/images/scenes/gallery/abstract-architecture.jpg', alt: 'Abstract architecture scene', slug: 'abstract-architecture' },
+  { src: '/images/scenes/samples/split-agenda.jpg', alt: 'Split agenda scene', slug: 'ical-agenda' },
+  { src: '/images/scenes/samples/xkcd.jpg', alt: 'XKCD scene', slug: 'xkcd' },
+  { src: '/images/scenes/gallery/cyberpunk-eu.jpg', alt: 'CyberPunk EU gallery scene', slug: 'cyberpunk-eu' },
 ];
 
 const features = [
@@ -390,14 +391,22 @@ export default function HomePage() {
           />
           <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">
             {sceneStrip.map((s) => (
-              <Image
+              <Link
                 key={s.src}
-                src={s.src}
-                alt={s.alt}
-                width={400}
-                height={240}
-                className="aspect-[5/3] w-full rounded-lg border object-cover"
-              />
+                href={`${links.sceneStore}/s/${s.slug}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                title={`${s.alt} - open in the scene store`}
+                className="block overflow-hidden rounded-lg border transition-opacity hover:opacity-80"
+              >
+                <Image
+                  src={s.src}
+                  alt={s.alt}
+                  width={400}
+                  height={240}
+                  className="aspect-[5/3] w-full object-cover"
+                />
+              </Link>
             ))}
           </div>
           <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
