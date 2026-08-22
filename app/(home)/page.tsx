@@ -235,18 +235,22 @@ export default function HomePage() {
             </h2>
             <div className="flex flex-col gap-3 text-fd-muted-foreground">
               <p>
-                FrameOS runs best on real Linux - from the $15 Pi Zero 2 W up: deploys over WiFi
-                instead of re-flashing firmware, TrueType fonts and SVGs at any resolution,
-                dithering for six-color e-ink, TLS, iCal parsing, headless Chromium screenshots,
-                and a web server on the frame itself.
+                A <strong>Raspberry Pi</strong> is the most capable option. Any model works, from the
+                Pi Zero 2 W to the Pi 5. It drives over 120 e-ink panels as well as HDMI and LCD
+                screens, runs scenes written in JavaScript or compiled Nim, renders TrueType fonts
+                and SVGs, dithers for color e-ink, takes screenshots of web pages with headless
+                Chromium, and serves its own admin page and HTTP API. You can boot it from a
+                prebuilt FrameOS SD image or install FrameOS on an existing Linux system.
               </p>
               <p>
-                Want a wire-free frame instead? FrameOS runs on the ESP32-S3 for Waveshare SPI
-                e-paper panels, and it is a full frame there: scenes render on the device,
-                JavaScript and all, with assets on an SD card, an on-device scheduler and
-                over-the-air updates. Flash it from the browser, then deep-sleep between refreshes
-                and run it off a battery. Boards without PSRAM - the TRMNL, XTEINK X4, Pimoroni
-                Inky Frame - run as thin clients the backend renders for.
+                An <strong>ESP32-S3</strong> is a small microcontroller for a battery-powered,
+                wire-free frame. It renders scenes on the chip itself, with the same JavaScript
+                apps, an on-device scheduler, assets on an SD card, and over-the-air firmware
+                updates. You flash it from the browser over USB, and it deep-sleeps between
+                refreshes. It supports Waveshare SPI e-paper panels and all-in-one boards like the
+                PhotoPainter, TRMNL DIY kits and the Seeed reTerminal. Boards without PSRAM - the
+                original TRMNL, XTEINK X4, Pimoroni Inky Frame - run as thin clients that display
+                what the backend renders.
               </p>
             </div>
             <Link href="/guide/esp32" className="mt-4 inline-block font-medium text-fd-primary hover:underline">
