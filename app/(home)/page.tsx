@@ -199,7 +199,6 @@ export default function HomePage() {
             <HeroLink href="/guide/cloud">FrameOS Cloud</HeroLink> - the frame works the same
             either way.
           </p>
-          <InstallPathChooser />
           <p className="text-sm text-fd-muted-foreground">
             Free &amp; open source{' '}
             <Link href="/blog/why-frameos" className="text-fd-primary hover:underline">
@@ -209,6 +208,18 @@ export default function HomePage() {
           </p>
         </div>
         <Slideshow slides={frameSlides} aspect="aspect-[4/3]" />
+      </section>
+
+      {/* Get started */}
+      <section className="border-t bg-fd-card/50">
+        <div className="mx-auto w-full max-w-4xl px-6 py-20">
+          <SectionTitle
+            kicker="Get started"
+            title="How do you want to get started?"
+            sub="All three render on the device, and a frame can move between them without reflashing."
+          />
+          <InstallPathChooser hideHeader />
+        </div>
       </section>
 
       {/* Raspberry Pi or ESP32 */}

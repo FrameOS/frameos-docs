@@ -76,7 +76,13 @@ function ExternalButton({ href, children }: { href: string; children: React.Reac
   );
 }
 
-export function InstallPathChooser({ className }: { className?: string }) {
+export function InstallPathChooser({
+  className,
+  hideHeader = false,
+}: {
+  className?: string;
+  hideHeader?: boolean;
+}) {
   const [selectedPath, setSelectedPath] = useState<InstallPath | null>(null);
   const [board, setBoard] = useState<PiImage>('raspberry-pi-64');
   const [downloading, setDownloading] = useState(false);
@@ -95,9 +101,11 @@ export function InstallPathChooser({ className }: { className?: string }) {
 
   return (
     <div className={cn('w-full', className)}>
-      <div className="mb-3">
-        <h2 className="mt-1 text-base font-semibold">How do you want to get started?</h2>
-      </div>
+      {hideHeader ? null : (
+        <div className="mb-3">
+          <h2 className="mt-1 text-base font-semibold">How do you want to get started?</h2>
+        </div>
+      )}
 
       <div className="grid gap-3 sm:grid-cols-3">
         {installOptions.map((option) => {
@@ -304,9 +312,8 @@ export function InstallPathChooser({ className }: { className?: string }) {
           )}
         </div>
       ) : (
-        <p className="mt-2 text-sm text-fd-muted-foreground">
-          Choose a path to see the next step. All three render on the device, and a frame can move
-          between them.
+        <p className="mt-2 text-center text-sm text-fd-muted-foreground">
+          Choose a path to see the next step.
         </p>
       )}
     </div>
