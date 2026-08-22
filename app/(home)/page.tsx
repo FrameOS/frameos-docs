@@ -186,20 +186,6 @@ export default function HomePage() {
             <strong>on the device</strong>. Run it standalone, self-host the backend, or manage it
             from FrameOS Cloud - the frame works the same either way.
           </p>
-          <div className="flex flex-wrap items-center gap-3">
-            <Link
-              href="/guide"
-              className="rounded-lg bg-fd-primary px-5 py-2.5 font-medium text-fd-primary-foreground transition-opacity hover:opacity-90"
-            >
-              Get started
-            </Link>
-            <Link
-              href={links.github}
-              className="rounded-lg border px-5 py-2.5 font-medium transition-colors hover:bg-fd-accent"
-            >
-              GitHub
-            </Link>
-          </div>
           <InstallPathChooser />
           <p className="text-sm text-fd-muted-foreground">
             Free &amp; open source{' '}
