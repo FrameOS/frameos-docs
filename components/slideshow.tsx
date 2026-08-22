@@ -3,11 +3,12 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import Image from 'next/image';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { cn } from '@/lib/cn';
+import { LightboxOverlay } from '@/components/lightbox';
 
 export interface Slide {
   src: string;
   alt: string;
-  caption: string;
+  caption: React.ReactNode;
 }
 
 export function Slideshow({
@@ -26,6 +27,7 @@ export function Slideshow({
 }) {
   const [index, setIndex] = useState(0);
   const [paused, setPaused] = useState(false);
+  const [zoomed, setZoomed] = useState(false);
   const timer = useRef<ReturnType<typeof setInterval> | null>(null);
 
   const go = useCallback(
@@ -33,21 +35,42 @@ export function Slideshow({
     [slides.length],
   );
 
+  // Restart the timer whenever the slide changes (so a manual click gives the new
+  // slide a full interval) and stop it entirely while the pointer is over the figure.
   useEffect(() => {
     if (paused) return;
     timer.current = setInterval(() => go(1), interval);
     return () => {
       if (timer.current) clearInterval(timer.current);
     };
-  }, [go, interval, paused]);
+  }, [go, interval, paused, index]);
 
   return (
     <figure
       className={cn('group relative', className)}
-      onMouseEnter={() => setPaused(true)}
-      onMouseLeave={() => setPaused(false)}
+      // pointermove as well as enter: if the page hydrates with the cursor already
+      // over the slideshow, no enter event ever fires.
+      onPointerEnter={() => setPaused(true)}
+      onPointerMove={() => setPaused(true)}
+      onPointerLeave={() => setPaused(false)}
+      onFocus={() => setPaused(true)}
+      onBlur={(e) => {
+        if (!e.currentTarget.contains(e.relatedTarget as Node | null)) setPaused(false);
+      }}
     >
-      <div className={cn('relative w-full overflow-hidden rounded-xl border bg-fd-card', aspect)}>
+      <div
+        className={cn('relative w-full cursor-zoom-in overflow-hidden rounded-xl border bg-fd-card', aspect)}
+        onClick={() => setZoomed(true)}
+        role="button"
+        tabIndex={0}
+        aria-label="View slide larger"
+        onKeyDown={(e) => {
+          if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            setZoomed(true);
+          }
+        }}
+      >
         {slides.map((slide, i) => (
           <Image
             key={slide.src}
@@ -66,16 +89,22 @@ export function Slideshow({
         <button
           type="button"
           aria-label="Previous slide"
-          onClick={() => go(-1)}
-          className="absolute left-2 top-1/2 -translate-y-1/2 rounded-full bg-black/40 p-1.5 text-white opacity-0 transition-opacity group-hover:opacity-100"
+          onClick={(e) => {
+            e.stopPropagation();
+            go(-1);
+          }}
+          className="absolute left-2 top-1/2 -translate-y-1/2 cursor-pointer rounded-full bg-black/40 p-1.5 text-white opacity-0 transition-opacity group-hover:opacity-100"
         >
           <ChevronLeft className="size-5" />
         </button>
         <button
           type="button"
           aria-label="Next slide"
-          onClick={() => go(1)}
-          className="absolute right-2 top-1/2 -translate-y-1/2 rounded-full bg-black/40 p-1.5 text-white opacity-0 transition-opacity group-hover:opacity-100"
+          onClick={(e) => {
+            e.stopPropagation();
+            go(1);
+          }}
+          className="absolute right-2 top-1/2 -translate-y-1/2 cursor-pointer rounded-full bg-black/40 p-1.5 text-white opacity-0 transition-opacity group-hover:opacity-100"
         >
           <ChevronRight className="size-5" />
         </button>
@@ -94,13 +123,23 @@ export function Slideshow({
               aria-label={`Go to slide ${i + 1}`}
               onClick={() => setIndex(i)}
               className={cn(
-                'size-2 rounded-full transition-colors',
+                'size-2 cursor-pointer rounded-full transition-colors',
                 i === index ? 'bg-fd-primary' : 'bg-fd-muted-foreground/30 hover:bg-fd-muted-foreground/60',
               )}
             />
           ))}
         </span>
       </figcaption>
+      {zoomed ? (
+        <LightboxOverlay
+          src={slides[index].src}
+          alt={slides[index].alt}
+          caption={slides[index].caption}
+          onClose={() => setZoomed(false)}
+          onPrev={() => go(-1)}
+          onNext={() => go(1)}
+        />
+      ) : null}
     </figure>
   );
 }

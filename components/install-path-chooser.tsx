@@ -136,7 +136,7 @@ export function InstallPathChooser({
               aria-pressed={selected}
               onClick={() => setSelectedPath(option.id)}
               className={cn(
-                'group relative isolate flex h-full flex-col items-start gap-2 overflow-hidden rounded-xl border p-4 text-left transition-all',
+                'group relative isolate flex h-full cursor-pointer flex-col items-start gap-2 overflow-hidden rounded-xl border p-4 text-left transition-all',
                 'bg-gradient-to-br',
                 option.tint,
                 selected

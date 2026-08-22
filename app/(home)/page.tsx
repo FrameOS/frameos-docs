@@ -18,19 +18,41 @@ import {
 import { InstallPathChooser } from '@/components/install-path-chooser';
 import { Slideshow, type Slide } from '@/components/slideshow';
 import { TextLink } from '@/components/text-link';
+import { LightboxImage } from '@/components/lightbox';
 import { links } from '@/lib/shared';
 
 // Swap or reorder freely - the slideshows render whatever is listed here.
 const frameSlides: Slide[] = [
   {
-    src: '/images/photos/IMG_6030.jpg',
-    alt: '13.3 inch Spectra 6 e-ink panel in a 3D-printed case on a wall',
-    caption: '13.3" Spectra 6 color e-ink on the wall - refreshes a few times a day',
+    src: '/images/photos/frame-13in3-spectra6.jpg',
+    alt: '13.3 inch Spectra 6 color e-ink panel in a 3D-printed rosewood frame',
+    caption: (
+      <>
+        A <TextLink href="/devices/waveshare-epd-13in3e">13.3&quot; Spectra 6</TextLink> color e-ink
+        panel in a <TextLink href="/cases">3D-printed frame</TextLink>
+      </>
+    ),
   },
   {
-    src: '/images/photos/kitchen-calendar2.jpg',
-    alt: 'Kitchen calendar on a 12.48 inch e-ink display',
-    caption: 'Kitchen calendar, synced from iCal on a 12.48" 3-color panel',
+    src: '/images/photos/frame-13in3-inside.jpg',
+    alt: 'The back of the 13.3 inch frame: Raspberry Pi Zero, Waveshare e-paper HAT and a soldered SD card extension',
+    caption: 'Inside: a Pi Zero, the Waveshare HAT, and a soldered SD card extension made from a micro SD adapter',
+  },
+  {
+    src: '/images/photos/frame-13in3-printing.jpg',
+    alt: 'The 13.3 inch frame being 3D printed on a Bambu Lab printer',
+    caption: (
+      <>
+        Printing the frame in{' '}
+        <TextLink href="https://eu.store.bambulab.com/products/pla-wood">Bambu rosewood PLA</TextLink>{' '}
+        - designed in the <TextLink href="/cases">Case Maker</TextLink>
+      </>
+    ),
+  },
+  {
+    src: '/images/photos/hdmi-framebuffer.jpg',
+    alt: 'A portable HDMI monitor showing the FrameOS welcome screen from a Raspberry Pi',
+    caption: 'HDMI works too: a Pi Zero 2W with a portable 1080p monitor, managed from FrameOS Cloud',
   },
   {
     src: '/images/photos/IMG_5975.jpg',
@@ -38,52 +60,42 @@ const frameSlides: Slide[] = [
     caption: '7.3" and 13.3" panels in 3D-printed cases with print-in-place kickstands',
   },
   {
-    src: '/images/photos/ukseraam.jpg',
-    alt: 'Hallway dashboard on a 5.7 inch e-ink display by the front door',
-    caption: 'Hallway dashboard: weather, windows, and the next bus - by the front door',
+    src: '/images/photos/spectra6-vs-acep.jpg',
+    alt: 'Two 4 inch frames side by side, one with a Spectra 6 panel and one with an ACeP panel',
+    caption: 'Same image on Spectra 6 (left) and 7-color ACeP (right) - Spectra is brighter and more saturated',
   },
   {
     src: '/images/photos/phone-pasta-2.jpg',
     alt: 'Phone scanning the QR code shown on a frame to control it',
-    caption: 'Scan the QR code on any frame to control it - served by the frame itself',
+    caption: 'Scanning a QR code on a Pimoroni display to control it from a phone, no backend needed',
   },
   {
     src: '/images/photos/slop.jpg',
     alt: 'AI-generated image and haiku on a 12.48 inch e-ink display',
-    caption: 'Daily AI-generated art and haikus, straight from the OpenAI apps',
-  },
-  {
-    src: '/images/photos/frame-bathroom.jpg',
-    alt: 'Round LCD showing a thermostat in a bathroom',
-    caption: 'Real-time LCDs too: a bathroom thermostat on a round 480×480 display',
+    caption: 'All the AI-slop you can generate, if you\'re into that kind of stuff',
   },
 ];
 
 const appSlides: Slide[] = [
   {
-    src: '/images/guide/good-run.png',
-    alt: 'The FrameOS scene editor with a node graph',
-    caption: 'Design scenes in the visual editor: events, data, render apps and state',
+    src: '/images/editor/scene-graph.jpg',
+    alt: 'The FrameOS scene editor: a red render event wired to an if-else, a split layout and render-image nodes',
+    caption: 'A scene is a node graph: the red render event fires, data flows through layouts and apps, and an image comes out',
   },
   {
-    src: '/images/guide/sample-scenes2.png',
-    alt: 'Prebuilt scenes in the FrameOS backend',
-    caption: 'Start from prebuilt gallery and sample scenes, then make them yours',
+    src: '/images/editor/scene-graph-overview.jpg',
+    alt: 'The whole weather scene graph zoomed out: state fields, data apps, render apps and a scheduler',
+    caption: 'The whole weather scene: yellow state fields, green data apps, blue render apps, a code node, and a sleep timer',
   },
   {
-    src: '/images/app/control-fields.gif',
-    alt: 'Scene control fields in the FrameOS backend',
-    caption: 'Scenes expose controls - change them live without redeploying',
+    src: '/images/editor/app-ts.jpg',
+    alt: 'The TypeScript source of the weather panel app open in the in-browser code editor',
+    caption: 'Every blue or green node is an app you can open and edit - this one is TypeScript, drawing SVG that the frame rasterizes',
   },
   {
-    src: '/images/guide/fork-openai.png',
-    alt: 'Editing the source code of an app in FrameOS',
-    caption: 'Go deeper: fork any app and edit its source, in Nim or JavaScript',
-  },
-  {
-    src: '/images/app/frame-settings-new.png',
-    alt: 'Frame settings in the on-device admin panel',
-    caption: 'Every frame serves its own admin panel on port 8787 - no backend needed',
+    src: '/images/editor/app-config.jpg',
+    alt: 'The config.json of an app, declaring its fields, types, defaults and showIf rules',
+    caption: 'An app declares its inputs in config.json; the editor turns them into the fields you see on the node',
   },
 ];
 
@@ -93,10 +105,10 @@ const sceneStrip = [
   { src: '/images/scenes/samples/calendar.jpg', alt: 'Calendar scene', slug: 'calendar' },
   { src: '/images/scenes/gallery/masterpieces.jpg', alt: 'Masterpieces gallery scene', slug: 'masterpieces' },
   { src: '/images/scenes/samples/message-board.jpg', alt: 'Message board scene', slug: 'message-board' },
-  { src: '/images/scenes/gallery/abstract-architecture.jpg', alt: 'Abstract architecture scene', slug: 'abstract-architecture' },
+  { src: '/images/scenes/samples/weather.jpg', alt: 'Weather scene with current conditions and an hourly forecast', slug: 'weather' },
   { src: '/images/scenes/samples/split-agenda.jpg', alt: 'Split agenda scene', slug: 'ical-agenda' },
   { src: '/images/scenes/samples/xkcd.jpg', alt: 'XKCD scene', slug: 'xkcd' },
-  { src: '/images/scenes/gallery/cyberpunk-eu.jpg', alt: 'CyberPunk EU gallery scene', slug: 'cyberpunk-eu' },
+  { src: '/images/scenes/gallery/cuteness-overload.jpg', alt: 'Cuteness Overload gallery scene with a cartoon toucan', slug: 'cuteness-overload' },
 ];
 
 const features = [
@@ -225,20 +237,17 @@ export default function HomePage() {
             </h2>
             <div className="flex flex-col gap-3 text-fd-muted-foreground">
               <p>
-                A <strong>Raspberry Pi</strong> does it all. Any model from the Zero W to the Pi 5,{' '}
-                <TextLink href="/devices">120+ e-ink panels</TextLink> plus HDMI and LCD, scenes in{' '}
-                <TextLink href="/guide/apps#javascript-apps">JavaScript</TextLink> or compiled{' '}
-                <TextLink href="/guide/apps#nim-apps">Nim</TextLink>, and{' '}
-                <TextLink href="/guide/control">its own admin page and HTTP API</TextLink>. Boot it
+                A <TextLink href="/guide/raspberry"><strong>Raspberry Pi</strong></TextLink> is the classic option. Any model from the Zero W to the Pi 5 will do.
+                Supports <TextLink href="/devices">120+ e-ink panels</TextLink> and other outputs like HDMI. You can manage the frame through{' '}
+                <TextLink href="/guide/control">their own admin page and HTTP API</TextLink>. Boot
                 from a <TextLink href="/guide/raspberry#option-1-prebuilt-frameos-sd-image-recommended">prebuilt SD image</TextLink>{' '}
-                or <TextLink href="/guide/raspberry#option-3-no-ssh-install-with-a-script">install on any Linux</TextLink>.
+                or <TextLink href="/guide/raspberry#option-3-no-ssh-install-with-a-script">install on any Linux</TextLink> with a shell script.
               </p>
               <p>
-                An <strong>ESP32-S3</strong> is for a wire-free frame on a battery. It renders the
-                same scenes on the chip, <TextLink href="/guide/esp32#power">deep-sleeps between refreshes</TextLink>,{' '}
-                <TextLink href="/guide/esp32#flash-the-device">flashes from the browser</TextLink> and updates itself over the
-                air. Works with <TextLink href="/guide/esp32#supported-boards">Waveshare, PhotoPainter, TRMNL and reTerminal boards</TextLink>;
-                boards without PSRAM run as thin clients.
+                An <TextLink href="/guide/esp32"><strong>ESP32-S3</strong></TextLink> lets you build battery-powered frames that <TextLink href="/guide/esp32#power">deep-sleep between refreshes</TextLink>. 
+                It's still the full FrameOS experience. Everything is rendered on device, including 50MB JPEGs.
+                Works with custom setups, and <TextLink href="/guide/esp32#supported-boards">Waveshare, PhotoPainter, TRMNL and reTerminal boards</TextLink>.
+                Boards without PSRAM (e.g. ESP32-C3) run as thin clients.
               </p>
             </div>
             <div className="mt-4 flex flex-wrap gap-x-5 gap-y-1 text-sm font-medium">
@@ -247,12 +256,12 @@ export default function HomePage() {
               <TextLink href="/guide/esp32#raspberry-pi-or-esp32">Which one should I pick?</TextLink>
             </div>
           </div>
-          <Image
-            src="/images/photos/IMG_6022.jpg"
-            alt="A slim e-ink frame with a 3D-printed kickstand"
-            width={1938}
-            height={1575}
-            className="rounded-xl border"
+          <LightboxImage
+            src="/images/photos/esp32-waveshare-7in3.jpg"
+            alt="An ESP32-S3 wired to a 7.3 inch Waveshare e-paper panel, showing a rendered scene"
+            width={1600}
+            height={1200}
+            caption="An ESP32-S3 wired to a Waveshare 7.3&quot; e-paper HAT, rendering a scene on the chip"
           />
         </div>
         </div>
@@ -264,7 +273,7 @@ export default function HomePage() {
           <SectionTitle
             kicker="Batteries included"
             title="Deploy a scene in your first five minutes"
-            sub="Curated galleries, calendars, agendas, message boards, weather, webcams, AI art - built in, plus a community scene store with live previews. Installable with one click, editable down to the source."
+            sub="SD card images, calendars, agendas, message boards, weather, AI art, and much more. Installable with one click, editable down to the source. Combine them, schedule them, make them yours."
           />
           <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">
             {sceneStrip.map((s) => (
@@ -280,8 +289,8 @@ export default function HomePage() {
                   src={s.src}
                   alt={s.alt}
                   width={400}
-                  height={240}
-                  className="aspect-[5/3] w-full object-cover"
+                  height={300}
+                  className="aspect-[4/3] w-full object-cover"
                 />
               </Link>
             ))}
@@ -311,9 +320,9 @@ export default function HomePage() {
         <SectionTitle
           kicker="The editor"
           title="A visual editor backed by real code"
-          sub="Scenes are node graphs: red events, green data apps, blue render apps, yellow state. The same editor runs in the backend, on the frame's own admin page, and in the cloud. Deploy one and it runs on the frame, seconds later."
+          sub="Scenes are node graphs: red events, green data apps, blue render apps, yellow state. Every app is a folder with a config.json and its source - TypeScript that runs on a Pi, an ESP32 or in the browser, or Nim compiled into the firmware. The same editor runs in the backend, on the frame's own admin page, and in the cloud."
         />
-        <Slideshow slides={appSlides} aspect="aspect-[16/10]" fit="contain" interval={6000} className="mx-auto max-w-4xl" />
+        <Slideshow slides={appSlides} aspect="aspect-video" fit="cover" interval={6000} className="mx-auto max-w-4xl" />
       </section>
 
       {/* Case Maker */}
@@ -375,9 +384,9 @@ export default function HomePage() {
       {/* Video */}
       <section className="mx-auto w-full max-w-6xl px-6 py-20">
         <SectionTitle
-          kicker="Watch a full build"
+          kicker="Watch a full build (Raspberry Pi)"
           title="From bare panel to finished frame"
-          sub="Waveshare vs Pimoroni Spectra 6 panels, 3D-printed slim cases, USB-C power, and the FrameOS software setup - in one video."
+          sub="Recorded over a year ago, before FrameOS Cloud and ESP32 support existed."
         />
         <div className="mx-auto max-w-4xl">
           <iframe
