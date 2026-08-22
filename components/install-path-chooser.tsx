@@ -242,23 +242,23 @@ export function InstallPathChooser({ className }: { className?: string }) {
               </div>
               <ul className="mt-3 space-y-2 text-sm text-fd-muted-foreground">
                 <li>
-                  · Also open source (AGPL-3.0, in the same repository) - and a lightweight control
-                  plane, not a second backend: the frame connects out over a WebSocket, and the
-                  cloud is identity, relay and fleet view.
-                </li>
-                <li>
-                  · A different security model. The protocol has no verbs for a shell or compiled
-                  code: the cloud can only push sandboxed interpreted scenes and a short list of
-                  declarative settings, and a managed frame blocks HTTP to your LAN until you
-                  confirm a code shown on its display.
-                </li>
-                <li>
-                  · Firmware updates are a nudge: the frame fetches the release itself and verifies
-                  its signature. Logs and metrics only leave the frame if you switch that on, and
-                  the frame keeps rendering if the cloud is unreachable.
+                  · Assign scenes from the{' '}
+                  <Link
+                    href="https://scenes.frameos.net"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-fd-primary hover:underline"
+                  >
+                    scene store
+                  </Link>
+                  , see previews, logs and metrics, queue signed firmware updates.
                 </li>
                 <li>
                   · Already have a frame running? Link it with the code it shows on its display.
+                </li>
+                <li>
+                  · No shell, no compiled code: the cloud only pushes sandboxed scenes, and the
+                  frame keeps working if the cloud is unreachable.
                 </li>
               </ul>
               <p className="mt-3 border-t pt-3 text-sm text-fd-muted-foreground">
