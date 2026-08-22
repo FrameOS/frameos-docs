@@ -46,7 +46,7 @@ const installOptions = [
     id: 'frame',
     icon: Cpu,
     title: 'Just a frame',
-    description: 'Flash a Pi, set it up through a WiFi hotspot. No backend, no account.',
+    description: 'Flash a Pi and set it up through a WiFi hotspot, or install on any Linux. No backend, no account.',
   },
   {
     id: 'backend',
@@ -265,8 +265,9 @@ export function InstallPathChooser({ className }: { className?: string }) {
                 <div>
                   <p className="text-sm font-medium">Create an account, then add a frame</p>
                   <p className="mt-1 text-sm text-fd-muted-foreground">
-                    Your browser builds a personalized SD image for a Pi, or flashes an ESP32 over
-                    USB. The frame enrolls on first boot.
+                    Your browser builds a personalized SD image for a Pi or flashes an ESP32 over
+                    USB, or you run a one-line install script on any Linux box. The frame enrolls
+                    on first boot.
                   </p>
                 </div>
                 <ExternalButton href={CLOUD_SIGNUP_URL}>Sign up at cloud.frameos.net</ExternalButton>
