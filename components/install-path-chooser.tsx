@@ -13,6 +13,7 @@ const INSTALL_COMMAND = 'bash <(curl -fsSL https://frameos.net/install.sh)';
 // on click and falls back to the release page if that fails.
 const RELEASES_URL = 'https://github.com/FrameOS/frameos/releases/latest';
 const LATEST_RELEASE_API = 'https://api.github.com/repos/FrameOS/frameos/releases/latest';
+const CLOUD_URL = 'https://cloud.frameos.net/';
 const CLOUD_SIGNUP_URL = 'https://cloud.frameos.net/signup';
 const DOCKER_HUB_URL = 'https://hub.docker.com/r/frameos/frameos';
 
@@ -79,13 +80,26 @@ const installOptions = [
   },
 ] as const;
 
-function ExternalButton({ href, children }: { href: string; children: React.ReactNode }) {
+function ExternalButton({
+  href,
+  variant = 'primary',
+  children,
+}: {
+  href: string;
+  variant?: 'primary' | 'secondary';
+  children: React.ReactNode;
+}) {
   return (
     <Link
       href={href}
       target="_blank"
       rel="noopener noreferrer"
-      className="inline-flex items-center gap-2 rounded-lg bg-fd-primary px-3 py-1.5 text-sm font-medium text-fd-primary-foreground transition-opacity hover:opacity-90"
+      className={cn(
+        'inline-flex items-center gap-2 rounded-lg px-3 py-1.5 text-sm font-medium',
+        variant === 'primary'
+          ? 'bg-fd-primary text-fd-primary-foreground transition-opacity hover:opacity-90'
+          : 'border transition-colors hover:bg-fd-accent',
+      )}
     >
       {children}
       <ExternalLink className="size-3.5" aria-hidden="true" />
@@ -315,7 +329,12 @@ export function InstallPathChooser({
                     Linux box. The frame enrolls on first boot.
                   </p>
                 </div>
-                <ExternalButton href={CLOUD_SIGNUP_URL}>Sign up at cloud.frameos.net</ExternalButton>
+                <div className="flex flex-wrap items-center gap-2">
+                  <ExternalButton href={CLOUD_SIGNUP_URL}>Sign up at cloud.frameos.net</ExternalButton>
+                  <ExternalButton href={CLOUD_URL} variant="secondary">
+                    Log in
+                  </ExternalButton>
+                </div>
               </div>
               <ul className="mt-3 space-y-2 text-fd-muted-foreground">
                 <li>
