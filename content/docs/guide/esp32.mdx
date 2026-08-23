@@ -188,8 +188,9 @@ Pi:
 - Images that are too big to decode in memory spool to the card's `.cache` folder and stream
   from it - the only ceiling is the frame's
   [HTTP response size setting](/guide/settings#http-response-size) (4 MiB by default; raise it
-  for big photos). Spilled images must be baseline JPEGs. Without a card, a small part of internal
-  flash stands in, up to 8 MiB.
+  for big photos). Spilled images must be baseline JPEGs. Without a card, whatever is free in the frame's
+  internal storage stands in - about half a megabyte on a typical 8 MB board, more on 16 or 32 MB
+  flash, nothing on 4 MB - so an SD card is what makes big photos practical.
 - A `.ttf` dropped into `fonts/` on the card shows up in the editor's font picker for that frame;
   **Sync fonts** copies the backend's font store over in one go. See [Fonts](#fonts).
 

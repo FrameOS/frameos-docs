@@ -61,7 +61,10 @@ backend or the cloud carries the zone with it. Time sync itself works out of the
 An [ESP32](/guide/esp32) keeps a zone too: it stores the name plus a few-kilobyte slice of time
 zone data for that one zone, so daylight saving switches correctly without a full database on the
 chip. It takes the zone from the backend or the cloud, or from `set time_zone Europe/Brussels` on
-the serial console. Needs firmware 2026.8.34 or newer; older firmware runs on UTC.
+the serial console. Needs firmware 2026.8.34 or newer; older firmware runs on UTC. If the zone
+arrives without its data slice (the console command, or an older backend), the frame fetches the
+slice once from `tz.frameos.net` on its next online render pass and stays on UTC until then - worth
+knowing on a locked-down network, where SD images also poll `networkcheck.frameos.net` on boot.
 
 ## HTTP response size
 

@@ -25,7 +25,9 @@ HDMI display, while the same scene system also runs e-ink panels at one frame pe
 
 1. Connect the display to the Pi's HDMI port.
 2. Select the **HDMI / Framebuffer** driver when adding the frame.
-3. Set the width and height to match the display's resolution, then deploy.
+3. Deploy. The width and height are autodetected from the display's mode - FrameOS writes them
+   into the frame's config and the backend picks them up, so only fill them in if you want to
+   force a different size.
 
 On a Pi 5 with a Buildroot SD image, `/dev/fb0` may exist before the display has a mode set
 (or while nothing is plugged in). The driver treats that as "not ready yet" and re-probes on its

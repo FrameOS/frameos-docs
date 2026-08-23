@@ -44,7 +44,8 @@ insert the card, power up.
 ## 2. Set it up from your phone
 
 With no WiFi configured, the frame starts a hotspot called **`FrameOS-Setup`** (password
-`frame1234`). Join it from your phone or laptop and open `http://10.42.0.1/`. The setup page asks
+`frame1234`). Join it from your phone or laptop and open `http://10.42.0.1:8787/` (the panel
+shows the same address). The setup page asks
 for:
 
 - your **WiFi** network and password;
@@ -55,7 +56,8 @@ for:
   [FrameOS Cloud](/guide/cloud) or point it at a [self-hosted backend](/guide/backend) - you can
   change your mind later from the admin page.
 
-Save, and the Pi joins your network. On HDMI you watch it happen: the FrameOS status screen draws
+Save, and the Pi joins your network. If the WiFi password was wrong, the frame keeps trying for
+about 90 seconds before the `FrameOS-Setup` hotspot comes back. On HDMI you watch it happen: the FrameOS status screen draws
 the boot steps as they go ("Checking network…", "Network connected. Loading scenes…"). E-ink
 panels get the same screen once the frame is up: its name, display and resolution, IP address,
 time zone, how it is managed (*standalone*), and the frame's URL.
@@ -73,8 +75,8 @@ the admin password. This is a full management UI served by the frame itself:
   zone, nightly reboot, metrics, the display driver.
 - **Schedule**, **Logs**, **Metrics**, **Assets** - the same panels a backend shows for the frame,
   running against the device.
-- **Updates**: the frame downloads a new release itself, verifies the signature, and swaps it in
-  on the next reboot.
+- **Settings → FrameOS upgrade**: the frame downloads a new release itself, verifies the
+  signature, and swaps it in on the next reboot.
 
 The control page at `http://<frame-ip>:8787/c` and the [HTTP API](/guide/control) work exactly as
 on any other frame, and the QR code on the display points at them.

@@ -60,7 +60,9 @@ for exactly one deployment.
 ## Create an account
 
 Sign up at [cloud.frameos.net/signup](https://cloud.frameos.net/signup) with an email address and a
-password, or **Continue with Google**. Verify your email, sign in, and you land on **Frames**.
+password, or **Continue with Google**. Verify your email and sign in. Signing in drops you on
+**Account → Backends**; click **Frames** in the header (or open [cloud.frameos.net](https://cloud.frameos.net),
+whose root redirects there) to reach your fleet.
 
 The header has three sections: **Frames** (your fleet), **Scenes** (the
 [scene store](/guide/scene-store), on `scenes.frameos.net`) and **Account** (linked backends,
@@ -79,7 +81,9 @@ The cloud builds a personalized SD image **in your browser**:
 1. Pick your board: `raspberry-pi-64` (Zero 2 W, Pi 3, Pi 4), `raspberry-pi-5` (Pi 5, CM5) or
    `raspberry-pi-32` (Zero, Zero W, Pi 1).
 2. Name the frame, pick its display (or choose to pick it later from the frame's setup hotspot),
-   and enter your WiFi network. Optionally set a root password.
+   and enter your WiFi network. Optionally set a root password. Your browser's time zone is written
+   into the card too, and for HDMI the panel size is autodetected - only displays with no size in
+   the catalog need a width and height.
 3. Click **Download SD image**.
 
 Your browser downloads the generic release image, writes your settings into its boot partition, and
@@ -89,13 +93,15 @@ the frame name, display and a claim token travel to the cloud. Flash the image w
 [balenaEtcher](https://etcher.balena.io/), insert it, and power up.
 
 On first boot the Pi joins your WiFi (or raises the `FrameOS-Setup` hotspot if it can't), takes its
-hostname from the frame name (`kitchen-frame.local`), and enrolls. The panel shows the FrameOS
+hostname from the frame name (slugified: "Kitchen Frame" becomes `kitchen-frame.local`), and enrolls. The panel shows the FrameOS
 status screen - name, resolution, network, *Managed via: FrameOS Cloud* - until you give it a scene.
 
 You can flash one image to as many cards as you like. The first frame that enrolls is activated
-immediately; every later one appears as **pending** and waits for you to click **Confirm frame**, so
-a lost SD card can't quietly add frames to your account. A dropdown on the builder lets you expire
-the image after a while if you prefer.
+immediately; every later one appears as **pending**: open it under **Frames** and click
+**Confirm frame** in the banner at the top of its page. Until you do, the frame accepts no scenes or
+settings - so a lost SD card can't quietly add frames to your account. By default the image keeps
+working forever; tick **Stop this SD card from adding frames after a while** on the builder to give
+its claim code an expiry.
 
 ### Install script (any Pi, most Linux)
 
@@ -146,8 +152,9 @@ status screen.
 
 ## Managing a frame
 
-Each frame has an overview page at `/frames/<id>` and tools under it: **Settings**, **Preview**,
-**Schedule**, **Logs**, **Metrics**, **Assets** and **Activity**.
+Each frame has an overview page at `/frames/<id>`, with its tools as sub-paths - **Settings**,
+**Preview**, **Schedule**, **Logs**, **Metrics**, **Assets** and **Activity** (`/frames/<id>/logs`) -
+and its scenes at `/frames/<id>/scenes/<sceneId>`.
 
 - **Scenes.** Install from the [scene store](/guide/scene-store), or open a scene in the built-in
   editor - the same node-graph editor the backend has - and click **Save & Deploy**. The frame

@@ -55,9 +55,10 @@ password you set during setup (or in the backend under **Settings → Admin**) a
   times), straight from the device. Logs only leave the frame if you switch on
   *Send logs to backend*.
 - **Assets** - files on the frame's SD card: fonts, images, downloaded scenes.
-- **Ping** and **Debug** - connectivity checks and diagnostics.
-- **Updates** - the frame downloads a new release itself, verifies the signature, and swaps it in
-  on the next reboot. Cloud and backend only *nudge* it; the binary never passes through them.
+- **Debug** - on-device diagnostics. (**Ping** and **Terminal** exist only in the backend.)
+- **Settings → FrameOS upgrade** - the frame downloads a new release itself, verifies the
+  signature, and swaps it in on the next reboot. Cloud and backend only *nudge* it; the binary
+  never passes through them.
 
 The admin panel is how a [standalone frame](/guide/standalone) is managed at all, and it stays
 available on frames that a backend or the cloud manages - which is why the frame can always be
@@ -123,7 +124,9 @@ Frames have their own on-device scheduler: render intervals per scene, plus cron
 (minute/hour/weekday) that can switch scenes or fire events - for example, a calendar during the
 day and art in the evening. Configure it under the frame's **Schedule** tab. The schedule runs on
 the frame, in the frame's own [time zone](/guide/settings#time-zone), so it keeps working with the
-backend off.
+backend off. When in doubt about what the frame will do next, check **Logs**: on start and after
+every schedule change it logs `scheduler:loaded` with its zone, local time and the next due entry
+("Mon 01:02 reboot"), and every firing logs `scheduler:fire`.
 
 The same panel has a **Maintenance** card that schedules a `restart` of the FrameOS
 process or a full `reboot` of the device - the successor to the nightly-reboot setting, on both
