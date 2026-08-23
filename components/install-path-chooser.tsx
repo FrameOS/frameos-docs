@@ -71,7 +71,7 @@ const installOptions = [
     id: 'cloud',
     icon: Cloud,
     title: 'FrameOS Cloud',
-    description: 'New! Sign up and start managing frames. Nothing to install. Forever free for personal use. Still in beta.',
+    description: 'New! Nothing to install. Download customized SD cards and flash ESP32s over USB. Forever free for personal use, quotas permitting.',
     // logo teal #1c7c66
     tint: 'from-[#1c7c66]/30 via-[#1c7c66]/10 to-fd-background dark:from-[#1c7c66]/35 dark:via-[#1c7c66]/12 dark:to-fd-background',
     glow: 'bg-[#1c7c66]/50 dark:bg-[#1c7c66]/40',
@@ -335,7 +335,7 @@ export function InstallPathChooser({
                 </li>
               </ul>
               <p className="mt-3 border-t pt-3 text-fd-muted-foreground">
-                Free while in beta. Read the{' '}
+                Forever free for personal use, quotas permitting. Read the{' '}
                 <TextLink href="/guide/cloud">FrameOS Cloud guide</TextLink> for what it can and
                 cannot do, and its <TextLink href="/guide/cloud#privacy">privacy</TextLink> and{' '}
                 <TextLink href="/guide/cloud#limits">limits</TextLink>.

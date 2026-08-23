@@ -78,24 +78,45 @@ const frameSlides: Slide[] = [
 
 const appSlides: Slide[] = [
   {
-    src: '/images/editor/scene-graph.jpg',
-    alt: 'The FrameOS scene editor: a red render event wired to an if-else, a split layout and render-image nodes',
-    caption: 'A scene is a node graph: the red render event fires, data flows through layouts and apps, and an image comes out',
+    src: '/images/editor/editor-agenda.png',
+    alt: 'The FrameOS scene editor showing the iCal agenda scene as a node graph',
+    caption: (
+      <>
+        <TextLink href={`${links.sceneStore}/s/ical-agenda#scene-editor`}>The iCal agenda scene</TextLink>: fetch a URL,
+        turn it into events, lay them out as text - every step is a node you can inspect and change
+      </>
+    ),
   },
   {
-    src: '/images/editor/scene-graph-overview.jpg',
-    alt: 'The whole weather scene graph zoomed out: state fields, data apps, render apps and a scheduler',
-    caption: 'The whole weather scene: yellow state fields, green data apps, blue render apps, a code node, and a sleep timer',
+    src: '/images/editor/inline-code.png',
+    alt: 'A code node in the scene editor with a few lines of JavaScript building a caption from photo metadata',
+    caption: (
+      <>
+        Need a line of logic? Drop a code node into the graph and write it right there, as we do in{' '}
+        <TextLink href={`${links.sceneStore}/s/unsplash-image`}>Unsplash image</TextLink>
+      </>
+    ),
   },
   {
-    src: '/images/editor/app-ts.jpg',
-    alt: 'The TypeScript source of the weather panel app open in the in-browser code editor',
-    caption: 'Every blue or green node is an app you can open and edit - this one is TypeScript, drawing SVG that the frame rasterizes',
+    src: '/images/editor/weatherpanel-js-app.png',
+    alt: 'The TypeScript source of the weather panel app open in the in-browser editor',
+    caption: (
+      <>
+        Apps are TypeScript and you can edit them in the browser - this is the{' '}
+        <TextLink href={`${links.sceneStore}/s/weather`}>weather panel</TextLink> drawing its forecast chart
+      </>
+    ),
   },
   {
-    src: '/images/editor/app-config.jpg',
-    alt: 'The config.json of an app, declaring its fields, types, defaults and showIf rules',
-    caption: 'An app declares its inputs in config.json; the editor turns them into the fields you see on the node',
+    src: '/images/editor/live-preview.png',
+    alt: 'The browser preview of the weather scene in FrameOS Cloud, with its state and runtime log',
+    caption: (
+      <>
+        Preview any scene in the browser before it touches a frame - the{' '}
+        <TextLink href={`${links.sceneStore}/s/weather`}>weather panel</TextLink> again, rendered with the
+        FrameOS interpreter compiled to WebAssembly, with its live state and runtime log
+      </>
+    ),
   },
 ];
 
@@ -320,9 +341,9 @@ export default function HomePage() {
         <SectionTitle
           kicker="The editor"
           title="A visual editor backed by real code"
-          sub="Scenes are node graphs: red events, green data apps, blue render apps, yellow state. Every app is a folder with a config.json and its source - TypeScript that runs on a Pi, an ESP32 or in the browser, or Nim compiled into the firmware. The same editor runs in the backend, on the frame's own admin page, and in the cloud."
+          sub="Build a scene by wiring nodes together, then open any of them to see the code underneath. Apps are TypeScript or Nim with a config.json; add a code node for one-off logic. The same editor runs in the backend, on the frame's own admin page, and in FrameOS Cloud, and a deployed scene is live on the frame seconds later."
         />
-        <Slideshow slides={appSlides} aspect="aspect-video" fit="cover" interval={6000} className="mx-auto max-w-4xl" />
+        <Slideshow slides={appSlides} aspect="aspect-[10/7]" fit="contain" interval={6000} className="mx-auto max-w-4xl" />
       </section>
 
       {/* Case Maker */}
