@@ -1,11 +1,13 @@
 ---
 title: Controlling the frame
-description: Every frame serves its own web app and HTTP API on port 8787. No backend, no cloud - control it from anything that speaks HTTP.
+description: Every frame serves its own web app and HTTP API on port 8787. Whether it's standalone, self-hosted or cloud-managed - control it from anything that speaks HTTP.
 ---
 
-Every frame runs its own web server on port `8787`. This is the heart of FrameOS's cloud-free
-design: viewing, controlling, and even administering a frame works **directly against the device**,
-from any browser or script on your network. The backend can be off. The internet can be down.
+Every frame runs its own web server on port `8787`. This is the heart of FrameOS's design:
+viewing, controlling, and even administering a frame works **directly against the device**, from
+any browser or script on your network. The backend can be off. The internet can be down. It is
+also how a [standalone frame](/guide/standalone) is managed at all, and the escape hatch on a
+[cloud-managed](/guide/cloud) one.
 
 <Callout title="On a microcontroller">
   [ESP32 frames](/guide/esp32) serve the same kind of API on port `80` - the image, the scene
@@ -21,13 +23,47 @@ Open `http://<frame-ip>:8787/` for the frame's own web UI:
 - **`/`** - view the current image, live (updates over a WebSocket).
 - **`/c`** - the control page: switch scenes and edit the active scene's state fields (the yellow
   nodes you added in the [scene editor](/guide/scenes)).
-- **`/admin`** - the on-device admin panel: settings, logs, metrics, assets, scene management.
-  This is a full management UI served by the frame itself.
+- **`/admin`** - the on-device [admin panel](#the-admin-panel): settings, scenes, schedule, logs,
+  metrics, assets and updates. A full management UI served by the frame itself.
 
 By default the frame also renders its control URL as a **QR code on the display**, so anyone
 standing in front of the frame can scan and control it.
 
 ![Control via QR code](/images/photos/phone-pasta-2.jpg)
+
+## The admin panel [#the-admin-panel]
+
+`http://<frame-ip>:8787/admin` is the frame's own management UI. It is the same interface the
+[backend](/guide/backend) shows for a frame, just served from the device: sign in with the admin
+password you set during setup (or in the backend under **Settings → Admin**) and you get:
+
+![The on-device admin panel, Settings tab](/images/app/frame-settings-new.png)
+
+- **Scenes** - what is installed and what is active. Install scenes from the sample and gallery
+  repositories or the [scene store](/guide/scene-store), upload a scene ZIP, or open the
+  node-graph [scene editor](/guide/scenes) right here. Interpreted scenes save and go live
+  without a compile step.
+- **Settings** - everything from [Useful settings](/guide/settings): name, display driver and
+  rotation, time zone, [access mode](#access-modes) and the QR code, the color palette, GPIO
+  buttons, the HTTP API key, HTTPS, and which backend or cloud manages the frame. This is also
+  where you **connect a standalone frame to a backend** with an adoption code, link it to
+  [FrameOS Cloud](/guide/cloud), or disconnect it again.
+- **Preview** - the current image, live over a WebSocket.
+- **Schedule** - render intervals and cron-like [schedules](#scheduling), plus the maintenance
+  restart and reboot timers.
+- **Logs** and **Metrics** - runtime output and health charts (CPU, memory, temperature, render
+  times), straight from the device. Logs only leave the frame if you switch on
+  *Send logs to backend*.
+- **Assets** - files on the frame's SD card: fonts, images, downloaded scenes.
+- **Ping** and **Debug** - connectivity checks and diagnostics.
+- **Updates** - the frame downloads a new release itself, verifies the signature, and swaps it in
+  on the next reboot. Cloud and backend only *nudge* it; the binary never passes through them.
+
+The admin panel is how a [standalone frame](/guide/standalone) is managed at all, and it stays
+available on frames that a backend or the cloud manages - which is why the frame can always be
+[moved between the three](/guide/cloud#moving-between-cloud-backend-and-standalone) without a
+reflash. [ESP32 frames](/guide/esp32#what-it-cannot-do) do not serve it: they answer the HTTP API
+and a small setup page, and are managed from the backend or cloud.
 
 ## Access modes
 
@@ -86,7 +122,8 @@ There's also a full admin REST API (config, logs, metrics, restart, reboot) unde
 Frames have their own on-device scheduler: render intervals per scene, plus cron-like schedules
 (minute/hour/weekday) that can switch scenes or fire events - for example, a calendar during the
 day and art in the evening. Configure it under the frame's **Schedule** tab. The schedule runs on
-the frame, so it keeps working with the backend off.
+the frame, in the frame's own [time zone](/guide/settings#time-zone), so it keeps working with the
+backend off.
 
 The same panel has a **Maintenance** card that schedules a `restart` of the FrameOS
 process or a full `reboot` of the device - the successor to the nightly-reboot setting, on both

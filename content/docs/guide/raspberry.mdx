@@ -13,7 +13,9 @@ description: Choose a Raspberry Pi, then flash either a prebuilt FrameOS SD imag
 - **Raspberry Pi Zero 2 W** - the sweet spot for e-ink frames. Four 64-bit cores, tiny, ~1 W of
   power, around $15-20. This is what most FrameOS frames run on.
 - **Raspberry Pi 5 / 4** - use these for fast HDMI/LCD output (up to 60 FPS) or when size doesn't
-  matter. The Pi 5 and CM5 have their own SD image.
+  matter. The Pi 5 and CM5 have their own SD image. Over HDMI the frame adopts the display's
+  native mode on its own - plug in a 1080p or 4K screen and it renders at that resolution, with the
+  status screen's fonts scaled to match; there's no width or height to type in.
 - **Raspberry Pi Zero W (v1), Pi 1, CM1** - a single 32-bit ARMv6 core. Slow to deploy to, but
   supported all the way down, prebuilt SD image included.
 
@@ -35,12 +37,14 @@ family rather than an exact model:
 | `raspberry-pi-5` | Pi 5, CM5 |
 | `raspberry-pi-32` | Zero, Zero W, Pi 1, CM1 (32-bit ARMv6) |
 
-You can get an image two ways:
+You can get an image three ways:
 
 - **Generate it in the backend**: when you add a new frame, choose **Download SD card**. Pick your
   board, and the image comes out preconfigured with your WiFi credentials, timezone, display
   driver and frame settings - flash it, insert, done. Whether root login is enabled, and with
   which password, is an explicit choice on that screen.
+- **Build it in [FrameOS Cloud](/guide/cloud#sd-card-image-raspberry-pi)**: the same, but the
+  image is assembled in your browser and the frame enrolls with your cloud account on first boot.
 - **Download a generic image** from the
   [latest release](https://github.com/FrameOS/frameos/releases) (look for
   `frameos-*-raspberry-pi-64-buildroot.img.gz` and its siblings). On first boot the frame starts a
@@ -48,11 +52,16 @@ You can get an image two ways:
   WiFi credentials, and the frame connects to your network. Generic images ship with
   [FrameOS Remote](/guide/remote) switched off, since there is no backend for it to talk to yet;
   **Adopt frame** in the backend turns a running generic-image frame into a managed one and
-  enables it.
+  enables it. Or skip the backend altogether and run it as a
+  [standalone frame](/guide/standalone).
 
 Flash the image with [Raspberry Pi Imager](https://www.raspberrypi.com/software/) ("Use custom
 image"), [balenaEtcher](https://etcher.balena.io/), or plain `dd`. The partitions expand to fill
 your SD card on first boot.
+
+On first boot an HDMI frame shows its progress on screen - "Checking network…", then
+"Network connected. Loading scenes…" - and any frame without scenes shows the FrameOS status
+screen: name, display and resolution, IP address, time zone, who manages it, and the frame's URL.
 
 SD-image frames can also **upgrade themselves in place**: the frame downloads a new release,
 verifies its signature against a key baked into the build, and swaps it in on the next reboot -
@@ -100,6 +109,19 @@ device you only have a keyboard on - add the frame with **Install with a script*
 hands you a single command to paste on the device. It installs FrameOS, starts
 [FrameOS Remote](/guide/remote), and the frame connects **back** to the backend over an outbound
 WebSocket. Deploys, logs, metrics and the terminal all work from there without an inbound route.
+
+## Changing the display from the command line
+
+The FrameOS binary has a small CLI for the occasions when you have SSH but no web UI - switching
+panels on a generic image, say. `set-display` patches the device and optional size, rotation, VCOM
+and upload URL into `frame.json`, and `driver-setup` applies any OS-level changes the new driver
+needs:
+
+```bash
+cd /srv/frameos/current
+./frameos set-display --device=waveshare.EPD_7in5_V2 --rotate=180
+./frameos driver-setup
+```
 
 ## Next step
 

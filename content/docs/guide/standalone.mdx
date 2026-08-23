@@ -1,0 +1,102 @@
+---
+title: A standalone frame
+description: Run a single frame with nothing else - flash a generic FrameOS image to a Raspberry Pi, set it up from your phone, and manage it from the frame's own admin page.
+---
+
+The simplest way to run FrameOS is to run **only the frame**. No backend, no account: a Raspberry
+Pi boots a FrameOS SD image, you connect it to WiFi from your phone, and from then on you manage
+it through the web app the frame serves itself. This is the right starting point if you want one
+frame, want it quickly, and want nothing else in the picture.
+
+If you later want more - several frames in one place, compiled Nim apps, a build server - you can
+hand the same frame to a [self-hosted backend](/guide/backend) (**Adopt frame**) or to
+[FrameOS Cloud](/guide/cloud) (link it with the code on its display). Nothing needs reflashing.
+
+<Callout>
+  A standalone frame is a Raspberry Pi thing. An [ESP32](/guide/esp32) has no admin page of its
+  own, so it is set up from a backend or from the cloud - though it renders on its own afterwards
+  all the same.
+</Callout>
+
+## 1. Flash a generic image
+
+Download the image for your board from the
+[latest release](https://github.com/FrameOS/frameos/releases):
+
+| Image | Boards |
+| --- | --- |
+| `raspberry-pi-64` | Zero 2 W, Pi 3, Pi 4, CM3/CM4 |
+| `raspberry-pi-5` | Pi 5, CM5 |
+| `raspberry-pi-32` | Zero, Zero W, Pi 1, CM1 |
+
+Flash it with [Raspberry Pi Imager](https://www.raspberrypi.com/software/) ("Use custom image")
+or [balenaEtcher](https://etcher.balena.io/) - both read the `.img.gz` as is. Connect the display,
+insert the card, power up.
+
+<Callout title="Already running Linux?">
+  A Pi on Raspberry Pi OS, or any Debian (buster-trixie) or Ubuntu (22.04-26.04) machine on
+  arm64, armhf, armv6 or amd64, can skip the image. Run
+  `curl -fsSL https://cloud.frameos.net/install.sh | sudo sh` on the device: it asks for the
+  display and an admin password, installs the latest release as a systemd service, and starts the
+  frame standalone. Continue at [step 3](#3-open-the-admin-page).
+</Callout>
+
+## 2. Set it up from your phone
+
+With no WiFi configured, the frame starts a hotspot called **`FrameOS-Setup`** (password
+`frame1234`). Join it from your phone or laptop and open `http://10.42.0.1/`. The setup page asks
+for:
+
+- your **WiFi** network and password;
+- the **display** - every driver is in the image, so you pick your panel here, plus rotation and
+  any driver extras (VCOM for an IT8951 panel, for instance);
+- a **name** and an **admin password** for the frame;
+- **Manage via**: choose **Nothing (standalone)**. The other two options enroll the frame with
+  [FrameOS Cloud](/guide/cloud) or point it at a [self-hosted backend](/guide/backend) - you can
+  change your mind later from the admin page.
+
+Save, and the Pi joins your network. On HDMI you watch it happen: the FrameOS status screen draws
+the boot steps as they go ("Checking network…", "Network connected. Loading scenes…"). E-ink
+panels get the same screen once the frame is up: its name, display and resolution, IP address,
+time zone, how it is managed (*standalone*), and the frame's URL.
+
+## 3. Open the admin page
+
+Browse to `http://<frame-ip>:8787/admin` (the status screen shows the address) and sign in with
+the admin password. This is a full management UI served by the frame itself:
+
+- **Scenes**: install from the built-in sample and gallery repositories (add the
+  [scene store](/guide/scene-store) as one more), upload a scene ZIP, or build your own in the same
+  node-graph [scene editor](/guide/scenes) the backend has. Scenes are interpreted, so there is nothing to
+  compile - save, and it is live.
+- **Settings**: everything under [Useful settings](/guide/settings) - access mode, QR code, time
+  zone, nightly reboot, metrics, the display driver.
+- **Schedule**, **Logs**, **Metrics**, **Assets** - the same panels a backend shows for the frame,
+  running against the device.
+- **Updates**: the frame downloads a new release itself, verifies the signature, and swaps it in
+  on the next reboot.
+
+The control page at `http://<frame-ip>:8787/c` and the [HTTP API](/guide/control) work exactly as
+on any other frame, and the QR code on the display points at them.
+
+## What you give up
+
+Only what needs a build machine or a second computer: [compiled scenes and custom Nim apps](/guide/apps#nim-apps),
+the backend's **Terminal**, headless Chromium screenshots, managing several frames from one
+screen, and the backend's library of scene templates and fonts. JavaScript apps, code nodes,
+state fields, all ~40 built-in apps, schedules and images of any size are all there.
+
+To change the display later without the web UI, the FrameOS binary has a small CLI you can run over
+SSH, if you enabled root login:
+
+```bash
+cd /srv/frameos/current
+./frameos set-display --device=pimoroni.inky_impression_13 --rotate=90
+./frameos driver-setup
+```
+
+## Next step
+
+Want to see a few more frames at once, or build apps in Nim? [Install the backend](/guide/backend)
+and adopt this frame. Want to manage it from anywhere without hosting anything?
+[Link it to FrameOS Cloud](/guide/cloud#link-a-frame-that-already-runs).

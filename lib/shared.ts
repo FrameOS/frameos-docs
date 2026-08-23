@@ -1,6 +1,6 @@
 export const appName = 'FrameOS';
 export const appDescription =
-  'The operating system for smart frames. Runs on a Raspberry Pi or ESP32, renders on e-ink, HDMI and LCD displays. No cloud required.';
+  'The operating system for smart frames. Runs on a Raspberry Pi or ESP32, renders on e-ink, HDMI and LCD displays. Standalone, self-hosted, or managed from FrameOS Cloud - everything renders on the device.';
 export const docsRoute = '/';
 export const docsContentRoute = '/llms.mdx/docs';
 
@@ -16,4 +16,6 @@ export const links = {
   newsletter: 'https://buttondown.com/frameos',
   caseMaker: 'https://cases.frameos.net',
   sceneRepo: 'https://repo.frameos.net',
+  sceneStore: 'https://scenes.frameos.net',
+  cloud: 'https://cloud.frameos.net',
 };

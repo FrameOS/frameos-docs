@@ -3,10 +3,10 @@ title: The ESP32
 description: Run FrameOS on an ESP32-S3 microcontroller - flash from the browser, render full scenes on-device, sleep on a battery, update over the air.
 ---
 
-FrameOS runs on **ESP32-S3 microcontrollers** - no Linux, no SD card, no SSH. The backend builds a
-firmware image for your frame, you flash it over USB straight from the browser, and from then on
-the device fetches scenes over WiFi, renders them **itself**, drives the e-paper panel, and
-updates its own firmware over the air.
+FrameOS runs on **ESP32-S3 microcontrollers** - no Linux, no SD card, no SSH. The backend (or
+[FrameOS Cloud](/guide/cloud#flash-an-esp32-from-the-browser)) flashes a firmware image over USB
+straight from the browser, and from then on the device fetches scenes over WiFi, renders them
+**itself**, drives the e-paper panel, and updates its own firmware over the air.
 
 This is not a cut-down mode. The same scene interpreter that runs on a Raspberry Pi runs on the
 S3, with the same apps, the same JavaScript runtime, the same image pipeline, and the same
@@ -126,13 +126,16 @@ driver is compiled into that one image - you pick the panel at runtime, no rebui
 
 - **Captive portal**: an unprovisioned device raises a WiFi hotspot called `FrameOS-XXXX`. Join
   it and any web page redirects to the setup form (WiFi, backend URL, frame ID and API key,
-  panel, GPIO pins).
+  panel, GPIO pins). Until then the panel shows the FrameOS status screen with the hotspot's
+  instructions; once provisioned but without scenes, it shows the frame's name, panel, IP and
+  who manages it.
 - **Serial console** (115200 baud) - always available, and quickest for tinkering:
 
   ```
   frameos> status
   frameos> set hardware waveshare_esp32_s3_photopainter   # apply a board preset
   frameos> wifi MySSID MyPassword          # saves and reboots
+  frameos> set time_zone Europe/Brussels   # IANA name; the tz data slice is fetched once online
   frameos> set panel EPD_7in5_V2
   frameos> set pins rst=5,dc=4,cs=3,cs2=-1,busy=6,sck=7,mosi=9,pwr=-1
   frameos> render                          # render right now
@@ -182,7 +185,11 @@ Pi:
 - Downloaded images are cached there instead of being re-fetched (and re-paid for) every render.
 - Browse, upload, rename and delete files from the frame's **Assets** tab in the backend.
 - The **Local image** app plays files or folders straight off the card.
-- Images that are too big to decode in memory spool to the card and stream from it.
+- Images that are too big to decode in memory spool to the card's `.cache` folder and stream
+  from it - the only ceiling is the frame's
+  [HTTP response size setting](/guide/settings#http-response-size) (4 MiB by default; raise it
+  for big photos). Spilled images must be baseline JPEGs. Without a card, a small part of internal
+  flash stands in, up to 8 MiB.
 - A `.ttf` dropped into `fonts/` on the card shows up in the editor's font picker for that frame;
   **Sync fonts** copies the backend's font store over in one go. See [Fonts](#fonts).
 
@@ -217,7 +224,8 @@ fallback - `NotoColorEmoji.ttf` is 10&nbsp;MB of bitmaps with no outlines to dra
   the device, readable over the serial console when the network is down.
 - **An on-device scheduler**: per-scene render intervals plus minute/hour/weekday schedules that
   switch scenes, fire events, or restart/reboot the device (a **Maintenance** entry in the
-  Schedule panel), evaluated on the device in frame-local time.
+  Schedule panel), evaluated on the device in the frame's
+  [time zone](/guide/settings#time-zone) (firmware 2026.8.34+; earlier firmware runs on UTC).
 - **Buttons**: GPIO buttons (the board presets know where they are) dispatch scene events, so a
   press can change a scene, re-render, or run anything you wire up in the editor.
 

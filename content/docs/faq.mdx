@@ -3,12 +3,25 @@ title: FAQ
 description: Frequently asked questions about FrameOS.
 ---
 
-## Is there a cloud? Do I need an account?
+## Do I need an account or a cloud?
 
-No cloud, no account, no subscription. The backend is a web app **you** host (Docker or Home
-Assistant add-on), and frames run entirely on-device once deployed. You can shut the backend down
-and your frames keep rendering, keep their schedules, and stay controllable over their
-[local HTTP API](/guide/control).
+No. A [standalone frame](/guide/standalone) needs nothing but an SD card, and the
+[self-hosted backend](/guide/backend) is a web app **you** host. Frames run entirely on-device
+once deployed: shut the backend down and they keep rendering, keep their schedules, and stay
+controllable over their [local HTTP API](/guide/control).
+
+There *is* a cloud if you want one: [FrameOS Cloud](/guide/cloud) manages frames from a browser
+with nothing to host, and is free while in beta. It is deliberately limited - no shell on your
+frame, no compiled code, only sandboxed interpreted scenes - and a cloud-managed frame keeps
+working when the cloud is unreachable. Self-hosting is not going anywhere - in fact, the entire
+cloud is AGPL too, and you can self-host it as well.
+
+## Can I switch between standalone, self-hosted and cloud?
+
+Yes, without reflashing. A frame is managed by one of them at a time: **Adopt frame** in the
+backend takes over a standalone frame, the link code on a frame's display claims it for the cloud,
+and **Disconnect** on the frame's admin page (or deleting it in the cloud) makes it standalone
+again, scenes intact. See [Moving between cloud, backend and standalone](/guide/cloud#moving-between-cloud-backend-and-standalone).
 
 ## Can I run this on an ESP32? [#why-no-microcontrollers]
 
@@ -82,8 +95,10 @@ frames through the [HTTP API](/guide/control) - change text, switch scenes, trig
 
 ## How do I share scenes or apps I made?
 
-Scenes export as JSON (and as ZIP templates with preview images) you can share anywhere. The
-community hangs out on [Discord](https://discord.gg/9dT9y7EzUw) - show off your builds, get help,
+Publish them on the [scene store](/guide/scene-store): fork, edit and preview in the browser,
+keep them private or make them public, and anyone can install them on a cloud-managed frame with
+one click or on a self-hosted backend by pasting a link. Scenes also export as JSON (and as ZIP
+templates with preview images) you can share anywhere. The community hangs out on [Discord](https://discord.gg/9dT9y7EzUw) - show off your builds, get help,
 and propose contributions. Code lives at
 [github.com/FrameOS/frameos](https://github.com/FrameOS/frameos); PRs welcome.
 
@@ -93,8 +108,9 @@ FrameOS is free and open source (AGPL-3.0). A complete frame is roughly the pric
 plus ~$20 of Pi: a 7.5" black/white build lands around $80, a 13.3" Spectra 6 color build around
 $250.
 
-## Is there a hosted/cloud option coming?
+## What does FrameOS Cloud cost?
 
-The core promise stays: frames run locally, forever, with no account. A hosted backend (for those
-who don't want to self-host one) is being explored - follow the
-[blog](/blog) and [newsletter](https://buttondown.com/frameos) for news.
+Nothing while in beta, with fixed limits (50 frames, 20 scenes per frame, 100 MB each of private
+scenes, backups and logs) so one account can't crowd out the rest. Creating an account, enrolling
+and managing frames, and installing public store scenes are meant to stay free; nothing
+security-related will ever be paywalled. See [FrameOS Cloud](/guide/cloud#limits).

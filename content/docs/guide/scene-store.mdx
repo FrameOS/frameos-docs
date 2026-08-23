@@ -1,0 +1,55 @@
+---
+title: The scene store
+description: Browse, preview, fork and install community scenes from scenes.frameos.net - on cloud-managed frames with one click, or on a self-hosted backend by pasting a link.
+---
+
+[scenes.frameos.net](https://scenes.frameos.net) is the FrameOS scene store: calendars, dashboards,
+galleries, message boards, generative art - published by the community and by the FrameOS
+project, and installable on any frame.
+
+Each scene page shows who published it, how many times it has been installed, which FrameOS
+version it needs, and a **live preview rendered in your browser**. **View diagram** opens the
+scene in the playground editor so you can read exactly what it does before you install it.
+
+## Install a scene
+
+- **On a cloud-managed frame**: sign in, and every scene page gets an **Install on a frame** box.
+  Pick the frame and click **Install** - the scene is added next to the frame's existing scenes
+  and deployed within seconds (or as soon as an offline frame reconnects).
+- **On a self-hosted backend**: the page also has an **Install on a self-hosted FrameOS** card with
+  a link. Paste that link into the search box of a frame's **Templates** panel in the backend.
+  A backend [linked to your cloud account](/guide/backend#cloud) goes one better: the store shows
+  up as a repository in the Templates panel, so you browse and install it there directly. Unlinked
+  backends can add `https://scenes.frameos.net/api/store/repository.json` as a repository by hand.
+- **On a standalone frame**: **Download zip** and upload it on the frame's admin page.
+
+Scenes that run shell commands on the frame are flagged in the store. A backend warns before
+installing one; the cloud never pushes them at all - install those from the frame itself, and only
+from publishers you trust.
+
+## Private scenes
+
+Signed in, the store has a second tab: **My private scenes**. Everything there is yours alone until
+you click **Make public**. Private scenes get here three ways:
+
+- **Fork** any store scene ("Save a copy as a new private scene in your account"), then edit it in
+  the hosted editor.
+- **Upload a scene ZIP** exported from a backend or a frame.
+- From a [linked backend](/guide/backend#cloud): the **Save to private cloud** item in a scene's
+  Templates menu pushes it straight to your account, and your private scenes appear in the
+  backend's Templates panel on every machine you link.
+
+A private scene's install link carries a sharing secret, so you can hand it to a friend without
+publishing. Versions are immutable - publishing again adds a version, and you can yank a bad one so
+new installs skip it.
+
+Published scenes, private ones included, pass an automated content check on their name,
+description and preview image. Limits while in beta: 200 scenes per account, 100 MB of private
+storage (public scenes are free), 8 MB per scene ZIP.
+
+## Publishing for others
+
+Make a scene public and it appears in the store under your publisher page. Give it a good preview
+image (the **Save screenshot** button on the scene page grabs the live render) and a description
+that says which API keys it needs. There are no ratings or comments by design - install counts and
+the diagram speak for the scene.

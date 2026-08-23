@@ -5,8 +5,11 @@ description: Install the self-hosted FrameOS backend with one command, via Docke
 
 The backend is the control panel for your frames. You use it to design scenes, deploy them over
 SSH, and manage them through [FrameOS Remote](/guide/remote) when they connect back to the
-backend. It's a single self-hosted web app - there is no hosted cloud version and no account to
-sign up for anywhere.
+backend. It's a single self-hosted web app that runs on your own machine and needs no account.
+Don't want to host anything? [FrameOS Cloud](/guide/cloud) is the hosted alternative, and a
+[standalone frame](/guide/standalone) needs neither - the backend is the most capable of the
+three, and the one to pick for compiled Nim apps, custom drivers, a terminal on the frame, and
+ESP32 firmware builds.
 
 ![The FrameOS backend](/images/app/frameos-backend.gif)
 
@@ -33,7 +36,7 @@ The easiest way to install on a Mac or a Debian/Ubuntu Linux machine:
 bash <(curl -fsSL https://frameos.net/install.sh)
 ```
 
-The script installs Docker if needed, then runs the `frameos/frameos` container on port `8989`.
+The script installs Docker if needed, then runs the [`frameos/frameos`](https://hub.docker.com/r/frameos/frameos) container on port `8989`.
 Once it's up, open `http://localhost:8989` on that same machine (or `http://<its-ip>:8989` from
 another device) and create your local account.
 
@@ -101,7 +104,7 @@ This is optional: for common targets FrameOS ships **precompiled binaries**, and
 configure remote SSH build servers, or build on the frame itself, under **Settings → Builds**.
 
 <Callout title="ESP32 firmware needs no extra setup with Docker">
-  The `frameos/frameos` image bundles the ESP-IDF and Nim toolchains, so building and
+  The [`frameos/frameos`](https://hub.docker.com/r/frameos/frameos) image bundles the ESP-IDF and Nim toolchains, so building and
   browser-flashing [ESP32 firmware](/guide/esp32) works out of the box. Non-Docker installs need
   [ESP-IDF and Nim installed by hand](/guide/esp32#backend-toolchain).
 </Callout>
@@ -146,6 +149,30 @@ pnpm run dev:backend
 pnpm run dev:worker
 pnpm --dir frontend run dev
 ```
+
+## Link the backend to FrameOS Cloud [#cloud]
+
+A self-hosted backend can optionally be linked to a [FrameOS Cloud](/guide/cloud) account. Open
+**Settings → FrameOS Cloud** and click **Connect to cloud.frameos.net**: the backend shows a short
+code, you approve it on [cloud.frameos.net/device](https://cloud.frameos.net/device), and the link
+is made. What it adds, each an **Enabled feature** you can switch individually:
+
+- **Save and share scenes via the cloud** (always on): the [scene store](/guide/scene-store)
+  appears as a repository in every frame's Templates panel, and a **Save to private cloud** menu
+  item pushes your own scenes to your account, where they stay private until you publish them.
+- **Cloud backups**: after every successful deploy the backend uploads the frame's settings and
+  scenes, plus your scene library, **end-to-end encrypted** with a key the cloud never sees. Keep
+  the recovery key (`FRBK1-…`, shown under the switch) in your password manager; after reinstalling
+  the backend, link it again, paste the key, and **Restore** what you had. There is also a plain
+  **Download a local backup (.tar.gz)** button that never leaves your machine.
+- **Cloud login**: sign in to this backend with **Continue with FrameOS Cloud**. You can then turn
+  local password login off; if the link ever goes away, the password comes back by itself, so you
+  can't lock yourself out.
+
+Linking changes nothing about how frames are managed: the backend still deploys over SSH and
+[FrameOS Remote](/guide/remote), the cloud never gets a shell or your credentials, and
+**Disconnect** (here, or under **Account → Backends** in the cloud) undoes it at any time. The
+cloud only learns the backend's version and which features are on.
 
 ## Next step
 
