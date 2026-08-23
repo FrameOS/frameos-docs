@@ -7,6 +7,12 @@ Frames can optionally run **FrameOS Remote**, a small companion process that ope
 WebSocket connection to your backend. Older FrameOS releases and some old docs called this the
 "agent"; the current name is Remote.
 
+<Callout type="warn" title="Self-hosted backend only">
+  Remote connects a frame to a [self-hosted backend](/guide/backend). It plays no part in
+  [FrameOS Cloud](/guide/cloud), which talks to frames over its own protocol and deliberately has
+  no shell or terminal - and a [standalone frame](/guide/standalone) has nothing to connect to.
+</Callout>
+
 Remote means:
 
 - The backend can manage frames **without inbound SSH access** once Remote is installed - useful

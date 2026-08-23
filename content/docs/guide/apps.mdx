@@ -18,6 +18,13 @@ What's in the box, roughly:
   layouts, zoom/pan (Ken Burns), resize and rotate.
 - **Logic**: if/else, set state, log, sleep control.
 
+<Callout title="Self-hosted backend, FrameOS Cloud and standalone frames">
+  JavaScript apps can be written and edited in the [self-hosted backend](/guide/backend), in
+  [FrameOS Cloud](/guide/cloud) and on a [standalone frame's](/guide/standalone) admin page alike.
+  Custom **Nim** apps and Nim code nodes need a compiled scene, which only the self-hosted backend
+  can build - the cloud never compiles code.
+</Callout>
+
 ## Edit any app
 
 Click the **edit** button next to any app on a scene to open its source. JavaScript apps are
@@ -123,8 +130,8 @@ Things to know:
 | --- | --- | --- | --- |
 | Built-in apps | All of them | All but Chromium screenshots and RTSP | Rendered on the backend |
 | Custom JavaScript apps | ✅ | ✅ | Rendered on the backend |
-| Custom Nim apps | Compiled scenes only | ❌ | ❌ |
-| Nim code nodes | Compiled scenes only | ❌ - use JS code nodes | ❌ |
+| Custom Nim apps | Compiled scenes only (self-hosted backend) | ❌ | ❌ |
+| Nim code nodes | Compiled scenes only (self-hosted backend) | ❌ - use JS code nodes | ❌ |
 
 ## SVG, fonts and text
 

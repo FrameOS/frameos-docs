@@ -8,6 +8,13 @@ description: Choose a Raspberry Pi, then flash either a prebuilt FrameOS SD imag
   steps.
 </Callout>
 
+<Callout title="Applies to all three ways of running FrameOS">
+  A Raspberry Pi frame works [standalone](/guide/standalone), with a
+  [self-hosted backend](/guide/backend), or with [FrameOS Cloud](/guide/cloud). Option 1 below
+  covers all three; options 2 and 3 describe the backend's SSH and script installs (the cloud has
+  its own [install script](/guide/cloud#install-script-any-pi-most-linux) for a stock OS).
+</Callout>
+
 ## Which Pi to choose?
 
 - **Raspberry Pi Zero 2 W** - the sweet spot for e-ink frames. Four 64-bit cores, tiny, ~1 W of
@@ -16,7 +23,7 @@ description: Choose a Raspberry Pi, then flash either a prebuilt FrameOS SD imag
   matter. The Pi 5 and CM5 have their own SD image. Over HDMI the frame adopts the display's
   native mode on its own - plug in a 1080p or 4K screen and it renders at that resolution, with the
   status screen's fonts scaled to match; there's no width or height to type in.
-- **Raspberry Pi Zero W (v1), Pi 1, CM1** - a single 32-bit ARMv6 core. Slow to deploy to, but
+- **Raspberry Pi Zero W (v1), Pi 1, CM1** - a single 32-bit ARMv6 core. Slower, but
   supported all the way down, prebuilt SD image included.
 
 Not a Pi person, or dreaming of a battery-powered frame? FrameOS also runs on the

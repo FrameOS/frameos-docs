@@ -7,6 +7,12 @@ FrameOS also runs on the **Raspberry Pi Pico W** (RP2040) and **Pico 2 W** (RP23
 usefully on the [Pimoroni Inky Frame](https://shop.pimoroni.com/), which carries a Pico on the
 back of the panel and is otherwise a lovely piece of hardware with nowhere to run.
 
+<Callout type="warn" title="Self-hosted backend only">
+  Pico frames need a [self-hosted backend](/guide/backend) - it renders every frame for them.
+  [FrameOS Cloud](/guide/cloud) does not support virtual frames, and thus does not yet render for thin clients.
+  Therefor a Pico can't be managed from the cloud. Neither can it run [standalone](/guide/standalone).
+</Callout>
+
 <Callout title="Thin client, not a renderer">
   A Pico W has 2&nbsp;MB of flash and 264&nbsp;KB of RAM - it cannot hold a renderer, a
   JavaScript engine and a font. So it doesn't: **the backend renders the scene** and the device

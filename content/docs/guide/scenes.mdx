@@ -4,7 +4,14 @@ description: Build scenes visually with the node-based editor - events, apps, da
 ---
 
 A **scene** is what a frame shows: a graph of connected nodes that runs on the device. Scenes are
-built in a visual editor in the backend, then deployed onto the frame, where it runs.
+built in a visual editor, then deployed onto the frame, where it runs.
+
+<Callout title="Self-hosted backend, FrameOS Cloud and standalone frames">
+  The same editor ships in the [self-hosted backend](/guide/backend), in
+  [FrameOS Cloud](/guide/cloud), and on a [standalone frame's](/guide/standalone) own admin page.
+  Everything here works in all three, except [compiled scenes](#execution), which need the
+  self-hosted backend.
+</Callout>
 
 ## Create a scene
 
@@ -79,7 +86,8 @@ way, every scene FrameOS ships is built that way, and it's the only way [ESP32](
 There is a second, older mode - **compiled** - which turns the scene into native code inside the
 frame's binary. It's faster per render and it's the only mode that can run custom **Nim** app
 source and Nim code nodes, but every change needs a full rebuild and redeploy, and it only works
-on a Raspberry Pi.
+on a Raspberry Pi deployed from a [self-hosted backend](/guide/backend) - the cloud only pushes
+interpreted scenes.
 
 <Callout title="Compiled scenes are on the way out">
   Scenes made before the switch may still be set to compiled, and you can still choose it under a

@@ -3,7 +3,10 @@ title: Useful settings
 description: Access keys, QR codes, asset storage, power management, nightly reboots and debug logging.
 ---
 
-A tour of the most useful options under a frame's **Settings** tab.
+A tour of the most useful options under a frame's **Settings** tab. Unless noted otherwise, each
+one is available in the [self-hosted backend](/guide/backend), in [FrameOS Cloud](/guide/cloud)
+and on a [standalone frame's](/guide/standalone) admin page - the cloud's
+[settings page](/guide/cloud#managing-a-frame) lists the exact set it accepts.
 
 ## Frame access
 
@@ -45,7 +48,8 @@ ESP32 frames do it.
 
 ## Metrics
 
-Frames sample CPU, memory, temperature and disk and ship them to the backend every 60 seconds.
+Frames sample CPU, memory, temperature and disk and ship them to the backend - or to the cloud,
+if you switched that on for the frame - every 60 seconds.
 Change the interval under **Metrics**, or set it to `0` to turn the sampler off entirely. Changes
 apply without a restart.
 
@@ -81,7 +85,7 @@ straight from the file, so a 20 MB gallery JPEG needs nothing but a higher limit
 Enable debug logging to get per-app timing in the logs - useful to find out which app slows down
 your renders.
 
-## Builds
+## Builds (self-hosted backend only)
 
 Under the backend's settings you can choose how FrameOS binaries get built for your frames:
 precompiled release binaries (the default for supported targets), local Docker cross-compilation,
