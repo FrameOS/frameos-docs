@@ -1,0 +1,37 @@
+---
+title: "ESP32 support, FrameOS Cloud, and the scene store"
+description: "FrameOS Cloud is out: manage your frames from a browser with no backend to run. Also, the ESP32 support we never blogged about."
+date: 2026-08-23
+---
+
+Three things today. Two are new, and one is finally working well enough to blog about.
+
+## ESP32 support
+
+While out for a while, it has only recently gotten good enough to write about.
+
+You can now deploy FrameOS to an ESP32 device, with at least 4MB of flash memory. 8MB if you want over-the-air updates. 
+
+It works just like the regular version of FrameOS, with a lot of low-memory optimizations thrown in. Everything still renders locally on device, including for example rendering 100MB JPEGs, PNGs or WebPs from a SD card on a device with just 8MB of PSRAM and a 13.3" 1600x1200 RGB canvas.
+
+## FrameOS Cloud
+
+Over the last few years, I've come to learn that there's a large group of people who are interested in e-ink frames, but the last thing they care about is self-hosting docker containers in their homelabs. Most of them don't even have homelabs... This is for them.
+
+Introducing FrameOS Cloud.
+
+Sign up at https://cloud.frameos.net/ and start controlling frames in minutes! Download a customized SD card image for a Raspberry pi, flash and watch it work. Buy a prefabricated frame with an ESP32 inside (e.g. from waveshare or seeed studio), and flash FrameOS on it over USB.
+
+Two factors drove design choices:
+
+First, security. The internet is a big and scary place. A compromised cloud account should not compromise your local network. That rules out terminal access, SSH deploys, code compilation and yolo sudo scripts. The only things permitted are software updates between signed releases, and sandboxed javascript in interpreted scenes.
+
+Second, longevity. For Cloud to be a viable product, it needs to be as cheap as possible to operate. It's a reimplementation, not just the old backend with multitenancy tacked on. Gone are all the heavy operations we don't wan't to support at scale (e.g. compilation), and the simpler architecture should scale further with less tinkering (nodejs and postgres over python and sqlite).
+
+It's also open source. While not designed for self-hosting, you can probably get it running easily.
+
+## Scene store
+
+Finally we have https://scenes.frameos.net/ - a public place where to share interesting scenes.
+
+You can edit scenes, use AI assistance (for now only if you provide your own OpenAI API key), and live-preview scenes in the WASM build of FrameOS running directly in the browser.
