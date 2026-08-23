@@ -195,7 +195,7 @@ const features = [
   },
 ];
 
-function SectionTitle({ kicker, title, sub }: { kicker?: string; title: string; sub?: string }) {
+function SectionTitle({ kicker, title, sub }: { kicker?: string; title: string; sub?: React.ReactNode }) {
   return (
     <div className="mx-auto mb-10 max-w-2xl text-center">
       {kicker && <p className="mb-2 text-sm font-semibold uppercase tracking-wider text-fd-primary">{kicker}</p>}
@@ -341,9 +341,16 @@ export default function HomePage() {
         <SectionTitle
           kicker="The editor"
           title="A visual editor backed by real code"
-          sub="Build a scene by wiring nodes together, then open any of them to see the code underneath. Apps are TypeScript or Nim with a config.json; add a code node for one-off logic. The same editor runs in the backend, on the frame's own admin page, and in FrameOS Cloud, and a deployed scene is live on the frame seconds later."
+          sub={
+            <>
+              Build a scene by wiring nodes together, then open any of them to see the code underneath.
+              Apps are written in Nim (built in) or TypeScript.{' '}
+              Preview changes <TextLink href={`${links.sceneStore}/s/wikimedia-commons#live-preview`}>in the browser</TextLink>,
+              or on the frame directly. Check out the <TextLink href={links.sceneStore}>scene store</TextLink> for more examples!
+            </>
+          }
         />
-        <Slideshow slides={appSlides} aspect="aspect-[10/7]" fit="contain" interval={6000} className="mx-auto max-w-4xl" />
+        <Slideshow slides={appSlides} aspect="aspect-[10/7]" fit="contain" frame={false} interval={6000} className="mx-auto max-w-4xl" />
       </section>
 
       {/* Case Maker */}

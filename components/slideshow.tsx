@@ -16,6 +16,7 @@ export function Slideshow({
   interval = 5000,
   aspect = 'aspect-[4/3]',
   fit = 'cover',
+  frame = true,
   className,
 }: {
   slides: Slide[];
@@ -23,6 +24,8 @@ export function Slideshow({
   /** tailwind aspect-ratio class for the stage */
   aspect?: string;
   fit?: 'cover' | 'contain';
+  /** draw a border + card background behind the slides (off for screenshots with their own window shadow) */
+  frame?: boolean;
   className?: string;
 }) {
   const [index, setIndex] = useState(0);
@@ -59,7 +62,7 @@ export function Slideshow({
       }}
     >
       <div
-        className={cn('relative w-full cursor-zoom-in overflow-hidden rounded-xl border bg-fd-card', aspect)}
+        className={cn('relative w-full cursor-zoom-in overflow-hidden rounded-xl', frame && 'border bg-fd-card', aspect)}
         onClick={() => setZoomed(true)}
         role="button"
         tabIndex={0}
