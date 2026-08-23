@@ -3,6 +3,7 @@ import { notFound } from 'next/navigation';
 import type { Metadata } from 'next';
 import { blogSource } from '@/lib/source';
 import { getMDXComponents } from '@/components/mdx';
+import { BlogImage } from '@/components/blog-image';
 
 interface Props {
   params: Promise<{ slug: string }>;
@@ -31,7 +32,7 @@ export default async function BlogPost(props: Props) {
         {page.data.author}
       </p>
       <div className="prose mt-8 max-w-none">
-        <MDX components={getMDXComponents()} />
+        <MDX components={getMDXComponents({ img: BlogImage })} />
       </div>
     </main>
   );

@@ -1,0 +1,55 @@
+---
+title: "ESP32 support, FrameOS Cloud, and the scene store"
+description: "FrameOS Cloud is out: manage your frames from a browser with no backend to run. Also, the ESP32 support we never blogged about."
+date: 2026-08-23
+---
+
+Three things today. Two are new, and one is finally working well enough to blog about.
+
+## ESP32 support
+
+While out for a while, it has only recently gotten good enough to write about.
+
+![A Seeed XIAO ESP32-S3 driving a 7.3" Waveshare e-ink panel](/images/photos/esp32-waveshare-7in3.jpg)
+
+You can now deploy FrameOS to an [ESP32-S3 device](/guide/esp32), with at least 4MB of flash memory. 8MB if you want [over-the-air updates](/guide/esp32#updates-control-and-telemetry).
+
+It works just like the regular version of FrameOS, with a lot of low-memory optimizations thrown in. Everything still renders locally on device, including for example [rendering 100MB JPEGs, PNGs or WebPs](/guide/esp32#any-size-images-natively) from a [SD card](/guide/esp32#assets-and-the-sd-card) on a device with just 8MB of PSRAM and a [13.3" 1600x1200 RGB canvas](/devices/seeed-reterminal-e1004/). If it doesn't, it's a bug and you should let us know!
+
+See the [list of supported boards](/guide/esp32#supported-boards), and the [Raspberry Pi or ESP32?](/guide/esp32#raspberry-pi-or-esp32) comparison if you're not sure which to pick.
+
+## FrameOS Cloud
+
+Over the last few years, I've come to learn that there's a large group of people who are interested in e-ink frames, but are NOT interested in self-hosting docker containers in their homelabs. Most of them don't even have homelabs... This is for them.
+
+Introducing [FrameOS Cloud](/guide/cloud).
+
+![Frames in FrameOS Cloud](/images/blog/cloud-frames.jpg)
+
+Sign up at [cloud.frameos.net](https://cloud.frameos.net/) and start controlling frames in minutes! Download a [customized SD card image for a Raspberry Pi](/guide/cloud#sd-card-image-raspberry-pi), flash and watch it work. Buy a prefabricated frame with an ESP32 inside (e.g. from [Waveshare](/devices/waveshare-esp32-s3-photopainter) or [Seeed Studio](/devices/seeed-reterminal-e1002)), and [flash FrameOS on it over USB](/guide/cloud#flash-an-esp32-from-the-browser). Already have a frame running? [Link it](/guide/cloud#link-a-frame-that-already-runs) with the code on its display.
+
+Two factors drove design choices:
+
+First, security. The internet is a big and scary place. A compromised cloud account should not compromise your local network. That rules out terminal access, SSH deploys, code compilation and yolo sudo scripts. The only things permitted are software updates between signed releases, and sandboxed javascript in [interpreted scenes](/guide/scenes#execution). The full list of [what the cloud does, and deliberately doesn't](/guide/cloud#what-the-cloud-does-and-deliberately-doesnt) is in the docs, as is the [privacy policy](/guide/cloud#privacy).
+
+Second, longevity. For Cloud to be a viable product, it needs to be as cheap as possible to operate. It's a reimplementation, not just the [self-hosted backend](/guide/backend) with multitenancy tacked on. Gone are all the heavy operations we don't want to support at scale (e.g. compilation), and the simpler architecture should scale further with less tinkering (nodejs and postgres over python and sqlite).
+
+It's also [open source](https://github.com/FrameOS/frameos) (AGPL-3.0, in the `cloud/` folder). While not designed for self-hosting, you can probably get it running easily.
+
+The cloud is free for now, though may come with plans later (storage is expensive at scale). And nothing is locked in: you can [move a frame between cloud, backend and standalone](/guide/cloud#moving-between-cloud-backend-and-standalone) at any time, or [link your self-hosted backend](/guide/cloud#linking-a-self-hosted-backend) to the cloud for the best of both. Or, again, it's open source, so you can just self-host the cloud... though I haven't tried that yet.
+
+## Scene store
+
+Finally we have [scenes.frameos.net](https://scenes.frameos.net/) - a public place where to share interesting scenes.
+
+![The FrameOS scene store](/images/blog/scene-store.jpg)
+
+You can edit scenes, and live-preview them in the WASM build running directly in the browser. Scenes can be [installed](/guide/scene-store#install-a-scene) with one click on cloud-managed frames, or by pasting a link into a self-hosted backend. You can also [publish your own](/guide/scene-store#publishing-for-others) scenes for others.
+
+If you link your self-hosted backend to the cloud, you can publish scenes directly from it.
+
+![Installing a scene from the store onto a cloud-managed frame](/images/blog/scene-store-install.jpg)
+
+![Editing a scene from the store in the browser](/images/blog/scene-store-editor.jpg)
+
+Found a bug, or want to say hi? Come to [Discord](https://discord.gg/9dT9y7EzUw) or open an issue on [GitHub](https://github.com/FrameOS/frameos/issues).
