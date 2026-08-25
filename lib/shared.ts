@@ -18,4 +18,7 @@ export const links = {
   sceneRepo: 'https://repo.frameos.net',
   sceneStore: 'https://scenes.frameos.net',
   cloud: 'https://cloud.frameos.net',
+  terms: 'https://cloud.frameos.net/legal/terms',
+  privacy: 'https://cloud.frameos.net/legal/privacy',
+  imprint: 'https://cloud.frameos.net/legal/imprint',
 };
