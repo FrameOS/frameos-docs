@@ -54,6 +54,26 @@ makes this board render on-device rather than as a thin client.
    with **Flash latest release** and let the backend configure it over the USB console.
 4. Install scenes as usual - they sync over WiFi, and the device updates itself over the air.
 
+### macOS: install the WCH serial driver first
+
+The E1004's USB port sits behind a WCH **CH340/CH341** USB-serial chip, and unlike most ESP32-S3
+boards it does **not** show up as a serial port on macOS out of the box - the browser flasher won't
+see the device until you install WCH's driver:
+
+1. Download the driver from WCH's site:
+   [CH34XSER_MAC](https://www.wch-ic.com/downloads/CH34XSER_MAC_ZIP.html), and run
+   `CH34xVCPDriver.pkg` from the archive.
+2. Enable the extension under **System Settings → General → Login Items & Extensions →
+   Driver Extensions** and switch **CH34xVCPDriver** on. If macOS blocks it, go to
+   **Privacy & Security**, find the blocked WCH software and click **Allow**.
+3. Reconnect the terminal and check that `ls /dev/tty.wch*` lists a
+   `/dev/tty.wchusbserial…` port. That's the one to pick in the flasher.
+
+Windows 11 and Linux ship with the driver; Windows 10 and older need the
+[CH341SER](https://www.wch-ic.com/downloads/CH341SER_ZIP.html) package. See the
+[Seeed wiki](https://wiki.seeedstudio.com/getting_started_with_reterminal_e1004/) for the full
+walkthrough.
+
 A full Spectra 6 refresh on a panel this size takes around half a minute, and a heavy scene can
 take a similar time to render and dither first. Fine for a frame that updates a few times an hour.
 
