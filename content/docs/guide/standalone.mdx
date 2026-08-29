@@ -60,7 +60,9 @@ Save, and the Pi joins your network. If the WiFi password was wrong, the frame k
 about 90 seconds before the `FrameOS-Setup` hotspot comes back. On HDMI you watch it happen: the FrameOS status screen draws
 the boot steps as they go ("Checking network…", "Network connected. Loading scenes…"). E-ink
 panels get the same screen once the frame is up: its name, display and resolution, IP address,
-time zone, how it is managed (*standalone*), and the frame's URL.
+a clock and time zone, how it is managed (*standalone*), and the frame's URL. If the frame gets an
+address but nothing resolves, the log carries a `networkCheck:diagnostics` snapshot (DNS, routes,
+the DHCP lease) that says why.
 
 ## 3. Open the admin page
 

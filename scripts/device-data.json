@@ -1116,6 +1116,24 @@
     "esp32": true
   },
   {
+    "driver": "waveshare.EPD_2in9_V3",
+    "vendor": "Waveshare",
+    "model": "2.9\" (V3) e-Paper",
+    "technology": "E-ink",
+    "interface": "SPI",
+    "diagonal": 2.9,
+    "width": 296,
+    "height": 128,
+    "colors": "4-level grayscale",
+    "colorCount": 4,
+    "colorClass": "gray",
+    "label": "Waveshare 2.9\" (V3) 296x128 4 Grayscale",
+    "productUrl": "https://www.waveshare.com/2.9inch-e-Paper-Module.htm?&aff_id=79380",
+    "status": "untested",
+    "slug": "waveshare-epd-2in9-v3",
+    "esp32": true
+  },
+  {
     "driver": "waveshare.EPD_2in9b",
     "vendor": "Waveshare",
     "model": "2.9\" (B) e-Paper",

@@ -34,7 +34,7 @@ See the [Spectra 6 build video](/blog/eink-spectra-waveshare-pimoroni) for a sid
 
 ## How it works
 
-FrameOS ships a [native Nim driver](https://github.com/FrameOS/frameos/tree/main/frameos/src/drivers/waveshare)
+FrameOS ships a [native driver](https://github.com/FrameOS/frameos/tree/main/frameos/src/drivers/waveshare)
 (`waveshare.EPD_4in0e`) compiled straight into the binary that runs on your Raspberry Pi - no Python, no
 vendor libraries. Each render pass draws your [scene](/guide/scenes) into a full-color image,
 dithers it to the panel's palette, and pushes the result to the display over SPI.

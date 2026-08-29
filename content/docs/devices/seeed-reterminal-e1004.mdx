@@ -19,9 +19,10 @@ device:
   links:
     - label: "Seeed wiki"
       url: "https://wiki.seeedstudio.com/getting_started_with_reterminal_e1004/"
+  buttons: 3
   platforms:
     - "esp32-s3"
-  status: "untested"
+  status: "tested"
 ---
 
 The **Seeed reTerminal E1004** is the big one in the reTerminal E-series: a portrait 13.3"
@@ -31,20 +32,36 @@ FrameOS runs on it as a full [ESP32-S3 frame](/guide/esp32), rendering and dithe
 device.
 
 Pick the **Seeed reTerminal E1004** hardware preset (`seeed_reterminal_e1004`) when you add the
-frame. It selects the `waveshare.EPD_13in3e` panel driver, the E-series SPI bus with the 13.3"
-panel's second chip select, the 32&nbsp;MB flash profile and the TF card asset mount. The panel is
-the same glass as the [Waveshare 13.3" (E)](/devices/waveshare-epd-13in3e), with Seeed's own
-analogue tuning applied by the preset. The preset does not yet map the buttons to scene events.
+frame. It selects the `waveshare.EPD_13in3e` panel driver with the T133A01 refresh sequence this
+glass wants (about 30 seconds per refresh), the E-series SPI bus with the 13.3" panel's second chip
+select, the 32&nbsp;MB flash profile, the TF card asset mount, the three E-series keys (GPIO 3, 4
+and 5, dispatched as scene events) and the battery wiring: a 2:1 divider on GPIO 1 that GPIO 21
+switches on for each reading. The panel is the same glass as the
+[Waveshare 13.3" (E)](/devices/waveshare-epd-13in3e), with Seeed's own analogue tuning applied by
+the preset.
+
+## Battery
+
+The E1004 carries a 5000&nbsp;mAh cell, and the preset treats it as a battery frame from the start:
+`deep_sleep_on_battery` is on with a 15-minute `wake_check`, so unplugged it deep-sleeps between
+renders (waking on the timer, or on any of its buttons) and on USB it stays connected. The cloud or
+backend shows **asleep · wakes in 5 min** and the charge while it's down, and delivers anything you
+deploy on the next wake. A 15-minute weather scene keeps it awake for roughly 80-90 seconds per
+cycle - render, dither and the panel's own refresh - which is where the battery goes; see
+[Battery and deep sleep](/guide/esp32#power). A frame flashed before the preset knew the wiring
+reads no battery until you re-run `set hardware seeed_reterminal_e1004` on the console or fill in
+the three battery fields under **Power**.
 
 ## Why 8 MB is enough
 
 A 1200×1600 RGBA canvas alone would be 7.3&nbsp;MB - most of this board's PSRAM before a single
-image is decoded. The ESP32 renderer instead composites into a **16-bit canvas** (3.7&nbsp;MB),
-reserved once at boot and reused for every render, and the dither carries its own full-precision
-error rows beside it. Every panel the firmware drives is a dithered e-paper,
-so the 5/6-bit colour the canvas holds is below what the panel can show - side by side with the old
-canvas, a photo dithered to Spectra 6 lands the same palette within 0.05% per colour. That is what
-makes this board render on-device rather than as a thin client.
+image is decoded. On this board the ESP32 renderer instead composites into a **16-bit canvas**
+(3.7&nbsp;MB), reserved once at boot and reused for every render, with dithered stores so gradients
+stay smooth, and the packed framebuffer is reserved at boot as well so a fragmented heap can't fail
+a render. Every panel the firmware drives is a dithered e-paper, so side by side with a full-colour
+canvas a photo dithered to Spectra 6 lands the same palette within 0.05% per colour. Images decode
+straight off the socket into that canvas - a 2&nbsp;MB gallery PNG renders with 1.5&nbsp;MB of
+PSRAM to spare. That is what makes this board render on-device rather than as a thin client.
 
 ## Setup
 
@@ -67,7 +84,8 @@ see the device until you install WCH's driver:
    Driver Extensions** and switch **CH34xVCPDriver** on. If macOS blocks it, go to
    **Privacy & Security**, find the blocked WCH software and click **Allow**.
 3. Reconnect the terminal and check that `ls /dev/tty.wch*` lists a
-   `/dev/tty.wchusbserial…` port. That's the one to pick in the flasher.
+   `/dev/tty.wchusbserial…` port. That's the one to pick in the flasher - it shows up as a
+   *USB Single Serial* port, which the firmware's console has answered on since 2026.8.38.
 
 Windows 11 and Linux ship with the driver; Windows 10 and older need the
 [CH341SER](https://www.wch-ic.com/downloads/CH341SER_ZIP.html) package. See the
@@ -92,7 +110,6 @@ take a similar time to render and dither first. Fine for a frame that updates a 
 
 ## Status
 
-🟡 **Should work, not yet confirmed on real hardware.** The 13.3" Spectra 6 driver is confirmed on
-the [Waveshare 13.3E6 board](/devices/waveshare-esp32-s3-epaper-13in3e6); this terminal has not
-been reported back yet.
-Tell us on [GitHub](https://github.com/FrameOS/frameos/issues/new) or [Discord](https://discord.gg/9dT9y7EzUw) if you try it.
+🟢 **Confirmed working** - runs on the maintainers' own E1004, on battery, managed from
+[FrameOS Cloud](/guide/cloud): panel refresh, buttons, battery reading and deep sleep are all
+verified on this hardware.

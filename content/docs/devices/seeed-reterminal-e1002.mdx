@@ -42,8 +42,17 @@ knowing before you plan anything that updates often.
 
 1. In the FrameOS backend, create a frame with **Flash embedded device**.
 2. Choose **ESP32-S3**, select the **Seeed reTerminal E1002** preset, and enter your WiFi details.
-3. Build the firmware and flash it over USB from the browser.
+3. Build the firmware and flash it over USB from the browser. The E1002's USB-C port goes to a
+   CH340 UART bridge, not to the chip's own USB pins, so it shows up as a *USB Single Serial* port -
+   supported since firmware 2026.8.38 (earlier flashers refused it). On macOS install WCH's
+   [CH34x driver](/devices/seeed-reterminal-e1004#macos-install-the-wch-serial-driver-first)
+   first or the port never appears.
 4. Install scenes as usual - they sync over WiFi, and the device updates itself over the air.
+
+The preset also carries the E-series battery wiring (a 2:1 divider on GPIO 1, switched by
+GPIO 21 - the same as the [E1004](/devices/seeed-reterminal-e1004), where it is verified), so a
+cell on the battery header shows its charge in the backend or cloud, and the
+[deep sleep options](/guide/esp32#power) apply.
 
 ## Status
 

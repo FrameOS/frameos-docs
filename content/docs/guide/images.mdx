@@ -36,8 +36,9 @@ What that costs on an 800×480 frame:
 | 1920×1280 photo through a resize node | 9.8 MB | 540 KB |
 
 Streaming decoders exist for **JPEG, PNG, WebP, BMP and PPM**. GIF, QOI, TIFF and SVG decode the
-regular way, bounded by a memory budget (below). SVG rasterises straight into the canvas, and
-gradients rasterise band by band when memory is tight.
+regular way, bounded by a memory budget (below). SVG rasterises straight into the canvas, and its
+gradients are painted in row strips sized to the memory that's actually free, so a full-panel sky
+never asks for a full-panel scratch image.
 
 The scaling is a proper area filter - each output pixel is the average of the source pixels it
 covers - so downscaling stays smooth. It matters more than it sounds: nearest-neighbour
@@ -63,7 +64,10 @@ way.
 
 Two more tiers, both automatic:
 
-- **Downloads too large to hold in RAM spool to disk** - the SD card on a Pi, the TF card on an
+- **On an ESP32, images decode straight off the socket.** When the download has a known target,
+  the bytes go from the network into the streaming decoder and out as canvas rows - no copy of the
+  file in PSRAM, none on flash. A 2 MB PNG on a 13.3" board with 1.5 MB free renders fine.
+- **Downloads that must be held whole spool to disk** - the SD card on a Pi, the TF card on an
   ESP32 board - and the decoder streams from the file. The image cache does the same: a cached
   photo that's too big for memory is kept on the card as raw pixels, so a 4-hour cache actually
   caches instead of silently re-downloading every render. On the bench, serving a cached 13.3"
@@ -77,9 +81,13 @@ memory, and nothing that used to work starts failing.
 
 ## When it really is too big
 
-Every decode is planned against the memory the device actually has free at that moment. If the
-plan doesn't fit, FrameOS doesn't error out - it **degrades**: it retries at half resolution,
-then a quarter, and upscales the result. A slightly soft image beats an error frame on a wall.
+Every decode is planned against the memory the device actually has free at that moment - both
+the total and the largest contiguous block, because a fragmented heap can have megabytes free and
+no room for one channel buffer. If the plan doesn't fit, FrameOS doesn't error out - it
+**degrades**: it retries at half resolution, then a quarter, skipping any rung that still wouldn't
+fit, and upscales the result. A slightly soft image beats an error frame on a wall. Every degraded
+render is logged, and a microcontroller that finds an aborted decode has leaked half its heap
+restarts rather than showing soft photos for a day.
 
 Beyond that, honest limits:
 
@@ -87,9 +95,10 @@ Beyond that, honest limits:
   image, so there is nothing to stream. They're decoded buffered and refused, gracefully, if they
   don't fit. Save photos as baseline JPEG if you control the source.
 - **Some panels are the problem.** A 13.3" 1600×1200 canvas is 7.7&nbsp;MB of RGBA on its own,
-  before any image exists. On the ESP32 the canvas is 16-bit (3.8&nbsp;MB), which is what lets
-  that panel render on an 8&nbsp;MB board - but it's still half the PSRAM before the first byte of
-  a photo arrives.
+  before any image exists. On an 8&nbsp;MB ESP32 that panel gets a 16-bit canvas (3.8&nbsp;MB),
+  which is what lets it render there at all - but it's still half the PSRAM before the first byte
+  of a photo arrives. Boards with room to spare (an 800×480 panel, or 16&nbsp;MB of PSRAM) keep the
+  full-colour canvas.
 - **On a microcontroller, a failed allocation is contained, not fatal.** The render fails, the
   device keeps running, and the next render tries again.
 

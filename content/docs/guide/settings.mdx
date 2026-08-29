@@ -36,8 +36,10 @@ Images too large to decode in memory also spool here on their way to the screen 
 Frames that can sleep - the [ESP32-S3](/guide/esp32#power) and the
 [Pico W boards](/guide/pico#battery-mode) - get a **Power** section: deep sleep between refreshes,
 sleeping only while on battery, aligning wake-ups to wall-clock boundaries, waking periodically to
-pick up queued commands, and battery voltage sensing. A Raspberry Pi is always awake and always
-wall-powered, so it has none of this.
+pick up queued commands, and battery voltage sensing (the ADC pin, the divider ratio and, on
+boards that switch the divider, its enable pin - the hardware presets fill these in). A sleeping
+ESP32 also wakes on any of its GPIO buttons, and the frame list says **asleep · wakes in 5 min**
+while it's down. A Raspberry Pi is always awake and always wall-powered, so it has none of this.
 
 ## Nightly reboot
 
@@ -62,10 +64,15 @@ first option, **Detect from frame**, keeps whatever the OS already has. The back
 **Settings → Default timezone** is what a new frame starts with, and an SD image built in the
 backend or the cloud carries the zone with it. Time sync itself works out of the box.
 
+In [FrameOS Cloud](/guide/cloud) every way of adding a frame - SD image, ESP32 flasher, claim
+code - seeds the new frame's zone from the browser you used, so a frame comes up in local time
+without a visit to its settings.
+
 An [ESP32](/guide/esp32) keeps a zone too: it stores the name plus a few-kilobyte slice of time
 zone data for that one zone, so daylight saving switches correctly without a full database on the
 chip. It takes the zone from the backend or the cloud, or from `set time_zone Europe/Brussels` on
-the serial console. Needs firmware 2026.8.34 or newer; older firmware runs on UTC. If the zone
+the serial console. Needs firmware 2026.8.34 or newer (2026.8.39 for JavaScript `Date` to follow
+it too); older firmware runs on UTC. If the zone
 arrives without its data slice (the console command, or an older backend), the frame fetches the
 slice once from `tz.frameos.net` on its next online render pass and stays on UTC until then - worth
 knowing on a locked-down network, where SD images also poll `networkcheck.frameos.net` on boot.
@@ -75,9 +82,10 @@ knowing on a locked-down network, where SD images also poll `networkcheck.frameo
 **Maximum HTTP response size for apps** caps how much any single download - an image, a calendar
 feed, an API reply - may carry. A response that announces a bigger size is refused before the first
 byte; a stream that grows past it is cut off. The default is 64 MiB on a Pi and **4 MiB on an
-ESP32**, where it's read at boot (saving it reboots the frame). Raise it for bigger sources: with an
-SD card in the board, an ESP32 spills anything that won't fit in memory to the card and decodes it
-straight from the file, so a 20 MB gallery JPEG needs nothing but a higher limit. See
+ESP32**, where it's read at boot (saving it reboots the frame). Raise it for bigger sources. On an
+ESP32 a baseline JPEG or PNG decodes straight off the socket and never needs to be held whole;
+anything that does - a progressive JPEG, a large feed - spills to the SD card when there is one,
+so a 20 MB gallery photo needs nothing but a higher limit. See
 [Big images on small devices](/guide/images).
 
 ## Debug logging
@@ -85,8 +93,17 @@ straight from the file, so a 20 MB gallery JPEG needs nothing but a higher limit
 Enable debug logging to get per-app timing in the logs - useful to find out which app slows down
 your renders.
 
+## SSH keys
+
+Both the [backend](/guide/backend) and the [cloud](/guide/cloud) keep a list of SSH public keys
+under **Settings → SSH keys** (the backend can also generate a keypair for you; the cloud stores
+public halves only). Mark the ones that should go onto every new frame, and the SD image builders
+and the frame's settings page offer them as checkboxes - a key on the card lands in root's
+`authorized_keys` on first boot, next to whatever root password you chose.
+
 ## Builds (self-hosted backend only)
 
 Under the backend's settings you can choose how FrameOS binaries get built for your frames:
 precompiled release binaries (the default for supported targets), local Docker cross-compilation,
-a remote SSH build server, or building on the device itself.
+a remote SSH build server, or building on the device itself. The Home Assistant add-on has no
+Docker socket, so it stays on precompiled binaries unless you point it at a build host.

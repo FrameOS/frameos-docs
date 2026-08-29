@@ -30,7 +30,7 @@ Like all e-paper, it holds its image with zero power; the frame only wakes to re
 
 ## How it works
 
-FrameOS ships a [native Nim driver](https://github.com/FrameOS/frameos/tree/main/frameos/src/drivers/waveshare)
+FrameOS ships a [native driver](https://github.com/FrameOS/frameos/tree/main/frameos/src/drivers/waveshare)
 (`waveshare.EPD_3in97`) compiled straight into the binary - no Python, no vendor libraries. Each
 render draws your [scene](/guide/scenes) into a full-colour image, dithers it to black and white,
 and pushes the result over SPI.

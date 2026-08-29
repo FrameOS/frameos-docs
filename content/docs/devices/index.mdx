@@ -5,17 +5,20 @@ full: true
 ---
 
 FrameOS ships with **120+ display drivers**, selectable when you add a frame in the backend.
-Native Nim drivers cover most e-ink panels by **Waveshare** and **Pimoroni**, three generic
-drivers cover everything with a video output, and all-in-one microcontroller boards get their own
-entries - every display below has its own page with full specs and setup instructions.
+Native drivers compiled into the frame binary cover most e-ink panels by **Waveshare** and
+**Pimoroni**, three generic drivers cover everything with a video output, and all-in-one
+microcontroller boards get their own entries - every display below has its own page with full specs
+and setup instructions.
 
 <DeviceTable />
 
 ## How the drivers work
 
 - **E-ink panels** are driven over SPI by drivers compiled directly into the FrameOS binary -
-  no Python, no vendor libraries. FrameOS renders your [scene](/guide/scenes), dithers it to the
-  panel's exact ink palette, and pushes the result to the display.
+  no Python, no runtime libraries. Each Waveshare panel is one C driver (the vendor's, or a FrameOS
+  fork of it) that is bound into the Pi binary and linked into the ESP32 firmware alike, so both
+  targets behave the same. FrameOS renders your [scene](/guide/scenes), dithers it to the panel's
+  exact ink palette, and pushes the result to the display.
 - **[HDMI / Framebuffer](/devices/framebuffer-hdmi)** renders straight to the Pi's video output -
   TVs, monitors, any HDMI panel. On a Pi 5 it pushes 60 frames per second.
 - **[Web only](/devices/web-only)** runs a frame with no physical display: view it in the

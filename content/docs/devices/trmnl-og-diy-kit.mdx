@@ -45,6 +45,10 @@ flash profile and the two buttons are set up for you.
 Flashing FrameOS replaces the TRMNL firmware on the board. It does not touch, and does not need,
 a TRMNL account or their servers - the frame talks to your own [backend](/guide/backend).
 
+## Battery
+
+The XIAO ePaper driver board's battery connector is read through a 2:1 divider on GPIO 1, switched on by GPIO 6 - the preset carries the wiring (taken from the TRMNL firmware, not yet verified on this kit), so a cell shows its charge and the [deep sleep options](/guide/esp32#power) apply.
+
 ## Status
 
 🟡 **Should work, not yet confirmed on real hardware.** The 7.5" V2 panel driver is confirmed on

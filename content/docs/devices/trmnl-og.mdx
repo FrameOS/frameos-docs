@@ -44,6 +44,10 @@ the same way.
 Flashing FrameOS replaces the TRMNL firmware, and needs no TRMNL account or servers. The C3 image
 uses a 4&nbsp;MB single-slot layout with no OTA partition, so firmware updates go over USB.
 
+## Battery
+
+The TRMNL's cell is read through a 2:1 divider on GPIO 3; the preset carries the wiring (from the TRMNL firmware, not yet verified under FrameOS), so its charge shows in the backend's metrics.
+
 ## Status
 
 🟡 **Should work, not yet confirmed on real hardware.**

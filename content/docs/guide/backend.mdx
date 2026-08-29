@@ -51,6 +51,11 @@ If you run Home Assistant, FrameOS is one click away:
 5. Optionally enable **Start on boot** and **Watchdog**.
 6. Click **Open Web UI**.
 
+The add-on deploys precompiled release binaries; it has no Docker socket, so building FrameOS from
+source needs a [build host](/guide/settings#builds-self-hosted-backend-only) configured under
+**Settings → Builds**. Browser flashing of ESP32 boards needs the add-on reached over `https://`
+or `localhost` - behind plain-`http://` ingress there is no Web Serial.
+
 ## Running via Docker manually
 
 This is what the install script does under the hood:

@@ -48,8 +48,8 @@ You can get an image three ways:
 
 - **Generate it in the backend**: when you add a new frame, choose **Download SD card**. Pick your
   board, and the image comes out preconfigured with your WiFi credentials, timezone, display
-  driver and frame settings - flash it, insert, done. Whether root login is enabled, and with
-  which password, is an explicit choice on that screen.
+  driver and frame settings - flash it, insert, done. Whether root login is enabled, with which
+  password and which [SSH keys](/guide/settings#ssh-keys), is an explicit choice on that screen.
 - **Build it in [FrameOS Cloud](/guide/cloud#sd-card-image-raspberry-pi)**: the same, but the
   image is assembled in your browser and the frame enrolls with your cloud account on first boot.
 - **Download a generic image** from the
@@ -68,7 +68,8 @@ your SD card on first boot.
 
 On first boot an HDMI frame shows its progress on screen - "Checking network…", then
 "Network connected. Loading scenes…" - and any frame without scenes shows the FrameOS status
-screen: name, display and resolution, IP address, time zone, who manages it, and the frame's URL.
+screen: name, display and resolution, IP address, a live clock with its time zone, who manages
+it, the frame's URL and, once you press one, the last GPIO button.
 
 SD-image frames can also **upgrade themselves in place**: the frame downloads a new release,
 verifies its signature against a key baked into the build, and swaps it in on the next reboot -

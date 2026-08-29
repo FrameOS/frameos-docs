@@ -60,14 +60,14 @@ for exactly one deployment.
 ## Create an account
 
 Sign up at [cloud.frameos.net/signup](https://cloud.frameos.net/signup) with an email address and a
-password, or **Continue with Google**. Verify your email and sign in. Signing in drops you on
-**Account → Backends**; click **Frames** in the header (or open [cloud.frameos.net](https://cloud.frameos.net),
-whose root redirects there) to reach your fleet.
+password, or **Continue with Google**. Verify your email and sign in; you land on **Frames**,
+your fleet.
 
 The header has three sections: **Frames** (your fleet), **Scenes** (the
 [scene store](/guide/scene-store), on `scenes.frameos.net`) and **Account** (linked backends,
-backups, activity log, security). Under Security you can add a passkey or TOTP two-factor
-authentication - recommended for an account that controls physical frames.
+backups, activity log, security, and **Developer** for [API tokens and the MCP server](#developer)).
+Under Security you can add a passkey or TOTP two-factor authentication - recommended for an
+account that controls physical frames.
 
 ## Add a frame
 
@@ -81,9 +81,12 @@ The cloud builds a personalized SD image **in your browser**:
 1. Pick your board: `raspberry-pi-64` (Zero 2 W, Pi 3, Pi 4), `raspberry-pi-5` (Pi 5, CM5) or
    `raspberry-pi-32` (Zero, Zero W, Pi 1).
 2. Name the frame, pick its display (or choose to pick it later from the frame's setup hotspot),
-   and enter your WiFi network. Optionally set a root password. Your browser's time zone is written
-   into the card too, and for HDMI the panel size is autodetected - only displays with no size in
-   the catalog need a width and height.
+   and enter your WiFi network. Optionally set a root password and tick the **SSH keys** that
+   should be able to log in as root - add one right there or under **Settings → SSH keys**; the
+   cloud keeps public keys only, and the builder shows how much of the card's 4&nbsp;KB
+   configuration area they take. Your browser's time zone is written into the card too, and for
+   HDMI the panel size is autodetected - only displays with no size in the catalog need a width and
+   height.
 3. Click **Download SD image**.
 
 Your browser downloads the generic release image, writes your settings into its boot partition, and
@@ -137,8 +140,11 @@ the claim code empty - the frame shows a link code on its display as soon as it 
 Plug an [ESP32-S3 board](/guide/esp32#supported-boards) in over USB, pick the hardware preset
 (Waveshare PhotoPainter, TRMNL DIY kit, Seeed reTerminal, CrowPanel…), name the frame, enter WiFi
 and click flash. The browser writes the generic release firmware with Web Serial (Chrome or Edge),
-then provisions the cloud address and a claim token over the serial console. Choose the board's
-*USB JTAG/serial debug unit* port: a plain *USB Single Serial* port can flash but not provision.
+then provisions the cloud address, a claim token and your browser's time zone over the serial
+console. Either port a board offers works - the chip's *USB JTAG/serial debug unit* or a
+*USB Single Serial* bridge such as the CH340 on the Seeed reTerminals (the flasher used to refuse
+those). A brand-new board formats its storage on first boot, so the flasher waits up to 90 seconds
+for the console prompt and tells you what it saw if it never comes.
 
 ESP32 frames are full frames in the cloud too: scenes render on the chip, with logs, metrics,
 previews, schedules and signed over-the-air updates. PSRAM-less boards (ESP32-C3: the original
@@ -147,7 +153,8 @@ status screen.
 
 <Callout>
   Every path offers **Start it with the scenes from…** an existing frame, so a second kitchen frame
-  can be a clone of the first. Scenes are copied; assets on the SD card are not.
+  can be a clone of the first. Scenes are copied; assets on the SD card are not. Every path also
+  seeds the new frame's [time zone](/guide/settings#time-zone) from the browser you added it in.
 </Callout>
 
 ## Managing a frame
@@ -158,16 +165,23 @@ and its scenes at `/frames/<id>/scenes/<sceneId>`.
 
 - **Scenes.** Install from the [scene store](/guide/scene-store), or open a scene in the built-in
   editor - the same node-graph editor the backend has - and click **Save & Deploy**. The frame
-  applies the change within seconds while connected; pushes to an offline frame queue and land
-  when it reconnects. A frame holds up to 20 scenes.
+  applies the change within seconds while connected; pushes to an offline or sleeping frame queue
+  and land when it reconnects. A frame holds up to 20 scenes. Every scene remembers where it came
+  from - the drawer says *Installed from ‹scene› · v3* - so you can tell a store scene from your
+  own edit of it, and which version is on the frame.
 - **Preview.** The frame's own last render, plus per-scene snapshots, fetched while you have the
-  page open. Fleet tiles can also render a scene in your browser on request.
+  page open. An ESP32 frame sends its framebuffer on request; a sleeping one delivers it on its
+  next wake. Fleet tiles can also render a scene in your browser on request.
+- **Sleep forecast.** A frame that deep-sleeps says so before it halts: the sidebar and the
+  frame's page show **asleep · wakes in 5 min** (or **overdue**) rather than a stale "last seen",
+  and battery frames show their charge in place of the status dot.
 - **Settings.** The set a cloud-managed frame accepts is declarative: name, rotation, render
   interval, scaling, time zone, debug logging, the QR control code, metrics interval, HTTP
   response cap, palette and partial-refresh policy, GPIO buttons, and on ESP32 the
-  [power options](/guide/esp32#power). Everything else about the device - display driver, WiFi,
-  mount points - is owned by the device. A setting newer than the frame's firmware is shown
-  disabled with the version it needs.
+  [power options](/guide/esp32#power) - deep sleep, battery pins and, from firmware 2026.8.39, the
+  battery enable pin. Everything else about the device - display driver, WiFi, mount points - is
+  owned by the device. A setting newer than the frame's firmware is shown disabled with the
+  version it needs.
 - **Schedule.** Scene switches, events, and `restart`/`reboot` entries, evaluated on the frame in
   its own time zone.
 - **Logs and metrics.** Off by default for privacy: flip **Ship logs and metrics to the cloud**
@@ -187,6 +201,50 @@ While cloud-managed, a frame blocks HTTP requests to private addresses on your L
 installed from the store can't poke at your router. To allow it (for the Home Assistant app, for
 instance), confirm a six-digit code shown on the panel from the frame's local admin page, or run
 `set allow_local_network 1` on an ESP32's USB console. It takes a person in front of the frame.
+
+## Scripts and AI agents: API tokens and MCP [#developer]
+
+Everything the browser can do with your account is also available to scripts and AI agents, from
+**Account → Developer**:
+
+- **Personal API tokens** (`fc_api_…`, or a read-only `fc_apiro_…`) stand in for your account on
+  the JSON API. A token can do what you can do in the UI, minus the actions that always need a fresh
+  sign-in in the browser (revoking frames, approving device links). Minting one needs a recent
+  sign-in too; tokens are shown once and stored hashed.
+- **A hosted MCP server** at `https://cloud.frameos.net/api/mcp` - the same API with a vocabulary a
+  [Model Context Protocol](https://modelcontextprotocol.io/) client can read: 71 tools across
+  frames (list, rename, settings and schedules, assign and activate scenes, screenshots, logs,
+  metrics, assets, reboot, firmware updates, claim tokens), scenes (read and save versions, create
+  from JSON, zip or URL, fork, publish, gallery images, yank, delete), the store, the scene AI, and
+  a server-side **render** that runs the real FrameOS runtime on any scene JSON and hands the
+  image back, plus the **lint** that publishing applies. Nothing local to run: it speaks Streamable
+  HTTP with your token as a bearer.
+
+  ```bash
+  claude mcp add --transport http frameos https://cloud.frameos.net/api/mcp \
+    --header "Authorization: Bearer fc_api_…"
+  ```
+
+  Claude Desktop, Cursor and other clients take the same thing as JSON:
+
+  ```json
+  {
+    "mcpServers": {
+      "frameos": {
+        "type": "http",
+        "url": "https://cloud.frameos.net/api/mcp",
+        "headers": { "Authorization": "Bearer fc_api_…" }
+      }
+    }
+  }
+  ```
+
+  For clients that want a subprocess, the same server runs over stdio from a checkout of the
+  repository: `FRAMEOS_CLOUD_TOKEN=fc_api_… pnpm --filter @frameos-cloud/mcp start`.
+
+The MCP server is a thin wrapper over the cloud's routes (`cloud/packages/mcp` in the main
+repository), so anything it can do, `curl` with the same bearer can do too. For the frame's
+*local* API - no account involved - see [Controlling the frame](/guide/control).
 
 ## Linking a self-hosted backend
 

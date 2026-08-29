@@ -28,7 +28,8 @@ What's in the box, roughly:
 ## Edit any app
 
 Click the **edit** button next to any app on a scene to open its source. JavaScript apps are
-editable everywhere - saved changes are forked onto that scene, leaving the original untouched.
+editable everywhere, the [scene store's](/guide/scene-store) editor included - saved changes are
+forked onto that scene, leaving the original untouched.
 The built-in apps are compiled Nim, so in an [interpreted scene](/guide/scenes#execution) their
 source opens **read only**, with an **Open in GitHub** link; to customize one, write a JavaScript
 app or an inline code node instead. In a compiled scene on a Raspberry Pi, Nim apps fork and edit
@@ -62,6 +63,17 @@ export function get(app: FrameOSApp, context: FrameOSContext): string {
 JS apps can fetch data with `frameos.fetchText()` / `frameos.fetchJson()`, return text, JSON, SVG
 markup, or images, and plug into scenes exactly like the built-in ones. They work on every kind of
 frame, and they're the **only** option on [ESP32](/guide/esp32) and [Pico](/guide/pico) boards.
+
+An app can be more than one file. Its files are its whole module graph: `app.ts` can
+`import { layout } from './helper'` and `import cities from './data.json'`, and the editor
+resolves those siblings as you type. Relative imports only - there is no npm on the frame, so a
+bare `import x from 'lodash'` fails with a message that says so - and stack traces name the file
+and line (`helper.ts:5:3`).
+
+A **select** field in `config.json` (and a select [state field](/guide/scenes#state-fields))
+takes either plain strings or `{ "value": "dark", "label": "Dark theme" }` pairs; the value is what
+your app sees, the label is what people pick. In the editor's options box that's one `value | Label`
+per line.
 
 Scene JavaScript runs sandboxed: bounded memory and run time, no filesystem, and network access
 only through the FrameOS fetch helpers.

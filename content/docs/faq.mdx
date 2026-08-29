@@ -29,8 +29,8 @@ Yes, and it's a full frame rather than a demo. FrameOS runs on the **ESP32-S3**:
 builds a firmware image, you [flash it from the browser](/guide/esp32), and the device renders
 scenes itself - the same interpreter as Linux frames, the same apps, JavaScript on QuickJS, its
 own scheduler, assets on an SD card, logs and metrics back to the backend, and firmware updates
-over the air with automatic rollback. It deep-sleeps between refreshes, so battery-powered frames
-are real.
+over the air with automatic rollback. It deep-sleeps between refreshes and wakes on a button
+press, so battery-powered frames are real.
 
 The short list of what a microcontroller frame *can't* do: Waveshare-family SPI e-paper only (no
 HDMI, no LCD, no Pimoroni HATs), no custom Nim apps (JavaScript instead), one built-in font plus
@@ -87,6 +87,15 @@ apps: FrameOS Gallery, Unsplash, Wikimedia Commons, OpenAI image generation.
 
 You don't need to resize anything first - see [Big images on small devices](/guide/images).
 
+## Can I drive it from a script or an AI agent?
+
+Yes, at two levels. Every frame has a [local HTTP API](/guide/control) on port 8787 - change
+state, switch scenes, trigger renders with `curl`, no account needed. And a
+[FrameOS Cloud](/guide/cloud#developer) account has personal API tokens and a hosted
+[MCP server](https://modelcontextprotocol.io/) at `cloud.frameos.net/api/mcp`, so Claude Code,
+Claude Desktop, Cursor or any MCP client can list your frames, push scenes and settings, read logs,
+build or edit scenes with the scene assistant, and render any scene server-side to see the result.
+
 ## Does it integrate with Home Assistant?
 
 Three ways: the backend runs as a [Home Assistant add-on](/guide/backend#home-assistant-add-on);
@@ -95,9 +104,10 @@ frames through the [HTTP API](/guide/control) - change text, switch scenes, trig
 
 ## How do I share scenes or apps I made?
 
-Publish them on the [scene store](/guide/scene-store): fork, edit and preview in the browser,
-keep them private or make them public, and anyone can install them on a cloud-managed frame with
-one click or on a self-hosted backend by pasting a link. Scenes also export as JSON (and as ZIP
+Publish them on the [scene store](/guide/scene-store): fork, edit and preview in the browser
+(or [have the AI build one](/guide/scene-store#ai) from a description), keep them private or make
+them public, and anyone can install them on a cloud-managed frame with one click or on a
+self-hosted backend by pasting a link. Scenes also export as JSON (and as ZIP
 templates with preview images) you can share anywhere. The community hangs out on [Discord](https://discord.gg/9dT9y7EzUw) - show off your builds, get help,
 and propose contributions. Code lives at
 [github.com/FrameOS/frameos](https://github.com/FrameOS/frameos); PRs welcome.

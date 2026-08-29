@@ -61,7 +61,8 @@ Fields are typed, and the type decides what the control page shows: text, long t
 booleans, a colour picker, a date picker, a select box, raw JSON, a font picker, an image, a
 scene picker - or a **path**, which is a file and folder browser over the frame's own
 [assets](/guide/settings#assets). "Which photo folder should this play?" becomes a picker instead
-of a typed-in string.
+of a typed-in string. A select's options are one per line, either a plain value or `value | Label`
+when what the frame stores and what people read should differ.
 
 ## Code nodes
 
@@ -89,12 +90,14 @@ source and Nim code nodes, but every change needs a full rebuild and redeploy, a
 on a Raspberry Pi deployed from a [self-hosted backend](/guide/backend) - the cloud only pushes
 interpreted scenes.
 
-<Callout title="Compiled scenes are on the way out">
-  Scenes made before the switch may still be set to compiled, and you can still choose it under a
-  scene's settings on a Pi frame. It is not where FrameOS is heading, though - build new scenes
-  interpreted unless you specifically need Nim. If you switch an existing scene between modes, do
-  a full deploy afterwards; the editor warns you when a scene still contains Nim source that
-  interpreted mode can't run.
+<Callout title="Compiled scenes are the explicit exception">
+  A scene is interpreted unless it says otherwise: templates, imports, backups and AI-built scenes
+  that carry no execution mode all run interpreted, and only a scene that actually contains Nim
+  source is stamped compiled. The **Execution** select and the frame's *Installation mode* live
+  under an **Advanced** disclosure on a Pi frame, folded away unless the scene is already compiled.
+  Build new scenes interpreted unless you specifically need Nim. If you switch an existing scene
+  between modes, do a full deploy afterwards; the editor warns you when a scene still contains Nim
+  source that interpreted mode can't run.
 </Callout>
 
 On the frame side there are two ways a binary gets built: **precompiled** (the release binary plus
@@ -108,7 +111,10 @@ Two ways to see a scene without committing to it:
 
 - **Preview in browser** runs the scene *in your browser*. The frame's renderer is compiled to
   WebAssembly, so you get the real thing - same apps, same layout engine, same resolution -
-  without deploying to a device, or before you own one.
+  without deploying to a device, or before you own one. It comes with a **Browser assets** folder
+  that lives only in your browser (seeded with sample photos, so slideshow and SD-card scenes
+  render), JavaScript clocks in the frame's time zone, and a real-time toggle for scenes that want
+  to run faster than one frame a second.
 - **Preview on frame** temporarily shows the scene on the actual frame without saving or
   deploying it. Good for checking how a colour dithers on real e-ink.
 

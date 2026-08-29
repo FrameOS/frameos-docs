@@ -51,6 +51,10 @@ The X4 provisions from the 4&nbsp;MB no-OTA generic image, so firmware updates g
 3. Build the firmware and flash it over USB from the browser.
 4. Install scenes as usual.
 
+## Battery
+
+The X4's cell is read through a 2:1 divider on GPIO 0; the preset carries the wiring (from the TRMNL firmware's board table, not yet verified on this reader), so its charge shows in the backend's metrics.
+
 ## Status
 
 🟡 **Boots and renders on real hardware**, but not yet widely reported.
