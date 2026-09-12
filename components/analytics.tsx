@@ -35,12 +35,44 @@ const posthogHost = 'https://eu.posthog.com';
 // (Project settings -> Web analytics). Without it the events are dropped on
 // ingestion and this file silently does nothing.
 
+// Everyone who accepted the banner between 25 August and today has PostHog's
+// own localStorage entry sitting on their device, and the SDK reads it: in
+// cookieless mode it picks the stored distinct_id up, sends the first
+// pageview under that persistent id, and only then clears the entry. So a
+// returning visitor would be identified exactly once more, by the identifier
+// this whole change exists to stop collecting. Verified on the deployed site
+// by seeding a known id and watching it arrive in PostHog.
+//
+// Hence: clear what the consent era left before the SDK can read it.
+// `frameos_analytics_consent` is deliberately NOT cleared - that cookie is
+// shared with cloud.frameos.net, which still has a banner and still honours
+// the answer. Dropping it here would ask every cloud user again.
+function clearConsentEraStorage() {
+  try {
+    for (const store of [window.localStorage, window.sessionStorage]) {
+      for (const key of Object.keys(store)) {
+        if (key.startsWith('ph_') || key.startsWith('__ph_opt_in_out_')) store.removeItem(key);
+      }
+    }
+  } catch {
+    // Storage throws in a locked-down browser. Nothing here is load-bearing.
+  }
+  for (const cookie of document.cookie.split(';')) {
+    const name = cookie.trim().split('=')[0];
+    if (!name.startsWith('ph_')) continue;
+    for (const domain of ['', '; domain=.frameos.net']) {
+      document.cookie = `${name}=; path=/; max-age=0${domain}`;
+    }
+  }
+}
+
 // Init once per page load, not once per navigation. The effect below runs on
 // every route change, so the promise is what keeps them all on one instance.
 let pending: Promise<typeof posthogJs> | undefined;
 
 function load() {
   pending ??= import('posthog-js').then(({ default: posthog }) => {
+    clearConsentEraStorage();
     posthog.init(posthogKey, {
       api_host: posthogHost,
       defaults: '2026-05-30',
