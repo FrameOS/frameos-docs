@@ -1,5 +1,7 @@
 'use client';
+import { usePathname } from 'next/navigation';
 import { useEffect } from 'react';
+import type posthogJs from 'posthog-js';
 
 const posthogKey = 'phc_Qp5EaVoMqQejQnkcAMSgEOj2An44uDDSJpRTecvcq2p';
 const posthogHost = 'https://eu.posthog.com';
@@ -32,28 +34,52 @@ const posthogHost = 'https://eu.posthog.com';
 // Requires "Enable cookieless tracking" in the PostHog project settings
 // (Project settings -> Web analytics). Without it the events are dropped on
 // ingestion and this file silently does nothing.
+
+// Init once per page load, not once per navigation. The effect below runs on
+// every route change, so the promise is what keeps them all on one instance.
+let pending: Promise<typeof posthogJs> | undefined;
+
+function load() {
+  pending ??= import('posthog-js').then(({ default: posthog }) => {
+    posthog.init(posthogKey, {
+      api_host: posthogHost,
+      defaults: '2026-05-30',
+      cookieless_mode: 'always',
+      // identify() becomes a no-op. Nothing on a docs site should be
+      // calling it, and this makes that structural rather than a rule.
+      person_profiles: 'never',
+      // We send pageviews ourselves - see below. Pageleave has to be asked
+      // for explicitly once pageview capture is off, because its default
+      // ('if_capture_pageview') would otherwise switch it off with it, and
+      // pageleave is what bounce rate is computed from.
+      capture_pageview: false,
+      capture_pageleave: true,
+    });
+    return posthog;
+  });
+  return pending;
+}
+
+// Pageviews are captured by hand because PostHog's automatic capture does not
+// fire in cookieless mode: on a real page load the SDK initialises, reports
+// itself as capturing, sends the $pageleave on the way out - and never sends
+// the $pageview in between. Verified against 1.419.0 on the deployed site,
+// with the manual capture below landing from the same page that the automatic
+// one had silently skipped. `usePathname` covers client-side navigation
+// between docs pages too, which is most of the movement on this site.
 export function Analytics() {
+  const pathname = usePathname();
+
   useEffect(() => {
     if (process.env.NODE_ENV !== 'production') return;
     let cancelled = false;
-
-    void (async () => {
-      const { default: posthog } = await import('posthog-js');
-      if (cancelled) return;
-      posthog.init(posthogKey, {
-        api_host: posthogHost,
-        defaults: '2026-05-30',
-        capture_pageview: 'history_change',
-        cookieless_mode: 'always',
-        // identify() becomes a no-op. Nothing on a docs site should be
-        // calling it, and this makes that structural rather than a rule.
-        person_profiles: 'never',
-      });
-    })();
-
+    void load().then((posthog) => {
+      if (!cancelled) posthog.capture('$pageview');
+    });
     return () => {
       cancelled = true;
     };
-  }, []);
+  }, [pathname]);
+
   return null;
 }
