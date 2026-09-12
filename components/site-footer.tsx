@@ -1,4 +1,3 @@
-import { CookieSettingsButton } from '@/components/analytics';
 import { links } from '@/lib/shared';
 
 const linkClass = 'text-fd-muted-foreground transition-colors hover:text-fd-foreground hover:underline';
@@ -22,7 +21,6 @@ export function SiteFooter() {
         <a href={links.imprint} className={linkClass}>
           Imprint
         </a>
-        <CookieSettingsButton className={linkClass} />
       </nav>
     </footer>
   );

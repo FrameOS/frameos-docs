@@ -1,7 +1,7 @@
 import { Inter } from 'next/font/google';
 import type { Metadata } from 'next';
 import { Provider } from '@/components/provider';
-import { Analytics, AnalyticsConsentBanner } from '@/components/analytics';
+import { Analytics } from '@/components/analytics';
 import { appDescription, appName } from '@/lib/shared';
 import './global.css';
 
@@ -28,7 +28,6 @@ export default function Layout({ children }: { children: React.ReactNode }) {
     <html lang="en" className={inter.className} suppressHydrationWarning>
       <body className="flex flex-col min-h-screen">
         <Provider>{children}</Provider>
-        <AnalyticsConsentBanner />
         <Analytics />
       </body>
     </html>
