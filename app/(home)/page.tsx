@@ -123,13 +123,13 @@ const appSlides: Slide[] = [
 // Each thumbnail links to the scene's page in the store: `${links.sceneStore}/s/${slug}`.
 const sceneStrip = [
   { src: '/images/scenes/gallery/made-in-space.jpg', alt: 'Made in Space gallery scene', slug: 'made-in-space' },
-  { src: '/images/scenes/samples/calendar.jpg', alt: 'Calendar scene', slug: 'calendar' },
-  { src: '/images/scenes/gallery/masterpieces.jpg', alt: 'Masterpieces gallery scene', slug: 'masterpieces' },
+  { src: '/images/scenes/samples/word-clock.jpg', alt: 'Word clock scene spelling out the time in a letter grid', slug: 'word-clock' },
   { src: '/images/scenes/samples/message-board.jpg', alt: 'Message board scene', slug: 'message-board' },
+  { src: '/images/scenes/samples/year-progress-memento-mori.jpg', alt: 'Year progress / memento mori scene, showing the year as a dot grid', slug: 'year-progress-memento-mori' },
   { src: '/images/scenes/samples/weather.jpg', alt: 'Weather scene with current conditions and an hourly forecast', slug: 'weather' },
-  { src: '/images/scenes/samples/split-agenda.jpg', alt: 'Split agenda scene', slug: 'ical-agenda' },
-  { src: '/images/scenes/samples/xkcd.jpg', alt: 'XKCD scene', slug: 'xkcd' },
+  { src: '/images/scenes/samples/calendar.jpg', alt: 'Calendar scene', slug: 'calendar' },
   { src: '/images/scenes/gallery/cuteness-overload.jpg', alt: 'Cuteness Overload gallery scene with a cartoon toucan', slug: 'cuteness-overload' },
+  { src: '/images/scenes/samples/xkcd.jpg', alt: 'XKCD scene', slug: 'xkcd' },
 ];
 
 const features = [
@@ -319,12 +319,9 @@ export default function HomePage() {
           <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
             <Link
               href={links.sceneStore}
-              target="_blank"
-              rel="noopener noreferrer"
               className="inline-flex items-center gap-2 rounded-lg bg-fd-primary px-5 py-2.5 font-medium text-fd-primary-foreground transition-opacity hover:opacity-90"
             >
               Browse the scene store
-              <ExternalLink className="size-4" aria-hidden="true" />
             </Link>
             <Link
               href="/guide/scene-store"

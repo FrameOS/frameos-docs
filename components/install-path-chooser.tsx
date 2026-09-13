@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { useState } from 'react';
-import { Cloud, Cpu, Download, ExternalLink, Server } from 'lucide-react';
+import { Cloud, Cpu, Download, Server } from 'lucide-react';
 import { cn } from '@/lib/cn';
 import { CopyCommand } from '@/components/copy-command';
 import { TextLink } from '@/components/text-link';
@@ -80,7 +80,7 @@ const installOptions = [
   },
 ] as const;
 
-function ExternalButton({
+function LinkButton({
   href,
   variant = 'primary',
   children,
@@ -92,8 +92,6 @@ function ExternalButton({
   return (
     <Link
       href={href}
-      target="_blank"
-      rel="noopener noreferrer"
       className={cn(
         'inline-flex items-center gap-2 rounded-lg px-3 py-1.5 text-sm font-medium',
         variant === 'primary'
@@ -102,7 +100,6 @@ function ExternalButton({
       )}
     >
       {children}
-      <ExternalLink className="size-3.5" aria-hidden="true" />
     </Link>
   );
 }
@@ -286,6 +283,12 @@ export function InstallPathChooser({
                 </li>
               </ol>
               )}
+              <p className="mt-3 text-fd-muted-foreground">
+                Standalone is for Raspberry Pi and other Linux boards.{' '}
+                <TextLink href="/guide/esp32">ESP32 frames</TextLink> have no admin page of their
+                own - they currently need <TextLink href="/guide/cloud">the cloud</TextLink> or a{' '}
+                <TextLink href="/guide/backend">self-hosted backend</TextLink> to manage them.
+              </p>
               <p className="mt-3 border-t pt-3 text-fd-muted-foreground">
                 Details in <TextLink href="/guide/standalone">the standalone frame guide</TextLink>. You can
                 hand the frame to a <TextLink href="/guide/backend">backend</TextLink> or{' '}
@@ -330,10 +333,10 @@ export function InstallPathChooser({
                   </p>
                 </div>
                 <div className="flex flex-wrap items-center gap-2">
-                  <ExternalButton href={CLOUD_SIGNUP_URL}>Sign up at cloud.frameos.net</ExternalButton>
-                  <ExternalButton href={CLOUD_URL} variant="secondary">
+                  <LinkButton href={CLOUD_SIGNUP_URL}>Sign up at cloud.frameos.net</LinkButton>
+                  <LinkButton href={CLOUD_URL} variant="secondary">
                     Log in
-                  </ExternalButton>
+                  </LinkButton>
                 </div>
               </div>
               <ul className="mt-3 space-y-2 text-fd-muted-foreground">
