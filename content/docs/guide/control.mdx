@@ -22,7 +22,7 @@ Open `http://<frame-ip>:8787/` for the frame's own web UI:
 
 - **`/`** - view the current image, live (updates over a WebSocket).
 - **`/c`** - the control page: switch scenes and edit the active scene's state fields (the yellow
-  nodes you added in the [scene editor](/guide/scenes)).
+  nodes you added in the [scene editor](/guide/scenes)), including how often it refreshes.
 - **`/admin`** - the on-device [admin panel](#the-admin-panel): settings, scenes, schedule, logs,
   metrics, assets and updates. A full management UI served by the frame itself.
 
@@ -39,8 +39,9 @@ password you set during setup (or in the backend under **Settings → Admin**) a
 
 ![The on-device admin panel, Settings tab](/images/app/frame-settings-new.png)
 
-- **Scenes** - what is installed and what is active. Install scenes from the sample and gallery
-  repositories or the [scene store](/guide/scene-store), upload a scene ZIP, or open the
+- **Scenes** - what is installed and what is active. Install scenes from the
+  [scene store](/guide/scene-store) - it is built into the **Add scene** drawer (FrameOS
+  2026.9.10+; the bundled samples stand in when the store can't be reached) - upload a scene ZIP, or open the
   node-graph [scene editor](/guide/scenes) right here. Interpreted scenes save and go live
   without a compile step.
 - **Settings** - everything from [Useful settings](/guide/settings): name, display driver and
@@ -57,8 +58,12 @@ password you set during setup (or in the backend under **Settings → Admin**) a
 - **Assets** - files on the frame's SD card: fonts, images, downloaded scenes.
 - **Debug** - on-device diagnostics. (**Ping** and **Terminal** exist only in the backend.)
 - **Settings → FrameOS upgrade** - the frame downloads a new release itself, verifies the
-  signature, and swaps it in on the next reboot. Cloud and backend only *nudge* it; the binary
-  never passes through them.
+  signature, swaps it in and restarts - rebooting only when the new release needs it. Cloud and
+  backend only *nudge* it; the binary never passes through them.
+
+The frame's **…** menu at the top right re-renders, restarts, **reboots the device** and brings
+back the status screen (**Render status screen**). Frames on an HDMI/framebuffer display or a
+HyperPixel also get **Turn display off** / **Turn display on** there (2026.9.18+).
 
 The admin panel is how a [standalone frame](/guide/standalone) is managed at all, and it stays
 available on frames that a backend or the cloud manages - which is why the frame can always be
@@ -80,7 +85,8 @@ The access key travels as a `?k=...` query parameter (or a cookie after the firs
 <Callout type="warn">
   Traffic is plain HTTP on your local network. If you need real security - frames on a shared
   network, remote access - put the frames on a [Tailscale](https://tailscale.com/) tailnet or
-  enable the HTTPS options in the frame's settings.
+  enable [HTTPS](/guide/settings#https) in the frame's settings - the frame serves it itself, on
+  port 8443.
 </Callout>
 
 ## The HTTP API
@@ -117,6 +123,13 @@ automation, a cron job, a shell script, or a doorbell webhook can all drive your
 
 There's also a full admin REST API (config, logs, metrics, restart, reboot) under
 `http://frame:8787/api/` behind the admin login, and a WebSocket at `/ws` that streams renders.
+The events that control the device itself - `reboot`, `restart`, `reload` and `uploadScenes` - need
+the admin login or the backend's API key too; the access key (`?k=`) can't trigger them.
+
+From FrameOS 2026.9.13, a request that changes something and carries a browser `Origin` header must
+come from the frame's own address, so a web page on another site can't post to your frame. `curl`,
+scripts and Home Assistant send no `Origin` and are unaffected. Behind your own reverse proxy, pass
+`Host` through or send `X-Forwarded-Host`.
 
 ## Scheduling
 

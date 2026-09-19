@@ -8,8 +8,8 @@ SSH, and manage them through [FrameOS Remote](/guide/remote) when they connect b
 backend. It's a single self-hosted web app that runs on your own machine and needs no account.
 Don't want to host anything? [FrameOS Cloud](/guide/cloud) is the hosted alternative, and a
 [standalone frame](/guide/standalone) needs neither - the backend is the most capable of the
-three, and the one to pick for compiled Nim apps, custom drivers, a terminal on the frame, and
-ESP32 firmware builds.
+three, and the one to pick for legacy compiled Nim apps, custom drivers, thin-client boards and a
+terminal on the frame.
 
 ![The FrameOS backend](/images/app/frameos-backend.gif)
 
@@ -105,14 +105,21 @@ docker run -d --name frameos --restart always \
     frameos/frameos:latest
 ```
 
-This is optional: for common targets FrameOS ships **precompiled binaries**, and you can also
-configure remote SSH build servers, or build on the frame itself, under **Settings → Builds**.
+This is optional, and rarely needed: FrameOS ships **precompiled binaries**, and only
+[legacy compiled scenes](/guide/scenes#execution) and distros outside the release matrix build from
+source. Remote SSH build servers, or building on the frame itself, are under **Settings → Advanced:
+legacy source builds**.
 
-<Callout title="ESP32 firmware needs no extra setup with Docker">
-  The [`frameos/frameos`](https://hub.docker.com/r/frameos/frameos) image bundles the ESP-IDF and Nim toolchains, so building and
-  browser-flashing [ESP32 firmware](/guide/esp32) works out of the box. Non-Docker installs need
-  [ESP-IDF and Nim installed by hand](/guide/esp32#backend-toolchain).
+<Callout title="ESP32 firmware needs no toolchain">
+  Flashing an [ESP32](/guide/esp32) compiles nothing on any install: the backend writes the signed
+  release image for the board from your browser, then sets it up over USB.
 </Callout>
+
+**Behind a reverse proxy**, set `FRAMEOS_PUBLIC_URL=https://frameos.example` and list the proxy's
+address in `FRAMEOS_TRUSTED_PROXIES`. The live logs and the Terminal use WebSockets, which are
+refused unless the browser's origin matches the host the backend sees - so the proxy must pass
+`Host` through (`proxy_set_header Host $host` in nginx) or send `X-Forwarded-Host`. Without the
+trusted-proxy list the login rate limiter also sees every user as the proxy.
 
 ## Local development with Flox
 
@@ -163,8 +170,8 @@ code, you approve it on [cloud.frameos.net/device](https://cloud.frameos.net/dev
 is made. What it adds, each an **Enabled feature** you can switch individually:
 
 - **Save and share scenes via the cloud** (always on): the [scene store](/guide/scene-store)
-  appears as a repository in every frame's Templates panel, and a **Save to private cloud** menu
-  item pushes your own scenes to your account, where they stay private until you publish them.
+  is in every frame's **Add scene** drawer (your private cloud scenes join it under **Private
+  scenes**), and a **Save to cloud (private)** menu item pushes your own scenes to your account, where they stay private until you publish them.
 - **Cloud backups**: after every successful deploy the backend uploads the frame's settings and
   scenes, plus your scene library, **end-to-end encrypted** with a key the cloud never sees. Keep
   the recovery key (`FRBK1-…`, shown under the switch) in your password manager; after reinstalling

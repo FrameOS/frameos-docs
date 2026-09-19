@@ -57,9 +57,10 @@ You can get an image three ways:
   `frameos-*-raspberry-pi-64-buildroot.img.gz` and its siblings). On first boot the frame starts a
   WiFi hotspot called `FrameOS-Setup` (password `frame1234`). Join it from your phone, enter your
   WiFi credentials, and the frame connects to your network. Generic images ship with
-  [FrameOS Remote](/guide/remote) switched off, since there is no backend for it to talk to yet;
-  **Adopt frame** in the backend turns a running generic-image frame into a managed one and
-  enables it. Or skip the backend altogether and run it as a
+  no [FrameOS Remote](/guide/remote) and no root password, since there is no backend to talk to yet;
+  **Adopt frame** in the backend turns a running generic-image frame into a managed one over the
+  frame's own admin API - scenes, settings, assets, restart, reboot and the frame's signed
+  self-update all work, SSH deploys and the Terminal don't. Or skip the backend altogether and run it as a
   [standalone frame](/guide/standalone).
 
 Flash the image with [Raspberry Pi Imager](https://www.raspberrypi.com/software/) ("Use custom
@@ -72,8 +73,8 @@ screen: name, display and resolution, IP address, a live clock with its time zon
 it, the frame's URL and, once you press one, the last GPIO button.
 
 SD-image frames can also **upgrade themselves in place**: the frame downloads a new release,
-verifies its signature against a key baked into the build, and swaps it in on the next reboot -
-no re-flashing, no SSH.
+verifies its signature against a key baked into the build, swaps it in and restarts (rebooting
+only when the new release needs it) - no re-flashing, no SSH.
 
 ## Option 2: stock Raspberry Pi OS Lite
 

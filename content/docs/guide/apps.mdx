@@ -22,7 +22,8 @@ What's in the box, roughly:
   JavaScript apps can be written and edited in the [self-hosted backend](/guide/backend), in
   [FrameOS Cloud](/guide/cloud) and on a [standalone frame's](/guide/standalone) admin page alike.
   Custom **Nim** apps and Nim code nodes need a compiled scene, which only the self-hosted backend
-  can build - the cloud never compiles code.
+  can build - the cloud never compiles code. That path is legacy:
+  [convert such scenes to JavaScript](/guide/scenes#execution) where you can.
 </Callout>
 
 ## Edit any app
@@ -32,8 +33,8 @@ editable everywhere, the [scene store's](/guide/scene-store) editor included - s
 forked onto that scene, leaving the original untouched.
 The built-in apps are compiled Nim, so in an [interpreted scene](/guide/scenes#execution) their
 source opens **read only**, with an **Open in GitHub** link; to customize one, write a JavaScript
-app or an inline code node instead. In a compiled scene on a Raspberry Pi, Nim apps fork and edit
-the same way.
+app or an inline code node instead. In a legacy compiled scene on a Raspberry Pi, a scene-local Nim
+app still opens for editing, under a notice offering to convert the scene to interpreted.
 
 ![Editing an app](/images/app/apps-edit.gif)
 
@@ -45,7 +46,9 @@ the same way.
 ## JavaScript apps
 
 This is the normal way to write an app. They run on the frame inside an embedded
-[QuickJS](https://bellard.org/quickjs/) runtime - no Node.js needed on the device, and no
+[QuickJS](https://bellard.org/quickjs/) runtime - FrameOS's own fork,
+[quickts](https://github.com/FrameOS/quickts), which parses TypeScript and JSX natively (2026.9.0+),
+so errors name your own file and line. No Node.js needed on the device, and no
 compiler, so your change is live on the frame seconds after you save it. Create one from the code
 templates (text, logic, SVG, or image), define its fields in `config.json`, and export plain
 functions:
@@ -142,8 +145,8 @@ Things to know:
 | --- | --- | --- | --- |
 | Built-in apps | All of them | All but Chromium screenshots and RTSP | Rendered on the backend |
 | Custom JavaScript apps | ✅ | ✅ | Rendered on the backend |
-| Custom Nim apps | Compiled scenes only (self-hosted backend) | ❌ | ❌ |
-| Nim code nodes | Compiled scenes only (self-hosted backend) | ❌ - use JS code nodes | ❌ |
+| Custom Nim apps | Legacy compiled scenes only (self-hosted backend) | ❌ | ❌ |
+| Nim code nodes | Legacy compiled scenes only (self-hosted backend) | ❌ - use JS code nodes | ❌ |
 
 ## SVG, fonts and text
 

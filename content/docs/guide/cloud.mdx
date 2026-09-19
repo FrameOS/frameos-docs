@@ -65,7 +65,8 @@ your fleet.
 
 The header has three sections: **Frames** (your fleet), **Scenes** (the
 [scene store](/guide/scene-store), on `scenes.frameos.net`) and **Account** (linked backends,
-backups, activity log, security, and **Developer** for [API tokens and the MCP server](#developer)).
+**Settings** for service API keys and SSH keys, **AI usage**, backups, activity log, security, and
+**Developer** for [API tokens and the MCP server](#developer)).
 Under Security you can add a passkey or TOTP two-factor authentication - recommended for an
 account that controls physical frames.
 
@@ -81,15 +82,17 @@ The cloud builds a personalized SD image **in your browser**:
 1. Pick your board: `raspberry-pi-64` (Zero 2 W, Pi 3, Pi 4), `raspberry-pi-5` (Pi 5, CM5) or
    `raspberry-pi-32` (Zero, Zero W, Pi 1).
 2. Name the frame, pick its display (or choose to pick it later from the frame's setup hotspot),
-   and enter your WiFi network. Optionally set a root password and tick the **SSH keys** that
-   should be able to log in as root - add one right there or under **Settings → SSH keys**; the
+   and enter your WiFi network. A **Country** field, prefilled from your browser's locale, sets the
+   radio's regulatory domain - without it a frame can't join access points on 2.4 GHz channels 12
+   and 13. Optionally set a root password and tick the **SSH keys** that
+   should be able to log in as root - add one right there or under **Account → Settings**; the
    cloud keeps public keys only, and the builder shows how much of the card's 4&nbsp;KB
    configuration area they take. Your browser's time zone is written into the card too, and for
    HDMI the panel size is autodetected - only displays with no size in the catalog need a width and
    height.
 3. Click **Download SD image**.
 
-Your browser downloads the generic release image, writes your settings into its boot partition, and
+Your browser downloads the generic release image, verifies its release signature, writes your settings into its boot partition, and
 hands you a `.img.gz`. WiFi credentials and the root password **never leave your browser** - only
 the frame name, display and a claim token travel to the cloud. Flash the image with
 [Raspberry Pi Imager](https://www.raspberrypi.com/software/) ("Use custom image") or
@@ -99,8 +102,8 @@ On first boot the Pi joins your WiFi (or raises the `FrameOS-Setup` hotspot if i
 hostname from the frame name (slugified: "Kitchen Frame" becomes `kitchen-frame.local`), and enrolls. The panel shows the FrameOS
 status screen - name, resolution, network, *Managed via: FrameOS Cloud* - until you give it a scene.
 
-You can flash one image to as many cards as you like. The first frame that enrolls is activated
-immediately; every later one appears as **pending**: open it under **Frames** and click
+You can flash one image to as many cards as you like. Every frame that enrolls from the card
+appears as **pending** - the first one included: open it under **Frames** and click
 **Confirm frame** in the banner at the top of its page. Until you do, the frame accepts no scenes or
 settings - so a lost SD card can't quietly add frames to your account. By default the image keeps
 working forever; tick **Stop this SD card from adding frames after a while** on the builder to give
@@ -127,9 +130,18 @@ claimed without reflashing:
 
 - On the frame's admin page, open **Settings → FrameOS Cloud → Connect to cloud.frameos.net**. The
   frame shows a short code like `H7LU-JLWN`. While the link is pending, the same code and a QR code
-  are drawn **on the panel itself**, over the current scene.
-- Scan the QR, or open [cloud.frameos.net/device](https://cloud.frameos.net/device), type the code,
-  and click **Connect frame**.
+  are drawn **on the panel itself** - over the current scene, or beside the rows on the status
+  screen.
+- Scan the QR, or open **Add frame → Link a frame that already runs** in the cloud, type the code
+  from the frame, check what is asking (the frame introduces itself by its hostname, kind and
+  address) and approve. The drawer opens the frame the moment it has enrolled.
+  [cloud.frameos.net/device](https://cloud.frameos.net/device) still works too.
+
+Afterwards the frame's **FrameOS Cloud** box shows a **Cloud status** - *Linked, not managed* or
+*Managed from the cloud* - and two switches: **Manage this frame from FrameOS Cloud** and **Sign in
+here with FrameOS Cloud** (2026.9.15+). The admin password sits under the second one, and the two
+logins can never both be off. Switching management off and on again re-registers the same frame,
+not a second one.
 
 Seeing the code on the display is the proof of ownership, so a frame linked this way is active
 right away. In the `FrameOS-Setup` hotspot you can also pick **Manage via: FrameOS Cloud** and leave
@@ -148,8 +160,8 @@ for the console prompt and tells you what it saw if it never comes.
 
 ESP32 frames are full frames in the cloud too: scenes render on the chip, with logs, metrics,
 previews, schedules and signed over-the-air updates. PSRAM-less boards (ESP32-C3: the original
-TRMNL, XTEINK X4) can enroll but the cloud does not render for thin clients yet - they show only the
-status screen.
+TRMNL, XTEINK X4) would need the cloud to render every refresh for them, which it doesn't offer
+yet - their enrolment is refused. Run those from a [self-hosted backend](/guide/backend).
 
 <Callout>
   Every path offers **Start it with the scenes from…** an existing frame, so a second kitchen frame
@@ -168,13 +180,17 @@ and its scenes at `/frames/<id>/scenes/<sceneId>`.
   applies the change within seconds while connected; pushes to an offline or sleeping frame queue
   and land when it reconnects. A frame holds up to 20 scenes. Every scene remembers where it came
   from - the drawer says *Installed from ‹scene› · v3* - so you can tell a store scene from your
-  own edit of it, and which version is on the frame.
+  own edit of it, and which version is on the frame. When the store has a newer version, the
+  scene's image carries an **Update available** flag; click it, or **Update to latest** in the
+  scene's **…** menu, and after one confirmation the frame moves to the newest version - order,
+  pins and key grants are kept (2026.9.20+).
 - **Preview.** The frame's own last render, plus per-scene snapshots, fetched while you have the
   page open. An ESP32 frame sends its framebuffer on request; a sleeping one delivers it on its
   next wake. Fleet tiles can also render a scene in your browser on request.
 - **Sleep forecast.** A frame that deep-sleeps says so before it halts: the sidebar and the
   frame's page show **asleep · wakes in 5 min** (or **overdue**) rather than a stale "last seen",
-  and battery frames show their charge in place of the status dot.
+  and battery frames show their charge in place of the status dot - click it for the charge,
+  a two-week history and a forecast of the battery's life.
 - **Settings.** The set a cloud-managed frame accepts is declarative: name, rotation, render
   interval, scaling, time zone, debug logging, the QR control code, metrics interval, HTTP
   response cap, palette and partial-refresh policy, GPIO buttons, and on ESP32 the
@@ -188,10 +204,13 @@ and its scenes at `/frames/<id>/scenes/<sceneId>`.
   in the frame's settings. Logs keep the last 5000 lines per frame; metrics charts include reboot
   markers.
 - **Service API keys.** Enter OpenAI, Unsplash, Immich, Home Assistant and similar keys once under
-  Frames → Settings. Each frame has a **Deliver keys to this frame** switch, and only receives the
+  **Account → Settings**. Each frame has a **Deliver keys to this frame** switch, and only receives the
   keys its scenes actually ask for, pulled by the device over HTTPS.
 - **Assets.** Browse and upload files in the frame's assets folder (its SD card on an ESP32).
-- **The ⋯ menu**: rename, render, restart, reboot, **Update firmware**, delete. Deleting a frame
+- **The ⋯ menu**: rename, render, **Render status screen** (Linux frames), restart, reboot,
+  **Update firmware** (shown as **Update queued** while the nudge waits for the frame), delete.
+  Frames on an HDMI/framebuffer display or a HyperPixel also get **Turn display off** / **Turn
+  display on** (FrameOS 2026.9.18+) - the panel powers down while the frame keeps rendering. Deleting a frame
   revokes its link; the device keeps rendering what it has, as a standalone frame.
 - **Activity.** An audit trail per frame: connections, pushes, firmware changes, renames.
 
@@ -209,15 +228,19 @@ Everything the browser can do with your account is also available to scripts and
 
 - **Personal API tokens** (`fc_api_…`, or a read-only `fc_apiro_…`) stand in for your account on
   the JSON API. A token can do what you can do in the UI, minus the actions that always need a fresh
-  sign-in in the browser (revoking frames, approving device links). Minting one needs a recent
-  sign-in too; tokens are shown once and stored hashed.
+  sign-in in the browser (revoking frames, approving device links, changing your password).
+  Minting one needs a recent sign-in too; tokens are shown once and stored hashed. Every token
+  expires - 90 days by default, a year at most - and all of them are revoked when you reset your
+  password or add a second factor.
 - **A hosted MCP server** at `https://cloud.frameos.net/api/mcp` - the same API with a vocabulary a
-  [Model Context Protocol](https://modelcontextprotocol.io/) client can read: 71 tools across
+  [Model Context Protocol](https://modelcontextprotocol.io/) client can read: 73 tools across
   frames (list, rename, settings and schedules, assign and activate scenes, screenshots, logs,
   metrics, assets, reboot, firmware updates, claim tokens), scenes (read and save versions, create
-  from JSON, zip or URL, fork, publish, gallery images, yank, delete), the store, the scene AI, and
+  from JSON, zip or URL, fork, publish, gallery images, yank, delete, convert legacy compiled
+  scenes), the store, the scene AI, and
   a server-side **render** that runs the real FrameOS runtime on any scene JSON and hands the
-  image back, plus the **lint** that publishing applies. Nothing local to run: it speaks Streamable
+  image back, plus the **lint** that publishing applies. Every tool that changes what a frame
+  shows, stores or does takes `confirm: true`, so an agent only acts when you asked for it. Nothing local to run: it speaks Streamable
   HTTP with your token as a bearer.
 
   ```bash

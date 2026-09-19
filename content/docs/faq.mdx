@@ -25,8 +25,8 @@ again, scenes intact. See [Moving between cloud, backend and standalone](/guide/
 
 ## Can I run this on an ESP32? [#why-no-microcontrollers]
 
-Yes, and it's a full frame rather than a demo. FrameOS runs on the **ESP32-S3**: the backend
-builds a firmware image, you [flash it from the browser](/guide/esp32), and the device renders
+Yes, and it's a full frame rather than a demo. FrameOS runs on the **ESP32-S3**: you
+[flash the signed release firmware from the browser](/guide/esp32) - nothing to build - and the device renders
 scenes itself - the same interpreter as Linux frames, the same apps, JavaScript on QuickJS, its
 own scheduler, assets on an SD card, logs and metrics back to the backend, and firmware updates
 over the air with automatic rollback. It deep-sleeps between refreshes and wakes on a button

@@ -23,11 +23,17 @@ Click "New frame" in the backend and pick how this frame gets set up:
 - **Flash embedded device** - build and flash [ESP32](/guide/esp32) or [Pico](/guide/pico)
   firmware, straight from the browser.
 - **Virtual frame** - [no hardware at all](/guide/virtual); the backend renders to an image URL.
-- **Import frame** - restore a frame you exported earlier as JSON.
+- **Import frame** - restore a frame you exported earlier as JSON. The export contains every
+  secret of the frame, so keep it safe.
 - **Adopt frame** - take over a Pi that is already running FrameOS on its own (booted from a
   generic SD image, say). Give the backend the frame's address and its admin login; it imports the
   frame's settings and scenes, keeps its access key so existing links work, and points the frame
-  at this backend. Logs start flowing after the frame's next restart or deploy. ESP32 frames
+  at this backend, restarting it so logs start flowing right away. Adoption goes over the frame's
+  own admin API (backend 2026.9.12+): a generic-image card has no SSH and no
+  [Remote](/guide/remote), so the deploy drawer says "No shell on this frame", deploys are fast
+  deploys over that API, and **Update FrameOS** runs the frame's own signed upgrade. Scenes,
+  settings, assets, fonts, service keys, logs, restart and reboot all work; the Terminal doesn't.
+  The admin login is the backend's only way in, so it can't be switched off on such a frame. ESP32 frames
   can't be adopted - flash those from the backend instead.
 
 Then name the frame and select the right **display driver** for your panel - there are over 120 to
@@ -36,16 +42,17 @@ display hardware. HDMI frames detect their display's resolution themselves.
 
 Before a scene arrives, the frame shows the **FrameOS status screen**: its name, display and
 resolution, network address, a live clock and time zone, who manages it and "Waiting for the
-backend to deploy a scene." Once it has scenes, that same screen lists them, and it notes the last
-GPIO button pressed - handy when a panel looks blank and you want to know whether the frame is
-fine, or whether a button is wired right.
+backend to deploy a scene." Once it has scenes, that same screen lists them, an **Inputs** row
+names the GPIO buttons and input drivers it has, and it notes the last GPIO button pressed - handy
+when a panel looks blank and you want to know whether the frame is fine, or whether a button is
+wired right. Bring it back any time with **Render status screen** in the frame's **…** menu.
 
 ![Adding a frame](/images/app/add-frame.gif)
 
 ## Install some scenes
 
-Install a few scenes onto the frame, from the built-in repositories or the
-[scene store](/guide/scene-store). Good first picks:
+Install a few scenes onto the frame from the [scene store](/guide/scene-store) - **Add scene →
+Scene store**. Good first picks:
 
 - **Gallery scenes** like *Made in Space* or *Masterpieces* - curated art that needs no
   configuration.

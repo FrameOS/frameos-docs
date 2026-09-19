@@ -62,14 +62,22 @@ booleans, a colour picker, a date picker, a select box, raw JSON, a font picker,
 scene picker - or a **path**, which is a file and folder browser over the frame's own
 [assets](/guide/settings#assets). "Which photo folder should this play?" becomes a picker instead
 of a typed-in string. A select's options are one per line, either a plain value or `value | Label`
-when what the frame stores and what people read should differ.
+when what the frame stores and what people read should differ. Write a literal pipe as `\|`.
+
+Every scene also has one field you don't add yourself: **Refresh interval (seconds)**, listed last
+wherever the scene's fields show up - the control page, the backend, the cloud, schedules and
+previews (FrameOS 2026.9.20+). It starts at the interval from the scene's settings; change it like
+any other field and the next sleep follows. To decide where it sits, what it's called, or to hide
+it (`access: private`), add your own numeric field and switch on **Use as refresh interval**. In
+code it is `state.refreshInterval`. The **Next sleep duration** app is still a one-time override:
+it sets how long to sleep after *this* render, and the render after that is back on the interval.
 
 ## Code nodes
 
 For quick data plumbing there are inline **code nodes** (green when not selected): single
 JavaScript or TypeScript expressions that combine or transform values mid-graph - string
-concatenation, math, formatting. (In an older [compiled scene](#execution) they are Nim
-expressions instead.)
+concatenation, math, formatting. (A [legacy compiled scene](#execution) may still carry Nim
+expressions; those nodes show a "Legacy Nim" chip with a **Convert scene** button.)
 
 ![Code nodes](/images/app/code-nodes.gif)
 
@@ -85,16 +93,29 @@ way, every scene FrameOS ships is built that way, and it's the only way [ESP32](
   to refresh anyway.
 
 There is a second, older mode - **compiled** - which turns the scene into native code inside the
-frame's binary. It's faster per render and it's the only mode that can run custom **Nim** app
-source and Nim code nodes, but every change needs a full rebuild and redeploy, and it only works
-on a Raspberry Pi deployed from a [self-hosted backend](/guide/backend) - the cloud only pushes
-interpreted scenes.
+frame's binary. It is a **legacy** path: it's the only mode that can run custom **Nim** app source
+and Nim code nodes, but it forces a FrameOS source build on every deploy, and it only works on a
+Raspberry Pi deployed from a [self-hosted backend](/guide/backend). The cloud refuses compiled
+scenes outright, at upload and at install. Nothing in the editor creates one any more: new code
+nodes are always JavaScript, and saving or installing a Nim-only app asks before it flips a scene
+to compiled. Compiled scenes wear an amber **legacy compiled** tag - on the frame list, in the
+deploy drawer and in the scene sidebar.
+
+The way out is the converter: **Convert to an interpreted scene**, in the scene's menu, in Scene
+Settings and on any "Legacy Nim" node. It ports Nim code nodes and scene-local Nim apps to
+JavaScript - simple expressions convert deterministically, the rest goes through an AI pass, and
+whatever can't be ported is reported as needing a manual port. It converts the editor's unsaved
+copy in place, so check the result, then save or deploy. The Nim does not survive the conversion -
+export the scene first if you want a backup. A backend forwards the conversion to the cloud, using
+your OpenAI key from **Settings → OpenAI** when one is set. The same converter is a public page at
+[scenes.frameos.net/nim-converter](https://scenes.frameos.net/nim-converter) (paste scene JSON, no
+login) and a `scene_convert` MCP tool.
 
 <Callout title="Compiled scenes are the explicit exception">
   A scene is interpreted unless it says otherwise: templates, imports, backups and AI-built scenes
-  that carry no execution mode all run interpreted, and only a scene that actually contains Nim
-  source is stamped compiled. The **Execution** select and the frame's *Installation mode* live
-  under an **Advanced** disclosure on a Pi frame, folded away unless the scene is already compiled.
+  that carry no execution mode all run interpreted. A scene that carries Nim without saying it is
+  compiled stays interpreted too, and Scene Settings flags the Nim it can't run. The **Execution**
+  select and the frame's *Installation mode* live under an **Advanced** disclosure on a Pi frame.
   Build new scenes interpreted unless you specifically need Nim. If you switch an existing scene
   between modes, do a full deploy afterwards; the editor warns you when a scene still contains Nim
   source that interpreted mode can't run.

@@ -34,10 +34,11 @@ or [balenaEtcher](https://etcher.balena.io/) - both read the `.img.gz` as is. Co
 insert the card, power up.
 
 <Callout title="Already running Linux?">
-  A Pi on Raspberry Pi OS, or any Debian (buster-trixie) or Ubuntu (22.04-26.04) machine on
+  A Pi on Raspberry Pi OS, or any Debian (bookworm, trixie) or Ubuntu (24.04, 26.04) machine on
   arm64, armhf, armv6 or amd64, can skip the image. Run
   `curl -fsSL https://cloud.frameos.net/install.sh | sudo sh` on the device: it asks for the
-  display and an admin password, installs the latest release as a systemd service, and starts the
+  display and an admin password, downloads the latest release, checks its signature against the FrameOS release key, installs it
+  as a systemd service, and starts the
   frame standalone. Continue at [step 3](#3-open-the-admin-page).
 </Callout>
 
@@ -52,15 +53,19 @@ for:
 - the **display** - every driver is in the image, so you pick your panel here, plus rotation and
   any driver extras (VCOM for an IT8951 panel, for instance);
 - a **name** and an **admin password** for the frame;
+- the **time zone** - preselected from your phone (2026.9.10+);
 - **Manage via**: choose **Nothing (standalone)**. The other two options enroll the frame with
   [FrameOS Cloud](/guide/cloud) or point it at a [self-hosted backend](/guide/backend) - you can
   change your mind later from the admin page.
 
-Save, and the Pi joins your network. If the WiFi password was wrong, the frame keeps trying for
+Save, and the Pi joins your network: the "Saved!" page names the network it is joining, waits for
+the frame to show up on your LAN and opens it there. If the WiFi password was wrong, the frame keeps trying for
 about 90 seconds before the `FrameOS-Setup` hotspot comes back. On HDMI you watch it happen: the FrameOS status screen draws
 the boot steps as they go ("Checking network…", "Network connected. Loading scenes…"). E-ink
-panels get the same screen once the frame is up: its name, display and resolution, IP address,
-a clock and time zone, how it is managed (*standalone*), and the frame's URL. If the frame gets an
+panels get the same screen once the frame is up: its name, display and resolution, IP address and
+whether the internet is reachable, a clock and time zone, how it is managed (*standalone*), and the
+frame's URL - as `<hostname>.local` and as a plain IP, plus a `/?k=…` access link while the frame
+has no admin login yet. If the frame gets an
 address but nothing resolves, the log carries a `networkCheck:diagnostics` snapshot (DNS, routes,
 the DHCP lease) that says why.
 
@@ -69,8 +74,8 @@ the DHCP lease) that says why.
 Browse to `http://<frame-ip>:8787/admin` (the status screen shows the address) and sign in with
 the admin password. This is a full management UI served by the frame itself:
 
-- **Scenes**: install from the built-in sample and gallery repositories (add the
-  [scene store](/guide/scene-store) as one more), upload a scene ZIP, or build your own in the same
+- **Scenes**: install from the [scene store](/guide/scene-store), built into the **Add scene**
+  drawer (the bundled samples stand in when the store can't be reached), upload a scene ZIP, or build your own in the same
   node-graph [scene editor](/guide/scenes) the backend has. Scenes are interpreted, so there is nothing to
   compile - save, and it is live.
 - **Settings**: everything under [Useful settings](/guide/settings) - access mode, QR code, time
@@ -78,7 +83,7 @@ the admin password. This is a full management UI served by the frame itself:
 - **Schedule**, **Logs**, **Metrics**, **Assets** - the same panels a backend shows for the frame,
   running against the device.
 - **Settings → FrameOS upgrade**: the frame downloads a new release itself, verifies the
-  signature, and swaps it in on the next reboot.
+  signature, swaps it in and restarts - rebooting only when the new release needs it.
 
 The control page at `http://<frame-ip>:8787/c` and the [HTTP API](/guide/control) work exactly as
 on any other frame, and the QR code on the display points at them.

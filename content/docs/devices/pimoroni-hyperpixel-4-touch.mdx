@@ -1,0 +1,69 @@
+---
+title: "Pimoroni HyperPixel 4.0\" Touch"
+description: "A 480×800 touch LCD on the Pi's GPIO header, driven natively on a Pi Zero through Pi 5."
+device:
+  vendor: "Pimoroni"
+  model: "HyperPixel 4.0\" Touch"
+  driver: "pimoroni.hyperpixel4_touch"
+  label: "Pimoroni HyperPixel 4.0\" Touch"
+  technology: "LCD"
+  interface: "GPIO (DPI)"
+  diagonal: 4
+  width: 480
+  height: 800
+  colors: "262K (18-bit RGB)"
+  colorCount: 262144
+  colorClass: "rgb"
+  productUrl: "https://shop.pimoroni.com/products/hyperpixel-4"
+  image: "/images/devices/placeholders/pimoroni-hyperpixel-4-touch.svg"
+  status: "tested"
+---
+
+The **Pimoroni HyperPixel 4.0" Touch** is a 4″ IPS LCD with a resolution of **480×800 pixels** in 18-bit colour and a capacitive touchscreen. It
+sits on the Pi's 40-pin header and the pixels travel over DPI - no HDMI cable, and a refresh is
+instant. That makes it a good fit for clocks, dashboards and anything that animates or reacts to a finger.
+
+Pimoroni sells this board with and without touch, and as a square 720×720 sibling - pick
+the FrameOS device that matches yours: [HyperPixel 4.0"](/devices/pimoroni-hyperpixel-4), [HyperPixel 4.0" Square](/devices/pimoroni-hyperpixel-4-square), [HyperPixel 4.0" Square Touch](/devices/pimoroni-hyperpixel-4-square-touch). The
+smaller round one is the [HyperPixel 2.1" Round](/devices/pimoroni-hyperpixel-2.1inch-round-480x480-lcd).
+
+Needs FrameOS **2026.9.20** or newer.
+
+## How it works
+
+One native driver covers every HyperPixel 4.0 - no Pimoroni installer, no Python. On the first
+deploy its setup writes what the panel needs into `config.txt` and the frame reboots once. How the
+pixels get to the glass depends on the Pi, which the frame detects by itself:
+
+- **Pi Zero to Pi 4** - the Pi's firmware drives DPI into `/dev/fb0`, and FrameOS sends the panel
+  its init sequence and switches the backlight over GPIO.
+- **Pi 5** - a Pi 5 has no firmware DPI, so setup enables the kernel's `vc4-kms-dpi-hyperpixel4`
+  overlay instead and FrameOS only writes the framebuffer.
+
+Touch is read by the kernel's own Goodix GT911 driver and arrives in your [scenes](/guide/scenes)
+as the pointer events `mouseMove`, `mouseDown` and `mouseUp`. Coordinates follow the frame's
+rotate and flip settings, so a scene on a rotated panel gets taps where it drew things.
+
+## Setup
+
+1. Plug the display onto the Pi's GPIO header. On a Pi Zero that means soldering a header first -
+   or buy the pre-pinned WH / 2 WH.
+2. [Add a frame](/guide/first-deploy) and select the **Pimoroni HyperPixel 4.0" Touch** device.
+3. Save & deploy. The first deploy reboots the Pi once, then the scene appears.
+
+The panel scans in portrait, 480×800. For an 800×480 landscape frame set **Rotate** to 90 or 270
+in the frame's settings.
+
+The HyperPixel takes every GPIO pin, so the Pi's I2C and SPI buses are switched off while it is
+the frame's display - no other HATs or GPIO buttons alongside it. **Turn display off / on** (from
+the frame's menu, or on a [schedule](/guide/control)) switches the backlight; there is no dimming.
+
+Moving the SD card to a different HyperPixel is fine: change the device, deploy, and setup swaps
+the `config.txt` lines over.
+
+## Status
+
+🟢 **Confirmed working** on a Raspberry Pi 5 - picture, touch and display off / on. The Pi Zero to
+Pi 4 path shares its design with the confirmed [2.1" Round](/devices/pimoroni-hyperpixel-2.1inch-round-480x480-lcd)
+driver but hasn't been tried on this panel yet. If you run one, tell us on
+[GitHub](https://github.com/FrameOS/frameos/issues/new) or [Discord](https://discord.gg/9dT9y7EzUw).

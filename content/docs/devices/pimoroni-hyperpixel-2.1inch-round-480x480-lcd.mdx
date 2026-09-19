@@ -4,8 +4,8 @@ description: A round 480×480 touch LCD on the Pi's GPIO header.
 device:
   vendor: "Pimoroni"
   model: "HyperPixel 2.1\" Round"
-  driver: "pimoroni.hyperpixel2r_native"
-  label: "Pimoroni HyperPixel 2.1\" Round (native)"
+  driver: "pimoroni.hyperpixel2r"
+  label: "Pimoroni HyperPixel 2.1\" Round"
   technology: "LCD"
   interface: "GPIO (DPI)"
   diagonal: 2.1
@@ -30,39 +30,46 @@ device:
 - A 40-pin GPIO header to solder onto the Pi - or buy the pre-pinned Zero WH/W2H and skip the
   soldering.
 
+## How it works
+
+One native driver runs the panel - no Pimoroni installer, no Python, no Bullseye. On the first
+deploy its setup writes what the panel needs into `config.txt` and the frame reboots once. How the
+pixels get to the glass depends on the Pi, which the frame detects by itself:
+
+- **Pi Zero to Pi 4** - the Pi's firmware drives DPI into `/dev/fb0`, and FrameOS sends the panel
+  its init sequence and switches the backlight over GPIO.
+- **Pi 5** (FrameOS 2026.9.20+) - a Pi 5 has no firmware DPI, so setup enables the kernel's
+  `vc4-kms-dpi-hyperpixel2r` overlay instead and FrameOS only writes the framebuffer. No touch on
+  this path, and it hasn't been tried on real hardware yet.
+
+From FrameOS 2026.9.20 touch works on a Pi Zero to Pi 4: the kernel's own FT5x06 driver reads it,
+and it arrives in your [scenes](/guide/scenes) as the pointer events `mouseMove`, `mouseDown` and
+`mouseUp`. Coordinates follow the frame's rotate and flip settings.
+
 ## Setup
 
-FrameOS has two drivers for this panel:
+1. Solder the header if your Pi needs one, and plug the display on.
+2. [Add a frame](/guide/first-deploy) and select the **Pimoroni HyperPixel 2.1" Round** device.
+3. Save & deploy. The first deploy reboots the Pi once, then the scene appears.
 
-- **Pimoroni HyperPixel 2.1 Round (native)** - try this first on current Raspberry Pi OS.
-- **Pimoroni HyperPixel 2.1 Round** - the legacy framebuffer driver, for the Bullseye-based setup
-  below.
+The HyperPixel takes every GPIO pin, so the Pi's I2C and SPI buses are switched off while it is
+the frame's display - no other HATs or GPIO buttons alongside it.
 
-For the legacy route, install **Raspberry Pi OS (Legacy) Lite - "Bullseye"**, then SSH in and run:
+### Coming from an older setup
 
-```bash
-sudo apt -y update
-sudo apt -y install git
-git clone https://github.com/pimoroni/hyperpixel2r
-cd hyperpixel2r
-sudo ./install.sh
-# remove 3d acceleration
-sudo sed -i '/dtoverlay=vc4-kms-v3d/s/^/#/' /boot/config.txt
-sudo reboot
-```
+Until FrameOS 2026.9.14 there were two devices for this panel: a legacy one on top of Pimoroni's
+`hyperpixel2r` installer and Raspberry Pi OS Bullseye, and a "(native)" one. They are now the one
+native driver behind the one device, and existing frames are moved over for you. The next full
+deploy (or Buildroot update) comments out Pimoroni's overlay in `config.txt`, writes the DPI block
+and reboots once. A frame from before touch gains two more `config.txt` lines and one reboot the
+same way.
 
-After the reboot the screen shows the Linux boot log. Add the frame in the backend, pick the
-HyperPixel driver, and deploy.
+## Display power
 
-## Brightness control
-
-The backlight is on BCM pin 19 (PWM):
-
-```bash
-sudo apt install wiringpi
-gpio -g mode 19 pwm   # set the pin to PWM mode
-gpio -g pwm 19 60     # 0-24 off, 25-90 dimmed, 91-1023 full brightness
-```
+**Turn display off / on** - in the frame's **…** menu, or as `turnOff` / `turnOn` events from a
+scene or a [schedule](/guide/control) - switches the backlight. The frame keeps rendering while the
+panel is off, so it comes back on with the current image. The driver owns the backlight pin
+(GPIO 19) and only switches it on and off; there is no dimming.
 
 ## 3D models
 

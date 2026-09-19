@@ -36,7 +36,9 @@ render, so plugging a screen in brings the picture up within seconds even on an 
 
 ## Power control
 
-You can turn the display output on and off from the command line - handy in schedules:
+From 2026.9.18 the frame's **…** menu has **Turn display off** and **Turn display on** - in the
+backend, the on-device admin panel and FrameOS Cloud. They send the same `turnOff` / `turnOn`
+events a scene or schedule can. The same thing from the command line:
 
 ```bash
 vcgencmd display_power 0   # off

@@ -21,6 +21,11 @@ and setup instructions.
   exact ink palette, and pushes the result to the display.
 - **[HDMI / Framebuffer](/devices/framebuffer-hdmi)** renders straight to the Pi's video output -
   TVs, monitors, any HDMI panel. On a Pi 5 it pushes 60 frames per second.
+- **Pimoroni HyperPixel** LCDs - the [4.0"](/devices/pimoroni-hyperpixel-4-touch), the
+  [4.0" Square](/devices/pimoroni-hyperpixel-4-square-touch) and the
+  [2.1" Round](/devices/pimoroni-hyperpixel-2.1inch-round-480x480-lcd) - sit on the GPIO header and
+  get their pixels over DPI. A native driver sets them up on a Pi Zero through Pi 5, and touch
+  arrives in scenes as pointer events.
 - **[Web only](/devices/web-only)** runs a frame with no physical display: view it in the
   browser, perfect for trying FrameOS or kiosk setups.
 - **[HTTP upload](/devices/http-upload)** POSTs each rendered image to a URL of your choosing -

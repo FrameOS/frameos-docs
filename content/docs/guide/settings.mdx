@@ -88,6 +88,20 @@ anything that does - a progressive JPEG, a large feed - spills to the SD card wh
 so a 20 MB gallery photo needs nothing but a higher limit. See
 [Big images on small devices](/guide/images).
 
+## HTTPS
+
+Switch on **HTTPS API** and the frame serves its web app and API over TLS on port `8443`, next to
+plain HTTP on `8787` - or instead of it, with **Expose only HTTPS port**. From FrameOS 2026.9.14
+the frame does this itself on every Linux frame, SD-image frames included; the Caddy proxy that
+older releases installed is gone, and the first full deploy after the upgrade switches it off. If
+the certificate can't be loaded or the port is taken, the frame logs `tls:config_error` or
+`tls:start_error` and stays reachable over plain HTTP.
+
+From 2026.9.15, port and HTTPS changes saved on the frame's own admin page take effect on save: the
+page follows the frame to its new address, and a port that is already in use refuses the save
+instead of locking you out. A time zone or network share changed there is applied too, no deploy
+needed.
+
 ## Debug logging
 
 Enable debug logging to get per-app timing in the logs - useful to find out which app slows down
@@ -96,14 +110,23 @@ your renders.
 ## SSH keys
 
 Both the [backend](/guide/backend) and the [cloud](/guide/cloud) keep a list of SSH public keys
-under **Settings → SSH keys** (the backend can also generate a keypair for you; the cloud stores
-public halves only). Mark the ones that should go onto every new frame, and the SD image builders
+under **Settings → SSH keys** in the backend and **Account → Settings** in the cloud (the backend
+can also generate a keypair for you; the cloud stores public halves only). Mark the ones that should go onto every new frame, and the SD image builders
 and the frame's settings page offer them as checkboxes - a key on the card lands in root's
 `authorized_keys` on first boot, next to whatever root password you chose.
 
+The other way round, the backend pins a frame's SSH host key the first time it connects, and
+refuses a different machine at that address. Replaced the Pi or re-flashed the card? **Forget host
+key** in the frame's settings resets it (there is one for the build host too).
+
 ## Builds (self-hosted backend only)
 
-Under the backend's settings you can choose how FrameOS binaries get built for your frames:
-precompiled release binaries (the default for supported targets), local Docker cross-compilation,
-a remote SSH build server, or building on the device itself. The Home Assistant add-on has no
-Docker socket, so it stays on precompiled binaries unless you point it at a build host.
+FrameOS is distributed as released binaries, and a normal deploy compiles nothing. The backend's
+Settings page keeps the old build machinery under **Advanced: legacy source builds**, collapsed
+behind a **Show** link: local Docker cross-compilation, a remote SSH build host, or building on the
+device itself. A source build only happens for a [legacy compiled scene](/guide/scenes#execution),
+for a frame whose installation mode you set to **Build from source** by hand, or for a distro
+outside the release matrix. Releases cover Debian / Raspberry Pi OS bookworm and trixie and Ubuntu
+24.04 and 26.04, so a frame still on bullseye builds from source until you upgrade its OS. The
+Home Assistant add-on has no Docker socket, so it stays on precompiled binaries unless you point
+it at a build host.

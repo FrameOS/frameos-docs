@@ -22,7 +22,9 @@ browser, seeded with sample photos) so slideshow and SD-card scenes render too, 
 switch that re-renders as you change state fields, and an opt-in real-time mode for scenes that
 want to animate. JavaScript clocks run in the scene's time zone. A scene that calls a
 pay-per-request service (OpenAI, say) never renders on its own - it waits for you to click
-**Run preview** each time the scene changes, so a browse never spends your credits.
+**Run preview** each time the scene changes, so a browse never spends your credits. Tick
+**Memory limit** and pick a device (ESP32 with 8 or 16 MB, Pi Zero, Pi) to render under that
+frame's memory: the preview shows the peak and says "out of memory" where the frame would.
 
 ## Install a scene
 
@@ -31,43 +33,59 @@ The **Install** button opens one dialog with every way in:
 - **On a cloud-managed frame**: sign in, pick the frame and click **Install** - the scene is
   added next to the frame's existing scenes and deployed within seconds (or as soon as an offline
   frame reconnects). The frame remembers where the scene came from and which version it is on.
+  When a newer version is published, the scene's image says **Update available** - on the cloud, a
+  backend and the frame's own admin page - and **Update to latest** in its **…** menu takes it
+  there (2026.9.20+).
 - **On a self-hosted backend**: copy the **Install on a self-hosted FrameOS** link and paste it
-  into the search box of a frame's **Templates** panel in the backend.
-  A backend [linked to your cloud account](/guide/backend#cloud) goes one better: the store shows
-  up as a repository in the Templates panel, so you browse and install it there directly. Unlinked
-  backends can add `https://scenes.frameos.net/api/store/repository.json` as a repository by hand.
-- **On a standalone frame**: **Download zip** and upload it on the frame's admin page.
+  into the search box of a frame's **Add scene** drawer in the backend. You rarely need the link:
+  **Add scene → Scene store** lists the public store on every backend, linked to a cloud account or
+  not, grouped into the same shelves as the store front.
+- **On a standalone frame**: open **Add scene** on the frame's admin page - the store is listed
+  there first (FrameOS 2026.9.10+). **Download zip** and upload still works on older frames.
+
+Installing a store scene on a backend grants it the service keys it declares; revoke them under
+the frame's settings, **Service keys for store scenes**.
 
 Scenes that run shell commands on the frame are flagged in the store. A backend warns before
 installing one; the cloud never pushes them at all - install those from the frame itself, and only
-from publishers you trust.
+from publishers you trust. From 2026.9.11 a frame refuses the Chromium screenshot and RTSP snapshot
+apps in any store scene until a local admin allows shell apps for store scenes in the frame's
+settings, confirmed with the code on the panel.
 
 ## Your scenes
 
 Signed in, the store gets a second tab, **My scenes**
 ([scenes.frameos.net/my-scenes](https://scenes.frameos.net/my-scenes)), with your private scenes
 first and your public ones below. Everything private is yours alone until you click
-**Make public**. Scenes get here four ways:
+**Make public**. Scenes get here five ways:
 
+- **New blank scene** - an empty scene in the hosted editor.
 - **Create a scene with AI** - describe what you want and the [scene assistant](#ai) builds it as
   a new private scene.
 - **Fork** any store scene ("Save a copy as a new private scene in your account"), then edit it in
   the hosted editor.
 - **Upload a scene ZIP** exported from a backend or a frame; the cover image in the zip becomes
-  the scene's preview.
-- From a [linked backend](/guide/backend#cloud): the **Save to private cloud** item in a scene's
-  Templates menu pushes it straight to your account, and your private scenes appear in the
-  backend's Templates panel on every machine you link.
+  the scene's preview. A zip holding a [legacy compiled scene](/guide/scenes#execution) (Nim code
+  nodes or Nim apps) is refused - run it through the
+  [converter](https://scenes.frameos.net/nim-converter) first.
+- From a [linked backend](/guide/backend#cloud): the **Save to cloud (private)** item in a scene's
+  **…** menu pushes it straight to your account, and your private scenes appear under **Add scene →
+  Private scenes** on every machine you link.
 
 A private scene's install link carries a sharing secret, so you can hand it to a friend without
-publishing. Versions are immutable - **Save as new version** asks for a one-line "What changed?"
+publishing. A version is the whole scene - diagram, description, tags, category and the image
+gallery - so editing the listing or reordering images shows up as **Unsaved changes** and lands
+with the next save. Unsaved edits are kept in your browser: leave a scene page and come back, and
+the editor restores them with a **Discard** button next to them. Versions are immutable - **Save as new version** asks for a one-line "What changed?"
 that heads the version in the dropdown and on the public page, and you can yank a bad version so
 new installs skip it. A scene the store has pulled stays readable and deletable by its owner.
 
 ## Build and edit scenes with AI [#ai]
 
 Every scene you own has an **AI** panel (and the store's front page has a **Create a scene with
-AI** card). Describe the scene, or the change - "add a theme selector", "make the clock bigger,
+AI** card). The assistant can't deploy on its own: installing on a frame from the chat is an
+**Approve** card you click. **Account → AI usage** shows what you've used and has a **Turn AI
+off** switch. Describe the scene, or the change - "add a theme selector", "make the clock bigger,
 show the weather for Tallinn" - and the assistant edits the node graph, the JavaScript apps and
 the state fields, checks the result against a catalog-aware linter and renders it inline before
 handing it over; you then save it as a new version, with the prompt pre-filled as the change

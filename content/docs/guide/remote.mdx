@@ -21,8 +21,9 @@ Remote means:
 - The backend's **Terminal** panel can open a browser shell on the frame.
 - Deploy, restart and maintenance actions can go through the existing Remote connection.
 
-Remote is installed and updated automatically when you deploy to a Raspberry Pi frame. On
-FrameOS SD card images it's part of the system from first boot. It authenticates with a per-frame
+Remote is installed and updated automatically when you deploy to a Raspberry Pi frame. SD card
+images built in the backend carry it from first boot; the generic release images don't (a generic
+card you [adopt](/guide/first-deploy) is managed over the frame's own admin API instead). It authenticates with a per-frame
 shared secret, so a Remote connection only controls the frame it belongs to.
 
 Like everything else in FrameOS, Remote is optional. A frame renders fine without Remote, without

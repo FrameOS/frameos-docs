@@ -50,7 +50,8 @@ The preset uses 16MB flash, 8MB PSRAM, and mounts the TF card at `/srv/assets` f
 1. In the FrameOS backend, create a frame with **Flash embedded device**.
 2. Choose **ESP32-S3**, select the **Waveshare ESP32-S3 PhotoPainter** hardware preset, and enter
    WiFi details.
-3. Build the firmware and flash it over USB from the browser.
+3. Flash it over USB from the browser - the backend writes the release image for the board and sets
+   it up as this frame.
 4. Install scenes as usual. The device syncs scene JSON and renders without SSH or Linux.
 
 ## Status

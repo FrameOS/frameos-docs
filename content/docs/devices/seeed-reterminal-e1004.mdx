@@ -67,8 +67,8 @@ PSRAM to spare. That is what makes this board render on-device rather than as a 
 
 1. In the FrameOS backend, create a frame with **Flash embedded device**.
 2. Choose **ESP32-S3**, select the **Seeed reTerminal E1004** preset, and enter your WiFi details.
-3. Build the firmware and flash it over USB from the browser - or write the generic release image
-   with **Flash latest release** and let the backend configure it over the USB console.
+3. Flash it over USB from the browser - the backend writes the release image for the board and sets
+   it up as this frame.
 4. Install scenes as usual - they sync over WiFi, and the device updates itself over the air.
 
 ### macOS: install the WCH serial driver first

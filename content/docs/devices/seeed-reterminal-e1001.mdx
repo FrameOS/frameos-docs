@@ -37,7 +37,8 @@ buttons dispatch scene events, so they can switch scenes or trigger a render.
 
 1. In the FrameOS backend, create a frame with **Flash embedded device**.
 2. Choose **ESP32-S3**, select the **Seeed reTerminal E1001** preset, and enter your WiFi details.
-3. Build the firmware and flash it over USB from the browser. The E1001's USB-C port goes to a
+3. Flash it over USB from the browser - the backend writes the release image for the board and sets
+   it up as this frame. The E1001's USB-C port goes to a
    CH340 UART bridge, not to the chip's own USB pins, so it shows up as a *USB Single Serial* port -
    supported since firmware 2026.8.38 (earlier flashers refused it). On macOS install WCH's
    [CH34x driver](/devices/seeed-reterminal-e1004#macos-install-the-wch-serial-driver-first)
