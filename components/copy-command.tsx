@@ -3,12 +3,21 @@ import { useState } from 'react';
 import { Check, Copy } from 'lucide-react';
 import { cn } from '@/lib/cn';
 
-export function CopyCommand({ command, className }: { command: string; className?: string }) {
+export function CopyCommand({
+  command,
+  className,
+  dataAttr,
+}: {
+  command: string;
+  className?: string;
+  dataAttr?: string;
+}) {
   const [copied, setCopied] = useState(false);
 
   return (
     <button
       type="button"
+      data-attr={dataAttr}
       onClick={() => {
         navigator.clipboard.writeText(command).then(() => {
           setCopied(true);

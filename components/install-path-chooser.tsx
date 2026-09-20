@@ -83,15 +83,18 @@ const installOptions = [
 function LinkButton({
   href,
   variant = 'primary',
+  dataAttr,
   children,
 }: {
   href: string;
   variant?: 'primary' | 'secondary';
+  dataAttr?: string;
   children: React.ReactNode;
 }) {
   return (
     <Link
       href={href}
+      data-attr={dataAttr}
       className={cn(
         'inline-flex items-center gap-2 rounded-lg px-3 py-1.5 text-sm font-medium',
         variant === 'primary'
@@ -145,6 +148,7 @@ export function InstallPathChooser({
               key={option.id}
               type="button"
               aria-pressed={selected}
+              data-attr={`install-path-${option.id}`}
               onClick={() => setSelectedPath(option.id)}
               className={cn(
                 'group relative isolate flex h-full cursor-pointer flex-col items-start gap-2 overflow-hidden rounded-xl border p-4 text-left transition-all',
@@ -199,7 +203,10 @@ export function InstallPathChooser({
       </div>
 
       {selectedPath ? (
-        <div className="mt-3 rounded-xl border border-fd-primary bg-fd-card/50 p-4 text-left shadow-md ring-1 ring-fd-primary">
+        <div
+          data-attr={`install-panel-${selectedPath}`}
+          className="mt-3 rounded-xl border border-fd-primary bg-fd-card/50 p-4 text-left shadow-md ring-1 ring-fd-primary"
+        >
           {selectedPath === 'frame' ? (
             <>
               <div className="border-b pb-3">
@@ -207,6 +214,7 @@ export function InstallPathChooser({
                 <div className="mt-2 flex flex-wrap items-center gap-2">
                   <select
                     aria-label="Raspberry Pi model"
+                    data-attr="install-frame-board"
                     value={board}
                     onChange={(e) => setBoard(e.target.value as PiImage)}
                     className="min-w-0 flex-1 rounded-lg border bg-fd-background px-3 py-1.5 text-sm"
@@ -220,6 +228,7 @@ export function InstallPathChooser({
                   {board !== 'other' ? (
                     <button
                       type="button"
+                      data-attr={`install-frame-download-${board}`}
                       onClick={downloadImage}
                       disabled={downloading}
                       className="inline-flex items-center gap-2 rounded-lg bg-fd-primary px-3 py-1.5 text-sm font-medium text-fd-primary-foreground transition-opacity hover:opacity-90 disabled:opacity-60"
@@ -247,7 +256,7 @@ export function InstallPathChooser({
                     <code>arm64</code>, <code>armhf</code>, <code>armv6</code> and <code>amd64</code>{' '}
                     - Raspberry Pi OS included. Run this on the device:
                   </p>
-                  <CopyCommand command={LINUX_INSTALL_COMMAND} className="mt-3 w-full" />
+                  <CopyCommand command={LINUX_INSTALL_COMMAND} dataAttr="install-frame-copy-command" className="mt-3 w-full" />
                   <p className="mt-3 text-fd-muted-foreground">
                     It asks for your display and an admin password, installs the latest release
                     as a systemd service, and starts the frame. Then open{' '}
@@ -308,7 +317,7 @@ export function InstallPathChooser({
                 <TextLink href="/guide/raspberry#option-2-stock-raspberry-pi-os-lite">deploy over SSH</TextLink> to a Pi,
                 or <TextLink href="/guide/esp32#flash-the-device">flash an ESP32</TextLink> from the browser.
               </p>
-              <CopyCommand command={INSTALL_COMMAND} className="mt-3 w-full" />
+              <CopyCommand command={INSTALL_COMMAND} dataAttr="install-backend-copy-command" className="mt-3 w-full" />
               <p className="mt-3 text-fd-muted-foreground">
                 Prefer another method? There's a{' '}
                 <TextLink href="/guide/backend#home-assistant-add-on">Home Assistant add-on</TextLink>,{' '}
@@ -333,8 +342,10 @@ export function InstallPathChooser({
                   </p>
                 </div>
                 <div className="flex flex-wrap items-center gap-2">
-                  <LinkButton href={CLOUD_SIGNUP_URL}>Sign up at cloud.frameos.net</LinkButton>
-                  <LinkButton href={CLOUD_URL} variant="secondary">
+                  <LinkButton href={CLOUD_SIGNUP_URL} dataAttr="install-cloud-signup">
+                    Sign up at cloud.frameos.net
+                  </LinkButton>
+                  <LinkButton href={CLOUD_URL} variant="secondary" dataAttr="install-cloud-login">
                     Log in
                   </LinkButton>
                 </div>
