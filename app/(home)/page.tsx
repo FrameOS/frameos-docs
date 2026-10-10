@@ -1,25 +1,11 @@
 import Link from 'next/link';
 import Image from 'next/image';
-import {
-  Blocks,
-  Cloud,
-  Cpu,
-  ExternalLink,
-  Gauge,
-  HardDrive,
-  Image as ImageIcon,
-  Monitor,
-  Printer,
-  QrCode,
-  Server,
-  SlidersHorizontal,
-  Store,
-  WifiOff,
-} from 'lucide-react';
+import { ExternalLink } from 'lucide-react';
 import { InstallPathChooser } from '@/components/install-path-chooser';
 import { Slideshow, type Slide } from '@/components/slideshow';
 import { TextLink } from '@/components/text-link';
 import { LightboxImage } from '@/components/lightbox';
+import { CompareSlider } from '@/components/compare-slider';
 import { links } from '@/lib/shared';
 
 // Swap or reorder freely - the slideshows render whatever is listed here.
@@ -131,74 +117,6 @@ const sceneStrip = [
   { src: '/images/scenes/samples/calendar.jpg', alt: 'Calendar scene', slug: 'calendar' },
   { src: '/images/scenes/gallery/cuteness-overload.jpg', alt: 'Cuteness Overload gallery scene with a cartoon toucan', slug: 'cuteness-overload' },
   { src: '/images/scenes/samples/xkcd.jpg', alt: 'XKCD scene', slug: 'xkcd' },
-];
-
-const features = [
-  {
-    icon: WifiOff,
-    title: 'Runs on the device',
-    body: 'Scenes run on the frame itself, in a single native binary. Unplug your router, shut down the backend, lose the cloud - the frame keeps doing its job.',
-  },
-  {
-    icon: QrCode,
-    title: 'Control it locally',
-    body: 'Every frame serves a control page and HTTP API on port 8787. Scan the QR code on the display, or curl it from a script or Home Assistant.',
-  },
-  {
-    icon: Server,
-    title: 'Self-hosted backend',
-    body: 'One Docker container (or a Home Assistant add-on) to design and deploy scenes over SSH. Run it on a server, or just on your laptop when needed.',
-  },
-  {
-    icon: Cloud,
-    title: 'Or let the cloud manage it',
-    body: 'FrameOS Cloud enrolls a Pi or ESP32 from your browser and assigns scenes from anywhere. Deliberately limited: no shell, no compiled code, only sandboxed scenes. Free in beta.',
-  },
-  {
-    icon: Store,
-    title: 'A scene store',
-    body: 'Browse community scenes with live previews at scenes.frameos.net. One click onto a cloud frame, one pasted link into a self-hosted backend, fork and edit in the browser.',
-  },
-  {
-    icon: Monitor,
-    title: '120+ displays',
-    body: 'Waveshare and Pimoroni e-ink from 1" to 13.3" - including Spectra 6 color - plus anything with an HDMI port, LCDs, or no display at all.',
-  },
-  {
-    icon: Gauge,
-    title: '60 FPS or 60 s/frame',
-    body: 'The same scene system drives a 60 FPS HDMI dashboard on a Pi 5 and a once-a-minute e-ink calendar on a Pi Zero 2 W.',
-  },
-  {
-    icon: SlidersHorizontal,
-    title: 'Colour controls for e-ink',
-    body: 'Grade each photo for the panel it will hang on: exposure, whites and blacks, tonal tints, per-hue HSL, even the dither palette - previewed with the panel’s own dither. The frame fits every image into the panel’s range by itself.',
-  },
-  {
-    icon: Blocks,
-    title: 'Visual editor + real code',
-    body: 'Wire up events, data and render apps in a node editor. When that is not enough, fork any app and edit its Nim or JavaScript source.',
-  },
-  {
-    icon: Cpu,
-    title: 'Microcontrollers too',
-    body: 'An ESP32-S3 renders full scenes on-device and deep-sleeps between refreshes, so a frame can run on a battery. Flash it from the browser.',
-  },
-  {
-    icon: ImageIcon,
-    title: 'Images of any size',
-    body: 'A 12-megapixel photo renders on a board with 8 MB of RAM: the decoder scales as it decodes, straight into the panel. No proxy, no resize server.',
-  },
-  {
-    icon: HardDrive,
-    title: 'Prebuilt SD images',
-    body: 'Flash a ready-made FrameOS image for any Pi - WiFi preconfigured or set up via the frame’s own hotspot. Precompiled binaries mean no slow on-device builds.',
-  },
-  {
-    icon: Printer,
-    title: '3D-printed cases',
-    body: 'The parametric Case Maker generates a printable case around your exact panel and Pi: kickstands, wall mounts, USB-C cutouts.',
-  },
 ];
 
 function SectionTitle({ kicker, title, sub }: { kicker?: string; title: string; sub?: React.ReactNode }) {
@@ -335,6 +253,59 @@ export default function HomePage() {
             >
               How installing works
             </Link>
+          </div>
+        </div>
+      </section>
+
+      {/* Colour controls */}
+      <section className="border-t">
+        <div className="mx-auto grid w-full max-w-6xl items-center gap-10 px-6 py-20 md:grid-cols-2">
+          <div>
+            <p className="mb-2 text-sm font-semibold uppercase tracking-wider text-fd-primary">
+              Made for e-ink
+            </p>
+            <h2 className="mb-4 text-3xl font-bold tracking-tight">
+              Colours graded for the panel they hang on
+            </h2>
+            <div className="flex flex-col gap-3 text-fd-muted-foreground">
+              <p>
+                A six-colour panel cannot show a photo&apos;s white. Its brightest tone is a light grey, so
+                everything above it clips to flat white and the sky goes blank. FrameOS fits every image into
+                the panel&apos;s range by itself, on the frame, before it dithers. Drag the handle to see the
+                same photo with and without it.
+              </p>
+              <p>
+                Photos you care about get their own profile: exposure, whites and blacks, contrast, tints per
+                tonal range, hue, saturation and luminance per colour, even the dither palette. The preview
+                runs the panel&apos;s own dither, and the profile is saved next to the photo so every frame
+                renders it the same way.
+              </p>
+            </div>
+            <div className="mt-4 flex flex-wrap gap-x-5 gap-y-1 text-sm font-medium">
+              <TextLink href="/guide/colors">Colour controls guide →</TextLink>
+              <TextLink href="/guide/colors#per-frame-the-automatic-fit-and-a-global-correction">How the automatic fit works</TextLink>
+            </div>
+          </div>
+          <div>
+            <CompareSlider
+              before={{
+                src: '/images/guide/colors-none.png',
+                alt: 'A drone photo of a mountain valley dithered for a Spectra 6 panel without adjustments: the sky and the sunlit slopes clip to white',
+                label: 'No adjustments',
+              }}
+              after={{
+                src: '/images/guide/colors-auto.png',
+                alt: 'The same photo with the automatic fit: the sky keeps its texture and the sunlit slopes their colour',
+                label: 'Auto fit',
+              }}
+              width={1200}
+              height={899}
+              initial={45}
+            />
+            <p className="mt-2 text-center text-sm text-fd-muted-foreground">
+              A 13.3&quot; Spectra 6 panel&apos;s dither, as the editor previews it. Left of the handle: fitted
+              into the panel&apos;s range. Right: the photo as is.
+            </p>
           </div>
         </div>
       </section>
