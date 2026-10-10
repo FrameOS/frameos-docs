@@ -12,6 +12,7 @@ import {
   Printer,
   QrCode,
   Server,
+  SlidersHorizontal,
   Store,
   WifiOff,
 } from 'lucide-react';
@@ -167,6 +168,11 @@ const features = [
     icon: Gauge,
     title: '60 FPS or 60 s/frame',
     body: 'The same scene system drives a 60 FPS HDMI dashboard on a Pi 5 and a once-a-minute e-ink calendar on a Pi Zero 2 W.',
+  },
+  {
+    icon: SlidersHorizontal,
+    title: 'Colour controls for e-ink',
+    body: 'Grade each photo for the panel it will hang on: exposure, whites and blacks, tonal tints, per-hue HSL, even the dither palette - previewed with the panel’s own dither. The frame fits every image into the panel’s range by itself.',
   },
   {
     icon: Blocks,
