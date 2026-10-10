@@ -5,7 +5,7 @@ import { InstallPathChooser } from '@/components/install-path-chooser';
 import { Slideshow, type Slide } from '@/components/slideshow';
 import { TextLink } from '@/components/text-link';
 import { LightboxImage } from '@/components/lightbox';
-import { CompareSlider } from '@/components/compare-slider';
+import { CompareGallery, type ComparePhoto } from '@/components/compare-gallery';
 import { links } from '@/lib/shared';
 
 // Swap or reorder freely - the slideshows render whatever is listed here.
@@ -117,6 +117,18 @@ const sceneStrip = [
   { src: '/images/scenes/samples/calendar.jpg', alt: 'Calendar scene', slug: 'calendar' },
   { src: '/images/scenes/gallery/cuteness-overload.jpg', alt: 'Cuteness Overload gallery scene with a cartoon toucan', slug: 'cuteness-overload' },
   { src: '/images/scenes/samples/xkcd.jpg', alt: 'XKCD scene', slug: 'xkcd' },
+];
+
+// Rendered by the Assets panel's Set colors editor for an 800x480 Spectra 6
+// panel: the photo as the panel dithers it with no adjustments, and after the
+// frame's automatic fit. e2e/frontend-visual in the main repo has the recipe.
+const calibrationPhotos: ComparePhoto[] = [
+  { id: 'valley', label: 'Valley', alt: 'A drone photo of a mountain valley at sunset', before: '/images/guide/dither/valley-none.png', after: '/images/guide/dither/valley-auto.png' },
+  { id: 'bench', label: 'Bench', alt: 'A child sitting on a park bench on a rainy day', before: '/images/guide/dither/bench-none.png', after: '/images/guide/dither/bench-auto.png' },
+  { id: 'river', label: 'River', alt: 'Willows over a misty river at sunrise', before: '/images/guide/dither/river-none.png', after: '/images/guide/dither/river-auto.png' },
+  { id: 'sunset', label: 'Sunset', alt: 'Pine trees in front of a mountain at sunset', before: '/images/guide/dither/sunset-none.png', after: '/images/guide/dither/sunset-auto.png' },
+  { id: 'toucan', label: 'Toucan', alt: 'A cartoon toucan from the Cuteness Overload scene', before: '/images/guide/dither/toucan-none.png', after: '/images/guide/dither/toucan-auto.png' },
+  { id: 'hoverfly', label: 'Hoverfly', alt: 'A hoverfly in front of a purple flower, from Wikimedia Commons', before: '/images/guide/dither/hoverfly-none.png', after: '/images/guide/dither/hoverfly-auto.png' },
 ];
 
 function SectionTitle({ kicker, title, sub }: { kicker?: string; title: string; sub?: React.ReactNode }) {
@@ -257,56 +269,33 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* Colour controls */}
+      {/* Colour calibration */}
       <section className="border-t">
-        <div className="mx-auto grid w-full max-w-6xl items-center gap-10 px-6 py-20 md:grid-cols-2">
-          <div>
-            <p className="mb-2 text-sm font-semibold uppercase tracking-wider text-fd-primary">
-              Made for e-ink
-            </p>
-            <h2 className="mb-4 text-3xl font-bold tracking-tight">
-              Colours graded for the panel they hang on
-            </h2>
-            <div className="flex flex-col gap-3 text-fd-muted-foreground">
-              <p>
-                A six-colour panel cannot show a photo&apos;s white. Its brightest tone is a light grey, so
-                everything above it clips to flat white and the sky goes blank. FrameOS fits every image into
-                the panel&apos;s range by itself, on the frame, before it dithers. Drag the handle to see the
-                same photo with and without it.
-              </p>
-              <p>
-                Photos you care about get their own profile: exposure, whites and blacks, contrast, tints per
-                tonal range, hue, saturation and luminance per colour, even the dither palette. The preview
-                runs the panel&apos;s own dither, and the profile is saved next to the photo so every frame
-                renders it the same way.
-              </p>
-            </div>
-            <div className="mt-4 flex flex-wrap gap-x-5 gap-y-1 text-sm font-medium">
-              <TextLink href="/guide/colors">Colour controls guide →</TextLink>
-              <TextLink href="/guide/colors#per-frame-the-automatic-fit-and-a-global-correction">How the automatic fit works</TextLink>
-            </div>
-          </div>
-          <div>
-            <CompareSlider
-              before={{
-                src: '/images/guide/colors-none.png',
-                alt: 'A drone photo of a mountain valley dithered for a Spectra 6 panel without adjustments: the sky and the sunlit slopes clip to white',
-                label: 'No adjustments',
-              }}
-              after={{
-                src: '/images/guide/colors-auto.png',
-                alt: 'The same photo with the automatic fit: the sky keeps its texture and the sunlit slopes their colour',
-                label: 'Auto fit',
-              }}
-              width={1200}
-              height={899}
-              initial={45}
-            />
-            <p className="mt-2 text-center text-sm text-fd-muted-foreground">
-              A 13.3&quot; Spectra 6 panel&apos;s dither, as the editor previews it. Left of the handle: fitted
-              into the panel&apos;s range. Right: the photo as is.
-            </p>
-          </div>
+        <div className="mx-auto w-full max-w-6xl px-6 py-20">
+          <SectionTitle
+            kicker="Made for e-ink"
+            title="Manual and automatic colour calibration"
+            sub={
+              <>
+                A colour e-ink panel&apos;s white is a light grey. Anything brighter clips to a blank patch of panel, and
+                a bright sky or a sunlit wall just disappears. FrameOS fits each image into the panel&apos;s range
+                before it dithers, so that detail stays in. Grade a photo by hand when you want more: the preview runs
+                the panel&apos;s own dither. Drag the handle to compare.{' '}
+                <TextLink href="/guide/colors">Colour controls guide →</TextLink>
+              </>
+            }
+          />
+          <CompareGallery
+            className="mx-auto max-w-[800px]"
+            photos={calibrationPhotos}
+            width={800}
+            height={480}
+            beforeLabel="As is"
+            afterLabel="Auto fit"
+          />
+          <p className="mt-3 text-center text-sm text-fd-muted-foreground">
+            Each pair is the editor&apos;s preview for a 7.3&quot; Spectra 6 panel at its real 800x480 pixels.
+          </p>
         </div>
       </section>
 

@@ -15,6 +15,7 @@ export function CompareSlider({
   width,
   height,
   initial = 50,
+  pixelated = false,
   className,
 }: {
   before: { src: string; alt: string; label: string };
@@ -23,9 +24,12 @@ export function CompareSlider({
   height: number;
   /** Starting position of the handle, in percent from the left. */
   initial?: number;
+  /** Nearest-neighbour scaling, for dithered images shown at an integer scale. */
+  pixelated?: boolean;
   className?: string;
 }) {
   const [position, setPosition] = useState(initial);
+  const imageStyle = pixelated ? ({ imageRendering: 'pixelated' } as const) : undefined;
   const stageRef = useRef<HTMLDivElement>(null);
   const labelId = useId();
 
@@ -63,9 +67,9 @@ export function CompareSlider({
       onPointerDown={onPointerDown}
       onPointerMove={onPointerMove}
     >
-      <Image src={before.src} alt={before.alt} width={width} height={height} className="block h-full w-full" draggable={false} />
+      <Image src={before.src} alt={before.alt} width={width} height={height} className="block h-full w-full" style={imageStyle} draggable={false} />
       <div className="absolute inset-0" style={{ clipPath: `inset(0 ${100 - position}% 0 0)` }}>
-        <Image src={after.src} alt={after.alt} width={width} height={height} className="block h-full w-full" draggable={false} />
+        <Image src={after.src} alt={after.alt} width={width} height={height} className="block h-full w-full" style={imageStyle} draggable={false} />
       </div>
 
       <span className="pointer-events-none absolute left-3 top-3 rounded-md bg-black/60 px-2 py-1 text-xs font-medium text-white">
