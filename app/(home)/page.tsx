@@ -123,12 +123,10 @@ const sceneStrip = [
 // panel: the photo as the panel dithers it with no adjustments, and after the
 // frame's automatic fit. e2e/frontend-visual in the main repo has the recipe.
 const calibrationPhotos: ComparePhoto[] = [
-  { id: 'valley', label: 'Valley', alt: 'A drone photo of a mountain valley at sunset', before: '/images/guide/dither/valley-none.png', after: '/images/guide/dither/valley-auto.png' },
-  { id: 'bench', label: 'Bench', alt: 'A child sitting on a park bench on a rainy day', before: '/images/guide/dither/bench-none.png', after: '/images/guide/dither/bench-auto.png' },
+  { id: 'hoverfly', label: 'Hoverfly', alt: 'A hoverfly in front of a purple flower, from Wikimedia Commons', before: '/images/guide/dither/hoverfly-none.png', after: '/images/guide/dither/hoverfly-auto.png' },
   { id: 'river', label: 'River', alt: 'Willows over a misty river at sunrise', before: '/images/guide/dither/river-none.png', after: '/images/guide/dither/river-auto.png' },
   { id: 'sunset', label: 'Sunset', alt: 'Pine trees in front of a mountain at sunset', before: '/images/guide/dither/sunset-none.png', after: '/images/guide/dither/sunset-auto.png' },
   { id: 'toucan', label: 'Toucan', alt: 'A cartoon toucan from the Cuteness Overload scene', before: '/images/guide/dither/toucan-none.png', after: '/images/guide/dither/toucan-auto.png' },
-  { id: 'hoverfly', label: 'Hoverfly', alt: 'A hoverfly in front of a purple flower, from Wikimedia Commons', before: '/images/guide/dither/hoverfly-none.png', after: '/images/guide/dither/hoverfly-auto.png' },
 ];
 
 function SectionTitle({ kicker, title, sub }: { kicker?: string; title: string; sub?: React.ReactNode }) {
