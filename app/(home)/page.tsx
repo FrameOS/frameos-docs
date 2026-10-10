@@ -272,7 +272,7 @@ export default function HomePage() {
         <div className="mx-auto w-full max-w-6xl px-6 py-20">
           <SectionTitle
             kicker="Made for e-ink"
-            title="Manual and automatic color calibration"
+            title="Colors that actually look good"
             sub={
               <>
                 A color e-ink panel&apos;s white is a light grey. Anything brighter clips to a blank patch of panel, and
