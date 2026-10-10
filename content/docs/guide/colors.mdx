@@ -1,9 +1,9 @@
 ---
-title: Colour controls
+title: Color controls
 description: Grade photos for the panel they will hang on - per photo, with the panel's own dither in the preview - and let the frame fit everything else into the panel's range by itself.
 ---
 
-A six-colour e-ink panel cannot show a photo's white. Its measured white is
+A six-color e-ink panel cannot show a photo's white. Its measured white is
 closer to `#b2c1c0` - a light grey - and everything brighter than that
 quantises to solid white, the error diffusion clips, and the highlights go
 flat. Shadows have the same problem at the other end. A photo that looks
@@ -12,7 +12,7 @@ same one a print shop uses: grade for the medium.
 
 FrameOS does this in two layers. **The frame fits every image into the
 panel's range on its own**, so a plain slideshow already looks right. And
-**each photo can carry its own colour profile**, edited next to the file with
+**each photo can carry its own color profile**, edited next to the file with
 a preview that runs the panel's dither, for the ones you care about.
 
 <Callout title="Where it applies">
@@ -26,7 +26,7 @@ a preview that runs the panel's dither, for the ones you care about.
 
 ![The Set colors editor: a drone photo of a mountain valley dithered as a 13.3 inch Spectra 6 panel shows it, with the Light, Tones, Colors and Dither palette controls beside it](/images/guide/set-colors.png)
 
-In the **Assets** panel every image row has a colour button (the sliders icon; a swatch
+In the **Assets** panel every image row has a color button (the sliders icon; a swatch
 once the photo has its own profile). It opens an editor with the photo rendered at the
 panel's size, dithered to the panel's palette, next to the controls:
 
@@ -37,7 +37,7 @@ panel's size, dithered to the panel's palette, next to the controls:
 - **Tones** - a luminance shift and an RGB tint for shadows, midtones and highlights.
 - **Hues** - hue, saturation and luminance per range: red, orange, yellow, green, aqua,
   blue, purple, magenta.
-- **Dither palette** - the colours the panel dither quantises against, for this photo
+- **Dither palette** - the colors the panel dither quantises against, for this photo
   only. Load a measured preset or type your own hex values.
 
 Toggle *Dithered as on the panel* and *Apply adjustments* to compare, and pick the fit
@@ -83,7 +83,7 @@ pre-processed off the frame.
 ## Per frame: the dither palette
 
 Panels that dither to a palette - the Spectra 6 family - take a **Palette** setting: the six
-colours the dither quantises against, as measured on the panel rather than as the
+colors the dither quantises against, as measured on the panel rather than as the
 datasheet draws them. The Pi driver reads it at start-up; an ESP32 picks it up on the next
 render (firmware 2026.10.4 or newer). A photo's own palette, from the editor above, still
 wins for that photo.

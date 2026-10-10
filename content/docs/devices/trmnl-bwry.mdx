@@ -1,6 +1,6 @@
 ---
 title: "TRMNL BWRY"
-description: "The 7.5\" four-colour TRMNL BWRY running FrameOS as a thin client - the backend renders, the ESP32-C3 draws."
+description: "The 7.5\" four-color TRMNL BWRY running FrameOS as a thin client - the backend renders, the ESP32-C3 draws."
 device:
   vendor: "TRMNL"
   model: "BWRY (7.5\")"
@@ -25,13 +25,13 @@ device:
   status: "untested"
 ---
 
-The **TRMNL BWRY** is the four-colour (black, white, yellow, red) 7.5" TRMNL device on an
-**ESP32-C3**. Four-colour e-ink gives you headlines and highlights without the long refresh of a
-six-colour Spectra panel.
+The **TRMNL BWRY** is the four-color (black, white, yellow, red) 7.5" TRMNL device on an
+**ESP32-C3**. Four-color e-ink gives you headlines and highlights without the long refresh of a
+six-color Spectra panel.
 
 Like the [TRMNL OG](/devices/trmnl-og), the C3 has no PSRAM, so FrameOS runs this board as a
 **thin client**: your [backend](/guide/backend) renders and dithers the scene to the panel's
-four-colour palette, and the device streams the packed result into the controller. The backend
+four-color palette, and the device streams the packed result into the controller. The backend
 therefore has to be reachable when the frame renders.
 
 ## Setup

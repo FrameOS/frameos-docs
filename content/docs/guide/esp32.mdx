@@ -31,7 +31,7 @@ do is a short, specific list - it's [at the bottom of this page](#what-it-cannot
 ## What you need
 
 - **An ESP32-S3 board with PSRAM.** Rendering happens in PSRAM, so don't skip it. 8&nbsp;MB is
-  enough for every supported panel, including the 13.3" 1600×1200 six-colour ones - the render
+  enough for every supported panel, including the 13.3" 1600×1200 six-color ones - the render
   canvas is 16-bit and a 13.3" scene fits in 3.7&nbsp;MB ([details](#performance)).
   The reference bare board is the
   [Seeed XIAO ESP32-S3](https://www.seeedstudio.com/XIAO-ESP32S3-p-5627.html)
@@ -62,7 +62,7 @@ battery divider, SD slot and flash size are all filled in for you:
 | [TRMNL 7.5" DIY Kit](/devices/trmnl-og-diy-kit) | S3 | 7.5" black/white | XIAO ePaper driver board |
 | [TRMNL 4.26" DIY Kit](/devices/trmnl-4in26-diy-kit) | S3 | 4.26" 4-grey | XIAO ePaper driver board |
 | [TRMNL OG](/devices/trmnl-og) | C3 | 7.5" black/white | Thin client - backend renders |
-| [TRMNL BWRY](/devices/trmnl-bwry) | C3 | 7.5" 4-colour | Thin client - backend renders |
+| [TRMNL BWRY](/devices/trmnl-bwry) | C3 | 7.5" 4-color | Thin client - backend renders |
 | [XTEINK X4](/devices/xteink-x4) | C3 | 4.26" 4-grey | Thin client - backend renders |
 | [ESP32-C3 0.42" OLED board](/devices/esp32-c3-oled-0in42) | C3 | 0.42" SSD1306 OLED, 72×40 (I2C) | The tiny HW-675 / 01Space dev board, 4&nbsp;MB flash, BOOT button - thin client |
 
@@ -299,14 +299,14 @@ the worst point of a render. If a panel is too large for a board's PSRAM, the ba
 before you flash rather than leaving you with a frame that can't render.
 
 The scene canvas is claimed once from PSRAM before WiFi starts and reused for every render. Its
-format is decided per board: **full colour when a canvas fits in half the module's PSRAM,
+format is decided per board: **full color when a canvas fits in half the module's PSRAM,
 16-bit RGB565 otherwise.** An 800×480 panel on 8&nbsp;MB and a 1200×1600 panel on 16&nbsp;MB
-render in full colour; a 1200×1600 panel on an 8&nbsp;MB module - the
+render in full color; a 1200×1600 panel on an 8&nbsp;MB module - the
 [reTerminal E1004](/devices/seeed-reterminal-e1004) - is the one that takes the 16-bit canvas
 (3.7&nbsp;MB instead of 7.3&nbsp;MB), which is what lets it render on-device at all. The 16-bit
 canvas dithers its stores so gradients stay smooth, and since every panel the firmware drives is
 dithered e-paper, a photo dithered to Spectra 6 through either canvas lands the same palette
-within 0.05% per colour. The Pi, HDMI and the browser preview keep a full RGBA canvas.
+within 0.05% per color. The Pi, HDMI and the browser preview keep a full RGBA canvas.
 
 ## Wiring
 

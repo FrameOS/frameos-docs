@@ -267,19 +267,19 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* Colour calibration */}
+      {/* Color calibration */}
       <section className="border-t">
         <div className="mx-auto w-full max-w-6xl px-6 py-20">
           <SectionTitle
             kicker="Made for e-ink"
-            title="Manual and automatic colour calibration"
+            title="Manual and automatic color calibration"
             sub={
               <>
-                A colour e-ink panel&apos;s white is a light grey. Anything brighter clips to a blank patch of panel, and
+                A color e-ink panel&apos;s white is a light grey. Anything brighter clips to a blank patch of panel, and
                 a bright sky or a sunlit wall just disappears. FrameOS fits each image into the panel&apos;s range
                 before it dithers, so that detail stays in. Grade a photo by hand when you want more: the preview runs
                 the panel&apos;s own dither. Drag the handle to compare.{' '}
-                <TextLink href="/guide/colors">Colour controls guide →</TextLink>
+                <TextLink href="/guide/colors">Color controls guide →</TextLink>
               </>
             }
           />

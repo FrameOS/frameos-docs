@@ -6,7 +6,7 @@ description: Run a frame with no hardware at all - the backend renders the scene
 A **virtual frame** is a frame with no device behind it. The backend renders its scenes and
 serves the result two ways:
 
-- **An image URL** - one PNG per request, at whatever size and colour mode you picked.
+- **An image URL** - one PNG per request, at whatever size and color mode you picked.
 - **A self-refreshing page** - a black, full-bleed kiosk page that swaps the image in place on
   the frame's interval, without the white flash a meta-refresh would cause.
 
@@ -25,7 +25,7 @@ Both URLs appear in the frame's settings once it is added.
 - **Trying FrameOS**, or designing scenes, before any hardware arrives.
 - **Feeding other software**: a Home Assistant dashboard card, a Slack unfurl, a wallpaper
   script, an e-ink display driven by something else entirely - anything that can fetch a PNG.
-- **Previewing what a panel will look like.** Pick the colour mode of the panel you're
+- **Previewing what a panel will look like.** Pick the color mode of the panel you're
   considering and the render is quantised the same way, dithering included.
 
 ## Add one
@@ -33,8 +33,8 @@ Both URLs appear in the frame's settings once it is added.
 Click **New frame → Virtual frame**, then set:
 
 - **Width and height** in pixels.
-- **Colour mode**: full colour, black & white, 4-level grayscale, black/white/yellow/red,
-  7-colour ACeP, or Spectra 6. Anything but full colour is dithered to that palette, exactly as a
+- **Color mode**: full color, black & white, 4-level grayscale, black/white/yellow/red,
+  7-color ACeP, or Spectra 6. Anything but full color is dithered to that palette, exactly as a
   real panel would be.
 
 From there it's an ordinary frame: install scenes, edit them in the
