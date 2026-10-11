@@ -199,7 +199,7 @@ export default function HomePage() {
                 or <TextLink href="/guide/raspberry#option-3-no-ssh-install-with-a-script">install on any Linux</TextLink> with a shell script.
               </p>
               <p>
-                An <TextLink href="/guide/esp32"><strong>ESP32-S3</strong></TextLink> lets you build battery-powered frames that <TextLink href="/guide/esp32#power">deep-sleep between refreshes</TextLink>. 
+                An <TextLink href="/guide/esp32"><strong>ESP32-S3</strong></TextLink> lets you build battery-powered frames that <TextLink href="/guide/esp32#power">deep-sleep between refreshes</TextLink>.
                 It's still the full FrameOS experience. Everything is rendered on device, including 50MB JPEGs.
                 Works with custom setups, and <TextLink href="/guide/esp32#supported-boards">Waveshare, PhotoPainter, TRMNL and reTerminal boards</TextLink>.
                 Boards without PSRAM (e.g. ESP32-C3) run as thin clients.
@@ -275,10 +275,11 @@ export default function HomePage() {
             title="Colors that actually look good"
             sub={
               <>
-                A color e-ink panel&apos;s white is a light grey. Anything brighter clips to a blank patch of panel, and
-                a bright sky or a sunlit wall just disappears. FrameOS fits each image into the panel&apos;s range
-                before it dithers, so that detail stays in. Grade a photo by hand when you want more: the preview runs
-                the panel&apos;s own dither. Drag the handle to compare.{' '}
+                A color e-ink panel&apos;s white is a light grey. Dither a photo as is and every bright sky and
+                sunlit face clips to white. FrameOS maps each image&apos;s luminance histogram, and fits its
+                range onto the shades the panel can actually show. We then dither with a hashed jitter to smooth
+                out jagged lines and gradients. Images keep all the detail, while retaining excellent colors.
+                Want more? Grade each photo by hand. Drag the handle to compare.{' '}
                 <TextLink href="/guide/colors">Color controls guide →</TextLink>
               </>
             }
@@ -289,7 +290,7 @@ export default function HomePage() {
             width={800}
             height={480}
             beforeLabel="As is"
-            afterLabel="Auto fit"
+            afterLabel="Calibrated"
           />
           <p className="mt-3 text-center text-sm text-fd-muted-foreground">
             Each pair is the editor&apos;s preview for a 7.3&quot; Spectra 6 panel at its real 800x480 pixels.

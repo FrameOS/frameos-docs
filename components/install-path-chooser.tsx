@@ -72,7 +72,7 @@ const installOptions = [
     id: 'cloud',
     icon: Cloud,
     title: 'FrameOS Cloud',
-    description: 'New! Nothing to install. Download customized SD cards and flash ESP32s over USB. Forever free for personal use, quotas permitting.',
+    description: 'Nothing to install. Download customized SD cards and flash ESP32s over USB. Forever free for personal use, quotas permitting.',
     // logo teal #1c7c66
     tint: 'from-[#1c7c66]/30 via-[#1c7c66]/10 to-fd-background dark:from-[#1c7c66]/35 dark:via-[#1c7c66]/12 dark:to-fd-background',
     glow: 'bg-[#1c7c66]/50 dark:bg-[#1c7c66]/40',
