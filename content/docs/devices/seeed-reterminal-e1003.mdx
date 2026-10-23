@@ -1,0 +1,39 @@
+---
+title: "Seeed reTerminal E1003"
+description: "Seeed Studio reTerminal E1003 - a 10.3\" 16-level grayscale touch e-ink display with an ESP32-S3. Not supported by FrameOS yet."
+device:
+  vendor: "Seeed Studio"
+  model: "reTerminal E1003"
+  driver: "none"
+  technology: "E-ink"
+  interface: "ESP32-S3 board"
+  diagonal: 10.3
+  width: 1404
+  height: 1872
+  colors: "16-level grayscale"
+  colorCount: 16
+  colorClass: "gray"
+  productUrl: "https://www.seeedstudio.com/reTerminal-E1003-p-6731.html"
+  image: "/images/devices/seeed-reterminal-e1003.jpg"
+  links:
+    - label: "Seeed wiki"
+      url: "https://wiki.seeedstudio.com/getting_started_with_reterminal_e1003/"
+  status: "unsupported"
+---
+
+The **Seeed reTerminal E1003** is the 10.3" model in the reTerminal E-series: a 1404×1872
+**16-level grayscale** panel with touch, an ESP32-S3 with 8&nbsp;MB of PSRAM and 32&nbsp;MB of
+flash, a microSD slot, a 3000&nbsp;mAh battery, the E-series keys (a green refresh button and page
+up/down), a buzzer, a temperature and humidity sensor and a microphone. Sixteen grays at that
+density make it the reading and dashboard frame of the family.
+
+## Status
+
+⚪ **Not supported yet.** The rest of the E-series - the [E1001](/devices/seeed-reterminal-e1001),
+[E1002](/devices/seeed-reterminal-e1002) and [E1004](/devices/seeed-reterminal-e1004) - drive SPI
+panels that the FrameOS firmware already has drivers for. The E1003's fast-refresh 10.3" panel
+needs a different kind of display driver, which the ESP32 firmware doesn't have yet, and touch
+input on it isn't wired up either.
+
+Want it? Say so on [GitHub](https://github.com/FrameOS/frameos/issues) or
+[Discord](https://discord.gg/9dT9y7EzUw) - it helps us decide what to port next.

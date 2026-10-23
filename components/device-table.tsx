@@ -16,12 +16,14 @@ const colorClassLabels: Record<string, string> = {
 
 type SortKey = 'device' | 'size' | 'resolution' | 'colors' | 'status';
 
+const statusOrder: Record<DeviceRow['status'], number> = { tested: 0, untested: 1, unsupported: 2 };
+
 const sorters: Record<SortKey, (a: DeviceRow, b: DeviceRow) => number> = {
   device: (a, b) => `${a.vendor} ${a.model}`.localeCompare(`${b.vendor} ${b.model}`),
   size: (a, b) => (a.diagonal ?? 0) - (b.diagonal ?? 0),
   resolution: (a, b) => (a.width ?? 0) * (a.height ?? 0) - (b.width ?? 0) * (b.height ?? 0),
   colors: (a, b) => (a.colorCount ?? 0) - (b.colorCount ?? 0),
-  status: (a, b) => (a.status === 'tested' ? 0 : 1) - (b.status === 'tested' ? 0 : 1),
+  status: (a, b) => statusOrder[a.status] - statusOrder[b.status],
 };
 
 function StatusBadge({ status }: { status: DeviceRow['status'] }) {
@@ -29,6 +31,13 @@ function StatusBadge({ status }: { status: DeviceRow['status'] }) {
     return (
       <span className="inline-flex items-center gap-1 rounded-full bg-green-500/10 px-2 py-0.5 text-xs font-medium text-green-700 dark:text-green-400 whitespace-nowrap">
         ✓ Tested
+      </span>
+    );
+  }
+  if (status === 'unsupported') {
+    return (
+      <span className="inline-flex items-center rounded-full bg-fd-muted px-2 py-0.5 text-xs font-medium text-fd-muted-foreground whitespace-nowrap">
+        Not yet
       </span>
     );
   }
@@ -154,6 +163,7 @@ export function DeviceTable({ rows }: { rows: DeviceRow[] }) {
           <option value="">Any status</option>
           <option value="tested">✓ Tested</option>
           <option value="untested">Should work</option>
+          <option value="unsupported">Not supported yet</option>
         </select>
       </div>
       <p className="mb-2 text-xs text-fd-muted-foreground">

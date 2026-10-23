@@ -1,0 +1,59 @@
+---
+title: "Seeed XIAO ePaper Display Board EE04"
+description: "Seeed Studio XIAO ePaper Display Board EE04 - a XIAO ESP32-S3 Plus driver board for 24-pin and 50-pin e-paper panels, running FrameOS on-device."
+device:
+  vendor: "Seeed Studio"
+  model: "XIAO ePaper Display Board EE04"
+  driver: "waveshare.EPD_7in5_V2"
+  technology: "E-ink"
+  interface: "ESP32-S3 driver board"
+  colors: "Depends on the panel"
+  colorClass: "varies"
+  buttons: 3
+  productUrl: "https://www.seeedstudio.com/XIAO-ePaper-Display-Board-EE04-p-6560.html"
+  image: "/images/devices/seeed-xiao-epaper-ee04.jpg"
+  links:
+    - label: "Seeed wiki"
+      url: "https://wiki.seeedstudio.com/epaper_ee04/"
+    - label: "Seeed driver board overview"
+      url: "https://wiki.seeedstudio.com/xiao_epaper_display_board_overview/"
+  platforms:
+    - "esp32-s3"
+  status: "untested"
+---
+
+The **XIAO ePaper Display Board EE04** is Seeed's do-it-yourself e-paper board: a XIAO
+ESP32-S3 Plus (8&nbsp;MB of PSRAM) on a carrier with a **24-pin** and a **50-pin** panel
+connector (a jumper picks which one is live), three user keys, a reset button and a battery
+connector with a charger. Bring your own panel - anything from a 1.54" black/white tag to the
+7.5" tri-color and, on the 50-pin connector, the 7.3" Spectra 6.
+
+It is the same XIAO ePaper driver board family the [TRMNL 7.5" DIY Kit](/devices/trmnl-og-diy-kit)
+and [TRMNL 4.26" DIY Kit](/devices/trmnl-4in26-diy-kit) are built on, so FrameOS already knows its
+wiring and runs the **full on-device renderer** on it.
+
+## Setup
+
+1. In the FrameOS backend or [FrameOS Cloud](/guide/cloud), create a frame with **Flash embedded
+   device** and choose **ESP32-S3**.
+2. Select the **TRMNL 7.5" DIY Kit** hardware preset - it fills in this board's pins
+   (SCK 7, MOSI 9, CS 44, DC 10, RST 38, BUSY 4).
+3. With the 7.5" black/white panel, that's it. With another panel, pick it now. The form switches to a custom board but keeps the pins.
+   Seeed's panels usually share their controllers with Waveshare's: pick the driver with the same
+   size, resolution and colors in the [device database](/devices) - for example the
+   [7.3" Spectra 6](/devices/waveshare-epd-7in3e) on the 50-pin connector.
+4. Flash it over USB from the browser, then install scenes as usual.
+
+## Buttons and battery
+
+The keys are on GPIO 2, 3 and 5. The preset registers GPIO 5 (plus BOOT); add the other two under
+**GPIO buttons** in the frame's settings and they arrive in scenes as button events. The battery
+is read through a 2:1 divider on GPIO 1, switched on by GPIO 6. The TRMNL presets carry that
+wiring; on a custom board enter the three values under **Power** so the frame shows its charge and
+the [deep sleep options](/guide/esp32#power) apply.
+
+## Status
+
+🟡 **Should work, not yet confirmed on real hardware.** The pin map is the one the TRMNL DIY kit
+presets use.
+Tell us on [GitHub](https://github.com/FrameOS/frameos/issues/new) or [Discord](https://discord.gg/9dT9y7EzUw) if you try it.

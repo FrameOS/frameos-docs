@@ -43,7 +43,8 @@ export const deviceSchema = z.object({
   buttons: z.number().optional(),
   // also works with the ESP32-S3 firmware (embedded/esp32 in the main repo)
   esp32: z.boolean().optional(),
-  status: z.enum(['tested', 'untested']).default('untested'),
+  // unsupported: a page for hardware FrameOS can't drive yet, so people can find out where it stands
+  status: z.enum(['tested', 'untested', 'unsupported']).default('untested'),
   productUrl: z.string().optional(),
   // product photo under public/images/devices, e.g. "/images/devices/trmnl-og.jpg"
   image: z.string().optional(),

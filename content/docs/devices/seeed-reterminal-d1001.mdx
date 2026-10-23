@@ -1,0 +1,36 @@
+---
+title: "Seeed reTerminal D1001"
+description: "Seeed Studio reTerminal D1001 - an 8\" 800x1280 touch LCD with an ESP32-P4 and 32 MB of PSRAM. Not supported by FrameOS yet."
+device:
+  vendor: "Seeed Studio"
+  model: "reTerminal D1001"
+  driver: "none"
+  technology: "LCD"
+  interface: "ESP32-P4 board (MIPI-DSI)"
+  diagonal: 8
+  width: 800
+  height: 1280
+  colors: "Full RGB"
+  colorClass: "rgb"
+  productUrl: "https://www.seeedstudio.com/reTerminal-D1001-p-6729.html"
+  image: "/images/devices/seeed-reterminal-d1001.jpg"
+  links:
+    - label: "Seeed wiki"
+      url: "https://wiki.seeedstudio.com/getting_started_with_reterminal_d1001/"
+  status: "unsupported"
+---
+
+The **Seeed reTerminal D1001** is the first of Seeed's LCD reTerminals: an 8" 800×1280 capacitive
+touch screen on MIPI-DSI, driven by an **ESP32-P4** (dual-core RISC-V at 400&nbsp;MHz) with
+32&nbsp;MB of PSRAM and an ESP32-C6 for Wi-Fi 6 and Bluetooth, plus a 2&nbsp;MP camera, two
+microphones, a speaker, a microSD slot and a 2500&nbsp;mAh battery.
+
+## Status
+
+⚪ **Not supported yet.** The FrameOS firmware is built for the ESP32-S3 and ESP32-C3 and drives
+e-paper panels. An ESP32-P4 build with a MIPI-DSI LCD driver is a port we haven't done yet. With
+32&nbsp;MB of PSRAM the board has the memory for it, and full-color LCD scenes are something FrameOS
+already renders on a [Raspberry Pi over HDMI](/devices/framebuffer-hdmi).
+
+Want it? Say so on [GitHub](https://github.com/FrameOS/frameos/issues) or
+[Discord](https://discord.gg/9dT9y7EzUw) - it helps us decide what to port next.

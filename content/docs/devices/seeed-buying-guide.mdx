@@ -1,0 +1,81 @@
+---
+title: Seeed Studio buying guide
+description: Which Seeed Studio reTerminal and XIAO e-paper displays run FrameOS, which one to pick, and what to know before buying.
+---
+
+Seeed Studio makes the closest thing to a ready-made FrameOS frame. The **reTerminal E-series**
+puts an ESP32-S3 with 8&nbsp;MB of PSRAM, an e-ink panel, buttons, a buzzer and a battery in a
+finished case, and FrameOS has a hardware preset for each model: pick it, flash from the browser,
+and scenes render on the device itself. For your own builds, Seeed's XIAO ePaper boards carry
+the same chip.
+
+This page covers every Seeed ESP32 display we know of, including the ones FrameOS doesn't
+support yet.
+
+## Finished devices
+
+| Device | Display | FrameOS |
+| --- | --- | --- |
+| [reTerminal E1004](/devices/seeed-reterminal-e1004) | 13.3" 1200×1600 Spectra 6 color, 5000&nbsp;mAh battery | 🟢 Tested - preset `seeed_reterminal_e1004` |
+| [reTerminal E1002](/devices/seeed-reterminal-e1002) | 7.3" 800×480 Spectra 6 color | 🟢 Tested - preset `seeed_reterminal_e1002` |
+| [reTerminal E1001](/devices/seeed-reterminal-e1001) | 7.5" 800×480 black/white | 🟡 Preset `seeed_reterminal_e1001`, should work |
+| [reTerminal Sticky](/devices/seeed-reterminal-sticky) | 3.97" 800×480 black/white | 🟡 Preset `seeed_reterminal_sticky`, should work |
+| [reTerminal E1003](/devices/seeed-reterminal-e1003) | 10.3" 1404×1872 16-level grayscale, touch | ⚪ Not supported yet |
+| [XIAO 7.5" ePaper Panel](/devices/seeed-xiao-7in5-epaper-panel) | 7.5" 800×480 black/white, XIAO ESP32-C3 | ⚪ Not supported yet |
+| [reTerminal D1001](/devices/seeed-reterminal-d1001) | 8" 800×1280 touch LCD, ESP32-P4 | ⚪ Not supported yet |
+
+## Which one should I buy?
+
+- **An art frame for photos and paintings**: the [E1004](/devices/seeed-reterminal-e1004). A
+  13.3" six-color panel behind a mat in a real picture frame. It renders 1200×1600 scenes on its
+  8&nbsp;MB of PSRAM, and on battery it deep-sleeps between refreshes.
+- **Color, but smaller**: the [E1002](/devices/seeed-reterminal-e1002). The 7.3" Spectra 6 glass
+  is the same panel as the [Waveshare 7.3" (E)](/devices/waveshare-epd-7in3e) and the
+  [PhotoPainter](/devices/waveshare-esp32-s3-photopainter), in a finished case with three buttons.
+- **Calendars, agendas, dashboards**: the [E1001](/devices/seeed-reterminal-e1001). Black and
+  white is crisp, and it refreshes in seconds where a color panel takes much longer.
+- **A desk or fridge note**: the [Sticky](/devices/seeed-reterminal-sticky). 800×480 on a
+  3.97" panel makes small text sharp.
+- **Your own frame, your own case**: one of the boards below and a panel.
+
+## Building your own
+
+| Board | Panels | FrameOS |
+| --- | --- | --- |
+| [XIAO ePaper Display Board EE04](/devices/seeed-xiao-epaper-ee04) | 24-pin, and the 7.3" Spectra 6 on its 50-pin connector | 🟡 Should work with the TRMNL DIY kit pins |
+| [XIAO ePaper Display Board EE05](/devices/seeed-xiao-epaper-ee05) | 24-pin | 🟡 Should work with the TRMNL DIY kit pins |
+| [TRMNL 7.5" DIY Kit](/devices/trmnl-og-diy-kit) | 7.5" black/white, included | 🟡 Preset `trmnl_og_diy_kit` |
+| [TRMNL 4.26" DIY Kit](/devices/trmnl-4in26-diy-kit) | 4.26" 4-level grayscale, included | 🟡 Preset `trmnl_4in26_diy_kit` |
+| [XIAO ePaper Display Board EE02](/devices/seeed-xiao-epaper-ee02) | 13.3" Spectra 6 | ⚪ Not supported yet - the panel driver exists, the board preset doesn't |
+| [XIAO ePaper Display Board EE03](/devices/seeed-xiao-epaper-ee03) | 10.3" 16-level grayscale | ⚪ Not supported yet |
+
+For anything else, the bare [XIAO ESP32-S3](https://www.seeedstudio.com/XIAO-ESP32S3-p-5627.html)
+(8&nbsp;MB of PSRAM) is the reference board for a [custom ESP32 build](/guide/esp32#supported-boards):
+wire it to any Waveshare-family SPI panel, pick the panel and the pins, and flash. Seeed's
+nRF52840 boards (EN04, EN05) are not ESP32s and don't run FrameOS.
+
+## Before you buy
+
+- **The preset does the setup.** Choosing a reTerminal preset fills in the panel, pins, buttons,
+  buzzer, battery wiring and flash size - see the [ESP32 guide](/guide/esp32#flash-the-device) for
+  the whole flow, from the backend or [FrameOS Cloud](/guide/cloud).
+- **macOS needs a driver first.** The reTerminal E-series talks USB through a WCH CH340 chip, which
+  macOS doesn't recognise out of the box. Install WCH's driver before flashing - the
+  [E1004 page](/devices/seeed-reterminal-e1004#macos-install-the-wch-serial-driver-first) has the
+  steps. Windows 11 and Linux work as they are.
+- **The buttons and buzzer work in scenes.** The three E-series keys arrive as button events a
+  scene can react to, and the buzzer clicks on each press.
+- **Battery frames sleep.** The E1004 preset deep-sleeps on battery and wakes every 15 minutes or
+  on a button, and the backend or cloud shows when it's due back - see
+  [battery and deep sleep](/guide/esp32#power). The battery reading is verified on the E1004 and
+  wired the same way on the E1001 and E1002 according to Seeed's schematics.
+- **Color takes time.** A Spectra 6 refresh is about half a minute on the 13.3" panel. Perfect for
+  a frame that changes a few times an hour, not for a clock with a second hand.
+- **FrameOS replaces the factory firmware.** Flashing it overwrites the firmware the device ships
+  with, and the frame then talks to your own backend or FrameOS Cloud - no other account needed.
+
+Tested a board marked "should work", or want one that isn't supported yet? Tell us on
+[GitHub](https://github.com/FrameOS/frameos/issues/new) or [Discord](https://discord.gg/9dT9y7EzUw).
+
+<small>Store links on the device pages may be affiliate links: buying through them supports
+FrameOS at no extra cost to you.</small>

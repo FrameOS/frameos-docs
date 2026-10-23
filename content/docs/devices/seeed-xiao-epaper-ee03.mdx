@@ -1,0 +1,38 @@
+---
+title: "Seeed XIAO ePaper Display Board EE03"
+description: "Seeed Studio XIAO ePaper Display Board EE03 - a XIAO ESP32-S3 Plus driver board for a fast-refresh 10.3\" grayscale panel. Not supported by FrameOS yet."
+device:
+  vendor: "Seeed Studio"
+  model: "XIAO ePaper Display Board EE03"
+  driver: "none"
+  technology: "E-ink"
+  interface: "ESP32-S3 driver board"
+  diagonal: 10.3
+  width: 1404
+  height: 1872
+  colors: "16-level grayscale"
+  colorCount: 16
+  colorClass: "gray"
+  productUrl: "https://www.seeedstudio.com/XIAO-ePaper-Display-Board-ESP32-S3-EE03-p-6638.html"
+  image: "/images/devices/seeed-xiao-epaper-ee03.jpg"
+  links:
+    - label: "Seeed wiki"
+      url: "https://wiki.seeedstudio.com/getting_started_with_ee03/"
+    - label: "10.3\" grayscale panel"
+      url: "https://www.seeedstudio.com/10-3inch-Monochrome-eInk-ePaper-Display-with-1404x1872-Pixels-p-6568.html"
+  status: "unsupported"
+---
+
+The **XIAO ePaper Display Board EE03** pairs a XIAO ESP32-S3 Plus with Seeed's **10.3"
+1404×1872 grayscale** panel (40-pin connector), with an on-board timing controller for fast
+refreshes, an SHT40 temperature sensor for waveform compensation, three user keys and a battery
+connector with a charger. It's the DIY counterpart of the
+[reTerminal E1003](/devices/seeed-reterminal-e1003).
+
+## Status
+
+⚪ **Not supported yet.** Like the E1003, this panel needs a different kind of display driver from
+the SPI panels the ESP32 firmware drives today.
+
+Want it? Say so on [GitHub](https://github.com/FrameOS/frameos/issues) or
+[Discord](https://discord.gg/9dT9y7EzUw) - it helps us decide what to port next.

@@ -5,10 +5,16 @@ import { DevicePhoto } from '@/components/device-photo';
 import { deviceSupportsEsp32, platformLabels } from '@/lib/device-support';
 
 const waveshareAffiliateId = '79380';
+// The query string Seeed's affiliate dashboard gives out, without the leading "?". Every
+// seeedstudio.com store button on a device page carries it once it's filled in.
+const seeedAffiliateQuery = '';
 
 function productUrl(url: string): string {
   try {
     const parsed = new URL(url);
+    if (parsed.hostname === 'www.seeedstudio.com' && seeedAffiliateQuery) {
+      return url.includes('?') ? `${url}&${seeedAffiliateQuery}` : `${url}?${seeedAffiliateQuery}`;
+    }
     if (parsed.hostname !== 'www.waveshare.com' || parsed.pathname.startsWith('/wiki/')) {
       return url;
     }
@@ -50,7 +56,7 @@ function Spec({ label, children }: { label: string; children: React.ReactNode })
 }
 
 export function DeviceSpecs({ device }: { device: Device }) {
-  const supportsEsp32 = deviceSupportsEsp32(device);
+  const supportsEsp32 = device.status !== 'unsupported' && deviceSupportsEsp32(device);
   const platforms = device.platforms?.length
     ? device.platforms
     : supportsEsp32
@@ -66,7 +72,9 @@ export function DeviceSpecs({ device }: { device: Device }) {
   // Generated panel drawings (scripts/generate-device-placeholders.mjs) are not photos: no lightbox, no 'photo' label.
   const isPlaceholder = device.image?.includes('/placeholders/') ?? false;
   const productCtaTitle = isKnownStore ? `Official ${device.vendor} store` : 'Product page';
-  const productRel = device.vendor === 'Waveshare' ? 'sponsored noopener noreferrer' : 'noopener noreferrer';
+  const isAffiliateLink =
+    device.vendor === 'Waveshare' || (Boolean(seeedAffiliateQuery) && productHost === 'www.seeedstudio.com');
+  const productRel = isAffiliateLink ? 'sponsored noopener noreferrer' : 'noopener noreferrer';
 
   return (
     <div className="not-prose rounded-lg border bg-fd-card p-4">
@@ -180,7 +188,7 @@ export function DeviceSpecs({ device }: { device: Device }) {
         <Spec label="Size">{device.diagonal ? `${device.diagonal}″ diagonal` : '-'}</Spec>
         <Spec label="Interface">{device.interface}</Spec>
         <Spec label="Platforms">
-          {platforms.map((platform, index) => {
+          {device.status === 'unsupported' ? 'None yet' : platforms.map((platform, index) => {
             const entry = platformLabels[platform] ?? { label: platform, href: '/guide' };
             return (
               <span key={platform}>
@@ -199,13 +207,19 @@ export function DeviceSpecs({ device }: { device: Device }) {
         <Spec label="Status">
           {device.status === 'tested' ? (
             <span className="text-green-700 dark:text-green-400">🟢 Confirmed working</span>
+          ) : device.status === 'unsupported' ? (
+            <span className="text-fd-muted-foreground">⚪ Not supported yet</span>
           ) : (
             <span className="text-amber-700 dark:text-amber-400">🟡 Should work</span>
           )}
         </Spec>
         {device.buttons ? <Spec label="Buttons">{device.buttons} (usable in scenes)</Spec> : null}
         <Spec label="FrameOS driver">
-          <code className="rounded bg-fd-muted px-1.5 py-0.5 text-xs">{device.driver}</code>
+          {device.status === 'unsupported' ? (
+            'None yet'
+          ) : (
+            <code className="rounded bg-fd-muted px-1.5 py-0.5 text-xs">{device.driver}</code>
+          )}
         </Spec>
       </dl>
       <p className="mt-4 border-t pt-3 text-xs text-fd-muted-foreground">

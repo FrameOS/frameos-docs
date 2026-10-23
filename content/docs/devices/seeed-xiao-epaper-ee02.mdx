@@ -1,0 +1,40 @@
+---
+title: "Seeed XIAO ePaper Display Board EE02"
+description: "Seeed Studio XIAO ePaper Display Board EE02 - a XIAO ESP32-S3 Plus driver board for the 13.3\" Spectra 6 panel. Not supported by FrameOS yet."
+device:
+  vendor: "Seeed Studio"
+  model: "XIAO ePaper Display Board EE02"
+  driver: "none"
+  technology: "E-ink"
+  interface: "ESP32-S3 driver board"
+  diagonal: 13.3
+  width: 1200
+  height: 1600
+  colors: "6 colors (Spectra 6)"
+  colorCount: 6
+  colorClass: "spectra"
+  productUrl: "https://www.seeedstudio.com/XIAO-ePaper-Display-Board-ESP32-S3-EE02-p-6639.html"
+  image: "/images/devices/seeed-xiao-epaper-ee02.jpg"
+  links:
+    - label: "Seeed wiki"
+      url: "https://wiki.seeedstudio.com/getting_started_with_ee02/"
+    - label: "13.3\" Spectra 6 panel"
+      url: "https://www.seeedstudio.com/13-3inch-Six-Color-eInk-ePaper-Display-with-1200x1600-Pixels-p-6569.html"
+  status: "unsupported"
+---
+
+The **XIAO ePaper Display Board EE02** is Seeed's DIY route to a big color frame: a XIAO
+ESP32-S3 Plus on a carrier made for the **13.3" Spectra 6** 1200×1600 panel (60-pin connector),
+with refresh, previous and next keys, a reset and a boot button, and a battery connector with a
+charger and power switch. Buy it with the panel and you have the parts of a
+[reTerminal E1004](/devices/seeed-reterminal-e1004) to put in a frame of your own.
+
+## Status
+
+⚪ **Not supported yet - but close.** The firmware already drives 13.3" Spectra 6 panels on an
+8&nbsp;MB ESP32-S3, rendering on-device on the 16-bit canvas: that's what the E1004 and the
+[Waveshare 13.3E6](/devices/waveshare-esp32-s3-epaper-13in3e6) do. What's missing is a hardware
+preset with this board's pin map, buttons and battery wiring, checked on a real board.
+
+Want it? Say so on [GitHub](https://github.com/FrameOS/frameos/issues) or
+[Discord](https://discord.gg/9dT9y7EzUw) - it helps us decide what to port next.

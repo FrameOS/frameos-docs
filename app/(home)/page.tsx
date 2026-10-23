@@ -201,7 +201,9 @@ export default function HomePage() {
               <p>
                 An <TextLink href="/guide/esp32"><strong>ESP32-S3</strong></TextLink> lets you build battery-powered frames that <TextLink href="/guide/esp32#power">deep-sleep between refreshes</TextLink>.
                 It's still the full FrameOS experience. Everything is rendered on device, including 50MB JPEGs.
-                Works with custom setups, and <TextLink href="/guide/esp32#supported-boards">Waveshare, PhotoPainter, TRMNL and reTerminal boards</TextLink>.
+                The easiest start is a ready-made <TextLink href="/devices/seeed-buying-guide">Seeed Studio reTerminal</TextLink>: pick
+                its preset and flash it from the browser. Waveshare&apos;s <TextLink href="/devices/waveshare-esp32-s3-photopainter">PhotoPainter</TextLink>,
+                Seeed&apos;s XIAO ePaper boards, TRMNL kits and <TextLink href="/guide/esp32#supported-boards">custom setups</TextLink> work too.
                 Boards without PSRAM (e.g. ESP32-C3) run as thin clients.
               </p>
             </div>

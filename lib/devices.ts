@@ -18,7 +18,7 @@ export interface DeviceRow {
   colorClass?: 'bw' | 'accent' | 'gray' | 'acep' | 'spectra' | 'rgb' | 'varies';
   esp32?: boolean;
   image?: string;
-  status: 'tested' | 'untested';
+  status: 'tested' | 'untested' | 'unsupported';
 }
 
 const vendorOrder: Record<string, number> = { Generic: 0, Pimoroni: 1, Waveshare: 2 };
@@ -43,7 +43,7 @@ export function getDeviceRows(): DeviceRow[] {
         colors: device.colors,
         colorCount: device.colorCount,
         colorClass: device.colorClass,
-        esp32: deviceSupportsEsp32(device),
+        esp32: device.status !== 'unsupported' && deviceSupportsEsp32(device),
         image: device.image,
         status: device.status,
       };

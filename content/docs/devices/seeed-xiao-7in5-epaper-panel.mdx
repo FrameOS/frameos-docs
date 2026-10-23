@@ -1,0 +1,38 @@
+---
+title: "Seeed XIAO 7.5\" ePaper Panel"
+description: "Seeed Studio XIAO 7.5\" ePaper Panel - a finished 7.5\" 800x480 black/white e-ink display with a XIAO ESP32-C3 and a 2000 mAh battery. Not supported by FrameOS yet."
+device:
+  vendor: "Seeed Studio"
+  model: "XIAO 7.5\" ePaper Panel"
+  driver: "none"
+  technology: "E-ink"
+  interface: "ESP32-C3 board"
+  diagonal: 7.5
+  width: 800
+  height: 480
+  colors: "Black/White"
+  colorCount: 2
+  colorClass: "bw"
+  productUrl: "https://www.seeedstudio.com/XIAO-7-5-ePaper-Panel-p-6416.html"
+  image: "/images/devices/seeed-xiao-7in5-epaper-panel.jpg"
+  links:
+    - label: "Seeed wiki"
+      url: "https://wiki.seeedstudio.com/xiao_075inch_epaper_panel/"
+  status: "unsupported"
+---
+
+The **XIAO 7.5" ePaper Panel** is a finished desk display: a 7.5" 800×480 black/white panel in a
+white case with a stand, driven by a XIAO ESP32-C3, with a 2000&nbsp;mAh battery that Seeed rates at
+about three months in deep sleep.
+
+## Status
+
+⚪ **Not supported yet.** The pieces exist - FrameOS drives 7.5" 800×480 panels, and PSRAM-less
+ESP32-C3 boards like the [TRMNL OG](/devices/trmnl-og) run as thin clients that the
+[backend](/guide/backend) renders for - but there's no hardware preset with this board's pin map
+and battery wiring yet. If you need 7.5" black/white today, the
+[reTerminal E1001](/devices/seeed-reterminal-e1001) and the
+[TRMNL 7.5" DIY Kit](/devices/trmnl-og-diy-kit) render on the device itself.
+
+Want it? Say so on [GitHub](https://github.com/FrameOS/frameos/issues) or
+[Discord](https://discord.gg/9dT9y7EzUw) - it helps us decide what to port next.

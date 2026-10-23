@@ -1,0 +1,54 @@
+---
+title: "Seeed XIAO ePaper Display Board EE05"
+description: "Seeed Studio XIAO ePaper Display Board EE05 - a XIAO ESP32-S3 Plus driver board for 24-pin e-paper panels, running FrameOS on-device."
+device:
+  vendor: "Seeed Studio"
+  model: "XIAO ePaper Display Board EE05"
+  driver: "waveshare.EPD_4in26"
+  technology: "E-ink"
+  interface: "ESP32-S3 driver board"
+  colors: "Depends on the panel"
+  colorClass: "varies"
+  buttons: 3
+  productUrl: "https://www.seeedstudio.com/XIAO-ePaper-Display-Board-EE05-p-6755.html"
+  image: "/images/devices/seeed-xiao-epaper-ee05.jpg"
+  links:
+    - label: "Seeed wiki"
+      url: "https://wiki.seeedstudio.com/epaper_ee05/"
+    - label: "XIAO ePaper DIY Kit (EE05)"
+      url: "https://www.seeedstudio.com/XIAO-ePaper-DIY-Kit-ESP32-S3-EE05.html"
+  platforms:
+    - "esp32-s3"
+  status: "untested"
+---
+
+The **XIAO ePaper Display Board EE05** is the refreshed, slimmer sibling of the
+[EE04](/devices/seeed-xiao-epaper-ee04): the same XIAO ESP32-S3 Plus (8&nbsp;MB of PSRAM), a
+**24-pin** panel connector, three side-mounted keys, a battery connector with a hardware power
+switch, and an extension header for sensors. It's the board in the
+[TRMNL 4.26" DIY Kit](/devices/trmnl-4in26-diy-kit), and Seeed also sells it on its own or as the
+XIAO ePaper DIY Kit.
+
+FrameOS runs the **full on-device renderer** on it.
+
+## Setup
+
+1. In the FrameOS backend or [FrameOS Cloud](/guide/cloud), create a frame with **Flash embedded
+   device** and choose **ESP32-S3**.
+2. With the 4.26" panel, select the **TRMNL 4.26" DIY Kit** preset and you're done. With another
+   panel, select the preset first for the pins, then pick your panel - the form switches to a
+   custom board but keeps them. Seeed's panels usually share their controllers with Waveshare's:
+   pick the driver with the same size, resolution and colors in the [device database](/devices).
+3. Flash it over USB from the browser, then install scenes as usual.
+
+## Buttons and battery
+
+The keys are on GPIO 2, 3 and 5. The 4.26" preset registers GPIO 2 (plus BOOT); add the others under
+**GPIO buttons** in the frame's settings. The battery is read through a 2:1 divider on GPIO 1,
+switched on by GPIO 6 - the 4.26" preset carries that wiring, and on a custom board you enter the
+three values under **Power**.
+
+## Status
+
+🟡 **Should work, not yet confirmed on real hardware.**
+Tell us on [GitHub](https://github.com/FrameOS/frameos/issues/new) or [Discord](https://discord.gg/9dT9y7EzUw) if you try it.
