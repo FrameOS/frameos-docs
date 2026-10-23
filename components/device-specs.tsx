@@ -5,16 +5,32 @@ import { DevicePhoto } from '@/components/device-photo';
 import { deviceSupportsEsp32, platformLabels } from '@/lib/device-support';
 
 const waveshareAffiliateId = '79380';
-// The query string Seeed's affiliate dashboard gives out, without the leading "?". Every
-// seeedstudio.com store button on a device page carries it once it's filled in.
-const seeedAffiliateQuery = '';
+// The referral query Seeed's affiliate dashboard (My Account → Affiliate Programs → Promo data)
+// adds to a product URL.
+const seeedAffiliateQuery = 'sensecap_affiliate=NK0JMuC&referring_service=link';
 
-function productUrl(url: string): string {
+// Seeed product pages (…-p-1234.html) carry the affiliate code; its docs and wiki pages don't.
+function seeedStoreUrl(url: string): string {
   try {
     const parsed = new URL(url);
-    if (parsed.hostname === 'www.seeedstudio.com' && seeedAffiliateQuery) {
-      return url.includes('?') ? `${url}&${seeedAffiliateQuery}` : `${url}?${seeedAffiliateQuery}`;
+    if (
+      parsed.hostname !== 'www.seeedstudio.com' ||
+      !parsed.pathname.endsWith('.html') ||
+      parsed.searchParams.has('sensecap_affiliate')
+    ) {
+      return url;
     }
+  } catch {
+    return url;
+  }
+  return url.includes('?') ? `${url}&${seeedAffiliateQuery}` : `${url}?${seeedAffiliateQuery}`;
+}
+
+function productUrl(url: string): string {
+  const seeedUrl = seeedStoreUrl(url);
+  if (seeedUrl !== url) return seeedUrl;
+  try {
+    const parsed = new URL(url);
     if (parsed.hostname !== 'www.waveshare.com' || parsed.pathname.startsWith('/wiki/')) {
       return url;
     }
@@ -73,7 +89,7 @@ export function DeviceSpecs({ device }: { device: Device }) {
   const isPlaceholder = device.image?.includes('/placeholders/') ?? false;
   const productCtaTitle = isKnownStore ? `Official ${device.vendor} store` : 'Product page';
   const isAffiliateLink =
-    device.vendor === 'Waveshare' || (Boolean(seeedAffiliateQuery) && productHost === 'www.seeedstudio.com');
+    device.vendor === 'Waveshare' || (affiliateProductUrl !== null && affiliateProductUrl !== device.productUrl);
   const productRel = isAffiliateLink ? 'sponsored noopener noreferrer' : 'noopener noreferrer';
 
   return (
@@ -129,9 +145,9 @@ export function DeviceSpecs({ device }: { device: Device }) {
             {vendorLinks.map((link) => (
               <Link
                 key={link.url}
-                href={link.url}
+                href={seeedStoreUrl(link.url)}
                 target="_blank"
-                rel="noopener noreferrer"
+                rel={seeedStoreUrl(link.url) !== link.url ? 'sponsored noopener noreferrer' : 'noopener noreferrer'}
                 className="inline-flex items-center gap-1.5 rounded-md border px-2.5 py-1.5 text-sm font-medium transition-colors hover:bg-fd-accent"
               >
                 {link.label}
