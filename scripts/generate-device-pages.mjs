@@ -147,7 +147,7 @@ function statusSection(d) {
   if (d.status === 'tested') {
     return `## Status
 
-🟢 **Confirmed working** - tested on real hardware by the maintainers or the community.`;
+🟢 **Confirmed working** - tested on real hardware.`;
   }
   return `## Status
 
