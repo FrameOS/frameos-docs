@@ -27,18 +27,16 @@ Pimoroni sells this board with and without touch, and as a square 720×720 sibli
 the FrameOS device that matches yours: [HyperPixel 4.0" Touch](/devices/pimoroni-hyperpixel-4-touch), [HyperPixel 4.0" Square](/devices/pimoroni-hyperpixel-4-square), [HyperPixel 4.0" Square Touch](/devices/pimoroni-hyperpixel-4-square-touch). The
 smaller round one is the [HyperPixel 2.1" Round](/devices/pimoroni-hyperpixel-2.1inch-round-480x480-lcd).
 
-Needs FrameOS **2026.9.20** or newer.
+Needs FrameOS **2026.9.22** or newer.
 
 ## How it works
 
 One native driver covers every HyperPixel 4.0 - no Pimoroni installer, no Python. On the first
-deploy its setup writes what the panel needs into `config.txt` and the frame reboots once. How the
-pixels get to the glass depends on the Pi, which the frame detects by itself:
-
-- **Pi Zero to Pi 4** - the Pi's firmware drives DPI into `/dev/fb0`, and FrameOS sends the panel
-  its init sequence and switches the backlight over GPIO.
-- **Pi 5** - a Pi 5 has no firmware DPI, so setup enables the kernel's `vc4-kms-dpi-hyperpixel4`
-  overlay instead and FrameOS only writes the framebuffer.
+deploy its setup writes what the panel needs into `config.txt` and the frame reboots once. On
+every Pi, Zero to Pi 5, that's the kernel's own `vc4-kms-dpi-hyperpixel4` overlay (FrameOS
+2026.9.22+): the kernel brings the panel up and FrameOS only writes the framebuffer. A card set up
+by an older release, with the firmware's DPI lines in `config.txt`, is converted on its next driver
+setup.
 
 ## Setup
 
@@ -52,7 +50,7 @@ in the frame's settings.
 
 The HyperPixel takes every GPIO pin, so the Pi's I2C and SPI buses are switched off while it is
 the frame's display - no other HATs or GPIO buttons alongside it. **Turn display off / on** (from
-the frame's menu, or on a [schedule](/guide/control)) switches the backlight; there is no dimming.
+the frame's menu, or on a [schedule](/guide/control)) blanks the panel; there is no dimming.
 
 Moving the SD card to a different HyperPixel is fine: change the device, deploy, and setup swaps
 the `config.txt` lines over.
@@ -60,7 +58,7 @@ the `config.txt` lines over.
 ## Status
 
 🟡 **Should work, not yet confirmed on real hardware.** The driver is confirmed on the
-[HyperPixel 4.0" Touch](/devices/pimoroni-hyperpixel-4-touch) with a Pi 5; this variant uses
-Pimoroni's own init sequence and timings but hasn't met a panel yet. If you have this display,
+[HyperPixel 4.0" Touch](/devices/pimoroni-hyperpixel-4-touch) with a Pi 5; this variant, without
+the touch controller, hasn't met a panel yet. If you have this display,
 tell us on [GitHub](https://github.com/FrameOS/frameos/issues/new) or
 [Discord](https://discord.gg/9dT9y7EzUw) and we'll mark it confirmed.

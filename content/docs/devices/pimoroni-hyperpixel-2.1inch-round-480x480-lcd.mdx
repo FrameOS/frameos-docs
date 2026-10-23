@@ -43,8 +43,10 @@ pixels get to the glass depends on the Pi, which the frame detects by itself:
   this path, and it hasn't been tried on real hardware yet.
 
 From FrameOS 2026.9.20 touch works on a Pi Zero to Pi 4: the kernel's own FT5x06 driver reads it,
-and it arrives in your [scenes](/guide/scenes) as the pointer events `mouseMove`, `mouseDown` and
-`mouseUp`. Coordinates follow the frame's rotate and flip settings.
+and it arrives in your [scenes](/guide/scenes) as pointer events - `pointerDown`, `pointerMove`,
+`pointerUp` and the `tap`, `swipe` and `longPress` gestures from FrameOS 2026.10.0
+([input](/guide/scenes#input)), with the older `mouseMove`, `mouseDown` and `mouseUp` names still
+working. Coordinates follow the frame's rotate and flip settings.
 
 ## Setup
 

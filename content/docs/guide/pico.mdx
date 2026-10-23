@@ -10,7 +10,7 @@ back of the panel and is otherwise a lovely piece of hardware with nowhere to ru
 <Callout type="warn" title="Self-hosted backend only">
   Pico frames need a [self-hosted backend](/guide/backend) - it renders every frame for them.
   [FrameOS Cloud](/guide/cloud) does not support virtual frames, and thus does not yet render for thin clients.
-  Therefor a Pico can't be managed from the cloud. Neither can it run [standalone](/guide/standalone).
+  So a Pico can't be managed from the cloud. Neither can it run [standalone](/guide/standalone).
 </Callout>
 
 <Callout title="Thin client, not a renderer">
@@ -20,6 +20,11 @@ back of the panel and is otherwise a lovely piece of hardware with nowhere to ru
   is ever allocated on the device. Unlike an [ESP32-S3](/guide/esp32) frame, a Pico frame needs
   the backend to be reachable when it renders.
 </Callout>
+
+Apart from the renderer, a Pico frame does everything an ESP32 frame does (FrameOS 2026.10.19+):
+it's set up over USB from the browser, raises a setup hotspot when it has no network, takes its
+settings from the backend, serves a small HTTP API, ships its logs, and its buttons reach the
+scene.
 
 ## Supported boards
 
@@ -39,33 +44,67 @@ the serial console instead of picking a preset.
 The Pico firmware is a plain UF2, the same for every board of a given chip - the backend does not
 build per-frame images for it.
 
-1. Download `frameos-<version>-pico-w.uf2` (or `-pico-2w.uf2`) from the
+1. In the backend, add a frame with **Flash embedded device** and pick your Inky Frame preset.
+2. In the frame's deploy drawer, **Download firmware (.uf2)** - or take
+   `frameos-<version>-pico-w.uf2` (or `-pico-2w.uf2`) from the
    [latest release](https://github.com/FrameOS/frameos/releases).
-2. Hold **BOOTSEL** while plugging the board into USB, then copy the `.uf2` onto the `RPI-RP2`
+3. Hold **BOOTSEL** while plugging the board into USB, then copy the `.uf2` onto the `RPI-RP2`
    (or `RP2350`) drive that appears. The board reboots into FrameOS.
-3. In the backend, add a frame with **Flash embedded device** and pick your Inky Frame preset.
-   Note the frame's id and API key from its settings.
-4. Open the USB serial console at 115200 baud and provision it:
+4. Back in the drawer, **Connect over USB → Set up as this frame**. The browser sends the preset,
+   the backend's address, the frame's id and API key and your WiFi over USB (Chrome or Edge, as
+   for an ESP32), and the board restarts and renders its first scene.
 
-   ```
-   frameos> set hardware pimoroni_inky_frame_5_7
-   frameos> set backend http://192.168.1.10:8989
-   frameos> set frame_id 42
-   frameos> set api_key <the frame's server API key>
-   frameos> wifi MySSID MyPassword          # saves and reboots
-   frameos> status
-   frameos> render                          # fetch and refresh now
-   ```
+Updating later is the same file onto the same drive - **Reboot into BOOTSEL** in the drawer (or
+`bootsel` on the console) saves holding the button - and the board keeps its settings through it.
+
+**Without a computer**, a board with no network to join opens a WPA2 hotspot called
+`FrameOS-XXXX` and draws its name, password and address on the panel. Join it and the setup page
+opens by itself (or browse to `http://192.168.4.1/`); fill in your WiFi, the backend URL, and the
+frame id and API key the deploy drawer shows.
+
+**By hand**, provision it over the USB serial console:
+
+```
+frameos> set hardware pimoroni_inky_frame_5_7
+frameos> set backend http://192.168.1.10:8989
+frameos> set frame_id 42
+frameos> set api_key <the frame's server API key>
+frameos> wifi MySSID MyPassword          # saves and reboots
+frameos> status
+frameos> render                          # fetch and refresh now
+frameos> bootsel                         # reboot into the UF2 drive for an update
+```
 
 `https://` backends work: TLS 1.2 with hostname verification against a built-in bundle of the
 major public CA roots.
 
+## What it does
+
+- **Every scene works.** The backend runs the scene in the real FrameOS runtime, so JavaScript
+  apps, SVG, fonts, photos and scene state behave as on any frame, and the frame's rotation is
+  applied before packing.
+- **Buttons reach the scene.** The front buttons arrive as `gpio` edges and the same `press`,
+  `doublePress` and `longPress` as on any frame ([buttons](/guide/scenes#input)): the board sends
+  them with its next render pull, once a press is decided, and the scene hears them before it
+  renders. The press that woke a sleeping board counts.
+- **Events, switches and previews.** A custom event, a scene switch or **Preview on frame** waits
+  on the backend and runs on the board's next pull, which the backend asks for at once. A board
+  asleep on battery gets it when it wakes - that's a queued change, not an error.
+- **No wasted refreshes.** An unchanged picture skips the panel refresh, and the check survives
+  the board powering off between renders.
+- **A device API**: `/status`, `/logs`, `/image`, `/ping` and `/event/<name>` on port 80, and
+  `<hostname>.local` over mDNS. Logs also land in the backend, and the deploy drawer has the USB
+  console.
+
 ## Battery mode
 
-`set deep_sleep 1` powers the board off completely after each render, using the Inky Frame's
-onboard RTC and power latch - around 20&nbsp;µA between refreshes. It cold-boots on the next
-interval, or when someone presses a front button. On USB power the latch can't cut the supply, so
-the firmware sleeps in place instead; the behaviour is the same either way.
+`deep_sleep` (always) or `deep_sleep_on_battery` (only while unplugged) - the two settings in the
+frame's **Power** section, or `set deep_sleep 1` on the console - powers the board off completely
+after each render, using the Inky Frame's onboard RTC and power latch: around 20&nbsp;µA between
+refreshes. It cold-boots on the next interval, or when someone presses a front button. On USB power
+the latch can't cut the supply, so the firmware waits in place instead, and anything a person does
+ends the wait. A watchdog backed by an RTC timer makes sure a hang or a reset on battery ends in a
+wake rather than a dark frame.
 
 ## Limitations
 
@@ -73,13 +112,17 @@ The Pico support is newer than the rest and honest about it:
 
 - **The backend must be up when the frame renders.** No backend, no picture. If you want a frame
   that renders standalone, use a [Pi](/guide/raspberry) or an [ESP32-S3](/guide/esp32).
-- **Front buttons trigger an immediate render**, but per-button scene actions aren't wired up
-  yet.
 - **No on-device scenes, JavaScript, assets or scheduler** - all of that happens on the backend
   side for a thin client. The backend dithers the render to the panel's palette before packing
   it, so thin clients look the same as a frame that renders on-device.
-- The 4.0" Inky Frame's panel initialisation still wants validation on real glass; if yours comes
-  up mirrored or offset, [tell us](https://github.com/FrameOS/frameos/issues).
+- **No over-the-air updates** - there's no room for a second firmware slot, so an update is a UF2
+  copy, one click away with **Reboot into BOOTSEL**.
+- **Tested on one board so far.** USB setup, the setup screen, rendering, buttons, events and
+  rotation are verified on an [Inky Frame 7.3" Spectra 6](/devices/pimoroni-inky-frame-7-3-spectra)
+  (Pico 2 W). Battery sleep, an `https://` backend, a Pico W board and the 4.0" and 5.7" panels
+  haven't been run on real hardware yet; the 4.0" panel's initialisation in particular still wants
+  validation on real glass. If yours comes up mirrored or offset,
+  [tell us](https://github.com/FrameOS/frameos/issues).
 
 Details and build instructions live in the
 [Pico firmware README](https://github.com/FrameOS/frameos/tree/main/embedded/pico).

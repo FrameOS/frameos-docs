@@ -44,10 +44,11 @@ insert the card, power up.
 
 ## 2. Set it up from your phone
 
-With no WiFi configured, the frame starts a hotspot called **`FrameOS-Setup`** (password
-`frame1234`). Join it from your phone or laptop and open `http://10.42.0.1:8787/` (the panel
-shows the same address). The setup page asks
-for:
+With no WiFi configured, the frame starts a setup hotspot called **`FrameOS-XXXX`** - the last
+four characters of its WiFi MAC address - with the password `frame1234`; the panel shows both
+(frames older than 2026.10.17 call it `FrameOS-Setup`). Join it from your phone or laptop and
+the setup page opens by itself, the way a hotel WiFi login does; if it doesn't, open
+`http://10.42.0.1:8787/` (the panel shows that address too). The setup page asks for:
 
 - your **WiFi** network and password;
 - the **display** - every driver is in the image, so you pick your panel here, plus rotation and
@@ -60,7 +61,7 @@ for:
 
 Save, and the Pi joins your network: the "Saved!" page names the network it is joining, waits for
 the frame to show up on your LAN and opens it there. If the WiFi password was wrong, the frame keeps trying for
-about 90 seconds before the `FrameOS-Setup` hotspot comes back. On HDMI you watch it happen: the FrameOS status screen draws
+about 90 seconds before the setup hotspot comes back. On HDMI you watch it happen: the FrameOS status screen draws
 the boot steps as they go ("Checking network…", "Network connected. Loading scenes…"). E-ink
 panels get the same screen once the frame is up: its name, display and resolution, IP address and
 whether the internet is reachable, a clock and time zone, how it is managed (*standalone*), and the
@@ -79,7 +80,7 @@ the admin password. This is a full management UI served by the frame itself:
   node-graph [scene editor](/guide/scenes) the backend has. Scenes are interpreted, so there is nothing to
   compile - save, and it is live.
 - **Settings**: everything under [Useful settings](/guide/settings) - access mode, QR code, time
-  zone, nightly reboot, metrics, the display driver.
+  zone, nightly reboot, metrics, the display driver, GPIO buttons and keyboard input.
 - **Schedule**, **Logs**, **Metrics**, **Assets** - the same panels a backend shows for the frame,
   running against the device.
 - **Settings → FrameOS upgrade**: the frame downloads a new release itself, verifies the

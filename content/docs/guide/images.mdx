@@ -58,7 +58,9 @@ there is no intermediate image at all.
 
 The result is that adding nodes to a scene doesn't ratchet memory up the way it would in a
 conventional pipeline, and the pixels you get are the pixels you would have got the expensive
-way.
+way. JavaScript apps get the same pipeline: `frameos.fetchImage()` hands the download to the
+native decoder, which takes the canvas it's offered, so a photo app written in JavaScript costs
+no more than a built-in one (2026.10.11+).
 
 ## Spool to storage, cache to storage
 
@@ -72,6 +74,12 @@ Two more tiers, both automatic:
   photo that's too big for memory is kept on the card as raw pixels, so a 4-hour cache actually
   caches instead of silently re-downloading every render. On the bench, serving a cached 13.3"
   image from the card takes 7 seconds against 23 for the miss.
+- **A big decode is not a stuck render.** Every render has a time limit, so a server that
+  dribbles bytes forever can't hang the frame. A decode that keeps consuming its download renews
+  that limit as it goes - up to 15 minutes on an ESP32, 10 on a Pi - and logs its progress with an
+  ETA, sent to the backend as it happens. A 60-megapixel camera JPEG takes about seven minutes on
+  an ESP32-S3, and then it shows (2026.10.14+). A streamed decode isn't held to the HTTP response
+  size limit either: it only ever holds a window of the body.
 - **Large text feeds are folded as they arrive.** A multi-megabyte iCal subscription used to be
   buffered whole to extract a handful of events; now it's read a line at a time through an 8&nbsp;KB
   window, with events outside your export range dropped as they're parsed.
@@ -91,9 +99,12 @@ restarts rather than showing soft photos for a day.
 
 Beyond that, honest limits:
 
-- **Progressive JPEGs and interlaced PNGs can't be streamed** - the format interleaves the whole
-  image, so there is nothing to stream. They're decoded buffered and refused, gracefully, if they
-  don't fit. Save photos as baseline JPEG if you control the source.
+- **Progressive JPEGs** spread every part of the image across the whole file, so they can't be
+  decoded a row at a time. Since 2026.10.13 FrameOS decodes them in strips instead - one pass over
+  the file per strip - which fits an 8&nbsp;MB ESP32 even at 13.3": read from a file they stream,
+  off the network the body is buffered first. **Interlaced PNGs** are still decoded buffered, and
+  refused gracefully if they don't fit. Baseline JPEG remains the cheapest format if you control
+  the source.
 - **Some panels are the problem.** A 13.3" 1600×1200 canvas is 7.7&nbsp;MB of RGBA on its own,
   before any image exists. On an 8&nbsp;MB ESP32 that panel gets a 16-bit canvas (3.8&nbsp;MB),
   which is what lets it render there at all - but it's still half the PSRAM before the first byte

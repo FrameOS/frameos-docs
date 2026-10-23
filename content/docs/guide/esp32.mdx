@@ -61,6 +61,7 @@ battery divider, SD slot and flash size are all filled in for you:
 | [Elecrow CrowPanel 5.79"](/devices/elecrow-crowpanel-5in79) | S3 | 5.79" 4-grey | 5 buttons, dual SSD1683 |
 | [TRMNL 7.5" DIY Kit](/devices/trmnl-og-diy-kit) | S3 | 7.5" black/white | XIAO ePaper driver board |
 | [TRMNL 4.26" DIY Kit](/devices/trmnl-4in26-diy-kit) | S3 | 4.26" 4-grey | XIAO ePaper driver board |
+| [Seeed XIAO ePaper Display Board EE04](/devices/seeed-xiao-epaper-ee04) / [EE05](/devices/seeed-xiao-epaper-ee05) | S3 | Any 24-pin panel (EE04: also the 7.3" Spectra 6 on 50 pins) | The TRMNL DIY kits' board on its own: start from a TRMNL DIY Kit preset, then pick your panel |
 | [TRMNL OG](/devices/trmnl-og) | C3 | 7.5" black/white | Thin client - backend renders |
 | [TRMNL BWRY](/devices/trmnl-bwry) | C3 | 7.5" 4-color | Thin client - backend renders |
 | [XTEINK X4](/devices/xteink-x4) | C3 | 4.26" 4-grey | Thin client - backend renders |
@@ -68,7 +69,22 @@ battery divider, SD slot and flash size are all filled in for you:
 
 Anything else is a **Custom ESP32 board**: pick the panel, set the pins, done. The
 [Pimoroni Inky Frame](/guide/pico) boards carry a Pico instead of an ESP32 and have
-[their own page](/guide/pico).
+[their own page](/guide/pico). The [Seeed Studio buying guide](/devices/seeed-buying-guide) compares
+the reTerminals and Seeed's XIAO boards.
+
+### Not supported yet [#not-supported-yet]
+
+Boards people ask about that FrameOS can't drive yet. Each has a device page saying what's missing:
+
+- [Seeed reTerminal E1003](/devices/seeed-reterminal-e1003) and
+  [XIAO ePaper Display Board EE03](/devices/seeed-xiao-epaper-ee03) - fast-refresh 10.3" grayscale
+  panels that need a different kind of display driver, as does the 10.3" TRMNL X.
+- [Seeed XIAO ePaper Display Board EE02](/devices/seeed-xiao-epaper-ee02) - the 13.3" Spectra 6
+  panel already works on other boards; this one needs a preset.
+- [Seeed XIAO 7.5" ePaper Panel](/devices/seeed-xiao-7in5-epaper-panel) - an ESP32-C3 that would
+  run as a thin client, waiting for a preset.
+- [Seeed reTerminal D1001](/devices/seeed-reterminal-d1001) - an ESP32-P4 with an 8" MIPI-DSI LCD.
+  The firmware builds for the S3 and C3 and drives e-paper.
 
 ## Flash the device
 
@@ -100,7 +116,10 @@ Anything else is a **Custom ESP32 board**: pick the panel, set the pins, done. T
    ```
 
 The device boots fully provisioned: it joins your WiFi, registers with the backend, pulls its
-scenes, and renders.
+scenes, and renders. It joins WPA2 and WPA3 networks (mixed WPA/WPA2 ones too); from firmware
+2026.10.17 a WPA1-only (TKIP) network no longer connects. A frame whose WiFi drops keeps
+reconnecting every 30 seconds, so a router restart doesn't strand it until the next reboot
+(2026.10.19+).
 
 ### Provisioning by hand
 
@@ -140,7 +159,9 @@ and runs them **on-device**: the same interpreter as Linux frames, with the stan
 compiled into the firmware and code nodes, expressions and JavaScript apps running on an embedded
 [QuickJS](https://bellard.org/quickjs/) (the [quickts](https://github.com/FrameOS/quickts) fork,
 which parses TypeScript itself). Scene changes arrive over WiFi in seconds - no
-reflashing, no compiler.
+reflashing, no compiler. To keep memory free, a JavaScript app's interpreter is dropped after each
+render, so its module variables last one render - keep values in scene state or
+`frameos.remember()` ([JavaScript apps](/guide/apps#javascript-apps)).
 
 Scenes are stored one file per scene, so a frame can hold many of them (up to 32, or 512&nbsp;KB
 of scene JSON) while keeping only the active one parsed in memory. Switching scenes - from the
@@ -166,8 +187,17 @@ rows come out, and the peak cost is the canvas plus a few hundred kilobytes. Sin
 bytes go from the socket into the decoder directly - the file is never held in PSRAM or written to
 flash at all. It works for baseline JPEG, PNG, WebP, BMP and PPM, and it applies to the whole chain
 - a rotation or a resize downstream tells the decoder how few pixels it actually needs before a
-single byte is fetched. Formats that can't stream (progressive JPEG, GIF) are buffered instead,
-spilling to the SD card when they don't fit.
+single byte is fetched. A progressive JPEG is decoded in strips, so it fits an 8&nbsp;MB board
+too, even on a 13.3" panel (firmware 2026.10.13+): read from the SD card it streams like the
+rest, and off the network its body is buffered first. GIFs are buffered whole, spilling to the SD
+card when they don't fit.
+
+A huge photo is honest work, not a stall: a decode that keeps consuming its download renews the
+render's time limit as it goes, up to 15 minutes, and logs its progress with an ETA - a
+60-megapixel camera JPEG takes about seven minutes on an S3, and then it shows (2026.10.14+). A
+short WiFi drop in the middle of a download doesn't fail the picture either: the request waits
+up to 20 seconds for the link to come back, and an image the network cut short is streamed once
+more (2026.10.19+).
 
 There's a whole page on how this works and why it matters:
 [Big images on small devices](/guide/images).
@@ -215,13 +245,24 @@ fallback - `NotoColorEmoji.ttf` is 10&nbsp;MB of bitmaps with no outlines to dra
   a build of their own (firmware 2026.9.2+). It refuses a release older than the one it runs
   unless you arm `ota downgrade` on the console. A sleeping frame
   stays awake for the download, logs its progress, and gives up on a release after three failed
-  attempts rather than re-downloading it on every wake. (The 4&nbsp;MB flash profile has no OTA
-  slot; those boards update over USB.)
+  attempts rather than re-downloading it on every wake. A dropped connection resumes from the byte
+  it stopped at, every failure says what it was (`timeout`, `closed`, `http 404`…) and at which
+  byte, and the verdict reaches the backend or cloud even though the board restarts right after
+  (firmware 2026.10.19+). An update waits for a render in progress rather than fighting it for
+  WiFi and memory, and the image must carry the version its signature was made for. (The
+  4&nbsp;MB flash profile has no OTA slot; those boards update over USB.)
+- **Deploys and update progress**: the backend's deploy drawer has three buttons for an ESP32 -
+  **Deploy scenes & settings**, **Deploy new firmware** and **Deploy both** - and both control
+  planes show a running update on the frame's card: *updating firmware 42%*, *rebooting into
+  2026.10.19*, *update failed* with the device's reason, or *already on 2026.10.19, nothing to
+  install*.
 - **A real HTTP API on the device**: `GET /status`, `/image`, `/state`, `/states`, and
   `POST /event/<name>` to dispatch any event into the running scene, plus logs, metrics and asset
   routes under `/api/frames/<id>/` - much the same surface the
   [Pi's local API](/guide/control) exposes. Native HTTPS turns on after the frame's first settings
-  sync, when it has a certificate to serve.
+  sync, when it has a certificate to serve. After each render the frame also pushes its picture to
+  a self-hosted backend, so the backend has a sleeping frame's image without pulling it
+  (2026.10.2+).
 - **Logs and metrics** stream to the backend, and the last 128 lines are kept in a ring buffer on
   the device, readable over the serial console when the network is down.
 - **An on-device scheduler**: per-scene render intervals plus minute/hour/weekday schedules that
@@ -229,8 +270,18 @@ fallback - `NotoColorEmoji.ttf` is 10&nbsp;MB of bitmaps with no outlines to dra
   Schedule panel), evaluated on the device in the frame's
   [time zone](/guide/settings#time-zone) (firmware 2026.8.34+; earlier firmware runs on UTC). The
   JavaScript `format()` helper follows the frame's time zone too, from 2026.8.44.
-- **Buttons**: GPIO buttons (the board presets know where they are) dispatch scene events, so a
-  press can change a scene, re-render, or run anything you wire up in the editor.
+- **Buttons**: GPIO buttons (the board presets know where they are) reach scenes as `button`
+  events - `press`, `doublePress`, `longPress` - and raw `gpio` `down` / `up` edges
+  ([details](/guide/scenes#input)), so a press can change a scene, re-render, or run anything you
+  wire up in the editor. Every edge is timestamped by the button task, so a tap made during a
+  30-second panel refresh is still a tap, and a 30&nbsp;ms debounce catches quick double taps
+  (2026.10.16+). Change the button map in the frame's settings; the board picks it up on its next
+  settings sync and restarts.
+- **Button beep**: boards with a buzzer - the Seeed reTerminals - click when a press registers and
+  click lower on the release, the second tap of a double press clicks higher, a held key counts
+  each second out loud, and a press the board had no room for sounds a dull "no". **Button beep
+  GPIO** and **Button beep tone (Hz)** sit under the frame's GPIO buttons; on the console it's
+  `set buzzer_pin`, `set buzzer_tone_hz` and `beep` to test (firmware 2026.10.12+).
 
 ## Battery and deep sleep [#power]
 
@@ -241,7 +292,7 @@ settings, or on the console:
 | --- | --- |
 | `deep_sleep` | Power the chip down between refreshes and cold-boot for the next one |
 | `deep_sleep_on_battery` | Only sleep while running on a battery; stay connected on USB power |
-| `wake_schedule` | Align wakes to wall-clock boundaries, so a clock or calendar updates *on* the hour |
+| `wake_schedule` | Align wakes to wall-clock boundaries in the frame's time zone, so a clock or calendar updates *on* the hour |
 | `wake_check` | Wake at least this often to pick up queued commands, without refreshing the panel |
 | `battery_pin` / `battery_divider` | Read cell voltage on an ADC1 pin; percentage shows in the backend |
 | `battery_enable_pin` | The GPIO that switches the divider on for a reading, on boards that gate it (`-1` = always on) |
@@ -253,22 +304,33 @@ it takes two readings a moment apart and two passes in a row to believe it, so o
 sample can't park a healthy cell in the six-hour sleep.
 
 **Buttons wake the frame.** Every GPIO button on a wake-capable pin is armed as a wake source
-next to the timer (2026.8.42+). A press brings the frame up early, replays as an ordinary button
-event to the scene, and that pass renders - so "next photo" works on a sleeping frame. While
+next to the timer (2026.8.42+). A press brings the frame up early and reaches the scene like any
+other press - held, it's a `longPress`; tapped twice, a `doublePress` (2026.10.16+) - and that
+pass renders, so "next photo" works on a sleeping frame. A press made while a battery frame is
+still rendering holds the sleep for one more pass instead of being lost. While
 asleep the WiFi radio is in modem sleep, the clock is kept by the RTC (no time-sync wait on wake),
 and the log queue and the battery reading are flushed to the backend or cloud before the chip
 halts, so a battery frame's history is complete.
 
 The backend and the cloud both know when a frame is sleeping: right before it halts, the frame
 announces when it will be back, and the frame list shows **asleep · wakes in 5 min** (or
-**overdue** when the wake never came) instead of a stale "last seen". Battery frames show their
+**overdue** when the wake never came) instead of a stale "last seen", and its image carries a
+small moon badge. Battery frames show their
 charge in place of the status dot. Click it for a popup with charge, voltage, how often the frame
 wakes, drain per day, a two-week history with a forecast to empty, and a slider that shows the
 battery life at another wake cadence. A lone reading far below its neighbours is an ADC misread,
 not a discharge: from firmware 2026.9.0 the frame reads the cell in rounds and reports the value it
-believes, and the charts leave the rest out and say how many misreads they ignored. Anything you deploy meanwhile is queued and lands on the next
-wake. On the 13.3" E1004 a heavy scene keeps the frame awake for 80-90 s per cycle: ~23 s to
-render, ~22 s to dither and pack, ~30 s for the Spectra 6 refresh.
+believes, and the charts leave the rest out and say how many misreads they ignored. On the 13.3"
+E1004 a heavy scene keeps the frame awake for 80-90 s per cycle: ~23 s to render, ~22 s to dither
+and pack, ~30 s for the Spectra 6 refresh.
+
+**Nothing is lost to a sleep** (firmware 2026.10.6+, on both control planes). What you ask of a
+sleeping frame - a scene switch, new state values, a render, a preview, a reboot, a firmware
+update, a deploy - waits in the frame's command queue on the backend or the cloud, and the frame
+drains it at the start of its next wake, before it renders, so the change shows on that wake. A
+queued command lives until past the announced wake. Each scene's state is kept in a file on the
+device, so a value set from the control page survives the deep sleep instead of lasting one
+render, and a frame awake on USB is nudged to pull at once.
 
 The board presets carry the battery wiring - the PhotoPainter and 13.3E6 headers, the Seeed
 reTerminals' switched divider, the XIAO ePaper driver board, the TRMNL and the XTEINK X4 (only the

@@ -58,14 +58,17 @@ Scene store**. Good first picks:
   configuration.
 - **Sample scenes** like *Calendar*, *Message board*, or *Unsplash image* - some need API keys,
   which you can add under the backend's **Settings** page.
+- **Your own photos** - upload an album under [Photos](/guide/photos) and **Install on frame**.
 
 ![Adding scenes](/images/app/add-scenes.gif)
 
 ## Deploy
 
 Press **Deploy**. The backend shows a deploy plan - what gets uploaded, what gets installed - and
-streams the progress log. The first deploy takes the longest (it installs dependencies and uploads
-the FrameOS binary); subsequent deploys are fast and only ship what changed. Editing a scene
+streams the progress log, and a progress bar on the frame's card follows it from the click to the
+first render. The first deploy takes the longest (it installs dependencies and uploads the FrameOS
+binary). After that, **Deploy scenes & settings** only ships what changed, and **Deploy FrameOS,
+scenes & settings** reinstalls FrameOS first - the drawer highlights the one it suggests. Editing a scene
 afterwards is quicker still - [scenes are interpreted](/guide/scenes#execution), so nothing is
 rebuilt, and [ESP32](/guide/esp32) frames simply receive the new scene JSON over WiFi.
 

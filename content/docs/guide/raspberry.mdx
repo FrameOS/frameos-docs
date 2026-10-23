@@ -50,13 +50,16 @@ You can get an image three ways:
   board, and the image comes out preconfigured with your WiFi credentials, timezone, display
   driver and frame settings - flash it, insert, done. Whether root login is enabled, with which
   password and which [SSH keys](/guide/settings#ssh-keys), is an explicit choice on that screen.
+  Should the frame ever fail to join your WiFi, its [setup hotspot](/guide/settings#setup-hotspot)
+  uses a name and password it makes up and draws on the panel.
 - **Build it in [FrameOS Cloud](/guide/cloud#sd-card-image-raspberry-pi)**: the same, but the
   image is assembled in your browser and the frame enrolls with your cloud account on first boot.
 - **Download a generic image** from the
   [latest release](https://github.com/FrameOS/frameos/releases) (look for
   `frameos-*-raspberry-pi-64-buildroot.img.gz` and its siblings). On first boot the frame starts a
-  WiFi hotspot called `FrameOS-Setup` (password `frame1234`). Join it from your phone, enter your
-  WiFi credentials, and the frame connects to your network. Generic images ship with
+  WiFi hotspot called `FrameOS-XXXX` (password `frame1234`; the panel shows both, and releases
+  before 2026.10.17 call it `FrameOS-Setup`). Join it from your phone, enter your WiFi credentials
+  in the setup page that opens, and the frame connects to your network. Generic images ship with
   no [FrameOS Remote](/guide/remote) and no root password, since there is no backend to talk to yet;
   **Adopt frame** in the backend turns a running generic-image frame into a managed one over the
   frame's own admin API - scenes, settings, assets, restart, reboot and the frame's signed
@@ -74,7 +77,9 @@ it, the frame's URL and, once you press one, the last GPIO button.
 
 SD-image frames can also **upgrade themselves in place**: the frame downloads a new release,
 verifies its signature against a key baked into the build, swaps it in and restarts (rebooting
-only when the new release needs it) - no re-flashing, no SSH.
+only when the new release needs it) - no re-flashing, no SSH. From 2026.9.22 every update also
+prunes old releases until there is room for the next one, and the backend or cloud warns
+*No room for the next FrameOS update* when there still isn't.
 
 ## Option 2: stock Raspberry Pi OS Lite
 

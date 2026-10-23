@@ -31,6 +31,38 @@ This works the same way on [ESP32 boards with a TF card slot](/guide/esp32#asset
 Images too large to decode in memory also spool here on their way to the screen - see
 [Big images on small devices](/guide/images).
 
+Scenes write into the assets folder, so on a Pi it must be `/srv/assets`, or a folder under
+`/mnt` or `/media` (FrameOS 2026.10.16+): pointed anywhere else it could overwrite FrameOS's own
+files. A folder set before that is left alone. ESP32 boards mount their SD card there and aren't
+held to it. What a scene may do in the folder is up to its apps'
+[permissions](/guide/apps#permissions).
+
+## Setup hotspot [#setup-hotspot]
+
+When a Pi can't join a network on boot it raises a WiFi hotspot of its own, so you can give it
+new credentials from your phone (**Wifi Hotspot Setup** → *Enabled on boot if no network
+connection*). Leave its name and password blank - the default for new frames since 2026.10.17 - and
+a frame with a screen makes them up the first time it needs them: `FrameOS-XXXX` from its WiFi
+MAC address, and a 10-character password it draws on the panel with a QR code. A frame without a
+screen keeps the password `frame1234`. Whatever you type into those fields is used as is, so
+frames set up earlier keep `FrameOS-Setup` / `frame1234` until you clear them. Joining the hotspot
+opens the setup page by itself on most phones (a captive portal), and the hotspot shuts down
+after five minutes by default.
+
+## GPIO buttons and input
+
+List the frame's buttons by pin and label under **GPIO buttons** - the hardware presets fill them
+in. Each button has a **role** (`primary`, `next`, `prev`, `back`, `menu`, `refresh`…), defaulting
+from its label, and scenes hear presses as `button` and `gpio`
+[events](/guide/scenes#input). On an ESP32 a changed map reaches the board with its next settings
+sync, and it restarts to rebind the pins (backend 2026.10.9+; the cloud pushes it too). ESP32
+boards with a buzzer - the Seeed reTerminals - click when a press registers: **Button beep GPIO**
+and **Button beep tone (Hz)** sit under the buttons (firmware 2026.10.12+).
+
+A Pi with a keyboard or touchscreen has an **Input** section (FrameOS 2026.10.0+): the
+**Keyboard layout** a key's character is read in, and **Grab keyboards**, which keeps the
+console from seeing keys meant for the scene. Saving either restarts the runtime.
+
 ## Power and battery
 
 Frames that can sleep - the [ESP32-S3](/guide/esp32#power) and the

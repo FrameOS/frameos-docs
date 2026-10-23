@@ -34,8 +34,10 @@ device.
 Pick the **Seeed reTerminal E1004** hardware preset (`seeed_reterminal_e1004`) when you add the
 frame. It selects the `waveshare.EPD_13in3e` panel driver with the T133A01 refresh sequence this
 glass wants (about 30 seconds per refresh), the E-series SPI bus with the 13.3" panel's second chip
-select, the 32&nbsp;MB flash profile, the TF card asset mount, the three E-series keys (GPIO 3, 4
-and 5, dispatched as scene events) and the battery wiring: a 2:1 divider on GPIO 1 that GPIO 21
+select, the 32&nbsp;MB flash profile, the TF card asset mount, the three keys (GPIO 3 RIGHT, 4 LEFT
+and 5 REFRESH - the E1004 has 3 and 5 the other way round from the E1001/E1002 - delivered to
+scenes as [button events](/guide/scenes#input)), the buzzer on GPIO 45 that clicks when a press
+registers (firmware 2026.10.12+), and the battery wiring: a 2:1 divider on GPIO 1 that GPIO 21
 switches on for each reading. The panel is the same glass as the
 [Waveshare 13.3" (E)](/devices/waveshare-epd-13in3e), with Seeed's own analogue tuning applied by
 the preset.
@@ -48,7 +50,9 @@ renders (waking on the timer, or on any of its buttons) and on USB it stays conn
 backend shows **asleep · wakes in 5 min** and the charge while it's down, and delivers anything you
 deploy on the next wake. A 15-minute weather scene keeps it awake for roughly 80-90 seconds per
 cycle - render, dither and the panel's own refresh - which is where the battery goes; see
-[Battery and deep sleep](/guide/esp32#power). A frame flashed before the preset knew the wiring
+[Battery and deep sleep](/guide/esp32#power). A scene switch, new state or a deploy sent while
+it sleeps waits in the frame's command queue and shows on the next wake (firmware 2026.10.6+), and
+a button press during a refresh is still heard - the buzzer's click says it registered. A frame flashed before the preset knew the wiring
 reads no battery until you re-run `set hardware seeed_reterminal_e1004` on the console or fill in
 the three battery fields under **Power**.
 
@@ -110,6 +114,6 @@ take a similar time to render and dither first. Fine for a frame that updates a 
 
 ## Status
 
-🟢 **Confirmed working** - runs on the maintainers' own E1004, on battery, managed from
-[FrameOS Cloud](/guide/cloud): panel refresh, buttons, battery reading and deep sleep are all
-verified on this hardware.
+🟢 **Confirmed working** - runs on an E1004 on battery, managed from
+[FrameOS Cloud](/guide/cloud) and from a self-hosted backend: panel refresh, buttons and their
+sounds, battery reading, deep sleep and over-the-air updates are all verified on this hardware.

@@ -23,7 +23,7 @@ Click **+ Add new scene**, give it a name, and open the editor.
 
 - 🟥 **Red - events.** Entry points that trigger execution. The most important one is `render`,
   which fires at a set interval (every 60 seconds, every hour, whatever you choose). Others react
-  to button presses, schedules, or custom events.
+  to [buttons, touch and keyboards](#input), schedules, or custom events.
 - 🟦 **Blue - render apps.** Draw things: images, text, calendars, gradients, split layouts.
 - 🟩 **Green - data apps.** Fetch and transform data: download an image, query Home Assistant,
   parse an iCal feed, generate an image with OpenAI, take a screenshot of a web page.
@@ -71,6 +71,38 @@ any other field and the next sleep follows. To decide where it sits, what it's c
 it (`access: private`), add your own numeric field and switch on **Use as refresh interval**. In
 code it is `state.refreshInterval`. The **Next sleep duration** app is still a one-time override:
 it sets how long to sleep after *this* render, and the render after that is back on the interval.
+
+## Scenes inside scenes
+
+A **split** (or any scene node) draws other scenes into cells, and each of them renders on its own
+schedule (FrameOS 2026.10.17+): a clock that ticks every second next to a photo that changes every
+hour re-runs only the clock, and the photo's cell puts back what it drew last time. The split's
+own interval is the fastest it renders, so set it to the quick cell's pace; each cell's options
+say when that cell renders. A render asked for from outside - a button, the API, the schedule -
+redraws every cell.
+
+## Buttons, touch and keyboards [#input]
+
+A frame's GPIO buttons reach a scene as two events (FrameOS 2026.10.16+):
+
+- **`button`** - what the person meant: `press`, `doublePress`, or `longPress` (held a second or
+  more, delivered once, on release). Every press is exactly one of the three, so a `button`
+  listener without an action filter never runs twice for one press. A `press` arrives 350 ms after
+  the release, once it's clear no second tap is coming.
+- **`gpio`** - what the line did: `down` and `up`, the moment they happen. Listen for these to
+  count every tap, or for hold-to-show.
+
+Each edge is timestamped when the frame sees it, so a tap made while an e-ink panel spends 30
+seconds refreshing is still a tap, and two of them are still a double press. In the event node,
+the label and pin filters pick from the frame's own buttons.
+
+On a Pi with a touchscreen, a mouse or a keyboard (FrameOS 2026.10.0+), scenes also hear
+`pointerDown`, `pointerMove` and `pointerUp` (one pointer per finger), `wheel`, `keyDown` and
+`keyUp` with the key in the frame's keyboard layout, `textInput`, and the gestures `tap`,
+`doubleTap`, `longPress` and `swipe` - all in the scene's own pixels, rotated frames included.
+The older `mouseMove` / `mouseDown` / `mouseUp` names keep working. The *Touch test* and
+*Keyboard test* sample scenes show every event as it arrives. The browser preview sends the same
+events from your mouse and keyboard, and a preview button you hold down is held like a frame's key.
 
 ## Code nodes
 
@@ -126,7 +158,14 @@ its driver libraries, scenes interpreted - the default) and **static** (everythi
 one binary, which is what a compiled scene forces). Frames still configured with the retired
 `shared` or `shared-scenes` modes are moved to `static` automatically.
 
-## Preview before you deploy
+## Push, activate, preview
+
+A frame's scene drawer has three buttons. The main one puts the scene on the frame as it stands,
+saved or not: **Push & activate** (or **Push to frame** on the scene that's already active) while
+the frame doesn't have your latest edits, plain **Activate** (or **Apply**) once it does. It pushes only that
+scene and the scenes it draws or switches to - settings and your other unsaved edits stay where
+they are. **Preview** runs the scene in your browser with the values in the drawer, and **Reset**
+puts them back. Scenes are *pushed*; settings and FrameOS itself are *deployed*.
 
 Two ways to see a scene without committing to it:
 
@@ -137,7 +176,8 @@ Two ways to see a scene without committing to it:
   render), JavaScript clocks in the frame's time zone, and a real-time toggle for scenes that want
   to run faster than one frame a second.
 - **Preview on frame** temporarily shows the scene on the actual frame without saving or
-  deploying it. Good for checking how a color dithers on real e-ink.
+  deploying it. Good for checking how a color dithers on real e-ink. A sleeping ESP32 gets it on
+  its next wake.
 
 ## How to learn
 
@@ -145,6 +185,10 @@ FrameOS ships with many sample scenes. The fastest way to learn is to install th
 the editor, and poke around.
 
 ![Sample scenes in the editor](/images/app/edit-samples.gif)
+
+With an AI assistant on your backend or in the cloud, you can also describe a scene - or a change
+to one - in the editor's chat drawer, and it builds or edits the graph, renders it to check, and
+hands it to the editor unsaved.
 
 When the visual editor isn't enough, write your own apps - in Nim or JavaScript.
 [Editing apps](/guide/apps) is next.

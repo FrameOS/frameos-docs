@@ -23,7 +23,7 @@ device:
       url: "https://github.com/pimoroni/inky-frame"
   platforms:
     - "pico-2w"
-  status: "untested"
+  status: "tested"
 ---
 
 The **Spectra 6 Inky Frame 7.3"** (August 2025 onwards) replaces the seven-color ACeP panel with
@@ -38,18 +38,24 @@ controller. The backend has to be reachable when the frame renders.
 
 ## Setup
 
-1. Download `frameos-<version>-pico-2w.uf2` (note the **2w**) from the
-   [latest release](https://github.com/FrameOS/frameos/releases).
-2. Hold **BOOTSEL** while plugging in USB and copy the file onto the `RP2350` drive.
-3. Add a frame in the backend with **Flash embedded device** and the
+1. Add a frame in the backend with **Flash embedded device** and the
    **Pimoroni Inky Frame 7.3" Spectra 6** preset.
-4. Provision it over the USB serial console - see the [Pico guide](/guide/pico).
+2. In its deploy drawer, **Download firmware (.uf2)** - or take `frameos-<version>-pico-2w.uf2`
+   (note the **2w**) from the [latest release](https://github.com/FrameOS/frameos/releases).
+3. Hold **BOOTSEL** while plugging in USB and copy the file onto the `RP2350` drive.
+4. **Connect over USB → Set up as this frame** in the drawer - see the [Pico guide](/guide/pico).
+
+The panel sits upside down on this board; the preset turns every picture for it, so leave the
+frame's rotation at 0 for upright. The five front buttons (A to E) reach your scenes as button
+events.
 
 FrameOS ships several Spectra 6 palettes, so you can tune how saturated the render looks against
 your particular panel.
 
 ## Status
 
-🟡 **Should work, not yet confirmed on real hardware.** The Spectra 6 driver itself is confirmed on
-other boards.
-Tell us on [GitHub](https://github.com/FrameOS/frameos/issues/new) or [Discord](https://discord.gg/9dT9y7EzUw) if you try it.
+🟢 **Confirmed working** (FrameOS 2026.10.19): USB setup from the deploy drawer, the setup screen,
+rendering, the unchanged-frame skip, rotation, the front buttons and scene events are verified on
+this board. Battery sleep and an `https://` backend haven't been run on it yet - tell us on
+[GitHub](https://github.com/FrameOS/frameos/issues/new) or [Discord](https://discord.gg/9dT9y7EzUw)
+how yours does.

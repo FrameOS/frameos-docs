@@ -44,6 +44,11 @@ Toggle *Dithered as on the panel* and *Apply adjustments* to compare, and pick t
 (*Cover* or *Contain*) the scene will use. Previous and next walk the folder; **Save &
 next** keeps your sliders and moves on.
 
+The [Photos](/guide/photos) library has the same editor (2026.10.13+): open a photo and the
+dials sit in a panel beside it, painted live, with the preview at full fidelity, as one of your
+frames shows it, or as a panel family would. A frame that plays an album gets each photo's
+profile with the photo, so the grading follows it to every frame.
+
 Saving writes a small JSON file next to the photo - `cat.jpg` gets `cat.jpg.frameos.json`
 - in the frame's assets folder. The file travels with the photo through every control
 plane (it is renamed and deleted with it, and hidden from the file tree), and any runtime
@@ -68,8 +73,10 @@ older firmware ignores keys it does not know.
 The frame's **Colors** settings section carries two things that apply to everything it
 draws, not just photos with a sidecar:
 
-- **Automatic fit** - *default* (on when the panel dithers to a palette, off on an HDMI or
-  LCD display), *on* or *off*. Every image an app draws - a local file, a URL, Immich, an
+- **Auto color correction** - *Default*, *Always on* or *Off*. Default is on for the
+  color-ink panels - Spectra 6, 7-color ACeP and the four-color black/white/red/yellow ones -
+  and off on full-color, grayscale and black-and-white displays, whose black and white are
+  already a photo's own. Every image an app draws - a local file, a URL, Immich, an
   AI-generated picture, a JS app's own fetch - has its luminance range mapped onto the
   palette's range right after it is drawn. A photo with its own profile is left alone:
   explicit sliders win.

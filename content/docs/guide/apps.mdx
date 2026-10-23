@@ -11,9 +11,9 @@ What's in the box, roughly:
 
 - **Data**: clocks, iCal calendars and agendas, weather, Home Assistant sensors, waste-collection
   schedules, JSON/XML parsing, HTTP downloads.
-- **Images**: photo galleries, Unsplash, Wikimedia Commons, Immich, Google Photos, images from any
-  URL, files off the frame's own SD card, OpenAI image generation, RTSP camera snapshots, headless
-  Chromium screenshots.
+- **Images**: photo galleries, albums from the [Photos](/guide/photos) library, Unsplash,
+  Wikimedia Commons, Immich, Google Photos, images from any URL, files off the frame's own SD card,
+  OpenAI image generation, RTSP camera snapshots, headless Chromium screenshots.
 - **Render**: text, QR codes, calendars, charts, SVG, gradients and color fills, opacity, split
   layouts, zoom/pan (Ken Burns), resize and rotate.
 - **Logic**: if/else, set state, log, sleep control.
@@ -28,19 +28,26 @@ What's in the box, roughly:
 
 ## Edit any app
 
-Click the **edit** button next to any app on a scene to open its source. JavaScript apps are
-editable everywhere, the [scene store's](/guide/scene-store) editor included - saved changes are
-forked onto that scene, leaving the original untouched.
-The built-in apps are compiled Nim, so in an [interpreted scene](/guide/scenes#execution) their
-source opens **read only**, with an **Open in GitHub** link; to customize one, write a JavaScript
-app or an inline code node instead. In a legacy compiled scene on a Raspberry Pi, a scene-local Nim
-app still opens for editing, under a notice offering to convert the scene to interpreted.
+Click the pencil on a JavaScript app's node (or **Edit App** in its **…** menu) to open its
+source in a window over the scene. JavaScript apps are editable everywhere, the
+[scene store's](/guide/scene-store) editor included - saved changes are forked onto that scene,
+leaving the original untouched.
+
+Many of the apps that fetch photos and data are JavaScript apps that travel inside the scene, so
+they change without a firmware release and you can fork them like your own: FrameOS Gallery,
+Unsplash, Wikimedia Commons, Google Photos, Immich, OpenAI Image and Text, Home Assistant Sensor,
+Weather (Open-Meteo), the Belgian recycling calendar, Chart and Photo album (2026.10.13+; frames on
+older firmware are still sent the built-in Nim version where there was one). The rest of the built-in apps are
+compiled Nim, so in an [interpreted scene](/guide/scenes#execution) their source opens
+**read only**, with an **Open in GitHub** link; to customize one, write a JavaScript app or an
+inline code node instead. In a legacy compiled scene on a Raspberry Pi, a scene-local Nim app
+still opens for editing, under a notice offering to convert the scene to interpreted.
 
 ![Editing an app](/images/app/apps-edit.gif)
 
 <Callout type="warn">
-  Apps run with full access on the frame. Read the source before installing scenes or apps from
-  strangers.
+  An app declares what it touches on the frame ([permissions](#permissions)), and the scene shows
+  it before you install. Still, read the source before installing scenes or apps from strangers.
 </Callout>
 
 ## JavaScript apps
@@ -63,9 +70,28 @@ export function get(app: FrameOSApp, context: FrameOSContext): string {
 }
 ```
 
-JS apps can fetch data with `frameos.fetchText()` / `frameos.fetchJson()`, return text, JSON, SVG
-markup, or images, and plug into scenes exactly like the built-in ones. They work on every kind of
-frame, and they're the **only** option on [ESP32](/guide/esp32) and [Pico](/guide/pico) boards.
+JS apps can fetch data with `frameos.fetchText()`, `frameos.fetchJson()` and
+`frameos.httpRequest()` - headers, methods and bodies, plus a `find` option that pulls snippets
+out of a page too big to parse on a microcontroller - and photos with `frameos.fetchImage()`,
+which downloads and decodes natively, straight into the canvas on an ESP32, so the pixels never
+enter the JavaScript heap (2026.10.11+). They return text, JSON, SVG markup, or images, and plug
+into scenes exactly like the built-in ones. They work on every kind of frame, and they're the
+**only** option on [ESP32](/guide/esp32) and [Pico](/guide/pico) boards.
+
+Where an app keeps its values matters on an ESP32, which drops an app's interpreter after every
+render to free memory: module-level variables last one render there, and `init()` runs again
+before the next. Keep values the scene shares in its state (`frameos.setState()`), and private
+ones with `frameos.remember(key, value)` / `frameos.recall(key)`, which survive between renders
+everywhere (2026.10.13+). The browser preview behaves like an ESP32 when its memory limit is set
+to an ESP32 board, so the difference shows up before you deploy.
+
+`console.log()` (and `info`, `warn`, `error`) writes to the frame's log. A `get()` that throws
+fails its node the way a built-in app does: the message is painted where the image would be, and
+nothing is cached. A file named `<name>.test.ts` among an app's sources is a test: the editor runs
+it in the same interpreter the app runs in, with `describe`, `it`, `expect` and mocks, and
+anything that would leave the interpreter fails until the test mocks it. Test files never reach
+an ESP32 (2026.10.16+). An app's `config.json` opens as a form - fields, outputs, settings, cache -
+with **Source** one click away.
 
 An app can be more than one file. Its files are its whole module graph: `app.ts` can
 `import { layout } from './helper'` and `import cities from './data.json'`, and the editor
@@ -78,8 +104,29 @@ takes either plain strings or `{ "value": "dark", "label": "Dark theme" }` pairs
 your app sees, the label is what people pick. In the editor's options box that's one `value | Label`
 per line.
 
-Scene JavaScript runs sandboxed: bounded memory and run time, no filesystem, and network access
-only through the FrameOS fetch helpers.
+Scene JavaScript runs sandboxed: bounded memory and run time, no filesystem beyond the asset
+calls below, and network access only through the FrameOS fetch helpers.
+
+## Permissions [#permissions]
+
+What an app may do on the frame is listed in its `config.json` under `permissions`:
+
+- `assets` - read the frame's assets folder (`listAssets`, `readAsset`, `loadAssetImage`…);
+- `assets-write` - also write and delete there (`writeAsset`, `appendAsset`, `deleteAsset`);
+- `files` and `shell` - for built-in apps: *Local image* reads any folder, *Chromium screenshot*
+  and *RTSP camera snapshot* run programs.
+
+You rarely write the list yourself: saving a scene fills each JavaScript app's list from its code.
+A scene asks for what its apps ask for, and every surface shows that as tags - *reads assets
+folder*, *writes assets folder*, *reads all files*, *runs shell commands*, and *uses OpenAI key*
+for each service key an app reads - on the scene list, in the drawer, on store tiles and in the
+install dialog. Installing a scene is approving its tags; **Update to latest** says which ones a
+new version adds and turns red when it gains shell, file or write access.
+
+The frame enforces the lists from FrameOS 2026.10.16: an app that asks for neither `assets` nor
+`assets-write` gets a folder of its own, `scenes/<sceneId>/` in the assets folder, for its asset
+calls, and one with `assets` alone can't write. Caching a download with
+`fetchImage({ saveAsset })` needs no permission.
 
 ## Nim apps
 

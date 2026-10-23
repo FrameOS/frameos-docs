@@ -555,7 +555,7 @@
     "colorClass": "rgb",
     "label": "Pimoroni HyperPixel 4.0\" Square Touch",
     "productUrl": "https://shop.pimoroni.com/products/hyperpixel-4-square",
-    "status": "untested",
+    "status": "tested",
     "slug": "pimoroni-hyperpixel-4-square-touch",
     "existingPage": true
   },

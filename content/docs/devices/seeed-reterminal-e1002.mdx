@@ -22,7 +22,7 @@ device:
       url: "https://wiki.seeedstudio.com/getting_started_with_reterminal_e1002/"
   platforms:
     - "esp32-s3"
-  status: "untested"
+  status: "tested"
 ---
 
 The **Seeed reTerminal E1002** is the color sibling of the
@@ -32,8 +32,10 @@ six-color panel instead of black and white. (Want it bigger? The
 [ESP32-S3 frame](/guide/esp32), rendering and dithering scenes on the device.
 
 Pick the **Seeed reTerminal E1002** hardware preset when you add the frame; the panel, GPIO map,
-flash profile and the three front buttons (REFRESH, LEFT, RIGHT) come with it. The buttons
-dispatch scene events, so they can switch scenes or trigger a render.
+flash profile and the three front buttons (GPIO 3 REFRESH, 4 LEFT, 5 RIGHT) come with it. The
+buttons reach your scenes as [button events](/guide/scenes#input), so they can switch scenes or
+trigger a render, and the board's buzzer on GPIO 45 clicks when a press registers (firmware
+2026.10.12+; [button beep](/guide/esp32#updates-control-and-telemetry)).
 
 Spectra 6 panels take roughly half a minute per refresh - normal for the technology, and worth
 knowing before you plan anything that updates often.
@@ -57,6 +59,7 @@ cell on the battery header shows its charge in the backend or cloud, and the
 
 ## Status
 
-🟡 **Should work, not yet confirmed on real hardware.** The Spectra 6 driver is confirmed on other
-boards; this specific terminal has not been reported back yet.
-Tell us on [GitHub](https://github.com/FrameOS/frameos/issues/new) or [Discord](https://discord.gg/9dT9y7EzUw) if you try it.
+🟢 **Confirmed working** - runs well on a real E1002: panel refresh, buttons and scene
+switching, and photo scenes streamed straight into the canvas. The battery wiring is
+still unverified on this board; tell us on [GitHub](https://github.com/FrameOS/frameos/issues/new)
+or [Discord](https://discord.gg/9dT9y7EzUw) if your cell reads right.

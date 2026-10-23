@@ -44,7 +44,9 @@ From there it's an ordinary frame: install scenes, edit them in the
 
 - **The backend does the rendering**, so a virtual frame stops updating when the backend does.
   Every other kind of frame keeps going.
-- **Assets and scene state live on the backend** rather than on a device.
+- **Assets and scene state live on the backend** rather than on a device. The Docker image keeps
+  the state in a Redis that writes to the data volume, so the active scene and its field values
+  survive a container restart (2026.10.10+).
 - **Anything tied to real hardware** - GPIO buttons, the frame's own web server and QR code,
   panel-specific behaviour - has nothing to talk to.
 

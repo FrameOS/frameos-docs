@@ -1,0 +1,111 @@
+---
+title: Photos
+description: A photo library on the self-hosted backend and FrameOS Cloud - upload albums once, play them on any frame through a share link, grade them for the panel.
+---
+
+**Photos** is a library of albums that frames play. Upload your pictures once, into albums and
+folders, and install an album on a frame: the frame fetches one photo per render through a share
+link and decodes it on the device, at whatever size you uploaded it - a 40-megapixel original is
+fine, even on an [ESP32](/guide/images).
+
+<Callout title="Self-hosted backend and FrameOS Cloud">
+  Photos is a section of the [self-hosted backend](/guide/backend) and of
+  [FrameOS Cloud](/guide/cloud) - the **Photos** button in the rail - from 2026.10.13. A
+  [standalone frame's](/guide/standalone) admin page has no library of its own, but any frame can
+  play an album from either one through its share link. Frames play albums with a JavaScript app
+  carried in the scene, so a Pi and an ESP32 behave the same.
+</Callout>
+
+## The library
+
+Albums are the top-level folders; inside one, the page is a file explorer - grid or list, nested
+folders, breadcrumbs. Drag files in from your desktop (onto the page or onto a folder) or use the
+upload button; uploads go up in chunks with a progress bar, at most 250&nbsp;MiB per file. A click
+opens a photo in the lightbox, the tick in a tile's corner starts a selection, and **Select all**,
+*Select all portrait* and *Select all landscape* are a click away. Rename, move and delete work on a selection,
+and the lightbox puts the open photo in the URL, so you can link to it.
+
+## Play an album on a frame
+
+**Install on frame** - on the Photos page, in an album's menu, or under **Add scene → Photos** in a
+frame's drawer - makes one scene per album you tick, with:
+
+- **Seconds to show one photo** - the scene's refresh interval;
+- **Order** - *Shuffle*, *By name*, *Newest first* or *Oldest first*;
+- **Fit** - *Fill the screen* (crop) or *Show the whole photo*;
+- which shapes play - **Landscape**, **Portrait** and **Square** photos, so a portrait frame can
+  skip the landscapes.
+
+The scene is installed and saved in one step, and the frame keeps its place in the album across
+restarts. The same drawer also takes an album link from elsewhere - another backend, or the cloud -
+and plays it as is.
+
+**Show on frame** is on every photo's and folder's menu. Pick a frame once, and for the next hour
+the menu offers *Show on Kitchen* directly. A folder installs (or reuses) its album scene; a single
+photo gets a scene that shows just that photo. Either way the frame switches to it right away.
+
+## Share links
+
+A frame reads an album through a share link, never with your login. A folder has one link per
+frame it plays on (made by **Install on frame**), an optional general link, and any number of
+custom links with a name of your choosing ("Grandma"), each listed in the share dialog with the
+frame or name it belongs to and when it was last used. **Stop sharing** on one link cuts off only
+that frame or person.
+
+Anyone with a link can read that folder - including a friend's frame, or another FrameOS install -
+so a scene that plays an album is as private as the link inside it. The cloud's
+[scene store](/guide/scene-store) refuses to make such a scene public, the scene AI only ever sees
+a placeholder for the link, and frames never log it or draw it on the panel.
+
+## Colors
+
+Every photo can carry its own color profile - exposure, whites and blacks, tones, hues and a dither
+palette - edited in the same **Set colors** editor as frame assets, as a panel beside the
+full-screen photo. Preview it at full fidelity, as one of your frames shows it (its panel, size,
+rotation and automatic correction), or as a panel family would. Frames get each photo's profile
+with the photo (FrameOS 2026.10.13+). See [Color controls](/guide/colors).
+
+## Resize
+
+Frames decode any size, but a huge file still costs download time on every render. **Resize** on a
+photo's menu (or **Resize all** for a selection) replaces the photo with itself at a size you pick
+- your frames' own panel sizes are offered - fitted within, filled and cropped, padded, or
+stretched, in its own format or as JPEG, PNG or WebP. Nothing is upscaled unless you ask, and its
+colors and place in the album stay.
+
+## Location and other metadata
+
+Photos are stored exactly as you upload them, so a phone photo still carries where it was taken. A
+pin on its tile says so, and the lightbox's **Info** panel shows every EXIF field, the coordinates
+with a map link, and anything else the file holds - XMP, a motion photo's video. **Remove
+location** cuts out just the GPS data; **Remove all metadata** strips the rest while keeping the
+pixels, the color profile and the orientation. Both work on a selection too. Worth doing before you
+hand out a share link: whoever has it can download the files.
+
+## Storage
+
+**Self-hosted backend.** Photos live in `FRAMEOS_PHOTOS_DIR` if you set it, `/data/photos` on the
+Home Assistant add-on, and otherwise in `photos/` next to the database - `/app/db/photos` in
+Docker, on the same volume as the rest of the backend. In Docker the Photos page stays off, and
+says why, when that folder isn't on a volume, since recreating the container would lose every
+photo. Two
+uploads of the same photo are stored once. There's no quota beyond your disk.
+
+To keep the bytes in an S3-compatible bucket instead (Cloudflare R2, AWS S3, MinIO), set
+`FRAMEOS_PHOTOS_S3_ENDPOINT`, `FRAMEOS_PHOTOS_S3_BUCKET`, `FRAMEOS_PHOTOS_S3_ACCESS_KEY_ID` and
+`FRAMEOS_PHOTOS_S3_SECRET_ACCESS_KEY`, plus `FRAMEOS_PHOTOS_S3_REGION` and `FRAMEOS_PHOTOS_S3_PREFIX`
+if you need them. The bucket stays private: frames and browsers get the bytes through the backend.
+
+**FrameOS Cloud.** Each account gets 1&nbsp;GB of photos once its email is verified (a Google sign-in
+counts), 250&nbsp;MB until then; **Settings → Usage** shows where you stand. The cloud takes JPEG, PNG,
+GIF and WebP, and scans every upload against known abuse material before anything is stored.
+Photos sit in a private bucket that frames reach only through share links, and a photo you delete -
+or every photo, when you delete your account - leaves the bucket, and the backups a month later.
+
+## Scripts and agents
+
+Both MCP servers - [the backend's](/guide/backend#mcp) and [the cloud's](/guide/cloud#developer) -
+have the same photo tools: list and fetch photos, upload from a file or a URL, make folders, move,
+rename and delete, set a photo's colors, manage share links, and install an album on a frame. Every
+tool that changes something takes `confirm: true`, because a frame shows the change on its next
+photo.

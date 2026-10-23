@@ -5,7 +5,10 @@ description: Browse, preview, fork and install community scenes from scenes.fram
 
 [scenes.frameos.net](https://scenes.frameos.net) is the FrameOS scene store: calendars, dashboards,
 galleries, message boards, generative art - published by the community and by the FrameOS
-project, and installable on any frame.
+project, and installable on any frame. Signed in to [FrameOS Cloud](/guide/cloud), the same store
+is the first page of **Scenes** in the rail; on a backend it's **Scenes → Public scene store**.
+Scenes sit on shelves by category - *Real time* is the one for scenes that redraw every second -
+with their install counts, sorted by **Most installed**, **Latest** or **A to Z**.
 
 Each scene page is a small workspace with four panels you can toggle - **Info** (publisher,
 install count, the FrameOS version it needs, description and gallery), **Editor** (the same
@@ -21,8 +24,11 @@ dithered with the device's own algorithm. It has a browser-only **assets folder*
 browser, seeded with sample photos) so slideshow and SD-card scenes render too, an **Auto apply**
 switch that re-renders as you change state fields, and an opt-in real-time mode for scenes that
 want to animate. JavaScript clocks run in the scene's time zone. A scene that calls a
-pay-per-request service (OpenAI, say) never renders on its own - it waits for you to click
-**Run preview** each time the scene changes, so a browse never spends your credits. Tick
+pay-per-request service (OpenAI, say), or one that brings its own code for a service and would
+run it with your keys, never renders on its own - it says which of the two it is and waits for
+you to click **Run preview** each time the scene changes, so a browse never spends your credits.
+The scene's log sits under the picture (drag it taller), and a button in the preview is held like
+a frame's key, so long presses and double presses work. Tick
 **Memory limit** and pick a device (ESP32 with 8 or 16 MB, Pi Zero, Pi) to render under that
 frame's memory: the preview shows the peak and says "out of memory" where the frame would.
 
@@ -30,9 +36,9 @@ frame's memory: the preview shows the peak and says "out of memory" where the fr
 
 The **Install** button opens one dialog with every way in:
 
-- **On a cloud-managed frame**: sign in, pick the frame and click **Install** - the scene is
-  added next to the frame's existing scenes and deployed within seconds (or as soon as an offline
-  frame reconnects). The frame remembers where the scene came from and which version it is on.
+- **On a cloud-managed frame**: sign in, click **Install** on the scene page or on its tile, and
+  pick the frame (or frames) - the scene is added next to the frame's existing scenes and pushed
+  within seconds (or as soon as an offline frame reconnects). The frame remembers where the scene came from and which version it is on.
   When a newer version is published, the scene's image says **Update available** - on the cloud, a
   backend and the frame's own admin page - and **Update to latest** in its **…** menu takes it
   there (2026.9.20+).
@@ -46,18 +52,21 @@ The **Install** button opens one dialog with every way in:
 Installing a store scene on a backend grants it the service keys it declares; revoke them under
 the frame's settings, **Service keys for store scenes**.
 
-Scenes that run shell commands on the frame are flagged in the store. A backend warns before
-installing one; the cloud never pushes them at all - install those from the frame itself, and only
-from publishers you trust. From 2026.9.11 a frame refuses the Chromium screenshot and RTSP snapshot
-apps in any store scene until a local admin allows shell apps for store scenes in the frame's
-settings, confirmed with the code on the panel.
+Every scene carries tags for what its apps may do on the frame - *runs shell commands*, *reads
+all files*, *reads assets folder*, *writes assets folder*, *uses OpenAI key* - on its tile, in the
+install dialog and on the frame ([permissions](/guide/apps#permissions)). Installing a scene is
+approving its tags, and **Update to latest** says which ones a new version adds, in red when it
+gains shell, file or write access. The cloud never runs the shell apps (Chromium screenshot and
+RTSP snapshot) at all; on a self-hosted or standalone frame, install scenes that use them only from
+publishers you trust. (From 2026.10.16 such a scene no longer needs a separate on-panel approval
+on the frame: the install is the approval.)
 
 ## Your scenes
 
-Signed in, the store gets a second tab, **My scenes**
-([scenes.frameos.net/my-scenes](https://scenes.frameos.net/my-scenes)), with your private scenes
-first and your public ones below. Everything private is yours alone until you click
-**Make public**. Scenes get here five ways:
+Signed in, the scenes library has **My cloud scenes** (the old
+[scenes.frameos.net/my-scenes](https://scenes.frameos.net/my-scenes) address still leads there), in
+two shelves: *Published in the store* and *Private scenes*. Everything private is yours alone
+until you click **Make public**. Scenes get here five ways:
 
 - **New blank scene** - an empty scene in the hosted editor.
 - **Create a scene with AI** - describe what you want and the [scene assistant](#ai) builds it as
@@ -70,7 +79,7 @@ first and your public ones below. Everything private is yours alone until you cl
   [converter](https://scenes.frameos.net/nim-converter) first.
 - From a [linked backend](/guide/backend#cloud): the **Save to cloud (private)** item in a scene's
   **…** menu pushes it straight to your account, and your private scenes appear under **Add scene →
-  Private scenes** on every machine you link.
+  Private scenes** (and **Scenes → My cloud scenes**) on every machine you link.
 
 A private scene's install link carries a sharing secret, so you can hand it to a friend without
 publishing. A version is the whole scene - diagram, description, tags, category and the image
@@ -84,11 +93,12 @@ new installs skip it. A scene the store has pulled stays readable and deletable 
 
 Every scene you own has an **AI** panel (and the store's front page has a **Create a scene with
 AI** card). The assistant can't deploy on its own: installing on a frame from the chat is an
-**Approve** card you click. **Account → AI usage** shows what you've used and has a **Turn AI
+**Approve** card you click. **Settings → Usage** shows what you've used and has a **Turn AI
 off** switch. Describe the scene, or the change - "add a theme selector", "make the clock bigger,
 show the weather for Tallinn" - and the assistant edits the node graph, the JavaScript apps and
 the state fields, checks the result against a catalog-aware linter and renders it inline before
-handing it over; you then save it as a new version, with the prompt pre-filled as the change
+handing it over. It can look at that render too, so *this looks cramped* gets a fix for what you
+actually see; you then save it as a new version, with the prompt pre-filled as the change
 note. Long edits keep running if your connection drops and pick up where they were. The prompt is
 never stored inside the scene, so the scenes.json you download or publish doesn't carry it. The
 same assistant is available to scripts and agents through the
@@ -106,3 +116,7 @@ gallery; **Download PNG** hands you the same frame as a file; drag gallery image
 the first one leads) and a description that says which API keys it needs - it doubles as the
 summary in the card Discord and Slack unfurl for the scene's link. There are no ratings or comments
 by design - install counts and the diagram speak for the scene.
+
+A scene that plays a [Photos](/guide/photos) album carries the album's share link, and whoever has
+the scene can open the album - so the store refuses to make such a scene public or give it a
+sharing link. Keep it private, or build a public version around a different source.

@@ -38,7 +38,9 @@ bash <(curl -fsSL https://frameos.net/install.sh)
 
 The script installs Docker if needed, then runs the [`frameos/frameos`](https://hub.docker.com/r/frameos/frameos) container on port `8989`.
 Once it's up, open `http://localhost:8989` on that same machine (or `http://<its-ip>:8989` from
-another device) and create your local account.
+another device) and create your local account. You land on the backend's home page - your recent
+frames, saved scenes, photo albums and an at-a-glance summary - with the frames list at `/frames`
+and the rest of the backend in the rail on the left.
 
 ## Home Assistant add-on
 
@@ -74,6 +76,10 @@ docker run -d --name frameos --restart always \
 ```
 
 Then open `http://localhost:8989` and create your local account.
+
+Everything the backend keeps lives in that `db` folder: the database, the
+[photo library](/guide/photos) (`db/photos`) and, from 2026.10.10, the Redis data that holds
+[virtual frames'](/guide/virtual) scene state (`db/redis`). Keep it on a volume and back it up.
 
 To keep the container automatically up to date, add
 [watchtower](https://containrrr.dev/watchtower/):
@@ -120,6 +126,31 @@ address in `FRAMEOS_TRUSTED_PROXIES`. The live logs and the Terminal use WebSock
 refused unless the browser's origin matches the host the backend sees - so the proxy must pass
 `Host` through (`proxy_set_header Host $host` in nginx) or send `X-Forwarded-Host`. Without the
 trusted-proxy list the login rate limiter also sees every user as the proxy.
+
+## AI, API tokens and the MCP server [#mcp]
+
+With an OpenAI key under **Settings → OpenAI**, the backend has the same AI assistant as the
+cloud: an AI box on the frames home and at the top of every frame's page, and a chat drawer in the
+scene and app editors. Ask *what's on the kitchen frame right now?* or *make me a split with the
+time and the weather*, and it answers from live data and acts with the backend's own tools, asking
+before anything that changes a frame (backend 2026.10.18+).
+
+For your own scripts and agents, **Settings → API tokens and MCP** (backend 2026.10.5+) mints
+personal API tokens (`fb_api_…`, or a read-only `fb_apiro_…`). A token stands in for your account
+on every route the web UI uses, except minting more tokens or changing your email or password;
+minting one asks for your password, it's shown once, and it expires after a year unless you pick a
+shorter time. The same page shows the **MCP server** at `http://<backend>:8989/api/mcp`: sixty-odd
+[Model Context Protocol](https://modelcontextprotocol.io/) tools for frames and deploys, saved
+scenes, the catalog, photos and the scene AI, with names that follow the
+[cloud's](/guide/cloud#developer). Every tool that changes what a frame does, shows or stores takes
+`confirm: true`.
+
+```bash
+claude mcp add --transport http frameos http://<backend>:8989/api/mcp \
+  --header "Authorization: Bearer fb_api_…"
+```
+
+Neither is available under Home Assistant ingress, which replaces the backend's own login.
 
 ## Local development with Flox
 

@@ -80,21 +80,25 @@ panels don't flash needlessly.
 
 ## Can I show my own photos?
 
-Yes, several ways. Upload images to the frame's **Assets** (or drop them on its SD card) and use
-the *Local image* app - point it at a folder and it plays the folder. Pull from
-**Immich** or **Google Photos**. Point the *Image from URL* app at any address. Or use the gallery
-apps: FrameOS Gallery, Unsplash, Wikimedia Commons, OpenAI image generation.
+Yes, several ways. The easiest is the [Photos library](/guide/photos) on the backend or the cloud:
+upload albums, then **Install on frame** - the frame plays one photo per render, shuffled, by name
+or by date, landscape or portrait only if you like. Or upload images to the frame's **Assets** (or
+drop them on its SD card) and use the *Local image* app - point it at a folder and it plays the
+folder. Pull from **Immich** or **Google Photos**. Point the *Image from URL* app at any address.
+Or use the gallery apps: FrameOS Gallery, Unsplash, Wikimedia Commons, OpenAI image generation.
 
 You don't need to resize anything first - see [Big images on small devices](/guide/images).
 
 ## Can I drive it from a script or an AI agent?
 
 Yes, at two levels. Every frame has a [local HTTP API](/guide/control) on port 8787 - change
-state, switch scenes, trigger renders with `curl`, no account needed. And a
-[FrameOS Cloud](/guide/cloud#developer) account has personal API tokens and a hosted
-[MCP server](https://modelcontextprotocol.io/) at `cloud.frameos.net/api/mcp`, so Claude Code,
-Claude Desktop, Cursor or any MCP client can list your frames, push scenes and settings, read logs,
-build or edit scenes with the scene assistant, and render any scene server-side to see the result.
+state, switch scenes, trigger renders with `curl`, no account needed. And both the
+[self-hosted backend](/guide/backend#mcp) and a [FrameOS Cloud](/guide/cloud#developer) account
+have personal API tokens and an [MCP server](https://modelcontextprotocol.io/) - the cloud's is
+hosted at `cloud.frameos.net/api/mcp` - so Claude Code, Claude Desktop, Cursor or any MCP client can
+list your frames, push scenes and settings, read logs, manage your photos, build or edit scenes
+with the scene assistant, and render a scene to see the result. Both also have an AI box of their
+own, on the frames home and on every frame.
 
 ## Does it integrate with Home Assistant?
 
