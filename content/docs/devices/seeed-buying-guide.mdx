@@ -4,10 +4,10 @@ description: Which Seeed Studio reTerminal and XIAO e-paper displays run FrameOS
 ---
 
 Seeed Studio makes the closest thing to a ready-made FrameOS frame. The **reTerminal E-series**
-puts an ESP32-S3 with 8&nbsp;MB of PSRAM, an e-ink panel, buttons, a buzzer and a battery in a
-finished case, and FrameOS has a hardware preset for each model: pick it, flash from the browser,
-and scenes render on the device itself. For your own builds, Seeed's XIAO ePaper boards carry
-the same chip.
+puts an ESP32-S3 with 8&nbsp;MB of PSRAM, an e-ink panel, buttons, a buzzer, a microphone and a
+battery in a finished case, and FrameOS has a hardware preset for each model: pick it, flash from
+the browser, and scenes render on the device itself. The **SenseCAP Indicator** does the same with
+a color touch LCD. For your own builds, Seeed's XIAO ePaper boards carry the same chip.
 
 This page covers every Seeed ESP32 display we know of, including the ones FrameOS doesn't
 support yet.
@@ -18,9 +18,10 @@ support yet.
 | --- | --- | --- |
 | [reTerminal E1004](/devices/seeed-reterminal-e1004) | 13.3" 1200×1600 Spectra 6 color, 5000&nbsp;mAh battery | 🟢 Tested - preset `seeed_reterminal_e1004` |
 | [reTerminal E1002](/devices/seeed-reterminal-e1002) | 7.3" 800×480 Spectra 6 color | 🟢 Tested - preset `seeed_reterminal_e1002` |
+| [SenseCAP Indicator](/devices/seeed-sensecap-indicator) | 4" 480×480 color touch LCD | 🟢 Tested - preset `seeed_sensecap_indicator_d1` |
 | [reTerminal E1001](/devices/seeed-reterminal-e1001) | 7.5" 800×480 black/white | 🟡 Preset `seeed_reterminal_e1001`, should work |
-| [reTerminal Sticky](/devices/seeed-reterminal-sticky) | 3.97" 800×480 black/white | 🟡 Preset `seeed_reterminal_sticky`, should work |
-| [reTerminal E1003](/devices/seeed-reterminal-e1003) | 10.3" 1404×1872 16-level grayscale, touch | ⚪ Not supported yet |
+| [reTerminal E1003](/devices/seeed-reterminal-e1003) | 10.3" 1404×1872 16-level grayscale, touch | 🟡 Preset `seeed_reterminal_e1003`, should work |
+| [reTerminal Sticky](/devices/seeed-reterminal-sticky) | 3.97" 800×480 black/white, touch | 🟡 Preset `seeed_reterminal_sticky`, should work |
 | [XIAO 7.5" ePaper Panel](/devices/seeed-xiao-7in5-epaper-panel) | 7.5" 800×480 black/white, XIAO ESP32-C3 | ⚪ Not supported yet |
 | [reTerminal D1001](/devices/seeed-reterminal-d1001) | 8" 800×1280 touch LCD, ESP32-P4 | ⚪ Not supported yet |
 
@@ -33,7 +34,13 @@ support yet.
   is the same panel as the [Waveshare 7.3" (E)](/devices/waveshare-epd-7in3e) and the
   [PhotoPainter](/devices/waveshare-esp32-s3-photopainter), in a finished case with three buttons.
 - **Calendars, agendas, dashboards**: the [E1001](/devices/seeed-reterminal-e1001). Black and
-  white is crisp, and it refreshes in seconds where a color panel takes much longer.
+  white is crisp, and it refreshes in seconds where a color panel takes much longer. For more
+  room and sixteen grays, the 10.3" [E1003](/devices/seeed-reterminal-e1003), which FrameOS
+  drives from firmware 2026.10.21 (not yet tried on hardware).
+- **Something that moves, or that you tap**: the
+  [SenseCAP Indicator](/devices/seeed-sensecap-indicator). Its 4" color LCD animates at about 20
+  frames a second and runs touch interfaces - a home panel, a clock, a photo slideshow. It needs
+  USB power.
 - **A desk or fridge note**: the [Sticky](/devices/seeed-reterminal-sticky). 800×480 on a
   3.97" panel makes small text sharp.
 - **Your own frame, your own case**: one of the boards below and a panel.
@@ -64,7 +71,9 @@ nRF52840 boards (EN04, EN05) are not ESP32s and don't run FrameOS.
   [E1004 page](/devices/seeed-reterminal-e1004#macos-install-the-wch-serial-driver-first) has the
   steps. Windows 11 and Linux work as they are.
 - **The buttons and buzzer work in scenes.** The three E-series keys arrive as button events a
-  scene can react to, and the buzzer clicks on each press.
+  scene can react to, and the buzzer clicks on each press. Out of the box, LEFT and RIGHT held
+  switch scenes, and on the E1001, E1002 and E1003 holding REFRESH lets you
+  [talk to the frame](/guide/esp32#voice-chat).
 - **Battery frames sleep.** The E1004 preset deep-sleeps on battery and wakes every 15 minutes or
   on a button, and the backend or cloud shows when it's due back - see
   [battery and deep sleep](/guide/esp32#power). The battery reading is verified on the E1004 and

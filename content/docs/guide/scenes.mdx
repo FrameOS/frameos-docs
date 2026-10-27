@@ -103,6 +103,24 @@ On a Pi with a touchscreen, a mouse or a keyboard (FrameOS 2026.10.0+), scenes a
 The older `mouseMove` / `mouseDown` / `mouseUp` names keep working. The *Touch test* and
 *Keyboard test* sample scenes show every event as it arrives. The browser preview sends the same
 events from your mouse and keyboard, and a preview button you hold down is held like a frame's key.
+From FrameOS 2026.10.21 the touch screens of [ESP32 boards](/guide/esp32#lcd) send the same
+pointer events and gestures, and a touch `longPress` is held a second, like a button's (it was half
+a second). A swipe that starts at the very edge of a touch screen is the frame's (`edgeSwipe`) and
+never reaches the scene.
+
+**Whose buttons?** A scene listens for the keys its author had - `A` and `B`, or a `next` role -
+and your frame has the keys it has. Two maps sit between them (FrameOS 2026.10.20+):
+
+- **Map buttons**, in an installed scene's **…** menu, lists the scene's button listeners and lets
+  you pick which press of which of your frame's buttons each one answers to - REFRESH is this
+  scene's `A`, a long press of REFRESH its `B`. It belongs to the scene as installed on this frame:
+  the scene itself is untouched, and an update to a newer version keeps the mapping.
+- **Button actions**, in the frame's [settings](/guide/settings#buttons), bind a press to the
+  frame itself - next scene, previous scene, render - whatever scene is showing, and the scene
+  never hears that press.
+
+A `setCurrentScene` event can name a `direction` (`next` or `prev`) instead of a scene, to walk the
+frame's scene list.
 
 ## Code nodes
 
@@ -177,7 +195,11 @@ Two ways to see a scene without committing to it:
   to run faster than one frame a second.
 - **Preview on frame** temporarily shows the scene on the actual frame without saving or
   deploying it. Good for checking how a color dithers on real e-ink. A sleeping ESP32 gets it on
-  its next wake.
+  its next wake. While it's on the frame, the scene list shows it as a dashed *preview* row above
+  your saved scenes, with **Install** to add it to the frame's scenes and **Discard** to take it
+  off (FrameOS 2026.10.20+). Until you pick one, the preview stays: a deploy or another push
+  carries it along. Pictures and scenes made by the [voice chat](/guide/esp32#voice-chat) arrive
+  the same way.
 
 ## How to learn
 

@@ -6,7 +6,7 @@ description: Run FrameOS on an ESP32-S3 microcontroller - flash from the browser
 FrameOS runs on **ESP32-S3 microcontrollers** - no Linux, no SD card, no SSH. The backend (or
 [FrameOS Cloud](/guide/cloud#flash-an-esp32-from-the-browser)) flashes a firmware image over USB
 straight from the browser, and from then on the device fetches scenes over WiFi, renders them
-**itself**, drives the e-paper panel, and updates its own firmware over the air.
+**itself**, drives the panel, and updates its own firmware over the air.
 
 This is not a cut-down mode. The same scene interpreter that runs on a Raspberry Pi runs on the
 S3, with the same apps, the same JavaScript runtime, the same image pipeline, and the same
@@ -37,9 +37,10 @@ do is a short, specific list - it's [at the bottom of this page](#what-it-cannot
   [Seeed XIAO ESP32-S3](https://www.seeedstudio.com/XIAO-ESP32S3-p-5627.html?sensecap_affiliate=NK0JMuC&referring_service=link)
   (8&nbsp;MB flash, 8&nbsp;MB octal PSRAM), but most people start from an
   [all-in-one board](#supported-boards) that already has a panel attached.
-- **A panel**: any Waveshare-family SPI e-paper panel, wired over SPI (plus one tiny I2C OLED) -
-  or no display at all.
-  The 10.3" IT8951 and 12.48" panels use different controller stacks and still need a Pi.
+- **A panel**: any Waveshare-family SPI e-paper panel, wired over SPI, the 10.3" IT8951 panel
+  (firmware 2026.10.21+), one tiny I2C OLED, the 4" touch LCD of the
+  [SenseCAP Indicator](/devices/seeed-sensecap-indicator) - or no display at all.
+  The 12.48" panels use a different controller stack and still need a Pi.
 - **The [backend](/guide/backend)** or [FrameOS Cloud](/guide/cloud), to flash the board and
   design scenes. Nothing is compiled: both write the signed
   [release](https://github.com/FrameOS/frameos/releases) image for your chip and flash size, then
@@ -48,16 +49,19 @@ do is a short, specific list - it's [at the bottom of this page](#what-it-cannot
 ## Supported boards [#supported-boards]
 
 FrameOS ships **hardware presets** - pick one in the backend and the panel, GPIO map, buttons,
-battery divider, SD slot and flash size are all filled in for you:
+[button actions](#button-actions), battery divider, SD slot, microphone and flash size are all
+filled in for you:
 
 | Preset | Chip | Panel | Notes |
 | --- | --- | --- | --- |
-| [Waveshare ESP32-S3 PhotoPainter](/devices/waveshare-esp32-s3-photopainter) | S3 | 7.3" Spectra 6 | 8&nbsp;MB PSRAM, TF card slot, battery header, 2 buttons |
-| [Waveshare ESP32-S3 ePaper 13.3E6](/devices/waveshare-esp32-s3-epaper-13in3e6) | S3 | 13.3" Spectra 6 | 16&nbsp;MB PSRAM, 32&nbsp;MB flash, TF card, battery sensing |
-| [Seeed reTerminal E1001](/devices/seeed-reterminal-e1001) | S3 | 7.5" black/white | 3 front buttons, 32&nbsp;MB flash, battery sensing |
-| [Seeed reTerminal E1002](/devices/seeed-reterminal-e1002) | S3 | 7.3" Spectra 6 | 3 front buttons, 32&nbsp;MB flash, battery sensing |
-| [Seeed reTerminal E1004](/devices/seeed-reterminal-e1004) | S3 | 13.3" Spectra 6, portrait | 8&nbsp;MB PSRAM, 32&nbsp;MB flash, TF card, 3 buttons, 5000&nbsp;mAh battery - sleeps on battery by default |
-| [Seeed reTerminal Sticky](/devices/seeed-reterminal-sticky) | S3 | 3.97" black/white | Small desk/fridge frame |
+| [Waveshare ESP32-S3 PhotoPainter](/devices/waveshare-esp32-s3-photopainter) | S3 | 7.3" Spectra 6 | 8&nbsp;MB PSRAM, TF card slot, battery header, 2 buttons, speaker and microphone |
+| [Waveshare ESP32-S3 ePaper 13.3E6](/devices/waveshare-esp32-s3-epaper-13in3e6) | S3 | 13.3" Spectra 6 | 16&nbsp;MB PSRAM, 32&nbsp;MB flash, TF card, battery sensing, speaker and microphone |
+| [Seeed reTerminal E1001](/devices/seeed-reterminal-e1001) | S3 | 7.5" black/white | 3 front buttons, 32&nbsp;MB flash, TF card, battery and charger, clock, microphone |
+| [Seeed reTerminal E1002](/devices/seeed-reterminal-e1002) | S3 | 7.3" Spectra 6 | 3 front buttons, 32&nbsp;MB flash, TF card, battery and charger, clock, microphone |
+| [Seeed reTerminal E1003](/devices/seeed-reterminal-e1003) | S3 | 10.3" 16-level grayscale (IT8951), touch | 3 buttons, 32&nbsp;MB flash, TF card, battery, microphone - firmware 2026.10.21+ |
+| [Seeed reTerminal E1004](/devices/seeed-reterminal-e1004) | S3 | 13.3" Spectra 6, portrait | 8&nbsp;MB PSRAM, 32&nbsp;MB flash, TF card, 3 buttons, 5000&nbsp;mAh battery and charger, clock - sleeps on battery by default |
+| [Seeed reTerminal Sticky](/devices/seeed-reterminal-sticky) | S3 | 3.97" black/white, touch | Small desk/fridge frame: 3 keys, microphone, battery gauge |
+| [Seeed SenseCAP Indicator](/devices/seeed-sensecap-indicator) | S3 | 4" 480×480 color LCD, touch | 8&nbsp;MB PSRAM, one button - animates and answers touch ([LCD and touch](#lcd)), firmware 2026.10.21+ |
 | [Elecrow CrowPanel 5.79"](/devices/elecrow-crowpanel-5in79) | S3 | 5.79" 4-grey | 5 buttons, dual SSD1683 |
 | [TRMNL 7.5" DIY Kit](/devices/trmnl-og-diy-kit) | S3 | 7.5" black/white | XIAO ePaper driver board |
 | [TRMNL 4.26" DIY Kit](/devices/trmnl-4in26-diy-kit) | S3 | 4.26" 4-grey | XIAO ePaper driver board |
@@ -76,15 +80,16 @@ the reTerminals and Seeed's XIAO boards.
 
 Boards people ask about that FrameOS can't drive yet. Each has a device page saying what's missing:
 
-- [Seeed reTerminal E1003](/devices/seeed-reterminal-e1003) and
-  [XIAO ePaper Display Board EE03](/devices/seeed-xiao-epaper-ee03) - fast-refresh 10.3" grayscale
-  panels that need a different kind of display driver, as does the 10.3" TRMNL X.
+- [XIAO ePaper Display Board EE03](/devices/seeed-xiao-epaper-ee03) and the 10.3" TRMNL X -
+  fast-refresh 10.3" grayscale panels. The [E1003](/devices/seeed-reterminal-e1003) drives its
+  10.3" glass through an IT8951 controller; the TRMNL X drives its glass without one, and the EE03
+  needs a preset and a check of its controller.
 - [Seeed XIAO ePaper Display Board EE02](/devices/seeed-xiao-epaper-ee02) - the 13.3" Spectra 6
   panel already works on other boards; this one needs a preset.
 - [Seeed XIAO 7.5" ePaper Panel](/devices/seeed-xiao-7in5-epaper-panel) - an ESP32-C3 that would
   run as a thin client, waiting for a preset.
 - [Seeed reTerminal D1001](/devices/seeed-reterminal-d1001) - an ESP32-P4 with an 8" MIPI-DSI LCD.
-  The firmware builds for the S3 and C3 and drives e-paper.
+  The firmware builds for the S3 and C3.
 
 ## Flash the device
 
@@ -119,7 +124,9 @@ The device boots fully provisioned: it joins your WiFi, registers with the backe
 scenes, and renders. It joins WPA2 and WPA3 networks (mixed WPA/WPA2 ones too); from firmware
 2026.10.17 a WPA1-only (TKIP) network no longer connects. A frame whose WiFi drops keeps
 reconnecting every 30 seconds, so a router restart doesn't strand it until the next reboot
-(2026.10.19+).
+(2026.10.19+). From 2026.10.20 it always joins on a 20&nbsp;MHz channel, like a Pi, even where
+the router offers 40&nbsp;MHz: a frame needs a few KB/s, and the narrow channel holds up better on
+a crowded 2.4&nbsp;GHz band.
 
 ### Provisioning by hand
 
@@ -147,6 +154,8 @@ Every supported panel driver is compiled into every image - you pick the panel a
   frameos> set panel EPD_7in5_V2
   frameos> set pins rst=5,dc=4,cs=3,cs2=-1,busy=6,sck=7,mosi=9,pwr=-1
   frameos> render                          # render right now
+  frameos> mic 2                           # record two seconds and print the microphone's level
+  frameos> i2c                             # what answers on the board's I2C buses: clock, charger, sensors
   frameos> ota                             # check for a firmware update
   frameos> ota downgrade                   # let the next update be an older release, once (2026.9.10+)
   frameos> factory-reset                   # wipes scenes, schedule, cached data and all settings
@@ -159,9 +168,11 @@ and runs them **on-device**: the same interpreter as Linux frames, with the stan
 compiled into the firmware and code nodes, expressions and JavaScript apps running on an embedded
 [QuickJS](https://bellard.org/quickjs/) (the [quickts](https://github.com/FrameOS/quickts) fork,
 which parses TypeScript itself). Scene changes arrive over WiFi in seconds - no
-reflashing, no compiler. To keep memory free, a JavaScript app's interpreter is dropped after each
-render, so its module variables last one render - keep values in scene state or
-`frameos.remember()` ([JavaScript apps](/guide/apps#javascript-apps)).
+reflashing, no compiler. A frame that stays awake keeps its JavaScript apps' interpreters between
+renders while memory allows (2026.10.21+), and lets them go when a big image needs the room; a
+deep-sleeping frame starts every render with fresh ones. So a module variable may or may not
+survive to the next render - keep values in scene state or `frameos.remember()`
+([JavaScript apps](/guide/apps#javascript-apps)).
 
 Scenes are stored one file per scene, so a frame can hold many of them (up to 32, or 512&nbsp;KB
 of scene JSON) while keeping only the active one parsed in memory. Switching scenes - from the
@@ -223,6 +234,12 @@ Pi:
 Boards without a card slot work fine - the cache and the spool degrade to memory, and nothing
 starts failing that used to work.
 
+On the reTerminal E-series the TF slot shares the panel's SPI bus: from firmware 2026.10.20 the
+card takes its turns between panel refreshes, and an empty slot is reported as empty. The
+[SenseCAP Indicator](/devices/seeed-sensecap-indicator)'s slot belongs to its second chip, out of
+the ESP32's reach, so it keeps assets in 1&nbsp;MB of its own flash instead: room for a handful of
+photos, with file names of 28 characters at most.
+
 ## Fonts [#fonts]
 
 The firmware carries one typeface (Ubuntu Regular). It can also use fonts from the SD card: the frame lists `fonts/*.ttf` on the card through `GET /api/fonts`, the editor's font
@@ -262,26 +279,110 @@ fallback - `NotoColorEmoji.ttf` is 10&nbsp;MB of bitmaps with no outlines to dra
   [Pi's local API](/guide/control) exposes. Native HTTPS turns on after the frame's first settings
   sync, when it has a certificate to serve. After each render the frame also pushes its picture to
   a self-hosted backend, so the backend has a sleeping frame's image without pulling it
-  (2026.10.2+).
+  (2026.10.2+). The routes that change something - scene pushes, settings, events, assets, reboot,
+  OTA - need the admin login; firmware before 2026.10.21 answered a request without it with
+  *Authentication required* but still carried it out, so update a frame on an older release.
 - **Logs and metrics** stream to the backend, and the last 128 lines are kept in a ring buffer on
-  the device, readable over the serial console when the network is down.
+  the device, readable over the serial console when the network is down. When the backend doesn't
+  answer, the frame keeps its lines and tries again once a minute instead of waiting out a timeout
+  at every step of a render (2026.10.20+).
 - **An on-device scheduler**: per-scene render intervals plus minute/hour/weekday schedules that
   switch scenes, fire events, or restart/reboot the device (a **Maintenance** entry in the
   Schedule panel), evaluated on the device in the frame's
   [time zone](/guide/settings#time-zone) (firmware 2026.8.34+; earlier firmware runs on UTC). The
-  JavaScript `format()` helper follows the frame's time zone too, from 2026.8.44.
+  JavaScript `format()` helper follows the frame's time zone too, from 2026.8.44. The wait between
+  renders counts from when the render was due, so a scene that renders every second does so every
+  second, not every other one (2026.10.21+).
 - **Buttons**: GPIO buttons (the board presets know where they are) reach scenes as `button`
   events - `press`, `doublePress`, `longPress` - and raw `gpio` `down` / `up` edges
   ([details](/guide/scenes#input)), so a press can change a scene, re-render, or run anything you
   wire up in the editor. Every edge is timestamped by the button task, so a tap made during a
   30-second panel refresh is still a tap, and a 30&nbsp;ms debounce catches quick double taps
   (2026.10.16+). Change the button map in the frame's settings; the board picks it up on its next
-  settings sync and restarts.
+  settings sync and restarts. What a press does whatever scene is showing - the next scene, say -
+  is a [button action](#button-actions).
 - **Button beep**: boards with a buzzer - the Seeed reTerminals - click when a press registers and
   click lower on the release, the second tap of a double press clicks higher, a held key counts
   each second out loud, and a press the board had no room for sounds a dull "no". **Button beep
   GPIO** and **Button beep tone (Hz)** sit under the frame's GPIO buttons; on the console it's
-  `set buzzer_pin`, `set buzzer_tone_hz` and `beep` to test (firmware 2026.10.12+).
+  `set buzzer_pin`, `set buzzer_tone_hz` and `beep` to test (firmware 2026.10.12+). The Waveshare
+  PhotoPainter and 13.3E6 play the same notes on their speaker (2026.10.21+).
+- **Status LED**: the reTerminal E-series' green LED lights with every note the buzzer plays, so a
+  frame with its buzzer switched off still shows a press, and it stays lit while the
+  [voice chat](#voice-chat) listens (firmware 2026.10.20+). **Status LED GPIO** sits next to the
+  beep settings; `led` on the console tests it.
+
+## Button actions [#button-actions]
+
+**Settings → Button actions** says what a press does on this frame, whatever scene is showing:
+the next or previous scene, a render, a particular scene, the display on or off, or the
+[voice chat](#voice-chat) (firmware 2026.10.20+, on both control planes). A press bound there
+never reaches the scene. The board presets come with sensible ones:
+
+| Board | Button actions out of the box |
+| --- | --- |
+| reTerminal E1001, E1002, E1003, E1004 | LEFT held = previous scene, RIGHT held = next scene; REFRESH held = voice chat (not on the E1004, which has no microphone) |
+| reTerminal Sticky | UP held = previous scene, DOWN held = next scene, AI held = voice chat |
+| SenseCAP Indicator | Button pressed = screen on/off, pressed twice = next scene, held = previous scene; a swipe in from the right edge = next scene, from the left = previous |
+| PhotoPainter, 13.3E6 | KEY1 / BOOT held = voice chat |
+
+Change or clear them in Settings. A scene written for other keys - a store scene that listens for
+`A` and `B` - can be told which of your frame's keys are its `A` and `B` with **Map buttons** in
+the installed scene's menu, without touching the scene ([details](/guide/scenes#input)). The
+frame's status screen lists every button with the action it's bound to (2026.10.21+).
+
+## Voice chat [#voice-chat]
+
+Hold the frame's voice key for a second and talk to it (firmware 2026.10.20+): *"show the
+weather"*, *"put a photo of a lighthouse on"*, *"make the text bigger"*. The buzzer plays a short
+rising sparkle and the status LED lights while the frame listens; let go and it answers. What you
+said streams to your backend or FrameOS Cloud while you're still talking, is transcribed there
+with OpenAI's `gpt-4o-mini-transcribe`, and goes to the same AI chat the workspace has, with this
+frame in its context and a small set of tools for it: switch scenes, set a field of the scene
+showing, redraw, rotate the frame, show a picture, play a photo album, or have the scene AI build
+a new scene or change the one showing. The audio isn't kept once the answer is in.
+
+The answer is drawn across the bottom of the panel for 30 seconds - what was heard, in quotes,
+and the reply - and lands in the frame's chat in the workspace, with a log of what each sentence
+did. The buzzer sounds the outcome: three rising notes when something was done, one low note when
+nothing was heard. It's one conversation per frame, so a follow-up like *"no, the other one"*
+knows what the last sentence did. A sentence can be up to 30 seconds long.
+
+- **Which boards**: the reTerminal E1001 and E1002 (hold REFRESH); from 2026.10.21 also the E1003
+  (REFRESH), the reTerminal Sticky (the AI key), and the Waveshare PhotoPainter (KEY1) and 13.3E6
+  (BOOT) through their codec's microphones. The E1004 has no microphone; a PDM microphone on its J2
+  header works once **Microphone GPIO** in Settings names its pins. A Pi frame can't do this yet.
+- **Which key**: a [button action](#button-actions) set to *Voice chat*, always on a long press -
+  the frame listens while the key is held and stops when it's let go.
+- **What it may do**: four switches under **Settings → Buzzer, LED and microphone → Voice chat
+  may**. *Change settings*, *Use installed scenes* and *Access photo albums* are on by default;
+  *Create new scenes* is off until you turn it on. A picture or scene made by voice lands on the
+  frame as a preview, never on its saved list: the scene list shows it with **Install** and
+  **Discard** ([preview on frame](/guide/scenes#push-activate-preview)).
+- **What it needs**: the OpenAI key the AI chat uses - **Settings → OpenAI** on the backend; your
+  own key or the shared one on the cloud. The **Voice chat** switch in Settings turns the
+  microphone off altogether, and frames without a microphone don't show any of these controls.
+
+## LCD and touch [#lcd]
+
+The [SenseCAP Indicator](/devices/seeed-sensecap-indicator) brings a 4" 480×480 color touch LCD
+to the ESP32 (firmware 2026.10.21+). An LCD changes what a microcontroller frame can do:
+
+- **Animation.** A scene whose render interval is under a second runs back to back: the store's
+  *DVD Logo Bounce* moves at about 20 frames a second, and the board checks for new scenes,
+  settings and commands once a second meanwhile. The scene draws straight into the LCD's own frame
+  buffer, and only the part of the picture that changed is drawn again.
+- **Touch.** The touch glass of the Indicator, the [reTerminal Sticky](/devices/seeed-reterminal-sticky)
+  and the [E1003](/devices/seeed-reterminal-e1003) reaches scenes as the same `pointerDown`,
+  `pointerMove`, `pointerUp`, `tap`, `doubleTap`, `longPress` and `swipe` events a Pi's
+  touchscreen sends ([details](/guide/scenes#input)). A swipe in from the screen's edge is the
+  frame's, for a [button action](#button-actions); a touch on a dark screen only turns it on. Build
+  touch interfaces with [JSX and Tailwind classes](/guide/apps#jsx-uis).
+- **Display on and off.** *Display on*, *Display off* and *Display on/off* switch the backlight,
+  and nothing renders while it's dark.
+- **Boot.** The FrameOS mark shows on black while the board starts, with a line saying what it's
+  waiting for (*Connecting to Wi-Fi*, *Updating firmware*, *Starting*), and an LCD renders as soon
+  as WiFi is up rather than waiting for the clock.
 
 ## Battery and deep sleep [#power]
 
@@ -340,6 +441,13 @@ preset also switches on `deep_sleep_on_battery` with a 15-minute `wake_check`, s
 knew the wiring keeps `battery_pin -1` until you re-run `set hardware` on the console or fill in the
 three values under **Power**.
 
+The reTerminal E-series also carry a charger and a clock chip, which FrameOS reads from firmware
+2026.10.20. With USB plugged in the charger says so, and the frame never counts as on battery -
+so it doesn't deep-sleep on your desk - and the metrics show whether the cell is charging. The
+clock sets the time on a cold boot, before WiFi is up, and every time sync writes it back. The
+[reTerminal Sticky](/devices/seeed-reterminal-sticky) has a fuel gauge instead of a divider, which
+reports the charge itself (2026.10.21+).
+
 ## How fast is it? [#performance]
 
 Slower than a Pi, and mostly irrelevant - the panel is the bottleneck either way. Measured on the
@@ -354,21 +462,30 @@ scene:
 | Panel refresh (the panel's own hardware) | ~29 s |
 
 Simpler scenes are much quicker; a black/white panel dithers and refreshes in a fraction of that.
-A frame that updates a few times an hour, or a few times a day on battery, never notices.
+A frame that updates a few times an hour, or a few times a day on battery, never notices. Text
+with an outline and gradient fills got several times faster in 2026.10.21 (a 480×480 scene's
+outlined text went from about 2 seconds to under half a second).
 
 Memory on the same board: 7.1&nbsp;MB PSRAM free with a scene resident, 4.2&nbsp;MB still free at
 the worst point of a render. If a panel is too large for a board's PSRAM, the backend says so
 before you flash rather than leaving you with a frame that can't render.
 
 The scene canvas is claimed once from PSRAM before WiFi starts and reused for every render. Its
-format is decided per board: **full color when a canvas fits in half the module's PSRAM,
-16-bit RGB565 otherwise.** An 800×480 panel on 8&nbsp;MB and a 1200×1600 panel on 16&nbsp;MB
-render in full color; a 1200×1600 panel on an 8&nbsp;MB module - the
-[reTerminal E1004](/devices/seeed-reterminal-e1004) - is the one that takes the 16-bit canvas
-(3.7&nbsp;MB instead of 7.3&nbsp;MB), which is what lets it render on-device at all. The 16-bit
-canvas dithers its stores so gradients stay smooth, and since every panel the firmware drives is
-dithered e-paper, a photo dithered to Spectra 6 through either canvas lands the same palette
-within 0.05% per color. The Pi, HDMI and the browser preview keep a full RGBA canvas.
+format is decided by the panel first (firmware 2026.10.21+):
+
+- **A grey or black-and-white panel draws in one byte per pixel.** Sixteen grey levels need no
+  color, so an 800×480 black-and-white canvas is 384&nbsp;KB instead of 1.5&nbsp;MB, and the
+  [E1003](/devices/seeed-reterminal-e1003)'s 1872×1404 fits in 2.5&nbsp;MB.
+- **A color e-paper panel draws in full color when two canvases fit in PSRAM, 16-bit RGB565
+  otherwise.** An 800×480 panel on 8&nbsp;MB and a 1200×1600 panel on 16&nbsp;MB render in full
+  color; a 1200×1600 panel on an 8&nbsp;MB module - the
+  [reTerminal E1004](/devices/seeed-reterminal-e1004) - takes the 16-bit canvas (3.7&nbsp;MB
+  instead of 7.3&nbsp;MB), which is what lets it render on-device at all. The 16-bit canvas
+  dithers its stores so gradients stay smooth, and a photo dithered to Spectra 6 through either
+  canvas lands the same palette within 0.05% per color.
+- **An LCD draws straight into its own 16-bit frame buffer**, so there's nothing to copy or pack.
+
+The Pi, HDMI and the browser preview keep a full RGBA canvas.
 
 ## Wiring
 
@@ -391,8 +508,9 @@ controllers and needs `cs2` as well.
 
 Straight, so you can decide before you buy:
 
-- **Panels**: Waveshare-family SPI e-paper (and one small I2C OLED) only. No HDMI, no LCD, no Pimoroni Inky HATs, no
-  Python-backed drivers. The 10.3" IT8951 and the 12.48" multi-controller panels need a Pi.
+- **Panels**: Waveshare-family SPI e-paper, the 10.3" IT8951, one small I2C OLED and the
+  SenseCAP Indicator's 4" LCD only. No HDMI, no other LCDs, no Pimoroni Inky HATs, no
+  Python-backed drivers. The 12.48" multi-controller panels need a Pi.
 - **Two apps are missing**: *Chromium screenshot* and *RTSP camera snapshot*. Both need to launch
   a real program on a real OS.
 - **No Nim app editing.** Scenes run [interpreted](/guide/scenes#execution), like everywhere else.
@@ -405,8 +523,9 @@ Straight, so you can decide before you buy:
   full `/admin` panel and the control page with the QR code are Pi-side. Manage ESP32 frames from
   the backend. (`GET /status` does report the chip, the hardware preset, and internal heap and
   largest-block figures - useful when a thin client runs out of memory.)
-- **It's slow.** Seconds per render, not milliseconds. Fine for e-ink, useless for anything that
-  needs to move.
+- **It's slow.** Seconds per render on e-paper, not milliseconds. On the SenseCAP Indicator's LCD a
+  simple animation runs at about 20 frames a second and a tap answers in a fraction of a second,
+  but that's still no Pi 5 at 60.
 - **PSRAM is the ceiling.** No PSRAM means thin-client mode, where the backend has to be reachable
   at render time.
 
@@ -414,7 +533,8 @@ Straight, so you can decide before you buy:
 
 | | Raspberry Pi | ESP32-S3 |
 | --- | --- | --- |
-| Displays | [120+ drivers](/devices): e-ink, HDMI, LCD | Waveshare SPI e-paper, every driver in one image |
+| Displays | [120+ drivers](/devices): e-ink, HDMI, LCD | Waveshare SPI e-paper and one 4" LCD, every driver in one image |
+| Voice | - | [Hold a key and talk](#voice-chat), on boards with a microphone |
 | Custom code | JavaScript, or Nim in a compiled scene | JavaScript/TypeScript |
 | Apps | All of them | All but Chromium screenshots and RTSP |
 | Fonts | Any TTF you upload, emoji fallback | Built-in typeface, plus TTFs on the SD card |

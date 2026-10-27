@@ -14,7 +14,7 @@ device:
   colors: "Black/White"
   colorCount: 2
   colorClass: "bw"
-  buttons: 1
+  buttons: 3
   productUrl: "https://www.seeedstudio.com/reTerminal-Sticky-p-6861.html"
   image: "/images/devices/seeed-reterminal-sticky.jpg"
   links:
@@ -32,9 +32,18 @@ The **Seeed reTerminal Sticky** is a pocket-sized 3.97" e-ink board with an ESP3
 makes a good desk or fridge frame: a day's agenda, a shopping list, the next bus.
 
 FrameOS runs on it as a full [ESP32-S3 frame](/guide/esp32) - scenes render on the device.
-Pick the **Seeed reTerminal Sticky** hardware preset and the panel, GPIO map, flash profile,
-the POWER button (GPIO 4) and the 4&nbsp;kHz buzzer on GPIO 48, which clicks when a press
-registers (firmware 2026.10.12+), are configured for you.
+Pick the **Seeed reTerminal Sticky** hardware preset and the panel, GPIO map, flash profile and
+the 4&nbsp;kHz buzzer on GPIO 48, which clicks when a press registers, are configured for you.
+From firmware 2026.10.21 the preset also brings:
+
+- **Three keys**: AI (GPIO 4), UP (5) and DOWN (6). UP held is the previous scene, DOWN held the
+  next ([button actions](/guide/esp32#button-actions)), and AI held is the
+  [voice chat](/guide/esp32#voice-chat): hold it, say what you want, let go.
+- **Touch**: the glass sends taps, long presses and swipes to scenes like a Pi touchscreen
+  ([input events](/guide/scenes#input)), and a touch wakes a sleeping frame.
+- **The battery gauge**: the Sticky's fuel gauge reports the charge and whether it's on USB, so
+  the frame deep-sleeps on its cell and stays connected when plugged in.
+- **The TF card** for assets.
 
 ## Setup
 
@@ -49,5 +58,6 @@ Small panel, small battery: this is a good candidate for
 
 ## Status
 
-🟡 **Should work, not yet confirmed on real hardware.**
+🟡 **Should work, not yet confirmed on real hardware.** The keys, touch, microphone and gauge
+follow Seeed's hardware specification and haven't been tried on a board yet.
 Tell us on [GitHub](https://github.com/FrameOS/frameos/issues/new) or [Discord](https://discord.gg/9dT9y7EzUw) if you try it.

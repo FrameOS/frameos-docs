@@ -52,6 +52,13 @@ GPIO 21 - the same as the [E1004](/devices/seeed-reterminal-e1004), where it is 
 cell on the battery header shows its charge in the backend or cloud, and the
 [deep sleep options](/guide/esp32#power) apply.
 
+From firmware 2026.10.20 the preset drives the rest of the board too. LEFT held is the previous
+scene and RIGHT held the next, and REFRESH held is the [voice chat](/guide/esp32#voice-chat) -
+hold it, say what you want, let go - through the built-in microphone; change any of them under
+[button actions](/guide/esp32#button-actions). The green status LED (GPIO 6) lights with the
+buzzer's notes, the TF card holds assets, the clock chip sets the time at boot before WiFi is up,
+and the charger tells the frame when USB is plugged in, so it never deep-sleeps on your desk.
+
 See the [ESP32 guide](/guide/esp32) for what a microcontroller frame can and cannot do.
 
 ## Status

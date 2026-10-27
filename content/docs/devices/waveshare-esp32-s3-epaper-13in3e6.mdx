@@ -33,6 +33,10 @@ The **Waveshare ESP32-S3 ePaper 13.3E6** preset is for Waveshare's ESP32-S3 boar
 `waveshare_esp32_s3_epaper_13_3e6`, which selects the `waveshare.EPD_13in3e` panel driver, the
 13.3E6 GPIO map, and the TF card asset mount.
 
+The board also has a speaker and microphones behind an audio codec, which FrameOS uses from
+firmware 2026.10.21: the speaker plays the button beeps, and holding BOOT starts the
+[voice chat](/guide/esp32#voice-chat) - say what you want, let go. Not yet tried on hardware.
+
 Use this page for the ESP32-S3 13.3E6 hardware. If you are driving the same panel from a
 Raspberry Pi, use the [Waveshare 13.3" (E)](/devices/waveshare-epd-13in3e) page instead.
 

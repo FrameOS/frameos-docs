@@ -203,7 +203,10 @@ and its scenes at `/frames/<id>/scenes/<sceneId>`.
   that the old one couldn't ([permissions](/guide/apps#permissions)), and **Update all scenes**
   takes every pending update in one push. A scene that asks for a service key the frame isn't
   allowed says so in its drawer - *Uses your Unsplash key, not allowed on this frame* - with an
-  **Allow** button.
+  **Allow** button. **Map buttons** in the scene's menu says which of the frame's keys the scene's
+  button listeners answer to ([details](/guide/scenes#input)), and a scene shown with **Preview on
+  frame** or by the voice chat sits above the list as a *preview* row, with **Install** and
+  **Discard**.
 - **Preview.** The frame's own last render, plus per-scene snapshots, fetched while you have the
   page open. An ESP32 frame sends its framebuffer on request; a sleeping one delivers it on its
   next wake, and its image wears a small moon badge until then. Fleet tiles can also render a
@@ -221,7 +224,9 @@ and its scenes at `/frames/<id>/scenes/<sceneId>`.
   response cap, palette (on an ESP32 from firmware 2026.10.4), [colors](/guide/colors) and
   partial-refresh policy, GPIO buttons, [local network access](#local-network-access), and on
   ESP32 the [power options](/guide/esp32#power) - deep sleep, battery pins and, from firmware
-  2026.8.39, the battery enable pin - and the button beep. A Pi's **Display driver** can be
+  2026.8.39, the battery enable pin - and the button beep. From firmware 2026.10.20 also
+  [button actions](/guide/esp32#button-actions), and on an ESP32 the status LED, the microphone's
+  pins and the [voice chat](/guide/esp32#voice-chat) with its four permission switches. A Pi's **Display driver** can be
   switched too (FrameOS 2026.9.22+): the frame runs the new driver's setup and restarts or reboots
   by itself. An ESP32's GPIO buttons show as the board reports them, with **Edit buttons** to
   change them. Everything else about the device - WiFi, mount points, an ESP32's panel - is owned
@@ -324,12 +329,15 @@ backups of your frames and scenes, and saving scenes to your private store. See
 [Link the backend to FrameOS Cloud](/guide/backend#cloud). A linked backend still deploys over SSH
 and still works with the cloud switched off.
 
-## Limits
+## Limits and plans [#limits]
 
-While in beta: 50 frames per account, 20 scenes per frame, 200 scenes and 100 MB of private scene
-storage per account, 100 MB of backups, 100 MB of logs, and 1 GB of [photos](/guide/photos)
-(250 MB until your email is verified - a Google sign-in counts). **Settings → Usage** shows where
-you stand. The account, enrolling and managing frames,
+The free plan: 20 frames per account, 20 scenes per frame, 200 scenes and 100 MB of private scene
+storage per account, 100 MB of backups, 100 MB of logs, and 250 MB of [photos](/guide/photos).
+**Settings → Usage** shows where you stand, and under **Need more?** the plans: **Free**,
+**Private** ($2 to $29 a month, 40 to 160 frames, with sharing and virtual frames) and
+**Business** ($49 to $499, 199 to 999 frames, plus SSO with SAML and priority support). A slider
+sets the price, and $N a month is N people and N times the free plan's storage. While in beta only
+Free is live; the paid cards put you in touch with support. The account, enrolling and managing frames,
 and installing public store scenes are meant to stay free; nothing security-related (two-factor
 auth, revocation, signed updates, the sandbox) will ever be paywalled.
 

@@ -44,6 +44,10 @@ and plays it as is.
 the menu offers *Show on Kitchen* directly. A folder installs (or reuses) its album scene; a single
 photo gets a scene that shows just that photo. Either way the frame switches to it right away.
 
+Or say it: on a frame with a [voice chat](/guide/esp32#voice-chat), *"play the holiday album,
+ten seconds each"* installs that album's scene and switches to it (2026.10.20+). The frame's
+**Access photo albums** switch decides whether the voice chat may.
+
 ## Share links
 
 A frame reads an album through a share link, never with your login. A folder has one link per
@@ -96,8 +100,9 @@ To keep the bytes in an S3-compatible bucket instead (Cloudflare R2, AWS S3, Min
 `FRAMEOS_PHOTOS_S3_SECRET_ACCESS_KEY`, plus `FRAMEOS_PHOTOS_S3_REGION` and `FRAMEOS_PHOTOS_S3_PREFIX`
 if you need them. The bucket stays private: frames and browsers get the bytes through the backend.
 
-**FrameOS Cloud.** Each account gets 1&nbsp;GB of photos once its email is verified (a Google sign-in
-counts), 250&nbsp;MB until then; **Settings → Usage** shows where you stand. The cloud takes JPEG, PNG,
+**FrameOS Cloud.** The free plan holds 250&nbsp;MB of photos, and the paid plans
+([limits and plans](/guide/cloud#limits)) more once your email is verified (a Google sign-in
+counts); **Settings → Usage** shows where you stand. The cloud takes JPEG, PNG,
 GIF and WebP, and scans every upload against known abuse material before anything is stored.
 Photos sit in a private bucket that frames reach only through share links, and a photo you delete -
 or every photo, when you delete your account - leaves the bucket, and the backups a month later.

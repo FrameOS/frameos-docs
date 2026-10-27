@@ -1,11 +1,14 @@
 // These Waveshare panels are in the Linux catalog but not the ESP32 firmware:
-// the 10.3" IT8951 and the 12.48" family use different controller stacks.
-// Mirrors EMBEDDED_UNSUPPORTED_PANELS in the main repo's embedded_firmware.py.
+// the 12.48" family uses a different controller stack, and three variants have
+// no embedded driver. Mirrors EMBEDDED_UNSUPPORTED_PANELS in the main repo's
+// embedded_firmware.py (the 10.3" IT8951 joined the firmware in 2026.10.21).
 const esp32UnsupportedWavesharePanels = new Set([
-  'EPD_10in3',
   'EPD_12in48',
   'EPD_12in48b',
   'EPD_12in48b_V2',
+  'EPD_7in5_V2_gray',
+  'EPD_4in2b_V2_old',
+  'EPD_7in5b_V2_old',
 ]);
 
 const esp32Platforms = new Set(['esp32-s3', 'esp32-c3']);

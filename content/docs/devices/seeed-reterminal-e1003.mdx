@@ -1,10 +1,11 @@
 ---
 title: "Seeed reTerminal E1003"
-description: "Seeed Studio reTerminal E1003 - a 10.3\" 16-level grayscale touch e-ink display with an ESP32-S3. Not supported by FrameOS yet."
+description: "Seeed Studio reTerminal E1003 - a 10.3\" 16-level grayscale touch e-ink display with an ESP32-S3, running FrameOS on-device from firmware 2026.10.21."
 device:
   vendor: "Seeed Studio"
   model: "reTerminal E1003"
-  driver: "none"
+  driver: "waveshare.EPD_10in3"
+  label: "Seeed reTerminal E1003 (10.3\" grayscale ESP32-S3)"
   technology: "E-ink"
   interface: "ESP32-S3 board"
   diagonal: 10.3
@@ -13,12 +14,15 @@ device:
   colors: "16-level grayscale"
   colorCount: 16
   colorClass: "gray"
+  buttons: 3
   productUrl: "https://www.seeedstudio.com/reTerminal-E1003-p-6731.html"
   image: "/images/devices/seeed-reterminal-e1003.jpg"
   links:
     - label: "Seeed wiki"
       url: "https://wiki.seeedstudio.com/getting_started_with_reterminal_e1003/"
-  status: "unsupported"
+  platforms:
+    - "esp32-s3"
+  status: "untested"
 ---
 
 The **Seeed reTerminal E1003** is the 10.3" model in the reTerminal E-series: a 1404×1872
@@ -27,13 +31,39 @@ flash, a microSD slot, a 3000&nbsp;mAh battery, the E-series keys (a green refre
 up/down), a buzzer, a temperature and humidity sensor and a microphone. Sixteen grays at that
 density make it the reading and dashboard frame of the family.
 
+From firmware 2026.10.21 FrameOS runs on it as a full [ESP32-S3 frame](/guide/esp32), rendering
+scenes on the device. Pick the **Seeed reTerminal E1003** hardware preset
+(`seeed_reterminal_e1003`) when you add the frame and it sets up:
+
+- **The panel**: the 10.3" glass sits behind an IT8951 controller - the same chip and glass as the
+  [Waveshare 10.3" HAT](/devices/waveshare-epd-10in3) - tuned for this board. Between refreshes
+  the controller keeps its picture, so only the rows that changed are sent: a whole frame is about
+  half a second on the wire, a clock's digits a few milliseconds. The board's temperature sensor
+  feeds the refresh, as the panel needs.
+- **Memory**: a grayscale panel needs no color, so the scene canvas takes one byte per pixel -
+  2.5&nbsp;MB for 1872×1404 - and leaves the 8&nbsp;MB of PSRAM room for scenes and apps.
+- **Touch**: taps, long presses and swipes reach scenes like a Pi touchscreen's
+  ([input events](/guide/scenes#input)), and [JSX interfaces](/guide/apps#jsx-uis) can be tapped.
+- **Keys and voice**: REFRESH, LEFT and RIGHT on GPIO 3, 4 and 5. Out of the box LEFT held is the
+  previous scene, RIGHT held the next, and REFRESH held is the [voice chat](/guide/esp32#voice-chat):
+  hold it, say what you want, let go. Change them under
+  [button actions](/guide/esp32#button-actions).
+- **The rest**: the buzzer and the green status LED (GPIO 16), the TF card for assets, and the
+  battery on GPIO 1, switched by GPIO 40, with deep sleep on battery.
+
+## Setup
+
+1. In the FrameOS backend or [FrameOS Cloud](/guide/cloud), create a frame with **Flash embedded
+   device**.
+2. Choose **ESP32-S3**, select the **Seeed reTerminal E1003** preset, and enter your WiFi details.
+3. Flash it over USB from the browser. Like the rest of the E-series, its USB-C port goes to a
+   CH340 UART bridge: on macOS install WCH's
+   [CH34x driver](/devices/seeed-reterminal-e1004#macos-install-the-wch-serial-driver-first) first.
+4. Install scenes as usual - they sync over WiFi, and the device updates itself over the air.
+
 ## Status
 
-⚪ **Not supported yet.** The rest of the E-series - the [E1001](/devices/seeed-reterminal-e1001),
-[E1002](/devices/seeed-reterminal-e1002) and [E1004](/devices/seeed-reterminal-e1004) - drive SPI
-panels that the FrameOS firmware already has drivers for. The E1003's fast-refresh 10.3" panel
-needs a different kind of display driver, which the ESP32 firmware doesn't have yet, and touch
-input on it isn't wired up either.
-
-Want it? Say so on [GitHub](https://github.com/FrameOS/frameos/issues) or
-[Discord](https://discord.gg/9dT9y7EzUw) - it helps us decide what to port next.
+🟡 **Should work, not yet confirmed on real hardware.** The pins come from Seeed's examples and
+board files; nobody has run FrameOS on an E1003 yet. If you have one, tell us on
+[GitHub](https://github.com/FrameOS/frameos/issues/new) or
+[Discord](https://discord.gg/9dT9y7EzUw) how it goes.

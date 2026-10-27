@@ -1,0 +1,81 @@
+---
+title: "Seeed SenseCAP Indicator"
+description: "Seeed Studio SenseCAP Indicator - a 4\" 480x480 touch LCD with an ESP32-S3, running FrameOS on-device with animation and touch from firmware 2026.10.21."
+device:
+  vendor: "Seeed Studio"
+  model: "SenseCAP Indicator D1"
+  driver: "lcd.st7701s_480x480"
+  label: "Seeed SenseCAP Indicator D1/D1S (4\" LCD ESP32-S3)"
+  technology: "LCD"
+  interface: "ESP32-S3 board"
+  diagonal: 4
+  width: 480
+  height: 480
+  colors: "65K colors (16-bit)"
+  colorClass: "rgb"
+  buttons: 1
+  productUrl: "https://www.seeedstudio.com/SenseCAP-Indicator-D1-p-5643.html"
+  image: "/images/devices/seeed-sensecap-indicator.jpg"
+  links:
+    - label: "Seeed wiki"
+      url: "https://wiki.seeedstudio.com/Sensor/SenseCAP/SenseCAP_Indicator/Get_started_with_SenseCAP_Indicator/"
+  platforms:
+    - "esp32-s3"
+  status: "tested"
+---
+
+The **Seeed SenseCAP Indicator** is a 4" square desk display: a 480×480 IPS **color touch LCD**
+driven by an ESP32-S3 with 8&nbsp;MB of flash and 8&nbsp;MB of PSRAM, with an RP2040 beside it for
+the sensors, the buzzer and the microSD slot. It comes as the D1, D1S, D1L and D1Pro, which differ
+in their sensors and radios; FrameOS uses the S3's half, which is the same on all four.
+
+It's the first LCD the FrameOS ESP32 firmware drives (2026.10.21+), and it changes what a
+microcontroller frame can do: scenes animate, interfaces answer a tap, and nothing waits half a
+minute for e-paper to refresh.
+
+## What it does
+
+Pick the **Seeed SenseCAP Indicator D1/D1S** hardware preset (`seeed_sensecap_indicator_d1`) and:
+
+- **Scenes animate.** A scene whose render interval is under a second renders back to back, with
+  the scene drawn straight into the LCD's frame buffer and only the part that changed redrawn:
+  the store's *DVD Logo Bounce* runs at about 20 frames a second, its *Ken Burns* photo slideshow
+  at 7-8.
+- **Touch works like a Pi touchscreen**: taps, double taps, long presses, swipes and pointer
+  events reach scenes ([input events](/guide/scenes#input)). Interfaces built with
+  [JSX and Tailwind classes](/guide/apps#jsx-uis) - a home panel's switches, a calculator, a
+  player - answer a tap in a fraction of a second.
+- **The button and the edges** come bound to the frame
+  ([button actions](/guide/esp32#button-actions)): press the top button to turn the screen off or
+  on, press it twice for the next scene, hold it for the previous one, and swipe in from the right
+  or left edge for the next or previous scene. A touch on a dark screen only wakes it.
+- **It boots to the FrameOS mark**, with a line saying what it's waiting for - *Connecting to
+  Wi-Fi*, *Updating firmware*, *Starting* - and shows a picture as soon as WiFi is up.
+
+## What it doesn't
+
+- **The microSD slot, the buzzer and the sensors belong to the RP2040**, which the S3 only talks
+  to over a serial line, so FrameOS doesn't drive them (nor the LoRa radio of the D1L and D1Pro).
+  Assets live in 1&nbsp;MB of the S3's own flash instead: room for a handful of photos, with file
+  names of 28 characters at most.
+- **No battery.** It runs on USB power, so there's no deep sleep, and scene state that changes is
+  written to flash every ten minutes rather than every minute - a flash write disturbs the picture
+  for a frame.
+
+## Setup
+
+1. In the FrameOS backend or [FrameOS Cloud](/guide/cloud), create a frame with **Flash embedded
+   device**.
+2. Choose **ESP32-S3**, select the **Seeed SenseCAP Indicator D1/D1S** preset, and enter your WiFi
+   details.
+3. Flash it over USB from the browser - the backend writes the release image for the board and sets
+   it up as this frame.
+4. Install scenes as usual - they sync over WiFi, and the device updates itself over the air.
+   *DVD Logo Bounce*, *Touch test* and *Ken Burns* from the [scene store](/guide/scene-store) are a
+   good first look at what the screen can do.
+
+## Status
+
+🟢 **Confirmed working** - tested on real hardware (a D1S): the picture the right way round, taps
+landing under the finger, the button and edge swipes switching scenes, and a steady picture while
+it animates.

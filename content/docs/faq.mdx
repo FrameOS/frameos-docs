@@ -30,18 +30,22 @@ Yes, and it's a full frame rather than a demo. FrameOS runs on the **ESP32-S3**:
 scenes itself - the same interpreter as Linux frames, the same apps, JavaScript on QuickJS, its
 own scheduler, assets on an SD card, logs and metrics back to the backend, and firmware updates
 over the air with automatic rollback. It deep-sleeps between refreshes and wakes on a button
-press, so battery-powered frames are real.
+press, so battery-powered frames are real. On boards with a microphone you can
+[hold a key and talk to it](/guide/esp32#voice-chat), and the
+[SenseCAP Indicator](/devices/seeed-sensecap-indicator)'s touch LCD runs animations and tap-driven
+interfaces.
 
-The short list of what a microcontroller frame *can't* do: Waveshare-family SPI e-paper only (no
-HDMI, no LCD, no Pimoroni HATs), no custom Nim apps (JavaScript instead), one built-in font plus
+The short list of what a microcontroller frame *can't* do: Waveshare-family SPI e-paper plus a
+couple of special panels only (no HDMI, no other LCDs, no Pimoroni HATs), no custom Nim apps
+(JavaScript instead), one built-in font plus
 TTFs off the SD card but no emoji fallback, and no headless Chromium screenshots or RTSP camera
 snapshots. The full picture is on the [ESP32 page](/guide/esp32#what-it-cannot-do).
 
 The **Raspberry Pi is still the broadest platform** - [120+ panels](/devices), HDMI at 60 FPS,
 custom Nim, any font you upload. Pick the Pi if you want everything; pick the ESP32 if you want a
 wire-free frame, or if you already own one of the
-[all-in-one boards](/guide/esp32#supported-boards) like a Waveshare PhotoPainter, a TRMNL or a
-Seeed reTerminal.
+[all-in-one boards](/guide/esp32#supported-boards) like a Seeed reTerminal, a Waveshare
+PhotoPainter or a TRMNL.
 
 ## Can it really render a huge photo on a microcontroller? [#big-images]
 
@@ -124,10 +128,12 @@ $250.
 
 ## What does FrameOS Cloud cost?
 
-Nothing while in beta, with fixed limits (50 frames, 20 scenes per frame, 100 MB each of private
-scenes, backups and logs) so one account can't crowd out the rest. Creating an account, enrolling
-and managing frames, and installing public store scenes are meant to stay free; nothing
-security-related will ever be paywalled. See [FrameOS Cloud](/guide/cloud#limits).
+The free plan costs nothing, with fixed limits (20 frames, 20 scenes per frame, 100 MB each of
+private scenes, backups and logs, 250 MB of photos) so one account can't crowd out the rest. Paid
+Private and Business plans with more frames and storage are on the usage page, though only the
+free one is live during the beta. Creating an account, enrolling and managing frames, and
+installing public store scenes are meant to stay free; nothing security-related will ever be
+paywalled. See [FrameOS Cloud](/guide/cloud#limits).
 
 ## Where are the terms of service, privacy policy and imprint?
 

@@ -78,12 +78,21 @@ enter the JavaScript heap (2026.10.11+). They return text, JSON, SVG markup, or 
 into scenes exactly like the built-in ones. They work on every kind of frame, and they're the
 **only** option on [ESP32](/guide/esp32) and [Pico](/guide/pico) boards.
 
-Where an app keeps its values matters on an ESP32, which drops an app's interpreter after every
-render to free memory: module-level variables last one render there, and `init()` runs again
-before the next. Keep values the scene shares in its state (`frameos.setState()`), and private
-ones with `frameos.remember(key, value)` / `frameos.recall(key)`, which survive between renders
-everywhere (2026.10.13+). The browser preview behaves like an ESP32 when its memory limit is set
-to an ESP32 board, so the difference shows up before you deploy.
+An app that returns an image should size it by the canvas it's handed - `context.imageWidth` and
+`imageHeight`, already turned with the frame - never by the panel. When the picture's destination
+is known (a cell of a split, say), `context.targetWidth`, `targetHeight` and `targetFit` give its
+size and placement too (2026.10.20+). That's how the *FrameOS Gallery* app asks
+gallery.frameos.net for the picture already scaled to fit, as a JPEG 5 to 20 times smaller than
+the original; its **Image format** field brings back PNG or the untouched original.
+
+Where an app keeps its values matters on an ESP32, which lets an app's interpreter go when memory
+runs short - before a big image decode, or after every render on a frame that deep-sleeps. Then
+module-level variables are gone and `init()` runs again before the next render. (A frame that
+stays awake keeps its interpreters between renders while memory allows, from 2026.10.21.) Keep
+values the scene shares in its state (`frameos.setState()`), and private ones with
+`frameos.remember(key, value)` / `frameos.recall(key)`, which survive between renders everywhere
+(2026.10.13+). The browser preview behaves like an ESP32 when its memory limit is set to an ESP32
+board, so the difference shows up before you deploy.
 
 `console.log()` (and `info`, `warn`, `error`) writes to the frame's log. A `get()` that throws
 fails its node the way a built-in app does: the message is painted where the image would be, and
@@ -106,6 +115,50 @@ per line.
 
 Scene JavaScript runs sandboxed: bounded memory and run time, no filesystem beyond the asset
 calls below, and network access only through the FrameOS fetch helpers.
+
+### Interfaces in JSX [#jsx-uis]
+
+From FrameOS 2026.10.21 an app whose main file is `.tsx` can return JSX from `get()` where it
+would return an image, and style it with Tailwind class names:
+
+```tsx title="app.tsx"
+let count = 0
+
+export function get(app: FrameOSApp) {
+  return (
+    <div className="flex flex-col items-center justify-center gap-4 bg-slate-900 text-white">
+      <span className="text-7xl font-bold">{new Date().toTimeString().slice(0, 5)}</span>
+      <button className="rounded-xl px-8 py-4 bg-sky-500 active:bg-sky-700 text-3xl"
+        onClick={() => { count++ }}>
+        Tapped {count} times
+      </button>
+    </div>
+  )
+}
+```
+
+- **An `<svg>`** is drawn exactly as the same markup would be, without the markup being written
+  or parsed.
+- **Anything else is a UI**, laid out at the size of the node's image: block and flex layout
+  (grow, shrink, wrap, gap, justify, align), grid columns, absolute positioning, wrapped and
+  truncated text, `<img>` for photos and inline `<svg>` icons. Tailwind's spacing, sizes, colors
+  with `/opacity`, gradients, borders, corners, text sizes and weights work, as do the `sm:`…`2xl:`
+  and `portrait:` / `landscape:` variants, which follow the size of the image being drawn.
+- **Handlers**: `onClick`, `onDoubleClick`, `onLongPress`, `onPointerDown`, `onPointerUp`,
+  `onPointerMove` and `onSwipe` run on a touch screen's or a mouse's events, and the frame renders
+  again after each. `hover:`, `active:` and `group-hover:` classes follow the pointer. On e-paper
+  every one of those is a refresh, so they're for LCDs, HyperPixels, the browser preview and the
+  [SenseCAP Indicator](/devices/seeed-sensecap-indicator).
+- **Only what changed is redrawn** on an LCD, and `memo(Component)` skips components whose props
+  didn't change, as in React.
+- **Photos that stay**: `frameos.fetchImage(url, { keep: true, width, height })` keeps the picture
+  between renders until `frameos.releaseImage(ref)`, so a UI isn't downloading it again on every
+  tap.
+- **Canvases**: `frameos.canvas(key, width, height, color)` is a picture the app draws into with
+  `frameos.draw(canvas, <line … />)`, kept between renders - a paint page, a chart that grows a
+  point at a time.
+
+Not there yet: clipping (`overflow-hidden`), shadows, transforms and letter spacing.
 
 ## Permissions [#permissions]
 

@@ -25,10 +25,12 @@ const reportUrl = 'https://github.com/FrameOS/frameos/issues/new';
 const discordUrl = 'https://discord.gg/9dT9y7EzUw';
 
 const esp32UnsupportedWavesharePanels = new Set([
-  'EPD_10in3',
   'EPD_12in48',
   'EPD_12in48b',
   'EPD_12in48b_V2',
+  'EPD_7in5_V2_gray',
+  'EPD_4in2b_V2_old',
+  'EPD_7in5b_V2_old',
 ]);
 
 function supportsEsp32(d) {

@@ -42,11 +42,19 @@ switches on for each reading. The panel is the same glass as the
 [Waveshare 13.3" (E)](/devices/waveshare-epd-13in3e), with Seeed's own analogue tuning applied by
 the preset.
 
+From firmware 2026.10.20 LEFT held is the previous scene and RIGHT held the next - change them
+under [button actions](/guide/esp32#button-actions) - and the preset drives the rest of the board:
+the green status LED (GPIO 48) lights with the buzzer's notes, the TF card shares the panel's bus,
+the clock chip sets the time at boot, and the charger tells the frame when USB is plugged in. The
+E1004 has no microphone, so no [voice chat](/guide/esp32#voice-chat) unless you add one to its J2
+header.
+
 ## Battery
 
 The E1004 carries a 5000&nbsp;mAh cell, and the preset treats it as a battery frame from the start:
 `deep_sleep_on_battery` is on with a 15-minute `wake_check`, so unplugged it deep-sleeps between
-renders (waking on the timer, or on any of its buttons) and on USB it stays connected. The cloud or
+renders (waking on the timer, or on any of its buttons) and on USB - which the charger reports -
+it stays connected. The cloud or
 backend shows **asleep · wakes in 5 min** and the charge while it's down, and delivers anything you
 deploy on the next wake. A 15-minute weather scene keeps it awake for roughly 80-90 seconds per
 cycle - render, dither and the panel's own refresh - which is where the battery goes; see

@@ -1,6 +1,6 @@
 ---
 title: Useful settings
-description: Access keys, QR codes, asset storage, power management, nightly reboots and debug logging.
+description: Access keys, QR codes, asset storage, button actions, voice chat, power management, nightly reboots and debug logging.
 ---
 
 A tour of the most useful options under a frame's **Settings** tab. Unless noted otherwise, each
@@ -49,19 +49,39 @@ frames set up earlier keep `FrameOS-Setup` / `frame1234` until you clear them. J
 opens the setup page by itself on most phones (a captive portal), and the hotspot shuts down
 after five minutes by default.
 
-## GPIO buttons and input
+## Buttons, voice and input [#buttons]
 
 List the frame's buttons by pin and label under **GPIO buttons** - the hardware presets fill them
 in. Each button has a **role** (`primary`, `next`, `prev`, `back`, `menu`, `refresh`…), defaulting
 from its label, and scenes hear presses as `button` and `gpio`
 [events](/guide/scenes#input). On an ESP32 a changed map reaches the board with its next settings
-sync, and it restarts to rebind the pins (backend 2026.10.9+; the cloud pushes it too). ESP32
-boards with a buzzer - the Seeed reTerminals - click when a press registers: **Button beep GPIO**
-and **Button beep tone (Hz)** sit under the buttons (firmware 2026.10.12+).
+sync, and it restarts to rebind the pins (backend 2026.10.9+; the cloud pushes it too).
+
+**Button actions** (FrameOS 2026.10.20+) say what a press does on this frame whatever scene is
+showing: next or previous scene, render, show a particular scene, and - on displays that can
+switch their panel off - display on, off or on/off. Each row is one press (press, double press or
+long press) of one of the frame's buttons, and a press bound there never reaches the scene. The
+Seeed reTerminal presets come with LEFT held = previous scene and RIGHT held = next; the
+[ESP32 guide](/guide/esp32#button-actions) lists every board's. A cloud frame on older firmware
+shows the section disabled. To tell one installed scene which of your keys are its own, use
+**Map buttons** in that scene's menu instead ([details](/guide/scenes#input)).
+
+ESP32 boards get a **Buzzer, LED and microphone** box under the buttons:
+
+- **Button beep GPIO** and **Button beep tone (Hz)**: boards with a buzzer - the Seeed
+  reTerminals - click when a press registers (firmware 2026.10.12+).
+- **Status LED GPIO** and its type: the reTerminal E-series' green LED lights with the buzzer's
+  notes (firmware 2026.10.20+). The placeholder shows the board's own pin.
+- **Microphone GPIO** (clock, data, power) and the **Voice chat** switch, with the four **Voice
+  chat may** switches under it: *Change settings*, *Use installed scenes*, *Create new scenes*
+  (off by default) and *Access photo albums*. See [voice chat](/guide/esp32#voice-chat). The voice
+  chat controls only show on a frame with a microphone: the E1001/E1002/E1003 presets have one,
+  the E1004 doesn't, and filling in the pins of one you added makes them appear.
 
 A Pi with a keyboard or touchscreen has an **Input** section (FrameOS 2026.10.0+): the
 **Keyboard layout** a key's character is read in, and **Grab keyboards**, which keeps the
-console from seeing keys meant for the scene. Saving either restarts the runtime.
+console from seeing keys meant for the scene. Saving either restarts the runtime. ESP32, Pico and
+virtual frames don't show it.
 
 ## Power and battery
 
