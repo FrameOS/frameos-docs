@@ -949,7 +949,7 @@
     "colorClass": "accent",
     "label": "Waveshare 2.15\" (B) 296x160 Black/White/Red",
     "productUrl": "https://www.waveshare.com/2.15inch-e-paper-hat-plus-b.htm?sku=28916&aff_id=79380",
-    "status": "untested",
+    "status": "tested",
     "slug": "waveshare-epd-2in15b",
     "esp32": true
   },
