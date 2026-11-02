@@ -48,3 +48,6 @@ vcgencmd display_power 0   # off
 vcgencmd display_power 1   # on
 vcgencmd display_power | grep "display_power=0" >/dev/null && echo "off" || echo "on"
 ```
+
+FrameOS's **Turn display off / on** and its [HTTP API](/guide/api#display) run the same command. If
+the backlight stays on, see [If the monitor stays lit](/devices/framebuffer-hdmi#hdmi-blanking).

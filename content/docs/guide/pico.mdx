@@ -92,9 +92,9 @@ major public CA roots.
   asleep on battery gets it when it wakes - that's a queued change, not an error.
 - **No wasted refreshes.** An unchanged picture skips the panel refresh, and the check survives
   the board powering off between renders.
-- **A device API**: `/status`, `/logs`, `/image`, `/ping` and `/event/<name>` on port 80, and
-  `<hostname>.local` over mDNS. Logs also land in the backend, and the deploy drawer has the USB
-  console.
+- **A [device API](/guide/api#pico)**: `/status`, `/logs`, `/image`, `/ping` and `/event/<name>` on
+  port 80, and `<hostname>.local` over mDNS. Logs also land in the backend, and the deploy drawer has
+  the USB console.
 
 ## Battery mode
 

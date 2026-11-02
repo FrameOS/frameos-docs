@@ -10,11 +10,11 @@ also how a [standalone frame](/guide/standalone) is managed at all, and the esca
 [cloud-managed](/guide/cloud) one.
 
 <Callout title="On a microcontroller">
-  [ESP32 frames](/guide/esp32) serve the same kind of API on port `80` - the image, the scene
-  state, `POST /event/<name>`, logs, metrics and assets - but not the browser UI below. Manage
-  those from the backend. A [Pico](/guide/pico) frame answers a smaller set on port 80 - status,
-  logs, the image and events (2026.10.19+) - and a [virtual](/guide/virtual) frame has no device
-  at all.
+  [ESP32 frames](/guide/esp32) serve the same kind of [API](/guide/api#esp32) on port `80`, with
+  a login of their own - the image, the scene state, `POST /event/<name>`, logs, metrics and
+  assets - but not the browser UI below. Manage those from the backend. A [Pico](/guide/pico)
+  frame answers a [smaller set](/guide/api#pico) on port 80 - status, logs, the image and events
+  - and a [virtual](/guide/virtual) frame has no device at all.
 </Callout>
 
 ## The frame's web app
@@ -67,7 +67,8 @@ update):
 
 The frame's **…** menu at the top right re-renders, restarts, **reboots the device** and brings
 back the status screen (**Render status screen**). Frames on an HDMI/framebuffer display or a
-HyperPixel also get **Turn display off** / **Turn display on** there (2026.9.18+).
+HyperPixel also get **Turn display off** / **Turn display on** there, which a script
+can send [over HTTP](/guide/api#display) too.
 
 The admin panel is how a [standalone frame](/guide/standalone) is managed at all, and it stays
 available on frames that a backend or the cloud manages - which is why the frame can always be
@@ -84,7 +85,8 @@ Under the frame's settings you choose who can do what without a key:
   anything.
 - **Public** - no key needed for anything. Makes for the smallest QR codes.
 
-The access key travels as a `?k=...` query parameter (or a cookie after the first visit).
+The access key travels as a `?k=...` query parameter, a cookie after the first visit, or on a POST
+an `Authorization: Bearer` header ([details](/guide/api#auth)).
 
 <Callout type="warn">
   Traffic is plain HTTP on your local network. If you need real security - frames on a shared
@@ -95,7 +97,9 @@ The access key travels as a `?k=...` query parameter (or a cookie after the firs
 
 ## The HTTP API
 
-Everything the control page does is a plain HTTP call. With `KEY` being your access key:
+Everything the control page does is a plain HTTP call. These are the ones you'll use most, and the
+[HTTP API reference](/guide/api) has every route, event and credential. With `KEY` being your
+access key:
 
 ```bash
 # the current image as PNG
@@ -122,6 +126,10 @@ curl -X POST "http://frame:8787/event/setCurrentScene?k=KEY" \
   -H "Content-Type: application/json" \
   -d '{"direction": "next"}'
 
+# turn the display off and on
+curl -X POST "http://frame:8787/event/turnOff?k=KEY"
+curl -X POST "http://frame:8787/event/turnOn?k=KEY"
+
 # trigger a render right now
 curl -X POST "http://frame:8787/event/render?k=KEY" -d '{}'
 ```
@@ -130,11 +138,12 @@ The frame remembers the scene it shows: after a restart or a reboot it comes bac
 (FrameOS 2026.10.18+; older releases could start on their first scene instead).
 
 `POST /event/<name>` dispatches any event into the running scene graph - the same mechanism
-buttons, schedules, and apps use internally. This makes integrations trivial: a Home Assistant
-automation, a cron job, a shell script, or a doorbell webhook can all drive your frame.
+buttons, schedules, and apps use internally. This makes integrations trivial: a
+[Home Assistant automation](/guide/api#home-assistant), a cron job, a shell script, or a doorbell webhook can all drive your frame.
 
-There's also a full admin REST API (config, logs, metrics, restart, reboot) under
-`http://frame:8787/api/` behind the admin login, and a WebSocket at `/ws` that streams renders.
+There's also a full [admin REST API](/guide/api#admin-api) (config, logs, metrics, restart, reboot)
+under `http://frame:8787/api/` behind the admin login, and a WebSocket at `/ws` that says when a
+new render is ready.
 The events that control the device itself - `reboot`, `restart`, `reload` and `uploadScenes` - need
 the admin login or the backend's API key too; the access key (`?k=`) can't trigger them.
 

@@ -24,7 +24,11 @@ description: Choose a Raspberry Pi, then flash either a prebuilt FrameOS SD imag
   native mode on its own - plug in a 1080p or 4K screen and it renders at that resolution, with the
   status screen's fonts scaled to match; there's no width or height to type in.
 - **Raspberry Pi Zero W (v1), Pi 1, CM1** - a single 32-bit ARMv6 core. Slower, but
-  supported all the way down, prebuilt SD image included.
+  supported all the way down, prebuilt SD image included. Where FrameOS drives the Wi-Fi itself, as
+  on the Zero W image, it turns off the chip's own roaming (`brcmfmac.roamoff=1` on the kernel
+  command line, one reboot) and its power save, and watches the link: three minutes without an
+  answer from a router that used to answer restart the Wi-Fi. Restarting FrameOS no longer drops
+  the connection.
 
 Not a Pi person, or dreaming of a battery-powered frame? FrameOS also runs on the
 [ESP32-S3 microcontroller](/guide/esp32), on [Pico W boards](/guide/pico), and with

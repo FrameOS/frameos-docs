@@ -276,12 +276,12 @@ fallback - `NotoColorEmoji.ttf` is 10&nbsp;MB of bitmaps with no outlines to dra
 - **A real HTTP API on the device**: `GET /status`, `/image`, `/state`, `/states`, and
   `POST /event/<name>` to dispatch any event into the running scene, plus logs, metrics and asset
   routes under `/api/frames/<id>/` - much the same surface the
-  [Pi's local API](/guide/control) exposes. Native HTTPS turns on after the frame's first settings
+  [Pi's local API](/guide/api) exposes ([every route](/guide/api#esp32)). Native HTTPS turns on after the frame's first settings
   sync, when it has a certificate to serve. After each render the frame also pushes its picture to
-  a self-hosted backend, so the backend has a sleeping frame's image without pulling it
-  (2026.10.2+). The routes that change something - scene pushes, settings, events, assets, reboot,
-  OTA - need the admin login; firmware before 2026.10.21 answered a request without it with
-  *Authentication required* but still carried it out, so update a frame on an older release.
+  a self-hosted backend, so the backend has a sleeping frame's image without pulling it. Every
+  route except `/ping` needs the frame's API key or its admin login; firmware
+  before 2026.10.21 answered a request without them with *Authentication required* but still
+  carried it out, so update a frame on an older release.
 - **Logs and metrics** stream to the backend, and the last 128 lines are kept in a ring buffer on
   the device, readable over the serial console when the network is down. When the backend doesn't
   answer, the frame keeps its lines and tries again once a minute instead of waiting out a timeout
@@ -311,22 +311,31 @@ fallback - `NotoColorEmoji.ttf` is 10&nbsp;MB of bitmaps with no outlines to dra
   frame with its buzzer switched off still shows a press, and it stays lit while the
   [voice chat](#voice-chat) listens (firmware 2026.10.20+). **Status LED GPIO** sits next to the
   beep settings; `led` on the console tests it.
+- **A cloud frame with a backend set too**: `set backend` on an enrolled frame's console (a bench
+  setup) hands its content to that backend, so the frame turns down the cloud's scenes and settings.
+  `status` and the cloud's frame page say so, and
+  [handing it back](/guide/cloud#moving-between-cloud-backend-and-standalone) takes one button
+  over USB.
 
 ## Button actions [#button-actions]
 
 **Settings → Button actions** says what a press does on this frame, whatever scene is showing:
-the next or previous scene, a render, a particular scene, the display on or off, or the
-[voice chat](#voice-chat) (firmware 2026.10.20+, on both control planes). A press bound there
-never reaches the scene. The board presets come with sensible ones:
+the next or previous scene, a render, a particular scene, the display on or off, the
+[voice chat](#voice-chat), the scene switcher or scene settings, or Back and Forward, on both
+control planes. On a touch screen an edge swipe
+can be bound the same way. A press bound there never reaches the scene. The board presets come
+with sensible ones:
 
 | Board | Button actions out of the box |
 | --- | --- |
-| reTerminal E1001, E1002, E1003, E1004 | LEFT held = previous scene, RIGHT held = next scene; REFRESH held = voice chat (not on the E1004, which has no microphone) |
+| reTerminal E1001, E1002, E1003, E1004 | LEFT held = previous scene, RIGHT held = next scene; REFRESH held = voice chat (not on the E1004, which has no microphone). The E1003 adds [the edge swipes](/guide/scenes#input) |
 | reTerminal Sticky | UP held = previous scene, DOWN held = next scene, AI held = voice chat |
-| SenseCAP Indicator | Button pressed = screen on/off, pressed twice = next scene, held = previous scene; a swipe in from the right edge = next scene, from the left = previous |
+| SenseCAP Indicator | Button pressed = screen on/off, pressed twice = scene switcher; [the edge swipes](/guide/scenes#input): up = scene switcher, down = scene settings, in from the left = back, from the right = forward |
 | PhotoPainter, 13.3E6 | KEY1 / BOOT held = voice chat |
 
-Change or clear them in Settings. A scene written for other keys - a store scene that listens for
+Change or clear them in Settings. A board keeps the map it was set up with, so one from before a
+preset changed gets the new one with `set hardware <preset>` and `restart` on its console. A scene
+written for other keys - a store scene that listens for
 `A` and `B` - can be told which of your frame's keys are its `A` and `B` with **Map buttons** in
 the installed scene's menu, without touching the scene ([details](/guide/scenes#input)). The
 frame's status screen lists every button with the action it's bound to (2026.10.21+).
@@ -376,10 +385,16 @@ to the ESP32 (firmware 2026.10.21+). An LCD changes what a microcontroller frame
   and the [E1003](/devices/seeed-reterminal-e1003) reaches scenes as the same `pointerDown`,
   `pointerMove`, `pointerUp`, `tap`, `doubleTap`, `longPress` and `swipe` events a Pi's
   touchscreen sends ([details](/guide/scenes#input)). A swipe in from the screen's edge is the
-  frame's, for a [button action](#button-actions); a touch on a dark screen only turns it on. Build
-  touch interfaces with [JSX and Tailwind classes](/guide/apps#jsx-uis).
+  frame's: out of the box on the Indicator and the E1003 it's the
+  [scene switcher, the scene settings, back and forward](/guide/scenes#input), or whichever
+  [button action](#button-actions) you bind. A touch on a dark screen only turns it on. Build touch
+  interfaces with [JSX and Tailwind classes](/guide/apps#jsx-uis), which have fields with a keyboard
+  on the screen.
 - **Display on and off.** *Display on*, *Display off* and *Display on/off* switch the backlight,
-  and nothing renders while it's dark.
+  and nothing renders while it's dark. Over HTTP they're the `turnOn`, `turnOff` and `toggleScreen`
+  [events](/guide/api#esp32).
+- **Scene switches.** A switch that hasn't put its first picture up within 200 ms shows three
+  pulsing dots until it does.
 - **Boot.** The FrameOS mark shows on black while the board starts, with a line saying what it's
   waiting for (*Connecting to Wi-Fi*, *Updating firmware*, *Starting*), and an LCD renders as soon
   as WiFi is up rather than waiting for the clock.
@@ -399,7 +414,10 @@ settings, or on the console:
 | `battery_enable_pin` | The GPIO that switches the divider on for a reading, on boards that gate it (`-1` = always on) |
 
 Without `wake_schedule` the time already spent awake - boot, WiFi, render - is subtracted from
-the interval, so the cadence doesn't drift by however long the render took. Below 3% battery the
+the interval, so the cadence doesn't drift by however long the render took. A pass that outlasts
+its interval doesn't reboot straight into the next one: a deep-sleeping frame rests at least as
+long as the pass ran, so it works at most half the time, and logs `render:overrun` to show the
+scene is too slow for its interval. Below 3% battery the
 frame skips the refresh and sleeps for six hours rather than cycling a flat cell into damage - and
 it takes two readings a moment apart and two passes in a row to believe it, so one noisy ADC
 sample can't park a healthy cell in the six-hour sleep.

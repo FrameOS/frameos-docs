@@ -58,7 +58,8 @@ Then read the docs-side diffs that matter to users, with the exact paths (zsh: q
 | Scene editor, state fields, execution mode, preview | `guide/scenes.mdx` |
 | JS/Nim apps, config fields, imports | `guide/apps.mdx` |
 | Frame settings (time zone, HTTP size, power, SSH keys, builds) | `guide/settings.mdx` |
-| Local HTTP API, admin panel, scheduler | `guide/control.mdx` |
+| Admin panel, scheduler, the most common API calls | `guide/control.mdx` |
+| HTTP routes, credentials, events (sources: `frameos/src/frameos/server/routes/`, `server/auth.nim`, `docs/events-contract.json`, `embedded/esp32/main/fos_http.c`, `embedded/pico/src/pk_httpd.c`) | `guide/api.mdx` |
 | Backend install, HA add-on, dev setup, cloud link | `guide/backend.mdx` |
 | Pi images, SD builder, status screen | `guide/raspberry.mdx`, `guide/standalone.mdx`, `guide/first-deploy.mdx` |
 | Image decoding, memory, degrade | `guide/images.mdx` |
@@ -73,7 +74,8 @@ cloud) it applies to - keep new paragraphs consistent with that.
 
 - Update in place; match the pages' voice (plain, direct, second person, dashes not em dashes,
   British-ish spelling as on the page). Prefer changing a sentence over adding a section.
-- Mention the version a feature needs when the code gates on it (`firmware 2026.8.39+`).
+- Don't write version notes (`firmware 2026.8.39+`, "from 2026.10.22"): assume everyone is on the
+  latest release and describe what it does.
 - Don't document internals (log line names, struct fields) unless a user would grep for them.
 - Exact-match replacement is safest: a small Python script with `(old, new)` pairs that asserts
   each `old` occurs once - see `git show` of a previous sync commit for the pattern.

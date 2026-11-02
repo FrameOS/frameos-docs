@@ -12,7 +12,8 @@ and on a [standalone frame's](/guide/standalone) admin page - the cloud's
 
 Each frame's HTTP server (port `8787`) has three access modes - **private**, **protected**, and
 **public** - controlling who needs the access key to view or control the frame. See
-[Controlling the frame](/guide/control) for details.
+[Controlling the frame](/guide/control#access-modes) for details, and the
+[HTTP API](/guide/api#auth) for exactly what each mode opens.
 
 ## QR control code
 
@@ -57,13 +58,17 @@ from its label, and scenes hear presses as `button` and `gpio`
 [events](/guide/scenes#input). On an ESP32 a changed map reaches the board with its next settings
 sync, and it restarts to rebind the pins (backend 2026.10.9+; the cloud pushes it too).
 
-**Button actions** (FrameOS 2026.10.20+) say what a press does on this frame whatever scene is
-showing: next or previous scene, render, show a particular scene, and - on displays that can
+**Button actions** say what a press does on this frame whatever scene is
+showing: next or previous scene, render, show a particular scene, **Scene switcher** and **Scene
+settings**, **Back** and **Forward**, and - on displays that can
 switch their panel off - display on, off or on/off. Each row is one press (press, double press or
-long press) of one of the frame's buttons, and a press bound there never reaches the scene. The
-Seeed reTerminal presets come with LEFT held = previous scene and RIGHT held = next; the
-[ESP32 guide](/guide/esp32#button-actions) lists every board's. A cloud frame on older firmware
-shows the section disabled. To tell one installed scene which of your keys are its own, use
+long press) of one of the frame's buttons, or on a touch screen one
+[edge swipe](/guide/scenes#input), and a press bound there never reaches the scene. The Seeed
+reTerminal presets come with LEFT held = previous scene and RIGHT held = next; the
+[ESP32 guide](/guide/esp32#button-actions) lists every board's. A frame keeps the map it was set up
+with, so an ESP32 from before a preset changed keeps its old one until you change the rows, or run
+`set hardware <preset>` and `restart` on its console. A HyperPixel whose map you never touched
+follows the current default. To tell one installed scene which of your keys are its own, use
 **Map buttons** in that scene's menu instead ([details](/guide/scenes#input)).
 
 ESP32 boards get a **Buzzer, LED and microphone** box under the buttons:
@@ -106,6 +111,21 @@ Frames sample CPU, memory, temperature and disk and ship them to the backend - o
 if you switched that on for the frame - every 60 seconds.
 Change the interval under **Metrics**, or set it to `0` to turn the sampler off entirely. Changes
 apply without a restart.
+
+## Render scale [#render-scale]
+
+**Scale**, next to the scaling mode in the frame's settings, makes a scene built for a small screen
+fill a big one. A [`.tsx` or `.jsx` app](/guide/apps#jsx-uis) is told its
+canvas is the panel divided by the scale, lays its UI out at that size, and what it returns is
+drawn sharp at the panel's full size. An app that fetches for its size asks for less too: at 2, a
+quarter of the data.
+
+**Automatic**, the default, is the panel's shorter edge over 600 pixels, rounded down to a quarter
+and never below 1: 800×480 and 720×720 stay at 1, 1200×1600 is 2, 1872×1404 is 2.25. A scene can
+override it in its own settings, or with a numeric state field whose role is `renderScale`. On an
+ESP32's console it's `set render_scale 2`, with `0` for automatic. Plain `.js` and `.ts` apps keep
+the panel's pixels, and a picture an app hands over as pixels is stretched, so it goes soft where
+vectors stay sharp.
 
 ## Time zone
 

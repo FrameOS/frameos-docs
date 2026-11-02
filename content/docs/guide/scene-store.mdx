@@ -20,15 +20,19 @@ published version, and **Download .zip** hands you the scene as a file.
 The preview is the real FrameOS renderer compiled to WebAssembly, and it can show the scene the
 way a panel would: tick **Dither** and pick the panel to simulate - Spectra 6, 7-color ACeP,
 black/white/red, black/white/yellow, 4 or 16 greys, plain black and white - and the frame is
-dithered with the device's own algorithm. It has a browser-only **assets folder** (kept in your
+dithered with the device's own algorithm. Or pick a real frame from the **Device** menu above
+Resolution - a Seeed reTerminal, a Waveshare PhotoPainter, an Inky, a HyperPixel - and the preview
+takes that panel's size and inks. It has a browser-only **assets folder** (kept in your
 browser, seeded with sample photos) so slideshow and SD-card scenes render too, an **Auto apply**
 switch that re-renders as you change state fields, and an opt-in real-time mode for scenes that
 want to animate. JavaScript clocks run in the scene's time zone. A scene that calls a
 pay-per-request service (OpenAI, say), or one that brings its own code for a service and would
 run it with your keys, never renders on its own - it says which of the two it is and waits for
 you to click **Run preview** each time the scene changes, so a browse never spends your credits.
-The scene's log sits under the picture (drag it taller), and a button in the preview is held like
-a frame's key, so long presses and double presses work. Tick
+An unedited FrameOS app doesn't count as bringing its own code. The picture stays pinned at the top
+while the log, the settings and the state form scroll under it: drag the handle under it to resize
+it, or double-click the handle to fit it again. The log has a handle of its own. A button in the
+preview is held like a frame's key, so long presses and double presses work. Tick
 **Memory limit** and pick a device (ESP32 with 8 or 16 MB, Pi Zero, Pi) to render under that
 frame's memory: the preview shows the peak and says "out of memory" where the frame would.
 
@@ -99,7 +103,9 @@ show the weather for Tallinn" - and the assistant edits the node graph, the Java
 the state fields, checks the result against a catalog-aware linter and renders it inline before
 handing it over. It can look at that render too, so *this looks cramped* gets a fix for what you
 actually see; you then save it as a new version, with the prompt pre-filled as the change
-note. Long edits keep running if your connection drops and pick up where they were. The prompt is
+note. It renders at the size the **Preview** panel is set to, and at others when a scene has to work
+at several. A reply can run to 40 rounds of edits and renders; one that runs out says how far it
+got, so you can say *continue*. Long edits keep running if your connection drops and pick up where they were. The prompt is
 never stored inside the scene, so the scenes.json you download or publish doesn't carry it. The
 same assistant is available to scripts and agents through the
 [cloud's MCP server](/guide/cloud#developer).

@@ -44,6 +44,13 @@ as pointer events - `pointerDown`, `pointerMove`, `pointerUp`, and the `tap`, `s
 `mouseUp` names still work. Coordinates follow the frame's
 rotate and flip settings, so a scene on a rotated panel gets taps where it drew things.
 
+The edges come bound to the frame: swipe up from the bottom for the [scene switcher](/guide/scenes#input), down from the top for
+the scene's settings, and in from the left or right for the scene's own back and forward.
+Change them under [button actions](/guide/settings#buttons).
+
+The frame draws into a 16-bit canvas and writes only the rows that changed. On a Pi Zero W, a finger
+dragged across the *Touch test* scene runs at about 20 frames a second.
+
 ## Setup
 
 1. Plug the display onto the Pi's GPIO header. On a Pi Zero that means soldering a header first -

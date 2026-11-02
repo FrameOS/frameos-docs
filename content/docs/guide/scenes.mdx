@@ -51,7 +51,7 @@ produces the same image as before, an e-ink display won't refresh at all: no unn
 
 Add a yellow **state field** under the scene's "State" tab, then drag it onto the canvas and wire
 it into any app input. Deploy once, and from then on you can change the value live - from the
-frame's control page, the backend, or the [HTTP API](/guide/control).
+frame's control page, the backend, or the [HTTP API](/guide/api#events).
 
 ![Adding a state field](/images/app/edit-add-text.gif)
 
@@ -63,6 +63,12 @@ scene picker - or a **path**, which is a file and folder browser over the frame'
 [assets](/guide/settings#assets). "Which photo folder should this play?" becomes a picker instead
 of a typed-in string. A select's options are one per line, either a plain value or `value | Label`
 when what the frame stores and what people read should differ. Write a literal pipe as `\|`.
+
+A scene with both a latitude and a longitude field (`latitude` or `lat`, and `longitude`, `lon`,
+`lng` or `long`) gets a **Use my location** button wherever its state is edited: the scene's
+drawer, previews, schedule entries and split screen panels. It fills in both from your browser. A
+page opened over plain HTTP, like a frame's own admin page on your LAN, gets no location from any
+browser, and the button says so.
 
 Every scene also has one field you don't add yourself: **Refresh interval (seconds)**, listed last
 wherever the scene's fields show up - the control page, the backend, the cloud, schedules and
@@ -108,6 +114,27 @@ pointer events and gestures, and a touch `longPress` is held a second, like a bu
 a second). A swipe that starts at the very edge of a touch screen is the frame's (`edgeSwipe`) and
 never reaches the scene.
 
+**Swipes in from the edge.** On every HyperPixel, the SenseCAP Indicator and the reTerminal E1003,
+the edges come bound to the frame:
+
+| Swipe | What it does |
+| --- | --- |
+| Up from the bottom | The **scene switcher**: every scene on the frame as a tile, in the frame's order. Tap one to show it. |
+| Down from the top | The **scene settings**: the public fields of the scene showing, as a form, with a keyboard on the screen. **Save** applies them; **Cancel** or the same swipe goes back as it was. |
+| In from the left | `back`, delivered to the scene: the photo or the page before. |
+| In from the right | `forward`, the other way. |
+
+`back` and `forward` never change the scene, and a scene that doesn't listen for them stays as it
+is. Changing the scene on a touch screen is the switcher's job. In the switcher they turn the page,
+and in the settings `back` is Cancel. Both screens close themselves if left alone: the switcher
+after 60 seconds (five minutes on e-paper), the settings after five minutes. A press on the
+on-screen keyboard is always a key, even on the outer keys at the edge of the glass.
+
+The switcher works without touch too. On e-paper it's black on white and the keys walk a highlight:
+`next` and `prev` step, `primary`, `refresh` and `menu` show the scene, `back` goes back. E-paper
+without touch doesn't come with a binding for it, so add one under **Button actions** (a double
+press of REFRESH, say), or send `sceneSwitcher` [over HTTP](/guide/api#events).
+
 **Whose buttons?** A scene listens for the keys its author had - `A` and `B`, or a `next` role -
 and your frame has the keys it has. Two maps sit between them (FrameOS 2026.10.20+):
 
@@ -115,12 +142,16 @@ and your frame has the keys it has. Two maps sit between them (FrameOS 2026.10.2
   you pick which press of which of your frame's buttons each one answers to - REFRESH is this
   scene's `A`, a long press of REFRESH its `B`. It belongs to the scene as installed on this frame:
   the scene itself is untouched, and an update to a newer version keeps the mapping.
-- **Button actions**, in the frame's [settings](/guide/settings#buttons), bind a press to the
-  frame itself - next scene, previous scene, render - whatever scene is showing, and the scene
-  never hears that press.
+- **Button actions**, in the frame's [settings](/guide/settings#buttons), bind a press or an edge
+  swipe to the frame itself - next scene, previous scene, the scene switcher, render - whatever
+  scene is showing, and the scene never hears it.
 
 A `setCurrentScene` event can name a `direction` (`next` or `prev`) instead of a scene, to walk the
 frame's scene list.
+
+On an LCD - an HDMI screen, a HyperPixel, the SenseCAP Indicator - a scene switch that hasn't put
+its first picture up within 200 ms shows three pulsing dots over the old picture until it does.
+A quick switch looks as it always did.
 
 ## Code nodes
 
@@ -192,7 +223,11 @@ Two ways to see a scene without committing to it:
   without deploying to a device, or before you own one. It comes with a **Browser assets** folder
   that lives only in your browser (seeded with sample photos, so slideshow and SD-card scenes
   render), JavaScript clocks in the frame's time zone, and a real-time toggle for scenes that want
-  to run faster than one frame a second.
+  to run faster than one frame a second. A **Device** menu above Resolution puts the preview on a
+  real panel - the Seeed reTerminal E1001 to E1004 and Sticky, the Waveshare PhotoPainter and 13.3",
+  Inky Impressions and the Inky Frame, the CrowPanel, the SenseCAP Indicator, HyperPixels, the Pi
+  touch displays, a 1080p or 4K screen - with that panel's size and inks. **Rotate** turns it and
+  keeps the device.
 - **Preview on frame** temporarily shows the scene on the actual frame without saving or
   deploying it. Good for checking how a color dithers on real e-ink. A sleeping ESP32 gets it on
   its next wake. While it's on the frame, the scene list shows it as a dashed *preview* row above

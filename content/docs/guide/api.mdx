@@ -1,0 +1,373 @@
+---
+title: HTTP API
+description: Every route a frame serves - turn the display on and off, switch scenes, set state, fetch the image, read logs - with authentication, events, and how ESP32 and Pico frames differ.
+---
+
+Every Raspberry Pi frame answers HTTP on port `8787`, whether it's standalone, on a self-hosted
+backend or managed from FrameOS Cloud, and with the backend off or the internet down. This page is
+the reference: every route, what it takes and what it returns.
+[Controlling the frame](/guide/control) covers the web pages around it.
+
+<Callout title="Which frame is this about?">
+  The routes below are the Raspberry Pi runtime's. [ESP32](#esp32) and [Pico](#pico) frames answer
+  on port `80`, with a different login and fewer routes. A [virtual frame](/guide/virtual) has no
+  device, so drive it [through the backend](#backend). With [HTTPS](/guide/settings#https) switched
+  on, the same routes are also on port `8443`.
+</Callout>
+
+## Turn the display off and on [#display]
+
+```bash
+curl -X POST "http://frame:8787/event/turnOff?k=KEY"
+curl -X POST "http://frame:8787/event/turnOn?k=KEY"
+curl -X POST "http://frame:8787/event/toggleScreen?k=KEY"
+```
+
+`KEY` is the frame's **HTTP access key**, from its settings ([more on keys](#auth)). Each call
+answers `{"status":"ok"}`. No body is needed, and the frame doesn't look at `Content-Type`, so
+sending `Content-Type: application/json` is fine but optional. These are the events the frame's
+**Turn display off / on** menu sends, and a schedule or a scene can send them too.
+
+What happens depends on the display:
+
+| Display | What `turnOff` does |
+| --- | --- |
+| [HDMI / framebuffer](/devices/framebuffer-hdmi) | Runs `vcgencmd display_power 0`, or blanks `/dev/fb0` where that fails. If the picture goes black but the monitor stays lit, see [the fix](/devices/framebuffer-hdmi#hdmi-blanking). |
+| HyperPixel 4.0, 4.0 Square and 2.1" Round | Puts the panel to sleep and switches the backlight off. |
+| ESP32 LCD ([SenseCAP Indicator](/devices/seeed-sensecap-indicator)) | Switches the backlight off. Nothing renders while it's dark, and a touch turns it back on. |
+| E-paper | Nothing: e-paper holds its picture without power. The scene still hears the event. |
+
+A Pi keeps rendering while its display is off, so `turnOn` brings back the current picture.
+
+### From Home Assistant [#home-assistant]
+
+The Home Assistant add-on doesn't create an entity for the display. A
+[`rest_command`](https://www.home-assistant.io/integrations/rest_command/) does the job, and works
+for any frame, add-on or not:
+
+```yaml title="configuration.yaml"
+rest_command:
+  frame_display_off:
+    url: "http://frame.local:8787/event/turnOff?k=KEY"
+    method: post
+  frame_display_on:
+    url: "http://frame.local:8787/event/turnOn?k=KEY"
+    method: post
+```
+
+Then call it from any automation or script:
+
+```yaml title="automations.yaml"
+- alias: "Frame off at bedtime"
+  triggers:
+    - trigger: time
+      at: "23:00:00"
+  actions:
+    - action: rest_command.frame_display_off
+```
+
+The same pattern covers every other [event](#events): switching scenes, changing state fields,
+asking for a render. Move the URLs into `secrets.yaml` to keep the key out of your configuration.
+
+## Authentication [#auth]
+
+The frame's [access mode](/guide/control#access-modes) decides who needs the key to view and
+control it. Device commands and the admin API need more, in every mode:
+
+| Routes | Private | Protected | Public |
+| --- | --- | --- | --- |
+| `GET /ping` | Open | Open | Open |
+| **View**: `/`, `/image`, `/ws` | Access key | Open | Open |
+| **Control**: `/state`, `/states`, `/c`, `/getUploadedScenes`, most of `POST /event/<name>` | Access key | Access key | Open |
+| **Device**: `POST /reload`, `POST /uploadScenes`, and the [device events](#device-events) | Admin or backend key | Admin or backend key | Admin or backend key |
+| **Admin API**: the [`/api/` routes](#admin-api) | Admin session | Admin session | Admin session |
+
+There are three credentials:
+
+- **The access key** (**HTTP access key** in the frame's settings; the QR code on the display
+  carries it). Send it as `?k=KEY` on any request, or on a POST as `Authorization: Bearer KEY`,
+  which keeps it out of URLs. Opening `/?k=KEY` in a browser stores it in a cookie.
+- **The backend API key** (**Backend API key** in the frame's settings, `serverApiKey` in
+  `frame.json`). It's how a backend calls its frames: `Authorization: Bearer <key>`, on POST only.
+  It opens the control and device routes, but not the admin API.
+- **An admin session**, from the password you set for the frame's admin panel. It's a cookie that
+  lasts 24 hours:
+
+  ```bash
+  curl -c frame.jar -H "Content-Type: application/json" \
+    -d '{"username": "admin", "password": "…"}' \
+    http://frame:8787/api/admin/login
+
+  curl -b frame.jar http://frame:8787/api/frames/1/logs
+  ```
+
+  More than ten login attempts in five minutes get a `429` with `Retry-After`. A frame that switched
+  its password off for cloud login answers `403`.
+
+<Callout type="warn" title="An admin session doesn't open /event">
+  `POST /event/render` checks for the access key, so an admin session alone gets a `401` on a
+  private frame. With a session, post to [`/api/frames/1/event/<name>`](#admin-api) instead: it
+  takes every event.
+</Callout>
+
+A request that changes something and carries a browser `Origin` header must come from the frame's own address. `curl`, scripts and Home Assistant send no `Origin` and are
+unaffected. Behind your own reverse proxy, pass `Host` through or send `X-Forwarded-Host`.
+
+Traffic on port `8787` is plain HTTP, key included. If that matters on your network, use
+[HTTPS](/guide/settings#https) or a [Tailscale](https://tailscale.com/) tailnet.
+
+## Status codes [#responses]
+
+| Code | Body | Meaning |
+| --- | --- | --- |
+| `200` | `{"status":"ok"}` on an event | The event is **on the queue**, not finished. A scene that fails to handle it shows up in the frame's logs, not here. |
+| `304` | - | `/image` with an `If-Modified-Since` that is still current. |
+| `400` | `{"detail":"Invalid JSON"}` | The body isn't JSON. Hotspot routes say `Not in setup mode`. |
+| `401` | `Unauthorized` | No credential, or the wrong one for this route. |
+| `403` | `Cross-origin request refused` | The `Origin` check above. |
+| `404` | `Not found!` | No such route, or a frame id other than `1`. |
+| `429` | `{"detail":"Too many login attempts"}` | The admin login or local access code is rate limited. |
+
+## Viewing and control routes [#frame-routes]
+
+| Route | Access | What it does |
+| --- | --- | --- |
+| `GET /ping` | Open | Answers `pong`. |
+| `GET /image` | View | The current picture as a PNG, with `X-Scene-Id` and `Last-Modified` headers. Send `If-Modified-Since` to get a `304` when nothing changed. |
+| `GET /state` | Control | The active scene and its public state: `{"sceneId": "…", "state": {…}}`. |
+| `GET /states` | Control | Every scene: `{"sceneId": "…", "states": {"<scene id>": {…}}}`. This is where to find scene ids. |
+| `GET /getUploadedScenes` | Control | The scenes pushed to the frame: `{"scenes": […]}`. |
+| `GET /ws` | View | A WebSocket that sends the text `render` after each render. Fetch `/image` when it does. |
+| `GET /` | View | The web page with the live picture. |
+| `GET /c` | Control | The [control page](/guide/control#the-frames-web-app). |
+| `POST /event/<name>` | Control or device | Hands an [event](#events) to the frame. |
+| `POST /uploadScenes` | Device | Replaces the uploaded scenes. Same body as the `uploadScenes` event. |
+| `POST /reload` | Device | Re-reads the configuration and scenes. Answers `500` if `frame.json` doesn't parse. |
+
+While the [setup hotspot](/guide/settings#setup-hotspot) is up, three more are open: `GET /wifi` (the
+networks in range), `POST /setup` (the setup form) and `GET /setup/status`. `/setup/status` keeps
+answering afterwards; the other two answer `400`.
+
+## Events [#events]
+
+`POST /event/<name>` is how you make a frame do something. The JSON body is the event's payload,
+and an empty body means `{}`.
+
+```bash
+# change state fields on the active scene
+curl -X POST "http://frame:8787/event/setSceneState?k=KEY" \
+  -H "Content-Type: application/json" \
+  -d '{"render": true, "state": {"message": "Dinner at 7!"}}'
+
+# switch to a scene, optionally setting its state on the way
+curl -X POST "http://frame:8787/event/setCurrentScene?k=KEY" \
+  -H "Content-Type: application/json" \
+  -d '{"sceneId": "<scene-uuid>", "state": {"message": "Hello"}}'
+
+# or to the next one in the frame's list
+curl -X POST "http://frame:8787/event/setCurrentScene?k=KEY" \
+  -H "Content-Type: application/json" \
+  -d '{"direction": "next"}'
+
+# render right now
+curl -X POST "http://frame:8787/event/render?k=KEY"
+
+# press a button, as if someone pressed it on the frame
+curl -X POST "http://frame:8787/event/button?k=KEY" \
+  -H "Content-Type: application/json" \
+  -d '{"label": "A"}'
+```
+
+These take the access key:
+
+| Event | Body | What it does |
+| --- | --- | --- |
+| `turnOn`, `turnOff` | - | Switch the [display](#display) on or off. |
+| `toggleScreen` | - | Off when it's on, on when it's off. |
+| `render` | - | Render the current scene now. |
+| `setSceneState` | `{"state": {…}, "render": true}` | Set the active scene's public state. A change renders by itself; `render: true` asks for one regardless. |
+| `setCurrentScene` | `{"sceneId": "…", "state": {…}}` or `{"direction": "next"}` | Switch scene, by id or to the `next` / `prev` one in the frame's list, wrapping around. `state` is optional. |
+| `sceneSwitcher` | - | Open the [scene switcher](/guide/scenes#input), or close it if it's showing. |
+| `sceneSettings` | - | Open the [scene settings](/guide/scenes#input), or close them unsaved. |
+| `back`, `forward` | - | The scene's own back and forward, like the swipes in from the left and right. They never change the scene. |
+| `button` | `{"label": "A"}`, plus `pin`, `role` or `action` | A button press. No `action` means `press`; the others are `doublePress` and `longPress`. The frame's [button actions](/guide/settings#buttons) apply, as for a real press. |
+| `gpio`, `tap`, `doubleTap`, `longPress`, `swipe`, `edgeSwipe`, `pointerDown`, `pointerMove`, `pointerUp`, `pointerCancel`, `wheel`, `keyDown`, `keyUp`, `textInput` | The fields of that [input event](/guide/scenes#input) | Input, as if a person did it. |
+| `metrics` | - | Log the frame's metrics now (Pi only). |
+| Any other name, up to 63 characters | Any JSON object | A custom event, delivered to the current scene's listeners of that name. The frame renders afterwards if the scene's state changed. |
+
+### Device events [#device-events]
+
+These need an admin session or the backend API key. The access key and `public` mode can't send
+them, because that key is on the QR code and shouldn't be able to reboot-loop your frame.
+
+| Event | Body | What it does |
+| --- | --- | --- |
+| `reload` | - | Re-read the configuration and scenes. |
+| `restart` | - | Restart the FrameOS runtime. |
+| `reboot` | - | Reboot the device. |
+| `uploadScenes` | `{"scenes": […], "sceneId": "…", "state": {…}}` | Replace the uploaded scenes. |
+| `init`, `open`, `close` | - | The scene lifecycle events. The frame sends these itself; you'd only send them to test a scene. |
+
+For every event's fields, see the
+[events contract](https://github.com/FrameOS/frameos/blob/main/docs/events-contract.json) and
+[its notes](https://github.com/FrameOS/frameos/blob/main/docs/events.md).
+
+## The admin API [#admin-api]
+
+These are the routes the [admin panel](/guide/control#the-admin-panel) itself calls. All of them
+need an [admin session](#auth) unless noted. A Pi only knows itself, so its frame id is always `1`.
+
+### Session
+
+| Route | What it does |
+| --- | --- |
+| `POST /api/admin/login` | Open. Takes `{"username", "password"}` and sets the session cookie. |
+| `GET /api/admin/session` | Open. Answers `{"authenticated": true}` or `false`. |
+| `POST /api/admin/logout` | Clears the cookie. Sessions are signed, so a saved copy of the cookie stays valid until it expires. |
+
+### The frame
+
+| Route | What it does |
+| --- | --- |
+| `GET /api/frames` | `{"frames": [<frame>]}`, a list of one. |
+| `GET /api/frames/1` | `{"frame": {…}}`: configuration and status, secrets included. |
+| `POST /api/frames/1` | Saves frame fields and applies them. The answer's `apply` says what happened: `runtime` (`none`, `reload` or `restart`), `listeners`, `listeners_changed` and `system`. A port or certificate the frame can't serve refuses the whole save with `409`. |
+| `GET /api/frames/1/ping` | `{"ok": true, "message": "pong", …}`. |
+| `GET /api/frames/1/state`, `/states`, `/uploaded_scenes` | The same answers as `/state`, `/states` and `/getUploadedScenes`. |
+| `GET /api/frames/1/logs` | `{"logs": […]}`: the recent log lines. |
+| `GET /api/frames/1/metrics` | `{"metrics": […]}`. |
+| `GET /api/frames/1/metrics/recent` | The same, with `?since=<timestamp>` and `?limit=` (1 to 1000). |
+| `GET`, `HEAD /api/frames/1/image` | The picture as a PNG. `HEAD` returns the headers alone. |
+| `GET /api/frames/1/scene_images/<sceneId>` | A scene's last snapshot, with `?thumb=1` for a thumbnail. `system/index` is the status screen. |
+| `POST /api/frames/1/scene_images/<sceneId>` | Stores the image in the body as that scene's picture. |
+| `POST /api/frames/1/scene_images/<sceneId>/copy` | Copies one from `{"source_scene_id": "…"}` or `{"url": "…"}`. |
+| `POST /api/frames/1/event/<name>` | Sends any [event](#events), device events included. The body is the payload. |
+| `POST /api/frames/1/event` | The same, as `{"event": "render", "payload": {}}`. |
+| `POST /api/frames/1/reload`, `/restart`, `/reboot` | Queue that action: `{"status": "ok", "action": "reboot"}`. |
+| `POST /api/frames/1/upload_scenes` | Replaces the uploaded scenes. |
+| `GET /ws/admin` | A WebSocket that sends `render` after each render, and each log line as `{"event": "new_log", "data": {…}}`. |
+
+### Assets
+
+| Route | What it does |
+| --- | --- |
+| `GET /api/frames/1/assets` | `{"assets": […]}`: everything in the [assets folder](/guide/settings#assets). |
+| `GET /api/admin/frames/1/assets?folder=photos` | One folder at a time. `folder=` is the root. |
+| `GET /api/frames/1/asset?path=…` | One file, with `&thumb=1` for a thumbnail. |
+| `POST /api/frames/1/assets/upload` | Uploads `{"path", "filename", "data_url"}`, or in chunks with `?upload_id=&chunk_index=&path=&filename=` and `&complete=1` on the last. |
+| `POST /api/admin/frames/1/assets/upload_image` | Uploads an image for a scene to use, the same two ways. |
+| `POST /api/frames/1/assets/mkdir` | Form field `path`. |
+| `POST /api/frames/1/assets/delete` | Form field `path`. |
+| `POST /api/frames/1/assets/rename` | Form fields `src` and `dst`. |
+
+### Settings, updates and the rest
+
+| Route | What it does |
+| --- | --- |
+| `GET`, `POST /api/settings` | The service keys apps use: OpenAI, Home Assistant, Immich, Unsplash, GitHub and FrameOS. |
+| `GET /api/upgrade/status` | The installed release; add `?check=1` to look for a newer one. |
+| `POST /api/upgrade` | Starts a [self-update](/guide/control#the-admin-panel) and answers `202`. `{"dry_run": true}` checks without installing. |
+| `GET /api/network/local-access` | Whether a cloud-managed frame may reach your [local network](/guide/cloud#local-network-access). |
+| `POST /api/network/local-access/challenge` | Draws a code on the panel. |
+| `POST /api/network/local-access` | Turns access on or off, with the code from the panel. |
+| `GET /api/apps` | The apps on this frame. |
+| `GET /api/fonts`, `/api/fonts/<file>` | The fonts on this frame, and one font file. |
+| `GET /api/repositories`, `/api/repositories/system` | The scene sources behind the **Add scene** drawer. |
+| `/api/cloud/*` | Linking the frame to [FrameOS Cloud](/guide/cloud): `status`, `provider`, `connect`, `poll`, `enroll`, `managed`, `cloud-login`, `telemetry`, `local-fallback`, `disconnect`, and the sign-in steps `login/options`, `login/start` and `login/callback`. The admin panel's cloud section drives these, so you'd rarely call them yourself. |
+
+## ESP32 frames [#esp32]
+
+An [ESP32 frame](/guide/esp32) answers on port `80`, and on HTTPS once its first settings sync has
+given it a certificate. It has no access key and no access modes, so `?k=` does nothing here. Every
+route except `GET /ping` needs one of these:
+
+```bash
+# the frame's API key
+curl -X POST http://esp32-frame/event/render -H "Authorization: Bearer API_KEY"
+
+# or the frame's admin login, over HTTP Basic
+curl -u admin:PASSWORD http://esp32-frame/status
+```
+
+Either one can send every event the board accepts, device events included.
+
+| Route | What it does |
+| --- | --- |
+| `GET /ping` | Open. Answers `pong`. |
+| `GET /status` | The board's status as JSON. |
+| `GET /image`, `/api/preview.bmp` | The current picture as a **BMP**, not a PNG. |
+| `GET /state`, `/states`, `/getUploadedScenes` | As on a Pi. |
+| `GET /api/scenes`, `/api/scene-state`, `/api/apps`, `/api/fonts`, `/api/fonts/<file>` | The scenes, the state, the apps and the [fonts](/guide/esp32#fonts) on the board. |
+| `POST /event/<name>` | An [event](#events), with a body of up to 64 KB. A refused event answers `400 event rejected`. |
+| `POST /reload`, `/uploadScenes` | As on a Pi. `POST /api/scenes` is the same as `/uploadScenes`. |
+| `POST /api/action/render`, `/ota`, `/restart`, `/reboot` | Render, look for a firmware update, restart. On an ESP32 `/restart` and `/reboot` are the same thing. |
+| `POST /api/action/scene` | Switches scene, with the form field `scene_id`. |
+| `POST /api/action/commands`, `/scenes_sync` | Pull queued commands or scenes from the backend now. |
+| `POST /api/action/remount-sd`, `/format-sd` | SD card maintenance. |
+| `POST /api/setup` | The setup form. |
+| `GET /api/frames`, `/api/frames/<id>` | The frame's details. |
+| `GET /api/frames/<id>/ping`, `/state`, `/states`, `/uploaded_scenes`, `/image`, `/scene_images/<id>`, `/logs`, `/metrics`, `/assets`, `/asset` | The same answers under the frame's id. Logs and metrics are only here. |
+| `POST /api/frames/<id>` | Saves settings. |
+| `POST /api/frames/<id>/event/<name>`, `/reload`, `/upload_scenes`, `/assets/upload`, `/assets/mkdir`, `/assets/delete`, `/assets/rename`, `/assets/remount-sd`, `/assets/format-sd` | The same actions under the frame's id. |
+
+Four things to watch for:
+
+- **A board in deep sleep isn't listening.** Send it through [the backend or the cloud](#backend),
+  which hold the change for its next wake.
+- **`turnOn` and `turnOff`** switch the backlight on an LCD. An e-paper board has nothing to switch.
+- **Some events are Pi only**: `keyDown`, `keyUp`, `textInput`, `wheel` and `metrics`.
+- **A board with no admin login** answers `403` to anything without its API key, until you set a
+  login from the backend or the board's setup hotspot.
+
+## Pico frames [#pico]
+
+A [Pico](/guide/pico) board answers a small set on port `80`, with the frame's API key
+(`Authorization: Bearer`) or its device login (HTTP Basic). `GET /ping` is open.
+
+| Route | What it does |
+| --- | --- |
+| `GET /ping` | Answers `pong`. |
+| `GET /status` | The board's status as JSON. |
+| `GET /logs` | The log, as plain text. |
+| `GET /image` | The picture as a BMP, or `404` when the board isn't holding one. |
+| `POST /event/<name>`, `/reload`, `/api/action/render` | All three ask the board to pull a new render. **The event's name doesn't reach a scene here.** |
+| `POST /api/action/restart`, `/api/action/reboot` | Restarts the board. |
+
+Each also answers under `/api/frames/<id>/`. A Pico's scene runs on the backend, so to send it a
+real event, go [through the backend](#backend).
+
+## Through the backend or the cloud [#backend]
+
+When a script can't reach the frame, or the frame is asleep, ask whatever manages it. Both take a
+[personal API token](/guide/cloud#developer), not the frame's key.
+
+**A [self-hosted backend](/guide/backend#mcp)** forwards any event to the frame, with its own key:
+
+```bash
+curl -X POST "http://<backend>:8989/api/frames/<id>/event/turnOff" \
+  -H "Authorization: Bearer fb_api_…" \
+  -H "Content-Type: application/json" \
+  -d '{}'
+```
+
+Here the `Content-Type` matters: the backend only reads the body as JSON with that header, and with
+it the body can't be empty. This route is also how to drive [virtual](/guide/virtual) and
+[Pico](/guide/pico) frames.
+
+**[FrameOS Cloud](/guide/cloud#developer)** queues a command for the frame, which expires after
+five minutes if the frame doesn't pick it up. `<id>` is the one in the frame's `/frames/<id>` page:
+
+```bash
+curl -X POST "https://cloud.frameos.net/api/frames/<id>/event/turnOff" \
+  -H "Authorization: Bearer fc_api_…" \
+  -H "Content-Type: application/json" \
+  -d '{}'
+```
+
+The cloud takes `render`, `metrics`, `setCurrentScene`, `setSceneState`, `button`, `uploadScenes`,
+`turnOn` and `turnOff` (Pi frames only), and custom events a scene on the frame declares with
+`"origins": ["cloud"]`. Anything else is a `404 unsupported_event`, and a frame whose firmware is too
+old answers `409 frame_update_required` with the `min_frameos_version` it needs. The limit is 120
+events per 15 minutes.
+
+Both also have an [MCP server](/guide/cloud#developer), if what's calling is an AI agent.

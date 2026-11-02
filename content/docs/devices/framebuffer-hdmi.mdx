@@ -36,11 +36,38 @@ render, so plugging a screen in brings the picture up within seconds even on an 
 
 ## Power control
 
-From 2026.9.18 the frame's **…** menu has **Turn display off** and **Turn display on** - in the
+The frame's **…** menu has **Turn display off** and **Turn display on** - in the
 backend, the on-device admin panel and FrameOS Cloud. They send the same `turnOff` / `turnOn`
-events a scene or schedule can. The same thing from the command line:
+events a scene or schedule can, and a script or Home Assistant can send them
+[over HTTP](/guide/api#display):
+
+```bash
+curl -X POST "http://frame:8787/event/turnOff?k=KEY"
+curl -X POST "http://frame:8787/event/turnOn?k=KEY"
+```
+
+The same thing from the command line on the Pi:
 
 ```bash
 vcgencmd display_power 0   # off
 vcgencmd display_power 1   # on
 ```
+
+### If the monitor stays lit [#hdmi-blanking]
+
+On some setups turning the display off only blanks the picture: the HDMI signal stays on, so the
+monitor shows black with its backlight on and never goes to standby. To cut the signal, add this
+to the Pi's `config.txt` and reboot:
+
+```ini
+hdmi_blanking=1
+```
+
+The file is `/boot/firmware/config.txt`, or `/boot/config.txt` on older systems and on FrameOS SD
+images, where you can also edit it by putting the card in any computer. FrameOS doesn't set this
+for you.
+
+This has been reported working on a Pi Zero 2 W. Raspberry Pi lists it as a
+[legacy option](https://www.raspberrypi.com/documentation/computers/legacy_config_txt.html#hdmi_blanking):
+it doesn't switch the output off on a Pi 4 and isn't supported on Raspberry Pi OS Bookworm and
+later, so on those it may do nothing.

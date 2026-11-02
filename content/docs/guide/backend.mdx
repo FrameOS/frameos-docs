@@ -139,7 +139,8 @@ For your own scripts and agents, **Settings → API tokens and MCP** (backend 20
 personal API tokens (`fb_api_…`, or a read-only `fb_apiro_…`). A token stands in for your account
 on every route the web UI uses, except minting more tokens or changing your email or password;
 minting one asks for your password, it's shown once, and it expires after a year unless you pick a
-shorter time. The same page shows the **MCP server** at `http://<backend>:8989/api/mcp`: sixty-odd
+shorter time. [Sending a frame an event](/guide/api#backend) is one call with such a token. The
+same page shows the **MCP server** at `http://<backend>:8989/api/mcp`: sixty-odd
 [Model Context Protocol](https://modelcontextprotocol.io/) tools for frames and deploys, saved
 scenes, the catalog, photos and the scene AI, with names that follow the
 [cloud's](/guide/cloud#developer). Every tool that changes what a frame does, shows or stores takes

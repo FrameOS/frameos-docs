@@ -54,7 +54,10 @@ If a photo feeds a rotate node feeding an 800×480 canvas, the rotation tells th
 useful resolution is 480×800 - so a 1920×1280 source decodes at 450×300 instead of full size. A
 zoom/pan node asks for its canvas times its maximum zoom, and no more. Where a node draws
 directly onto the canvas, the decoder is handed *the canvas itself* as its output buffer, so
-there is no intermediate image at all.
+there is no intermediate image at all. That includes an image placed `center` or
+at one of the eight anchored placements, top-left to bottom-right: the source is drawn 1:1,
+sampling only the window that shows, so a 4032×3024 JPEG centered on a 1600×1200 ESP32 panel no
+longer runs it out of memory.
 
 The result is that adding nodes to a scene doesn't ratchet memory up the way it would in a
 conventional pipeline, and the pixels you get are the pixels you would have got the expensive

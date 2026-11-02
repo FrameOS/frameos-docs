@@ -47,8 +47,11 @@ Pick the **Seeed SenseCAP Indicator D1/D1S** hardware preset (`seeed_sensecap_in
   player - answer a tap in a fraction of a second.
 - **The button and the edges** come bound to the frame
   ([button actions](/guide/esp32#button-actions)): press the top button to turn the screen off or
-  on, press it twice for the next scene, hold it for the previous one, and swipe in from the right
-  or left edge for the next or previous scene. A touch on a dark screen only wakes it.
+  on, and press it twice for the [scene switcher](/guide/scenes#input). Swipe up from the bottom
+  for the switcher too, down from the top for the scene's settings, and in from the left or right
+  for the scene's own back and forward. A touch on a dark screen only wakes it. A board set up
+  earlier keeps the map it has: `set hardware seeed_sensecap_indicator_d1` and `restart` on
+  its console give it this one.
 - **It boots to the FrameOS mark**, with a line saying what it's waiting for - *Connecting to
   Wi-Fi*, *Updating firmware*, *Starting* - and shows a picture as soon as WiFi is up.
 
@@ -77,5 +80,5 @@ Pick the **Seeed SenseCAP Indicator D1/D1S** hardware preset (`seeed_sensecap_in
 ## Status
 
 🟢 **Confirmed working** - tested on real hardware (a D1S): the picture the right way round, taps
-landing under the finger, the button and edge swipes switching scenes, and a steady picture while
-it animates.
+landing under the finger, the button and edge swipes answering, and a steady picture while it
+animates.

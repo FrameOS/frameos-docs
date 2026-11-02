@@ -244,13 +244,17 @@ and its scenes at `/frames/<id>/scenes/<sceneId>`.
   frame right now?* or *put a weather scene on the hallway frame*: the chat answers from live data
   and acts with the same tools as the [MCP server](#developer), asking before anything that
   changes a frame, and the frames and scenes it names are links. A scene it installs is rendered
-  in the frame's own memory first, so an ESP32 isn't handed a scene it can't hold. **History**
+  in the frame's own memory first, so an ESP32 isn't handed a scene it can't hold. The picture of a
+  scene it made shows under the reply, and one that passes the check becomes the scene's image until
+  the frame renders it. A reply can run to 40 rounds of tools; one that runs out says how far it
+  got, so you can say *continue*. **History**
   keeps earlier chats.
 - **Assets.** Browse and upload files in the frame's assets folder (its SD card on an ESP32).
 - **The ⋯ menu**: rename, render, **Render status screen** (Linux frames), restart, reboot,
   **Update firmware** (shown as **Update queued** while the nudge waits for the frame), delete.
   Frames on an HDMI/framebuffer display or a HyperPixel also get **Turn display off** / **Turn
-  display on** (FrameOS 2026.9.18+) - the panel powers down while the frame keeps rendering. Deleting a frame
+  display on** - the panel powers down while the frame keeps rendering, and
+  [scripts can send the same](/guide/api#backend). Deleting a frame
   revokes its link; the device keeps rendering what it has, as a standalone frame.
 - **Activity.** An audit trail per frame: connections, pushes, firmware changes, renames.
 
@@ -282,6 +286,7 @@ Everything the browser can do with your account is also available to scripts and
   Minting one needs a recent sign-in too; tokens are shown once and stored hashed. Every token
   expires - after a year by default, which is also the longest - and all of them are revoked when
   you reset your password or add or remove a second factor.
+  [Sending a frame an event](/guide/api#backend) is one call with such a token.
 - **A hosted MCP server** at `https://cloud.frameos.net/api/mcp` - the same API with a vocabulary a
   [Model Context Protocol](https://modelcontextprotocol.io/) client can read: around 80 tools
   across frames (list, rename, settings and schedules, assign and activate scenes, screenshots,
@@ -365,3 +370,16 @@ device:
   [First deploy](/guide/first-deploy#add-the-frame).
 - **Backend → cloud** and back: disconnect from one side, then enroll or adopt from the other.
   A guided migration is planned but not built yet.
+- **A cloud ESP32 with a backend set on it too** (`set backend` on its console, a bench setup) stays
+  enrolled, but takes its content from that backend and turns down the cloud's scenes, settings and
+  schedule. The frame's page says which backend holds it. To hand it back, follow the
+  banner to the USB view, connect the board and choose **Hand back to the cloud**, or on its console:
+
+  ```
+  frameos> set backend ""
+  frameos> set api_key ""
+  frameos> set frame_id 0
+  frameos> restart
+  ```
+
+  The next time it connects it gets the cloud's settings, schedule and scenes again.

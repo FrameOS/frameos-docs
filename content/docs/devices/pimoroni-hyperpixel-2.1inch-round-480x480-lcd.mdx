@@ -48,6 +48,12 @@ and it arrives in your [scenes](/guide/scenes) as pointer events - `pointerDown`
 ([input](/guide/scenes#input)), with the older `mouseMove`, `mouseDown` and `mouseUp` names still
 working. Coordinates follow the frame's rotate and flip settings.
 
+The rim comes bound to the frame, named for the quarter of the circle a swipe
+starts in: swipe up from the bottom for the [scene switcher](/guide/scenes#input), down from the top for
+the scene's settings, and in from the left or right for the scene's own back and forward.
+The switcher, the settings and the on-screen keyboard are all laid out to stay inside the circle.
+Change the swipes under [button actions](/guide/settings#buttons).
+
 ## Setup
 
 1. Solder the header if your Pi needs one, and plug the display on.
@@ -69,7 +75,7 @@ same way.
 ## Display power
 
 **Turn display off / on** - in the frame's **…** menu, or as `turnOff` / `turnOn` events from a
-scene or a [schedule](/guide/control) - switches the backlight. The frame keeps rendering while the
+scene, a [schedule](/guide/control) or the [HTTP API](/guide/api#display) - switches the backlight. The frame keeps rendering while the
 panel is off, so it comes back on with the current image. The driver owns the backlight pin
 (GPIO 19) and only switches it on and off; there is no dimming.
 

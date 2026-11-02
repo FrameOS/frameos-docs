@@ -36,8 +36,8 @@ leaving the original untouched.
 Many of the apps that fetch photos and data are JavaScript apps that travel inside the scene, so
 they change without a firmware release and you can fork them like your own: FrameOS Gallery,
 Unsplash, Wikimedia Commons, Google Photos, Immich, OpenAI Image and Text, Home Assistant Sensor,
-Weather (Open-Meteo), the Belgian recycling calendar, Chart and Photo album (2026.10.13+; frames on
-older firmware are still sent the built-in Nim version where there was one). The rest of the built-in apps are
+Weather (Open-Meteo), the Belgian recycling calendar, Chart, Photo album and Events to
+Agenda. The rest of the built-in apps are
 compiled Nim, so in an [interpreted scene](/guide/scenes#execution) their source opens
 **read only**, with an **Open in GitHub** link; to customize one, write a JavaScript app or an
 inline code node instead. In a legacy compiled scene on a Raspberry Pi, a scene-local Nim app
@@ -146,9 +146,22 @@ export function get(app: FrameOSApp) {
   and `portrait:` / `landscape:` variants, which follow the size of the image being drawn.
 - **Handlers**: `onClick`, `onDoubleClick`, `onLongPress`, `onPointerDown`, `onPointerUp`,
   `onPointerMove` and `onSwipe` run on a touch screen's or a mouse's events, and the frame renders
-  again after each. `hover:`, `active:` and `group-hover:` classes follow the pointer. On e-paper
-  every one of those is a refresh, so they're for LCDs, HyperPixels, the browser preview and the
-  [SenseCAP Indicator](/devices/seeed-sensecap-indicator).
+  again after each. An event says where the pointer is in its element (`localX`, `localY`) and
+  how big the element is (`width`, `height`), so `e.localX / e.width` is how far
+  along a slider a finger is on any frame. `hover:`, `active:` and `group-hover:` classes follow
+  the pointer. On e-paper every one of those is a refresh, so they're for LCDs, HyperPixels, the
+  browser preview and the [SenseCAP Indicator](/devices/seeed-sensecap-indicator).
+- **Fields to type into**: `<input>` and `<textarea>` are controlled as in React,
+  with `value`, `onChange` or `onInput` (`e.target.value`), `onKeyDown`, `placeholder`, the
+  `password` and `number` types, and `focus:` and `placeholder:` classes. A tap gives the field
+  the keyboard, with the caret where you tapped. A frame with no keyboard of its own - always on
+  an ESP32 - draws a US one on the screen under the UI and scrolls the field into view, and a
+  `number` field gets a number pad.
+- **Boxes that scroll**: `overflow-y-auto` follows a finger or the mouse wheel, with
+  a scroll bar, and `overflow-hidden` clips to a rectangle.
+- **Laid out for a smaller screen**: a `.tsx` or `.jsx` app lays out at the panel's
+  size divided by the frame's [render scale](/guide/settings#render-scale) and is drawn sharp at
+  full size. `app.frame.scale` says which scale, for anything drawn in the canvas's own pixels.
 - **Only what changed is redrawn** on an LCD, and `memo(Component)` skips components whose props
   didn't change, as in React.
 - **Photos that stay**: `frameos.fetchImage(url, { keep: true, width, height })` keeps the picture
@@ -158,7 +171,7 @@ export function get(app: FrameOSApp) {
   `frameos.draw(canvas, <line … />)`, kept between renders - a paint page, a chart that grows a
   point at a time.
 
-Not there yet: clipping (`overflow-hidden`), shadows, transforms and letter spacing.
+Not there yet: rounded clipping, shadows, transforms, letter spacing, and selecting text in a field.
 
 ## Permissions [#permissions]
 
