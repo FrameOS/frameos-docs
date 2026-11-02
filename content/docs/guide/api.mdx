@@ -32,7 +32,7 @@ What happens depends on the display:
 
 | Display | What `turnOff` does |
 | --- | --- |
-| [HDMI / framebuffer](/devices/framebuffer-hdmi) | Runs `vcgencmd display_power 0`, or blanks `/dev/fb0` where that fails. If the picture goes black but the monitor stays lit, see [the fix](/devices/framebuffer-hdmi#hdmi-blanking). |
+| [HDMI / framebuffer](/devices/framebuffer-hdmi) | Runs `vcgencmd display_power 0` and blanks `/dev/fb0`, which [cuts the HDMI signal](/devices/framebuffer-hdmi#hdmi-blanking) so the monitor goes to standby. |
 | HyperPixel 4.0, 4.0 Square and 2.1" Round | Puts the panel to sleep and switches the backlight off. |
 | ESP32 LCD ([SenseCAP Indicator](/devices/seeed-sensecap-indicator)) | Switches the backlight off. Nothing renders while it's dark, and a touch turns it back on. |
 | E-paper | Nothing: e-paper holds its picture without power. The scene still hears the event. |

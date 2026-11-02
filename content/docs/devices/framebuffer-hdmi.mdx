@@ -46,28 +46,29 @@ curl -X POST "http://frame:8787/event/turnOff?k=KEY"
 curl -X POST "http://frame:8787/event/turnOn?k=KEY"
 ```
 
-The same thing from the command line on the Pi:
+From a shell on the Pi, these are the two switches the driver runs:
 
 ```bash
-vcgencmd display_power 0   # off
-vcgencmd display_power 1   # on
+# off
+vcgencmd display_power 0
+echo 1 | sudo tee /sys/class/graphics/fb0/blank
+
+# on
+vcgencmd display_power 1
+echo 0 | sudo tee /sys/class/graphics/fb0/blank
 ```
 
-### If the monitor stays lit [#hdmi-blanking]
+### What turning it off does [#hdmi-blanking]
 
-On some setups turning the display off only blanks the picture: the HDMI signal stays on, so the
-monitor shows black with its backlight on and never goes to standby. To cut the signal, add this
-to the Pi's `config.txt` and reboot:
+Turning the display off cuts the HDMI signal, so the monitor goes to standby with its backlight off
+instead of showing black. There's nothing to set up:
 
-```ini
-hdmi_blanking=1
-```
+- **Under KMS** (the Pi 5, Raspberry Pi OS Bookworm and later), blanking the framebuffer cuts the
+  signal by itself.
+- **On the legacy firmware stack** (FrameOS's SD images for the Pi Zero to Pi 4), it also takes
+  `hdmi_blanking=1` in `config.txt`. The driver's setup adds that line on every deploy and on first
+  boot, and reboots once when it's new. Raspberry Pi's
+  [documentation](https://www.raspberrypi.com/documentation/computers/legacy_config_txt.html#hdmi_blanking)
+  says the option doesn't switch the output off on a Pi 4, so there the monitor may only go black.
 
-The file is `/boot/firmware/config.txt`, or `/boot/config.txt` on older systems and on FrameOS SD
-images, where you can also edit it by putting the card in any computer. FrameOS doesn't set this
-for you.
-
-This has been reported working on a Pi Zero 2 W. Raspberry Pi lists it as a
-[legacy option](https://www.raspberrypi.com/documentation/computers/legacy_config_txt.html#hdmi_blanking):
-it doesn't switch the output off on a Pi 4 and isn't supported on Raspberry Pi OS Bookworm and
-later, so on those it may do nothing.
+If neither switch works, the frame logs both exit codes as a `driver:frameBuffer` error.
