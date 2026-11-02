@@ -13,7 +13,8 @@ last time" into edits on the guide pages, device pages and FAQ - and moves the b
 - Docs (this repo): `/Users/marius/Projects/FrameOS/frameos-docs`. Pages are MDX under
   `content/docs/guide/`, `content/docs/devices/`, `content/docs/faq.mdx`; blog under `content/blog/`.
 - FrameOS source: `/Users/marius/Projects/FrameOS/frameos` (`git@github.com:FrameOS/frameos.git`).
-  Use its local `main` as-is; do not fetch/pull unless the user asks.
+  Bring its local `main` up to date before reading anything (step 1): a stale checkout means
+  documenting old behaviour.
 - The bookmark: `.claude/skills/update-docs/last-sync.json` in this repo:
 
   ```json
@@ -26,6 +27,15 @@ last time" into edits on the guide pages, device pages and FAQ - and moves the b
 
 ```bash
 cd /Users/marius/Projects/FrameOS/frameos
+git fetch origin main
+git status -sb                                                   # on main? clean? ahead or behind?
+git pull --ff-only origin main                                   # only on a clean main with no unpushed commits
+```
+
+If the checkout is on another branch, has uncommitted changes, or has unpushed or diverged
+commits, don't pull: tell the user what you found and ask before syncing against it.
+
+```bash
 BASE=$(python3 -c "import json;print(json.load(open('/Users/marius/Projects/FrameOS/frameos-docs/.claude/skills/update-docs/last-sync.json'))['frameos_sha'])")
 git log --format='%h %ad %s' --date=short $BASE..HEAD            # the list
 git log --format='=== %h %ad %s%n%b' --date=short $BASE..HEAD | grep -v 'Co-Authored-By\|Claude-Session'   # the bodies
