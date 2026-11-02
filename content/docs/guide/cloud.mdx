@@ -142,13 +142,13 @@ claimed without reflashing:
   [cloud.frameos.net/device](https://cloud.frameos.net/device) still works too.
 
 Afterwards the frame's **FrameOS Cloud** box shows a **Cloud status** - *Linked, not managed* or
-*Managed from the cloud* - and its switches: **Ship logs and metrics to the cloud** (2026.10.15+),
-**Manage this frame from FrameOS Cloud** and **Sign in here with FrameOS Cloud** (2026.9.15+). The
+*Managed from the cloud* - and its switches: **Ship logs and metrics to the cloud**,
+**Manage this frame from FrameOS Cloud** and **Sign in here with FrameOS Cloud**. The
 admin password sits under the last one, and the two logins can never both be off. Switching
 management off and on again re-registers the same frame, not a second one.
 
 A frame that already ran scenes of its own when it joined - a standalone Pi, say - offers them in
-a banner on its page (FrameOS 2026.9.21+, Linux frames): **Import scenes** turns them into private
+a banner on its page (Linux frames): **Import scenes** turns them into private
 scenes in your account and sends them back to the frame, each keeping its state. The frame's own
 copies are left alone, and none of your service keys are shared with the imported scenes until
 you allow them.
@@ -199,7 +199,7 @@ and its scenes at `/frames/<id>/scenes/<sceneId>`.
   own edit of it, and which version is on the frame. When the store has a newer version, the
   scene's image carries an **Update available** flag; click it, or **Update to latest** in the
   scene's **…** menu, and after one confirmation the frame moves to the newest version - order,
-  pins and key grants are kept (2026.9.20+). The confirmation says what the new version may do
+  pins and key grants are kept. The confirmation says what the new version may do
   that the old one couldn't ([permissions](/guide/apps#permissions)), and **Update all scenes**
   takes every pending update in one push. A scene that asks for a service key the frame isn't
   allowed says so in its drawer - *Uses your Unsplash key, not allowed on this frame* - with an
@@ -221,13 +221,13 @@ and its scenes at `/frames/<id>/scenes/<sceneId>`.
   a two-week history and a forecast of the battery's life.
 - **Settings.** The set a cloud-managed frame accepts is declarative: name, rotation, render
   interval, scaling, time zone, debug logging, the QR control code, metrics interval, HTTP
-  response cap, palette (on an ESP32 from firmware 2026.10.4), [colors](/guide/colors) and
+  response cap, palette, [colors](/guide/colors) and
   partial-refresh policy, GPIO buttons, [local network access](#local-network-access), and on
-  ESP32 the [power options](/guide/esp32#power) - deep sleep, battery pins and, from firmware
-  2026.8.39, the battery enable pin - and the button beep. From firmware 2026.10.20 also
+  ESP32 the [power options](/guide/esp32#power) - deep sleep, battery pins and the
+  battery enable pin - and the button beep. Also
   [button actions](/guide/esp32#button-actions), and on an ESP32 the status LED, the microphone's
   pins and the [voice chat](/guide/esp32#voice-chat) with its four permission switches. A Pi's **Display driver** can be
-  switched too (FrameOS 2026.9.22+): the frame runs the new driver's setup and restarts or reboots
+  switched too: the frame runs the new driver's setup and restarts or reboots
   by itself. An ESP32's GPIO buttons show as the board reports them, with **Edit buttons** to
   change them. Everything else about the device - WiFi, mount points, an ESP32's panel - is owned
   by the device. A setting newer than the frame's firmware is shown disabled with the version it
@@ -266,8 +266,7 @@ from the store can't poke at your router. A blocked request fails with *Local ne
 for this frame*, and the Logs panel links to the setting.
 
 To allow it, open the frame's settings in the cloud: **Local network access → Turn on** asks the
-frame to draw a six-digit code on its panel, and you type it into the same page (FrameOS
-2026.10.16+). It takes a person in front of the frame: the code never leaves the device as an
+frame to draw a six-digit code on its panel, and you type it into the same page. It takes a person in front of the frame: the code never leaves the device as an
 image, it's good for five minutes and five tries, and the frame takes at most ten wrong codes an
 hour. A sleeping frame shows the code when it wakes. Turning access off needs no code, but asks
 first, since turning it back on needs someone at the frame again. On an ESP32,

@@ -27,16 +27,11 @@ Pimoroni sells this board with and without touch, and as a square 720×720 sibli
 the FrameOS device that matches yours: [HyperPixel 4.0" Touch](/devices/pimoroni-hyperpixel-4-touch), [HyperPixel 4.0" Square](/devices/pimoroni-hyperpixel-4-square), [HyperPixel 4.0" Square Touch](/devices/pimoroni-hyperpixel-4-square-touch). The
 smaller round one is the [HyperPixel 2.1" Round](/devices/pimoroni-hyperpixel-2.1inch-round-480x480-lcd).
 
-Needs FrameOS **2026.9.22** or newer.
-
 ## How it works
 
 One native driver covers every HyperPixel 4.0 - no Pimoroni installer, no Python. On the first
 deploy its setup writes what the panel needs into `config.txt` and the frame reboots once. On
-every Pi, Zero to Pi 5, that's the kernel's own `vc4-kms-dpi-hyperpixel4` overlay (FrameOS
-2026.9.22+): the kernel brings the panel up and FrameOS only writes the framebuffer. A card set up
-by an older release, with the firmware's DPI lines in `config.txt`, is converted on its next driver
-setup.
+every Pi, Zero to Pi 5, that's the kernel's own `vc4-kms-dpi-hyperpixel4` overlay: the kernel brings the panel up and FrameOS only writes the framebuffer.
 
 ## Setup
 

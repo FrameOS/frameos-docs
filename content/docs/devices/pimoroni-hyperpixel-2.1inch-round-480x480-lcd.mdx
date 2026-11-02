@@ -38,13 +38,13 @@ pixels get to the glass depends on the Pi, which the frame detects by itself:
 
 - **Pi Zero to Pi 4** - the Pi's firmware drives DPI into `/dev/fb0`, and FrameOS sends the panel
   its init sequence and switches the backlight over GPIO.
-- **Pi 5** (FrameOS 2026.9.20+) - a Pi 5 has no firmware DPI, so setup enables the kernel's
+- **Pi 5** - a Pi 5 has no firmware DPI, so setup enables the kernel's
   `vc4-kms-dpi-hyperpixel2r` overlay instead and FrameOS only writes the framebuffer. No touch on
   this path, and it hasn't been tried on real hardware yet.
 
-From FrameOS 2026.9.20 touch works on a Pi Zero to Pi 4: the kernel's own FT5x06 driver reads it,
+Touch works on a Pi Zero to Pi 4: the kernel's own FT5x06 driver reads it,
 and it arrives in your [scenes](/guide/scenes) as pointer events - `pointerDown`, `pointerMove`,
-`pointerUp` and the `tap`, `swipe` and `longPress` gestures from FrameOS 2026.10.0
+`pointerUp` and the `tap`, `swipe` and `longPress` gestures
 ([input](/guide/scenes#input)), with the older `mouseMove`, `mouseDown` and `mouseUp` names still
 working. Coordinates follow the frame's rotate and flip settings.
 
@@ -62,15 +62,6 @@ Change the swipes under [button actions](/guide/settings#buttons).
 
 The HyperPixel takes every GPIO pin, so the Pi's I2C and SPI buses are switched off while it is
 the frame's display - no other HATs or GPIO buttons alongside it.
-
-### Coming from an older setup
-
-Until FrameOS 2026.9.14 there were two devices for this panel: a legacy one on top of Pimoroni's
-`hyperpixel2r` installer and Raspberry Pi OS Bullseye, and a "(native)" one. They are now the one
-native driver behind the one device, and existing frames are moved over for you. The next full
-deploy (or Buildroot update) comments out Pimoroni's overlay in `config.txt`, writes the DPI block
-and reboots once. A frame from before touch gains two more `config.txt` lines and one reboot the
-same way.
 
 ## Display power
 

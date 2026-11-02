@@ -29,7 +29,7 @@ Click "New frame" in the backend and pick how this frame gets set up:
   generic SD image, say). Give the backend the frame's address and its admin login; it imports the
   frame's settings and scenes, keeps its access key so existing links work, and points the frame
   at this backend, restarting it so logs start flowing right away. Adoption goes over the frame's
-  own admin API (backend 2026.9.12+): a generic-image card has no SSH and no
+  own admin API: a generic-image card has no SSH and no
   [Remote](/guide/remote), so the deploy drawer says "No shell on this frame", deploys are fast
   deploys over that API, and **Update FrameOS** runs the frame's own signed upgrade. Scenes,
   settings, assets, fonts, service keys, logs, restart and reboot all work; the Terminal doesn't.

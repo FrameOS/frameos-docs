@@ -45,13 +45,13 @@ The **Install** button opens one dialog with every way in:
   within seconds (or as soon as an offline frame reconnects). The frame remembers where the scene came from and which version it is on.
   When a newer version is published, the scene's image says **Update available** - on the cloud, a
   backend and the frame's own admin page - and **Update to latest** in its **…** menu takes it
-  there (2026.9.20+).
+  there.
 - **On a self-hosted backend**: copy the **Install on a self-hosted FrameOS** link and paste it
   into the search box of a frame's **Add scene** drawer in the backend. You rarely need the link:
   **Add scene → Scene store** lists the public store on every backend, linked to a cloud account or
   not, grouped into the same shelves as the store front.
 - **On a standalone frame**: open **Add scene** on the frame's admin page - the store is listed
-  there first (FrameOS 2026.9.10+). **Download zip** and upload still works on older frames.
+  there first. **Download zip** and upload works too.
 
 Installing a store scene on a backend grants it the service keys it declares; revoke them under
 the frame's settings, **Service keys for store scenes**.
@@ -62,8 +62,8 @@ install dialog and on the frame ([permissions](/guide/apps#permissions)). Instal
 approving its tags, and **Update to latest** says which ones a new version adds, in red when it
 gains shell, file or write access. The cloud never runs the shell apps (Chromium screenshot and
 RTSP snapshot) at all; on a self-hosted or standalone frame, install scenes that use them only from
-publishers you trust. (From 2026.10.16 such a scene no longer needs a separate on-panel approval
-on the frame: the install is the approval.)
+publishers you trust. (Such a scene needs no separate on-panel approval on the frame: the
+install is the approval.)
 
 ## Your scenes
 

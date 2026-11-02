@@ -63,7 +63,7 @@ The result is that adding nodes to a scene doesn't ratchet memory up the way it 
 conventional pipeline, and the pixels you get are the pixels you would have got the expensive
 way. JavaScript apps get the same pipeline: `frameos.fetchImage()` hands the download to the
 native decoder, which takes the canvas it's offered, so a photo app written in JavaScript costs
-no more than a built-in one (2026.10.11+).
+no more than a built-in one.
 
 ## Spool to storage, cache to storage
 
@@ -81,7 +81,7 @@ Two more tiers, both automatic:
   dribbles bytes forever can't hang the frame. A decode that keeps consuming its download renews
   that limit as it goes - up to 15 minutes on an ESP32, 10 on a Pi - and logs its progress with an
   ETA, sent to the backend as it happens. A 60-megapixel camera JPEG takes about seven minutes on
-  an ESP32-S3, and then it shows (2026.10.14+). A streamed decode isn't held to the HTTP response
+  an ESP32-S3, and then it shows. A streamed decode isn't held to the HTTP response
   size limit either: it only ever holds a window of the body.
 - **Large text feeds are folded as they arrive.** A multi-megabyte iCal subscription used to be
   buffered whole to extract a handful of events; now it's read a line at a time through an 8&nbsp;KB
@@ -103,7 +103,7 @@ restarts rather than showing soft photos for a day.
 Beyond that, honest limits:
 
 - **Progressive JPEGs** spread every part of the image across the whole file, so they can't be
-  decoded a row at a time. Since 2026.10.13 FrameOS decodes them in strips instead - one pass over
+  decoded a row at a time. FrameOS decodes them in strips instead - one pass over
   the file per strip - which fits an 8&nbsp;MB ESP32 even at 13.3": read from a file they stream,
   off the network the body is buffered first. **Interlaced PNGs** are still decoded buffered, and
   refused gracefully if they don't fit. Baseline JPEG remains the cheapest format if you control

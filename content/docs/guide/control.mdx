@@ -36,15 +36,13 @@ standing in front of the frame can scan and control it.
 
 `http://<frame-ip>:8787/admin` is the frame's own management UI. It is the same interface the
 [backend](/guide/backend) shows for a frame, just served from the device: sign in with the admin
-password you set during setup (or in the backend under **Settings → Admin**) and you get (FrameOS
-2026.10.17 changed how admin sessions are signed, so everyone signs in once more after that
-update):
+password you set during setup (or in the backend under **Settings → Admin**) and you get:
 
 ![The on-device admin panel, Settings tab](/images/app/frame-settings-new.png)
 
 - **Scenes** - what is installed and what is active. Install scenes from the
-  [scene store](/guide/scene-store) - it is built into the **Add scene** drawer (FrameOS
-  2026.9.10+; the bundled samples stand in when the store can't be reached) - upload a scene ZIP, or open the
+  [scene store](/guide/scene-store) - it is built into the **Add scene** drawer (the
+  bundled samples stand in when the store can't be reached) - upload a scene ZIP, or open the
   node-graph [scene editor](/guide/scenes) right here. Interpreted scenes save and go live
   without a compile step.
 - **Settings** - everything from [Useful settings](/guide/settings): name, display driver and
@@ -121,7 +119,7 @@ curl -X POST "http://frame:8787/event/setCurrentScene?k=KEY" \
   -H "Content-Type: application/json" \
   -d '{"sceneId": "<scene-uuid>"}'
 
-# or to the next one in the frame's list (or "prev"; FrameOS 2026.10.20+)
+# or to the next one in the frame's list (or "prev")
 curl -X POST "http://frame:8787/event/setCurrentScene?k=KEY" \
   -H "Content-Type: application/json" \
   -d '{"direction": "next"}'
@@ -134,8 +132,7 @@ curl -X POST "http://frame:8787/event/turnOn?k=KEY"
 curl -X POST "http://frame:8787/event/render?k=KEY" -d '{}'
 ```
 
-The frame remembers the scene it shows: after a restart or a reboot it comes back to that scene
-(FrameOS 2026.10.18+; older releases could start on their first scene instead).
+The frame remembers the scene it shows: after a restart or a reboot it comes back to that scene.
 
 `POST /event/<name>` dispatches any event into the running scene graph - the same mechanism
 buttons, schedules, and apps use internally. This makes integrations trivial: a
@@ -147,7 +144,7 @@ new render is ready.
 The events that control the device itself - `reboot`, `restart`, `reload` and `uploadScenes` - need
 the admin login or the backend's API key too; the access key (`?k=`) can't trigger them.
 
-From FrameOS 2026.9.13, a request that changes something and carries a browser `Origin` header must
+A request that changes something and carries a browser `Origin` header must
 come from the frame's own address, so a web page on another site can't post to your frame. `curl`,
 scripts and Home Assistant send no `Origin` and are unaffected. Behind your own reverse proxy, pass
 `Host` through or send `X-Forwarded-Host`.

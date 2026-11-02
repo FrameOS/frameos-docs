@@ -44,7 +44,7 @@ Toggle *Dithered as on the panel* and *Apply adjustments* to compare, and pick t
 (*Cover* or *Contain*) the scene will use. Previous and next walk the folder; **Save &
 next** keeps your sliders and moves on.
 
-The [Photos](/guide/photos) library has the same editor (2026.10.13+): open a photo and the
+The [Photos](/guide/photos) library has the same editor: open a photo and the
 dials sit in a panel beside it, painted live, with the preview at full fidelity, as one of your
 frames shows it, or as a panel family would. A frame that plays an album gets each photo's
 profile with the photo, so the grading follows it to every frame.
@@ -52,8 +52,7 @@ profile with the photo, so the grading follows it to every frame.
 Saving writes a small JSON file next to the photo - `cat.jpg` gets `cat.jpg.frameos.json`
 - in the frame's assets folder. The file travels with the photo through every control
 plane (it is renamed and deleted with it, and hidden from the file tree), and any runtime
-applies it whenever it loads that photo. Every key is optional and neutral when missing;
-older firmware ignores keys it does not know.
+applies it whenever it loads that photo. Every key is optional and neutral when missing.
 
 ```json
 {
@@ -92,5 +91,5 @@ pre-processed off the frame.
 Panels that dither to a palette - the Spectra 6 family - take a **Palette** setting: the six
 colors the dither quantises against, as measured on the panel rather than as the
 datasheet draws them. The Pi driver reads it at start-up; an ESP32 picks it up on the next
-render (firmware 2026.10.4 or newer). A photo's own palette, from the editor above, still
+render. A photo's own palette, from the editor above, still
 wins for that photo.

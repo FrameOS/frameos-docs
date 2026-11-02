@@ -30,9 +30,9 @@ The **Waveshare 10.3" e-Paper** is a 10.3″ e-ink panel with a resolution of
 **1872×1404 pixels** showing **16-level grayscale**. Grayscale e-ink renders dithered photos noticeably better than pure black-and-white panels, while keeping a quick refresh.
 Like all e-paper, it keeps the last image with zero power - the frame only wakes up to render.
 
-This panel is driven through the IT8951 controller board (USB/SPI). It works, but draws more power than typical SPI panels. From FrameOS 2026.9.18 a full refresh takes about 4 seconds on a Pi Zero 2 W - it used to be closer to 50.
+This panel is driven through the IT8951 controller board (USB/SPI). It works, but draws more power than typical SPI panels. A full refresh takes about 4 seconds on a Pi Zero 2 W.
 
-From firmware 2026.10.21 an [ESP32-S3](/guide/esp32) can drive it too, over the HAT's SPI pins -
+An [ESP32-S3](/guide/esp32) can drive it too, over the HAT's SPI pins -
 the same controller and glass as the [Seeed reTerminal E1003](/devices/seeed-reterminal-e1003).
 Between refreshes the controller keeps its picture, so only the rows that changed are sent: a
 whole frame is about half a second on the wire, a clock's digits a few milliseconds. The ESP32

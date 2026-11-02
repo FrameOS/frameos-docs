@@ -72,7 +72,7 @@ browser, and the button says so.
 
 Every scene also has one field you don't add yourself: **Refresh interval (seconds)**, listed last
 wherever the scene's fields show up - the control page, the backend, the cloud, schedules and
-previews (FrameOS 2026.9.20+). It starts at the interval from the scene's settings; change it like
+previews. It starts at the interval from the scene's settings; change it like
 any other field and the next sleep follows. To decide where it sits, what it's called, or to hide
 it (`access: private`), add your own numeric field and switch on **Use as refresh interval**. In
 code it is `state.refreshInterval`. The **Next sleep duration** app is still a one-time override:
@@ -81,7 +81,7 @@ it sets how long to sleep after *this* render, and the render after that is back
 ## Scenes inside scenes
 
 A **split** (or any scene node) draws other scenes into cells, and each of them renders on its own
-schedule (FrameOS 2026.10.17+): a clock that ticks every second next to a photo that changes every
+schedule: a clock that ticks every second next to a photo that changes every
 hour re-runs only the clock, and the photo's cell puts back what it drew last time. The split's
 own interval is the fastest it renders, so set it to the quick cell's pace; each cell's options
 say when that cell renders. A render asked for from outside - a button, the API, the schedule -
@@ -89,7 +89,7 @@ redraws every cell.
 
 ## Buttons, touch and keyboards [#input]
 
-A frame's GPIO buttons reach a scene as two events (FrameOS 2026.10.16+):
+A frame's GPIO buttons reach a scene as two events:
 
 - **`button`** - what the person meant: `press`, `doublePress`, or `longPress` (held a second or
   more, delivered once, on release). Every press is exactly one of the three, so a `button`
@@ -102,16 +102,15 @@ Each edge is timestamped when the frame sees it, so a tap made while an e-ink pa
 seconds refreshing is still a tap, and two of them are still a double press. In the event node,
 the label and pin filters pick from the frame's own buttons.
 
-On a Pi with a touchscreen, a mouse or a keyboard (FrameOS 2026.10.0+), scenes also hear
+On a Pi with a touchscreen, a mouse or a keyboard, scenes also hear
 `pointerDown`, `pointerMove` and `pointerUp` (one pointer per finger), `wheel`, `keyDown` and
 `keyUp` with the key in the frame's keyboard layout, `textInput`, and the gestures `tap`,
 `doubleTap`, `longPress` and `swipe` - all in the scene's own pixels, rotated frames included.
 The older `mouseMove` / `mouseDown` / `mouseUp` names keep working. The *Touch test* and
 *Keyboard test* sample scenes show every event as it arrives. The browser preview sends the same
 events from your mouse and keyboard, and a preview button you hold down is held like a frame's key.
-From FrameOS 2026.10.21 the touch screens of [ESP32 boards](/guide/esp32#lcd) send the same
-pointer events and gestures, and a touch `longPress` is held a second, like a button's (it was half
-a second). A swipe that starts at the very edge of a touch screen is the frame's (`edgeSwipe`) and
+The touch screens of [ESP32 boards](/guide/esp32#lcd) send the same
+pointer events and gestures, and a touch `longPress` is held a second, like a button's. A swipe that starts at the very edge of a touch screen is the frame's (`edgeSwipe`) and
 never reaches the scene.
 
 **Swipes in from the edge.** On every HyperPixel, the SenseCAP Indicator and the reTerminal E1003,
@@ -136,7 +135,7 @@ without touch doesn't come with a binding for it, so add one under **Button acti
 press of REFRESH, say), or send `sceneSwitcher` [over HTTP](/guide/api#events).
 
 **Whose buttons?** A scene listens for the keys its author had - `A` and `B`, or a `next` role -
-and your frame has the keys it has. Two maps sit between them (FrameOS 2026.10.20+):
+and your frame has the keys it has. Two maps sit between them:
 
 - **Map buttons**, in an installed scene's **…** menu, lists the scene's button listeners and lets
   you pick which press of which of your frame's buttons each one answers to - REFRESH is this
@@ -232,7 +231,7 @@ Two ways to see a scene without committing to it:
   deploying it. Good for checking how a color dithers on real e-ink. A sleeping ESP32 gets it on
   its next wake. While it's on the frame, the scene list shows it as a dashed *preview* row above
   your saved scenes, with **Install** to add it to the frame's scenes and **Discard** to take it
-  off (FrameOS 2026.10.20+). Until you pick one, the preview stays: a deploy or another push
+  off. Until you pick one, the preview stays: a deploy or another push
   carries it along. Pictures and scenes made by the [voice chat](/guide/esp32#voice-chat) arrive
   the same way.
 

@@ -61,8 +61,7 @@ You can get an image three ways:
 - **Download a generic image** from the
   [latest release](https://github.com/FrameOS/frameos/releases) (look for
   `frameos-*-raspberry-pi-64-buildroot.img.gz` and its siblings). On first boot the frame starts a
-  WiFi hotspot called `FrameOS-XXXX` (password `frame1234`; the panel shows both, and releases
-  before 2026.10.17 call it `FrameOS-Setup`). Join it from your phone, enter your WiFi credentials
+  WiFi hotspot called `FrameOS-XXXX` (password `frame1234`; the panel shows both). Join it from your phone, enter your WiFi credentials
   in the setup page that opens, and the frame connects to your network. Generic images ship with
   no [FrameOS Remote](/guide/remote) and no root password, since there is no backend to talk to yet;
   **Adopt frame** in the backend turns a running generic-image frame into a managed one over the
@@ -81,7 +80,7 @@ it, the frame's URL and, once you press one, the last GPIO button.
 
 SD-image frames can also **upgrade themselves in place**: the frame downloads a new release,
 verifies its signature against a key baked into the build, swaps it in and restarts (rebooting
-only when the new release needs it) - no re-flashing, no SSH. From 2026.9.22 every update also
+only when the new release needs it) - no re-flashing, no SSH. Every update also
 prunes old releases until there is room for the next one, and the backend or cloud warns
 *No room for the next FrameOS update* when there still isn't.
 
