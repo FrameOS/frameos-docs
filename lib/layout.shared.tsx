@@ -17,6 +17,7 @@ export function baseOptions(): BaseLayoutProps {
       { text: 'Docs', url: '/guide', active: 'nested-url' },
       { text: 'Devices', url: '/devices', active: 'nested-url' },
       { text: 'Cases', url: '/cases', active: 'nested-url' },
+      { text: 'Pricing', url: '/pricing', active: 'nested-url' },
       { text: 'Blog', url: '/blog', active: 'nested-url' },
       { text: 'Scenes', url: links.sceneStore, external: true },
       { text: 'Cloud', url: links.cloud, external: true },
