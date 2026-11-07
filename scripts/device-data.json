@@ -2077,6 +2077,30 @@
     "esp32": true
   },
   {
+    "driver": "waveshare.EPD_9in7e",
+    "vendor": "Waveshare",
+    "model": "9.7\" (E) e-Paper",
+    "technology": "E-ink",
+    "interface": "SPI",
+    "diagonal": 9.7,
+    "width": 1120,
+    "height": 784,
+    "colors": "6 colors (Spectra 6)",
+    "colorCount": 6,
+    "colorClass": "spectra",
+    "label": "Waveshare 9.7\" (E) 1120x784 Spectra 6 Color",
+    "productUrl": "https://www.waveshare.com/9.7inch-e-paper-e.htm?sku=35923&aff_id=79380",
+    "links": [
+      {
+        "label": "Waveshare wiki",
+        "url": "https://docs.waveshare.com/9.7inch_e-Paper_E"
+      }
+    ],
+    "status": "untested",
+    "slug": "waveshare-epd-9in7e",
+    "esp32": true
+  },
+  {
     "driver": "waveshare.EPD_10in2b",
     "vendor": "Waveshare",
     "model": "10.2\" (B) e-Paper",
