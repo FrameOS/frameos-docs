@@ -1,10 +1,11 @@
 ---
 title: "Seeed XIAO 7.5\" ePaper Panel"
-description: "Seeed Studio XIAO 7.5\" ePaper Panel - a finished 7.5\" 800x480 black/white e-ink display with a XIAO ESP32-C3 and a 2000 mAh battery. Not supported by FrameOS yet."
+description: "Seeed Studio XIAO 7.5\" ePaper Panel - a finished 7.5\" 800x480 black/white e-ink display with a XIAO ESP32-C3 and a 2000 mAh battery, running FrameOS as a thin client."
 device:
   vendor: "Seeed Studio"
   model: "XIAO 7.5\" ePaper Panel"
-  driver: "none"
+  driver: "waveshare.EPD_7in5_V2"
+  label: "Seeed XIAO 7.5\" ePaper Panel (ESP32-C3)"
   technology: "E-ink"
   interface: "ESP32-C3 board"
   diagonal: 7.5
@@ -13,26 +14,49 @@ device:
   colors: "Black/White"
   colorCount: 2
   colorClass: "bw"
+  buttons: 1
   productUrl: "https://www.seeedstudio.com/XIAO-7-5-ePaper-Panel-p-6416.html"
   image: "/images/devices/seeed-xiao-7in5-epaper-panel.jpg"
   links:
     - label: "Seeed wiki"
       url: "https://wiki.seeedstudio.com/xiao_075inch_epaper_panel/"
-  status: "unsupported"
+  platforms:
+    - "esp32-c3"
+  status: "untested"
 ---
 
 The **XIAO 7.5" ePaper Panel** is a finished desk display: a 7.5" 800×480 black/white panel in a
 white case with a stand, driven by a XIAO ESP32-C3, with a 2000&nbsp;mAh battery that Seeed rates at
 about three months in deep sleep.
 
+The C3 has no PSRAM, so FrameOS runs it as a **thin client**: your [backend](/guide/backend) renders
+the scene and the board draws it, the same way as the [TRMNL OG](/devices/trmnl-og). FrameOS Cloud
+can't render for thin clients yet, so this one needs a self-hosted backend. If you want a 7.5"
+black/white frame that renders by itself, the [reTerminal E1001](/devices/seeed-reterminal-e1001) and
+the [TRMNL 7.5" DIY Kit](/devices/trmnl-og-diy-kit) do.
+
+## Setup
+
+1. In the FrameOS backend, create a frame with **Flash embedded device**.
+2. Choose **ESP32-C3**, select the **Seeed XIAO 7.5" ePaper Panel** preset (`seeed_xiao_epaper_7in5`)
+   and enter your WiFi details.
+3. Flash it over USB from the browser, then install scenes as usual.
+
+The BOOT key (GPIO 9) arrives in scenes as a button event. FrameOS doesn't read this board's battery.
+
+## Pin map
+
+| Signal | GPIO |
+| ------ | ---- |
+| CS     | 3    |
+| DC     | 5    |
+| RST    | 2    |
+| BUSY   | 4    |
+| SCK    | 8    |
+| MOSI   | 10   |
+
 ## Status
 
-⚪ **Not supported yet.** The pieces exist - FrameOS drives 7.5" 800×480 panels, and PSRAM-less
-ESP32-C3 boards like the [TRMNL OG](/devices/trmnl-og) run as thin clients that the
-[backend](/guide/backend) renders for - but there's no hardware preset with this board's pin map
-and battery wiring yet. If you need 7.5" black/white today, the
-[reTerminal E1001](/devices/seeed-reterminal-e1001) and the
-[TRMNL 7.5" DIY Kit](/devices/trmnl-og-diy-kit) render on the device itself.
-
-Want it? Say so on [GitHub](https://github.com/FrameOS/frameos/issues) or
-[Discord](https://discord.gg/9dT9y7EzUw) - it helps us decide what to port next.
+🟡 **Should work, not yet confirmed on real hardware.** The pins are from Seeed's ESPHome guide for
+this panel.
+Tell us on [GitHub](https://github.com/FrameOS/frameos/issues/new) or [Discord](https://discord.gg/9dT9y7EzUw) if you try it.

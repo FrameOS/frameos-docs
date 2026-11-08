@@ -1,10 +1,11 @@
 ---
 title: "Seeed XIAO ePaper Display Board EE03"
-description: "Seeed Studio XIAO ePaper Display Board EE03 - a XIAO ESP32-S3 Plus driver board for a fast-refresh 10.3\" grayscale panel. Not supported by FrameOS yet."
+description: "Seeed Studio XIAO ePaper Display Board EE03 - a XIAO ESP32-S3 Plus driver board for a fast-refresh 10.3\" grayscale panel, running FrameOS on-device."
 device:
   vendor: "Seeed Studio"
   model: "XIAO ePaper Display Board EE03"
-  driver: "none"
+  driver: "waveshare.EPD_10in3"
+  label: "Seeed XIAO ePaper EE03 (10.3\" grayscale ESP32-S3)"
   technology: "E-ink"
   interface: "ESP32-S3 driver board"
   diagonal: 10.3
@@ -13,6 +14,7 @@ device:
   colors: "16-level grayscale"
   colorCount: 16
   colorClass: "gray"
+  buttons: 3
   productUrl: "https://www.seeedstudio.com/XIAO-ePaper-Display-Board-ESP32-S3-EE03-p-6638.html"
   image: "/images/devices/seeed-xiao-epaper-ee03.jpg"
   links:
@@ -20,20 +22,52 @@ device:
       url: "https://wiki.seeedstudio.com/getting_started_with_ee03/"
     - label: "10.3\" grayscale panel"
       url: "https://www.seeedstudio.com/10-3inch-Monochrome-eInk-ePaper-Display-with-1404x1872-Pixels-p-6568.html"
-  status: "unsupported"
+  platforms:
+    - "esp32-s3"
+  status: "untested"
 ---
 
-The **XIAO ePaper Display Board EE03** pairs a XIAO ESP32-S3 Plus with Seeed's **10.3"
-1404×1872 grayscale** panel (40-pin connector), with an on-board timing controller for fast
-refreshes, an SHT40 temperature sensor for waveform compensation, three user keys and a battery
-connector with a charger. It's the DIY counterpart of the
-[reTerminal E1003](/devices/seeed-reterminal-e1003).
+The **XIAO ePaper Display Board EE03** pairs a XIAO ESP32-S3 Plus (8&nbsp;MB of PSRAM, 16&nbsp;MB of
+flash) with Seeed's **10.3" 1404×1872 grayscale** panel (40-pin connector), with an on-board IT8951
+controller for fast refreshes, an SHT40 temperature sensor for waveform compensation, three user
+keys and a battery connector with a charger. It's the DIY counterpart of the
+[reTerminal E1003](/devices/seeed-reterminal-e1003), and FrameOS drives its glass the same way,
+rendering on the device.
+
+## Setup
+
+1. In the FrameOS backend or [FrameOS Cloud](/guide/cloud), create a frame with **Flash embedded
+   device** and choose **ESP32-S3**.
+2. Select the **Seeed XIAO ePaper EE03** hardware preset (`seeed_xiao_ee03`). It selects the
+   `waveshare.EPD_10in3` driver with the E1003's tuning, the panel power switch, the temperature
+   sensor, the three keys and the battery wiring.
+3. Flash it over USB from the browser, then install scenes as usual.
+
+## Buttons and battery
+
+The keys are KEY1 (GPIO 2), KEY2 (GPIO 3) and KEY3 (GPIO 5), and they arrive in scenes as
+[button events](/guide/scenes#input). Nothing is bound to them out of the box: give them a job under
+[button actions](/guide/esp32#button-actions). The battery is read through a 2:1 divider on GPIO 1,
+switched on by GPIO 6.
+
+The board can't tell the firmware when USB is plugged in, so the preset leaves deep sleep off. Turn
+it on under [Power](/guide/esp32#power) if the frame lives on its battery.
+
+## Pin map
+
+| Signal | GPIO |
+| ------ | ---- |
+| CS     | 44   |
+| MISO   | 8    |
+| RST    | 38   |
+| HRDY (busy) | 4 |
+| SCK    | 7    |
+| MOSI   | 9    |
+| PWR    | 43   |
+| SHT40 SDA / SCL | 42 / 41 |
 
 ## Status
 
-⚪ **Not supported yet.** The [E1003](/devices/seeed-reterminal-e1003) drives its 10.3" glass
-through an IT8951 controller. This board needs a preset of its own, and
-nobody has checked yet whether its timing controller works with the same driver.
-
-Want it? Say so on [GitHub](https://github.com/FrameOS/frameos/issues) or
-[Discord](https://discord.gg/9dT9y7EzUw) - it helps us decide what to port next.
+🟡 **Should work, not yet confirmed on real hardware.** The panel driver is the E1003's, and the
+pins are from Seeed's schematic.
+Tell us on [GitHub](https://github.com/FrameOS/frameos/issues/new) or [Discord](https://discord.gg/9dT9y7EzUw) if you try it.

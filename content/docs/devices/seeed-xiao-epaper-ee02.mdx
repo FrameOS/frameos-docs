@@ -1,10 +1,11 @@
 ---
 title: "Seeed XIAO ePaper Display Board EE02"
-description: "Seeed Studio XIAO ePaper Display Board EE02 - a XIAO ESP32-S3 Plus driver board for the 13.3\" Spectra 6 panel. Not supported by FrameOS yet."
+description: "Seeed Studio XIAO ePaper Display Board EE02 - a XIAO ESP32-S3 Plus driver board for the 13.3\" Spectra 6 panel, rendering 1200×1600 scenes on-device."
 device:
   vendor: "Seeed Studio"
   model: "XIAO ePaper Display Board EE02"
-  driver: "none"
+  driver: "waveshare.EPD_13in3e"
+  label: "Seeed XIAO ePaper EE02 (13.3\" color ESP32-S3)"
   technology: "E-ink"
   interface: "ESP32-S3 driver board"
   diagonal: 13.3
@@ -13,6 +14,7 @@ device:
   colors: "6 colors (Spectra 6)"
   colorCount: 6
   colorClass: "spectra"
+  buttons: 3
   productUrl: "https://www.seeedstudio.com/XIAO-ePaper-Display-Board-ESP32-S3-EE02-p-6639.html"
   image: "/images/devices/seeed-xiao-epaper-ee02.jpg"
   links:
@@ -20,21 +22,55 @@ device:
       url: "https://wiki.seeedstudio.com/getting_started_with_ee02/"
     - label: "13.3\" Spectra 6 panel"
       url: "https://www.seeedstudio.com/13-3inch-Six-Color-eInk-ePaper-Display-with-1200x1600-Pixels-p-6569.html"
-  status: "unsupported"
+  platforms:
+    - "esp32-s3"
+  status: "untested"
 ---
 
 The **XIAO ePaper Display Board EE02** is Seeed's DIY route to a big color frame: a XIAO
-ESP32-S3 Plus on a carrier made for the **13.3" Spectra 6** 1200×1600 panel (60-pin connector),
-with refresh, previous and next keys, a reset and a boot button, and a battery connector with a
-charger and power switch. Buy it with the panel and you have the parts of a
+ESP32-S3 Plus (8&nbsp;MB of PSRAM, 16&nbsp;MB of flash) on a carrier made for the **13.3" Spectra 6**
+1200×1600 panel (60-pin connector), with three keys, a reset and a boot button, and a battery
+connector with a charger and power switch. Buy it with the panel and you have the parts of a
 [reTerminal E1004](/devices/seeed-reterminal-e1004) to put in a frame of your own.
+
+FrameOS runs the **full on-device renderer** on it, on the same 16-bit canvas as the E1004.
+
+## Setup
+
+1. In the FrameOS backend or [FrameOS Cloud](/guide/cloud), create a frame with **Flash embedded
+   device** and choose **ESP32-S3**.
+2. Select the **Seeed XIAO ePaper EE02** hardware preset (`seeed_xiao_ee02`). It selects the
+   `waveshare.EPD_13in3e` driver with the T133A01 refresh sequence this glass wants, the panel's
+   second chip select, the panel power switch, the three keys and the battery wiring.
+3. Flash it over USB from the browser, then install scenes as usual.
+
+A full refresh on a panel this size takes around half a minute.
+
+## Buttons and battery
+
+The keys are KEY1 (GPIO 2), KEY2 (GPIO 3) and KEY3 (GPIO 5), and they arrive in scenes as
+[button events](/guide/scenes#input). Nothing is bound to them out of the box: give them a job under
+[button actions](/guide/esp32#button-actions). The battery is read through a 2:1 divider on GPIO 1,
+switched on by GPIO 6.
+
+The board can't tell the firmware when USB is plugged in, so the preset leaves deep sleep off. Turn
+it on under [Power](/guide/esp32#power) if the frame lives on its battery.
+
+## Pin map
+
+| Signal | GPIO |
+| ------ | ---- |
+| CS     | 44   |
+| CS2    | 41   |
+| DC     | 10   |
+| RST    | 38   |
+| BUSY   | 4    |
+| SCK    | 7    |
+| MOSI   | 9    |
+| PWR    | 43   |
 
 ## Status
 
-⚪ **Not supported yet - but close.** The firmware already drives 13.3" Spectra 6 panels on an
-8&nbsp;MB ESP32-S3, rendering on-device on the 16-bit canvas: that's what the E1004 and the
-[Waveshare 13.3E6](/devices/waveshare-esp32-s3-epaper-13in3e6) do. What's missing is a hardware
-preset with this board's pin map, buttons and battery wiring, checked on a real board.
-
-Want it? Say so on [GitHub](https://github.com/FrameOS/frameos/issues) or
-[Discord](https://discord.gg/9dT9y7EzUw) - it helps us decide what to port next.
+🟡 **Should work, not yet confirmed on real hardware.** The panel driver is the E1004's, and the
+pins are from Seeed's schematic.
+Tell us on [GitHub](https://github.com/FrameOS/frameos/issues/new) or [Discord](https://discord.gg/9dT9y7EzUw) if you try it.

@@ -65,10 +65,13 @@ filled in for you:
 | [Elecrow CrowPanel 5.79"](/devices/elecrow-crowpanel-5in79) | S3 | 5.79" 4-grey | 5 buttons, dual SSD1683 |
 | [TRMNL 7.5" DIY Kit](/devices/trmnl-og-diy-kit) | S3 | 7.5" black/white | XIAO ePaper driver board |
 | [TRMNL 4.26" DIY Kit](/devices/trmnl-4in26-diy-kit) | S3 | 4.26" 4-grey | XIAO ePaper driver board |
-| [Seeed XIAO ePaper Display Board EE04](/devices/seeed-xiao-epaper-ee04) / [EE05](/devices/seeed-xiao-epaper-ee05) | S3 | Any 24-pin panel (EE04: also the 7.3" Spectra 6 on 50 pins) | The TRMNL DIY kits' board on its own: start from a TRMNL DIY Kit preset, then pick your panel |
+| [Seeed XIAO ePaper Display Board EE02](/devices/seeed-xiao-epaper-ee02) | S3 | 13.3" Spectra 6, portrait | 8&nbsp;MB PSRAM, 16&nbsp;MB flash, 3 buttons, battery |
+| [Seeed XIAO ePaper Display Board EE03](/devices/seeed-xiao-epaper-ee03) | S3 | 10.3" 16-level grayscale (IT8951) | 8&nbsp;MB PSRAM, 16&nbsp;MB flash, 3 buttons, battery, temperature sensor |
+| [Seeed XIAO ePaper Display Board EE04](/devices/seeed-xiao-epaper-ee04) / [EE05](/devices/seeed-xiao-epaper-ee05) | S3 | Any 24-pin panel (EE04: also the 7.3" Spectra 6 on 50 pins) | 8&nbsp;MB PSRAM, 16&nbsp;MB flash, 3 buttons, battery - pick your panel and the preset stays |
 | [TRMNL OG](/devices/trmnl-og) | C3 | 7.5" black/white | Thin client - backend renders |
 | [TRMNL BWRY](/devices/trmnl-bwry) | C3 | 7.5" 4-color | Thin client - backend renders |
 | [XTEINK X4](/devices/xteink-x4) | C3 | 4.26" 4-grey | Thin client - backend renders |
+| [Seeed XIAO 7.5" ePaper Panel](/devices/seeed-xiao-7in5-epaper-panel) | C3 | 7.5" black/white | Thin client - backend renders |
 | [ESP32-C3 0.42" OLED board](/devices/esp32-c3-oled-0in42) | C3 | 0.42" SSD1306 OLED, 72×40 (I2C) | The tiny HW-675 / 01Space dev board, 4&nbsp;MB flash, BOOT button - thin client |
 
 Anything else is a **Custom ESP32 board**: pick the panel, set the pins, done. The
@@ -80,14 +83,9 @@ the reTerminals and Seeed's XIAO boards.
 
 Boards people ask about that FrameOS can't drive yet. Each has a device page saying what's missing:
 
-- [XIAO ePaper Display Board EE03](/devices/seeed-xiao-epaper-ee03) and the 10.3" TRMNL X -
-  fast-refresh 10.3" grayscale panels. The [E1003](/devices/seeed-reterminal-e1003) drives its
-  10.3" glass through an IT8951 controller; the TRMNL X drives its glass without one, and the EE03
-  needs a preset and a check of its controller.
-- [Seeed XIAO ePaper Display Board EE02](/devices/seeed-xiao-epaper-ee02) - the 13.3" Spectra 6
-  panel already works on other boards; this one needs a preset.
-- [Seeed XIAO 7.5" ePaper Panel](/devices/seeed-xiao-7in5-epaper-panel) - an ESP32-C3 that would
-  run as a thin client, waiting for a preset.
+- The 10.3" TRMNL X - a fast-refresh 10.3" grayscale panel. The
+  [E1003](/devices/seeed-reterminal-e1003) drives its 10.3" glass through an IT8951 controller; the
+  TRMNL X drives its glass without one.
 - [Seeed reTerminal D1001](/devices/seeed-reterminal-d1001) - an ESP32-P4 with an 8" MIPI-DSI LCD.
   The firmware builds for the S3 and C3.
 
@@ -451,7 +449,7 @@ device, so a value set from the control page survives the deep sleep instead of 
 render, and a frame awake on USB is nudged to pull at once.
 
 The board presets carry the battery wiring - the PhotoPainter and 13.3E6 headers, the Seeed
-reTerminals' switched divider, the XIAO ePaper driver board, the TRMNL and the XTEINK X4 (only the
+reTerminals' switched divider, the XIAO ePaper boards, the TRMNL and the XTEINK X4 (only the
 E1004's is verified on hardware so far) - and the [reTerminal E1004](/devices/seeed-reterminal-e1004)
 preset also switches on `deep_sleep_on_battery` with a 15-minute `wake_check`, so it sleeps on its
 5000&nbsp;mAh cell and stays connected on USB out of the box. A frame provisioned before its preset

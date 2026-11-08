@@ -28,32 +28,43 @@ connector (a jumper picks which one is live), three user keys, a reset button an
 connector with a charger. Bring your own panel - anything from a 1.54" black/white tag to the
 7.5" tri-color and, on the 50-pin connector, the 7.3" Spectra 6.
 
-It is the same XIAO ePaper driver board family the [TRMNL 7.5" DIY Kit](/devices/trmnl-og-diy-kit)
-and [TRMNL 4.26" DIY Kit](/devices/trmnl-4in26-diy-kit) are built on, so FrameOS already knows its
-wiring and runs the **full on-device renderer** on it.
+It has a hardware preset of its own, and FrameOS runs the **full on-device renderer** on it.
 
 ## Setup
 
 1. In the FrameOS backend or [FrameOS Cloud](/guide/cloud), create a frame with **Flash embedded
    device** and choose **ESP32-S3**.
-2. Select the **TRMNL 7.5" DIY Kit** hardware preset - it fills in this board's pins
-   (SCK 7, MOSI 9, CS 44, DC 10, RST 38, BUSY 4).
-3. With the 7.5" black/white panel, that's it. With another panel, pick it now. The form switches to a custom board but keeps the pins.
-   Seeed's panels usually share their controllers with Waveshare's: pick the driver with the same
-   size, resolution and colors in the [device database](/devices) - for example the
+2. Select the **Seeed XIAO ePaper EE04** hardware preset (`seeed_xiao_ee04`). It fills in the pins,
+   the panel power switch, the three keys and the battery wiring.
+3. Pick the panel you plugged in - the preset stays selected. It starts on the 7.5" black/white,
+   and FrameOS Cloud asks for the panel when you flash. Seeed's panels usually share their
+   controllers with Waveshare's: pick the driver with the same size, resolution and colors in the
+   [device database](/devices) - for example the
    [7.3" Spectra 6](/devices/waveshare-epd-7in3e) on the 50-pin connector.
 4. Flash it over USB from the browser, then install scenes as usual.
 
 ## Buttons and battery
 
-The keys are on GPIO 2, 3 and 5. The preset registers GPIO 5 (plus BOOT); add the other two under
-**GPIO buttons** in the frame's settings and they arrive in scenes as button events. The battery
-is read through a 2:1 divider on GPIO 1, switched on by GPIO 6. The TRMNL presets carry that
-wiring; on a custom board enter the three values under **Power** so the frame shows its charge and
-the [deep sleep options](/guide/esp32#power) apply.
+The keys are KEY1 (GPIO 2), KEY2 (GPIO 3) and KEY3 (GPIO 5), and they arrive in scenes as
+[button events](/guide/scenes#input). The battery is read through a 2:1 divider on GPIO 1, switched
+on by GPIO 6.
+
+The board can't tell the firmware when USB is plugged in, so the preset leaves deep sleep off. Turn
+it on under [Power](/guide/esp32#power) if the frame lives on its battery.
+
+## Pin map
+
+| Signal | GPIO |
+| ------ | ---- |
+| CS     | 44   |
+| DC     | 10   |
+| RST    | 38   |
+| BUSY   | 4    |
+| SCK    | 7    |
+| MOSI   | 9    |
+| PWR    | 43   |
 
 ## Status
 
-🟡 **Should work, not yet confirmed on real hardware.** The pin map is the one the TRMNL DIY kit
-presets use.
+🟡 **Should work, not yet confirmed on real hardware.** The pins are from Seeed's schematic.
 Tell us on [GitHub](https://github.com/FrameOS/frameos/issues/new) or [Discord](https://discord.gg/9dT9y7EzUw) if you try it.

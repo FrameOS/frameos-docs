@@ -4,7 +4,7 @@ description: "Seeed Studio XIAO ePaper Display Board EE05 - a XIAO ESP32-S3 Plus
 device:
   vendor: "Seeed Studio"
   model: "XIAO ePaper Display Board EE05"
-  driver: "waveshare.EPD_4in26"
+  driver: "waveshare.EPD_7in5_V2"
   technology: "E-ink"
   interface: "ESP32-S3 driver board"
   colors: "Depends on the panel"
@@ -35,20 +35,37 @@ FrameOS runs the **full on-device renderer** on it.
 
 1. In the FrameOS backend or [FrameOS Cloud](/guide/cloud), create a frame with **Flash embedded
    device** and choose **ESP32-S3**.
-2. With the 4.26" panel, select the **TRMNL 4.26" DIY Kit** preset and you're done. With another
-   panel, select the preset first for the pins, then pick your panel - the form switches to a
-   custom board but keeps them. Seeed's panels usually share their controllers with Waveshare's:
-   pick the driver with the same size, resolution and colors in the [device database](/devices).
-3. Flash it over USB from the browser, then install scenes as usual.
+2. Select the **Seeed XIAO ePaper EE05** hardware preset (`seeed_xiao_ee05`). It fills in the pins,
+   the panel power switch, the three keys and the battery wiring.
+3. Pick the panel you plugged in - the preset stays selected. It starts on the 7.5" black/white,
+   and FrameOS Cloud asks for the panel when you flash. Seeed's panels usually share their
+   controllers with Waveshare's: pick the driver with the same size, resolution and colors in the
+   [device database](/devices).
+4. Flash it over USB from the browser, then install scenes as usual.
 
 ## Buttons and battery
 
-The keys are on GPIO 2, 3 and 5. The 4.26" preset registers GPIO 2 (plus BOOT); add the others under
-**GPIO buttons** in the frame's settings. The battery is read through a 2:1 divider on GPIO 1,
-switched on by GPIO 6 - the 4.26" preset carries that wiring, and on a custom board you enter the
-three values under **Power**.
+The keys are KEY1 (GPIO 2), KEY2 (GPIO 3) and KEY3 (GPIO 8), which is not where the
+[EE04](/devices/seeed-xiao-epaper-ee04) has its third key. They arrive in scenes as
+[button events](/guide/scenes#input). The battery is read through a 2:1 divider on GPIO 1, switched
+on by GPIO 39.
+
+The board can't tell the firmware when USB is plugged in, so the preset leaves deep sleep off. Turn
+it on under [Power](/guide/esp32#power) if the frame lives on its battery.
+
+## Pin map
+
+| Signal | GPIO |
+| ------ | ---- |
+| CS     | 44   |
+| DC     | 10   |
+| RST    | 38   |
+| BUSY   | 4    |
+| SCK    | 7    |
+| MOSI   | 9    |
+| PWR    | 43   |
 
 ## Status
 
-🟡 **Should work, not yet confirmed on real hardware.**
+🟡 **Should work, not yet confirmed on real hardware.** The pins are from Seeed's schematic.
 Tell us on [GitHub](https://github.com/FrameOS/frameos/issues/new) or [Discord](https://discord.gg/9dT9y7EzUw) if you try it.
