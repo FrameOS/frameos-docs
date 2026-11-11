@@ -31,7 +31,7 @@ const frameSlides: Slide[] = [
     caption: (
       <>
         A to-do list on the <TextLink href="/devices/seeed-reterminal-sticky">Seeed reTerminal Sticky</TextLink>
-        &apos;s 3.97&quot; e-ink touch screen, with an on-screen keyboard
+        &apos;s 3.97&quot; e-ink touch screen, with an on-screen keyboard, all running on its ESP32-S3
       </>
     ),
   },
