@@ -6,10 +6,18 @@ import { cn } from '@/lib/cn';
 import { LightboxOverlay } from '@/components/lightbox';
 
 export interface Slide {
+  /** The image; for a video slide, the clip's poster (best its first frame). */
   src: string;
   alt: string;
   caption: React.ReactNode;
+  /** A short muted clip (an .mp4) that plays from the start each time the slide comes up; the
+   * slideshow moves on when it ends, and replays it while the pointer is over the figure. Where
+   * it can't play (reduced motion, autoplay blocked), the slide is its `src` image. */
+  video?: string;
 }
+
+// For a video slide, the timer is only a backstop for a clip that stalls: its end moves on.
+const VIDEO_BACKSTOP_MS = 15000;
 
 export function Slideshow({
   slides,
@@ -31,7 +39,13 @@ export function Slideshow({
   const [index, setIndex] = useState(0);
   const [paused, setPaused] = useState(false);
   const [zoomed, setZoomed] = useState(false);
+  // Clips stay on their posters: the viewer asked for less motion, or the browser won't autoplay.
+  const [stillsOnly, setStillsOnly] = useState(false);
   const timer = useRef<ReturnType<typeof setInterval> | null>(null);
+  const videos = useRef<(HTMLVideoElement | null)[]>([]);
+  const pausedRef = useRef(paused);
+  pausedRef.current = paused;
+  const playsVideo = Boolean(slides[index]?.video) && !stillsOnly;
 
   const go = useCallback(
     (delta: number) => setIndex((i) => (i + delta + slides.length) % slides.length),
@@ -42,11 +56,29 @@ export function Slideshow({
   // slide a full interval) and stop it entirely while the pointer is over the figure.
   useEffect(() => {
     if (paused) return;
-    timer.current = setInterval(() => go(1), interval);
+    timer.current = setInterval(() => go(1), playsVideo ? VIDEO_BACKSTOP_MS : interval);
     return () => {
       if (timer.current) clearInterval(timer.current);
     };
-  }, [go, interval, paused, index]);
+  }, [go, interval, paused, index, playsVideo]);
+
+  useEffect(() => {
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) setStillsOnly(true);
+  }, []);
+
+  // The slide's clip plays from its start; the others rest.
+  useEffect(() => {
+    videos.current.forEach((video, i) => {
+      if (!video) return;
+      if (i === index && !stillsOnly) {
+        video.muted = true;
+        video.currentTime = 0;
+        video.play().catch(() => setStillsOnly(true));
+      } else {
+        video.pause();
+      }
+    });
+  }, [index, stillsOnly]);
 
   return (
     <figure
@@ -74,21 +106,47 @@ export function Slideshow({
           }
         }}
       >
-        {slides.map((slide, i) => (
-          <Image
-            key={slide.src}
-            src={slide.src}
-            alt={slide.alt}
-            fill
-            sizes="(max-width: 768px) 100vw, 640px"
-            priority={i === 0}
-            className={cn(
-              'transition-opacity duration-700',
-              fit === 'cover' ? 'object-cover' : 'object-contain',
-              i === index ? 'opacity-100' : 'opacity-0',
-            )}
-          />
-        ))}
+        {slides.map((slide, i) => {
+          const className = cn(
+            'transition-opacity duration-700',
+            fit === 'cover' ? 'object-cover' : 'object-contain',
+            i === index ? 'opacity-100' : 'opacity-0',
+          );
+          return slide.video ? (
+            <video
+              key={slide.src}
+              ref={(el) => {
+                videos.current[i] = el;
+              }}
+              src={slide.video}
+              poster={slide.src}
+              muted
+              playsInline
+              preload="auto"
+              role="img"
+              aria-label={slide.alt}
+              onEnded={(e) => {
+                if (pausedRef.current) {
+                  e.currentTarget.currentTime = 0;
+                  e.currentTarget.play().catch(() => {});
+                } else {
+                  go(1);
+                }
+              }}
+              className={cn('absolute inset-0 h-full w-full', className)}
+            />
+          ) : (
+            <Image
+              key={slide.src}
+              src={slide.src}
+              alt={slide.alt}
+              fill
+              sizes="(max-width: 768px) 100vw, 640px"
+              priority={i === 0}
+              className={className}
+            />
+          );
+        })}
         <button
           type="button"
           aria-label="Previous slide"
@@ -136,6 +194,7 @@ export function Slideshow({
       {zoomed ? (
         <LightboxOverlay
           src={slides[index].src}
+          video={stillsOnly ? undefined : slides[index].video}
           alt={slides[index].alt}
           caption={slides[index].caption}
           onClose={() => setZoomed(false)}

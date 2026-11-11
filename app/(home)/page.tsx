@@ -23,7 +23,8 @@ const frameSlides: Slide[] = [
   },
   {
     src: '/images/photos/sticky-todo.jpg',
-    alt: 'A to-do list with an on-screen keyboard on the Seeed reTerminal Sticky, held in two hands',
+    video: '/videos/sticky-todo.mp4',
+    alt: 'Typing a new item into a to-do list on the Seeed reTerminal Sticky with its on-screen keyboard, then adding it',
     caption: (
       <>
         A to-do list on the <TextLink href="/devices/seeed-reterminal-sticky">Seeed reTerminal Sticky</TextLink>
@@ -54,11 +55,12 @@ const frameSlides: Slide[] = [
   },
   {
     src: '/images/photos/sensecap-kitchen-sink.jpg',
-    alt: 'The Kitchen sink scene with toggles, a brightness slider and a counter on a Seeed SenseCAP Indicator',
+    video: '/videos/sensecap-kitchen-sink.mp4',
+    alt: 'Opening Kitchen sink on a Seeed SenseCAP Indicator, dragging its brightness slider, then drawing a circle in its Paint tab',
     caption: (
       <>
         Kitchen sink on a <TextLink href="/devices/seeed-sensecap-indicator">Seeed SenseCAP Indicator</TextLink>:
-        toggles, sliders and counters, redrawn live on the ESP32
+        a slider, then finger painting, redrawn live on the ESP32
       </>
     ),
   },

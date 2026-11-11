@@ -8,6 +8,7 @@ import { cn } from '@/lib/cn';
 /** Full-screen overlay showing `src` at a large size. Closes on click, Escape or the X. */
 export function LightboxOverlay({
   src,
+  video,
   alt,
   caption,
   onClose,
@@ -15,6 +16,8 @@ export function LightboxOverlay({
   onNext,
 }: {
   src: string;
+  /** A clip to loop in place of the image, with `src` as its poster. */
+  video?: string;
   alt: string;
   caption?: React.ReactNode;
   onClose: () => void;
@@ -54,7 +57,22 @@ export function LightboxOverlay({
         <X className="size-5" />
       </button>
       <div className="relative h-[calc(100vh-8rem)] w-full max-w-7xl">
-        <Image src={src} alt={alt} fill sizes="100vw" className="object-contain" priority />
+        {video ? (
+          <video
+            key={video}
+            src={video}
+            poster={src}
+            autoPlay
+            muted
+            loop
+            playsInline
+            role="img"
+            aria-label={alt}
+            className="absolute inset-0 h-full w-full object-contain"
+          />
+        ) : (
+          <Image src={src} alt={alt} fill sizes="100vw" className="object-contain" priority />
+        )}
       </div>
       {onPrev ? (
         <button
