@@ -133,12 +133,10 @@ export default function HomePage() {
             title="Write it like a web app. Run it on an ESP32."
             sub={
               <>
-                A scene&apos;s app is a <code>.tsx</code> file that returns JSX styled with Tailwind classes, with{' '}
-                <code>onClick</code>, sliders, text fields and scrolling lists. On the ESP32-S3 itself, FrameOS lays
-                it out with flexbox and grid and turns it into an SVG tree, then reconciles each render with the
-                last, React-style: unchanged components and text are reused, and only the parts of the screen that
-                changed are redrawn. No browser, and no server sending it screenshots. The same file runs on a
-                Raspberry Pi, on HDMI, on e-paper, and in your browser&apos;s preview.
+                Build a frame&apos;s UI like a web app: a <code>.tsx</code> file with Tailwind classes,{' '}
+                <code>onClick</code>, sliders and text fields. The ESP32 renders it on the chip, React-style,
+                redrawing only what changed - no server, no browser. The same file runs on a Pi, on HDMI, on
+                e-paper and in your browser.
               </>
             }
           />
