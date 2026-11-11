@@ -378,8 +378,20 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* Scenes strip */}
+      {/* Pick your software */}
       <section className="border-t">
+        <div className="mx-auto w-full max-w-4xl px-6 py-20">
+          <SectionTitle
+            kicker="Pick your software"
+            title="How do you want to get started?"
+            sub="All three render on the device, and a frame can move between them without reflashing."
+          />
+          <InstallPathChooser hideHeader />
+        </div>
+      </section>
+
+      {/* Scenes strip */}
+      <section className="border-t bg-fd-card/50">
         <div className="mx-auto w-full max-w-6xl px-6 py-20">
           <SectionTitle
             kicker="Batteries included"
@@ -424,7 +436,7 @@ export default function HomePage() {
       </section>
 
       {/* Case Maker */}
-      <section className="border-t bg-fd-card/50">
+      <section className="border-t">
         <div className="mx-auto grid w-full max-w-6xl items-center gap-10 px-6 py-20 md:grid-cols-2">
           <div>
             <p className="mb-2 text-sm font-semibold uppercase tracking-wider text-fd-primary">
@@ -480,7 +492,7 @@ export default function HomePage() {
       </section>
 
       {/* Video */}
-      <section className="border-t">
+      <section className="border-t bg-fd-card/50">
         <div className="mx-auto w-full max-w-6xl px-6 py-20">
           <SectionTitle
             kicker="Watch a full build (Raspberry Pi)"
@@ -501,7 +513,7 @@ export default function HomePage() {
       </section>
 
       {/* Final CTA */}
-      <section className="border-t bg-fd-card/50">
+      <section className="border-t">
         <div className="mx-auto flex w-full max-w-3xl flex-col items-center gap-6 px-6 py-20 text-center">
           <h2 className="text-3xl font-bold tracking-tight">Build your first frame this weekend</h2>
           <p className="text-fd-muted-foreground">
@@ -531,17 +543,6 @@ export default function HomePage() {
               Newsletter
             </TextLink>
           </div>
-        </div>
-      </section>
-
-      {/* Get started */}
-      <section className="border-t">
-        <div className="mx-auto w-full max-w-4xl px-6 py-20">
-          <SectionTitle
-            title="How do you want to get started?"
-            sub="All three render on the device, and a frame can move between them without reflashing."
-          />
-          <InstallPathChooser hideHeader />
         </div>
       </section>
     </main>
