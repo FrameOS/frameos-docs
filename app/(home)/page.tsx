@@ -1,6 +1,6 @@
 import Link from 'next/link';
 import Image from 'next/image';
-import { ExternalLink } from 'lucide-react';
+import { ExternalLink, Mic, Plug, Sparkles } from 'lucide-react';
 import { InstallPathChooser } from '@/components/install-path-chooser';
 import { Slideshow, type Slide } from '@/components/slideshow';
 import { TextLink } from '@/components/text-link';
@@ -185,6 +185,90 @@ const hardwarePicks = [
     note: 'Spectra 6 that plugs onto a Pi, with four buttons',
     href: '/devices/pimoroni-inky-impression-7-2025',
     image: '/images/devices/pimoroni-inky-impression-spectra-7-1.jpg',
+  },
+];
+
+/** A request, as a chat bubble in the AI cards. */
+function AskBubble({ children }: { children: React.ReactNode }) {
+  return (
+    <p className="ml-auto w-fit max-w-[90%] rounded-2xl rounded-br-sm bg-fd-primary px-3 py-1.5 text-sm text-fd-primary-foreground">
+      {children}
+    </p>
+  );
+}
+
+// The three ways to use AI with FrameOS: guide/cloud#developer, guide/scene-store#ai,
+// guide/esp32#voice-chat. The demos quote the docs' own examples.
+const aiWays: {
+  icon: typeof Plug;
+  title: string;
+  body: React.ReactNode;
+  href: string;
+  linkLabel: string;
+  demo: React.ReactNode;
+}[] = [
+  {
+    icon: Plug,
+    title: 'Connect your own agent',
+    body: (
+      <>
+        Add FrameOS as an MCP server in Claude Code, Cursor or any other MCP client, from FrameOS Cloud or
+        your own backend. Around 80 tools - frames, screenshots, scenes, renders, photo albums - and an
+        agent only changes a frame when you asked it to.
+      </>
+    ),
+    href: '/guide/cloud#developer',
+    linkLabel: 'MCP server',
+    demo: (
+      <pre className="overflow-x-auto rounded-lg bg-fd-secondary p-3 font-mono text-[11px] leading-relaxed text-fd-muted-foreground">
+        <span className="text-fd-foreground">$ claude mcp add \{'\n'}</span>
+        {'  --transport http frameos \\\n'}
+        {'  https://cloud.frameos.net/api/mcp \\\n'}
+        {'  --header "Authorization: Bearer …"'}
+      </pre>
+    ),
+  },
+  {
+    icon: Sparkles,
+    title: 'Ask inside FrameOS Cloud',
+    body: (
+      <>
+        Every scene has an AI panel. Describe the scene or the change: the assistant edits the code,
+        renders the result, looks at it and fixes what&apos;s off, then you save it. Ask on the frames page
+        and it puts scenes on your frames. A self-hosted backend has it too, with your OpenAI key.
+      </>
+    ),
+    href: '/guide/scene-store#ai',
+    linkLabel: 'Scene AI',
+    demo: (
+      <div className="space-y-2">
+        <AskBubble>Make the clock bigger, show the weather for Tallinn</AskBubble>
+        <AskBubble>Put a weather scene on the hallway frame</AskBubble>
+      </div>
+    ),
+  },
+  {
+    icon: Mic,
+    title: 'Hold a button and say it',
+    body: (
+      <>
+        On a frame with a microphone, like the Seeed reTerminal E1002, the Sticky or the Waveshare
+        PhotoPainter, hold the voice key and talk. It switches scenes, changes settings, plays an album,
+        or has the AI build a new scene, shown as a preview until you install it.
+      </>
+    ),
+    href: '/guide/esp32#voice-chat',
+    linkLabel: 'Voice chat',
+    demo: (
+      <div className="space-y-2">
+        <p className="flex items-center gap-2 text-xs font-medium text-fd-muted-foreground">
+          <span className="rounded border bg-fd-secondary px-1.5 py-0.5 font-mono text-[11px] text-fd-foreground">REFRESH</span>
+          held
+          <Mic className="size-3.5 animate-pulse text-fd-primary" aria-hidden="true" />
+        </p>
+        <AskBubble>Make a scene that counts down to Friday</AskBubble>
+      </div>
+    ),
   },
 ];
 
@@ -463,8 +547,34 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* Case Maker */}
+      {/* AI */}
       <section className="border-t">
+        <div className="mx-auto w-full max-w-6xl px-6 py-20">
+          <SectionTitle
+            kicker="AI, if you want it"
+            title="Just ask for a scene"
+            sub="Plug in your own agent, chat with the assistant in FrameOS Cloud, or talk to the frame itself. A scene the AI makes is rendered and checked before it reaches a frame, and a switch in Settings turns AI off."
+          />
+          <div className="grid gap-5 lg:grid-cols-3">
+            {aiWays.map((way) => (
+              <div key={way.title} className="flex flex-col rounded-xl border bg-fd-card p-5">
+                <div className="mb-5 flex min-h-28 flex-col justify-center">{way.demo}</div>
+                <h3 className="flex items-center gap-2 font-semibold">
+                  <way.icon className="size-4 text-fd-primary" aria-hidden="true" />
+                  {way.title}
+                </h3>
+                <p className="mt-2 text-sm text-fd-muted-foreground">{way.body}</p>
+                <TextLink href={way.href} className="mt-auto self-start pt-4 text-sm font-medium">
+                  {way.linkLabel} guide →
+                </TextLink>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Case Maker */}
+      <section className="border-t bg-fd-card/50">
         <div className="mx-auto grid w-full max-w-6xl items-center gap-10 px-6 py-20 md:grid-cols-2">
           <div>
             <p className="mb-2 text-sm font-semibold uppercase tracking-wider text-fd-primary">
@@ -520,7 +630,7 @@ export default function HomePage() {
       </section>
 
       {/* Video */}
-      <section className="border-t bg-fd-card/50">
+      <section className="border-t">
         <div className="mx-auto w-full max-w-6xl px-6 py-20">
           <SectionTitle
             kicker="Watch a full build (Raspberry Pi)"
@@ -541,7 +651,7 @@ export default function HomePage() {
       </section>
 
       {/* Final CTA */}
-      <section className="border-t">
+      <section className="border-t bg-fd-card/50">
         <div className="mx-auto flex w-full max-w-3xl flex-col items-center gap-6 px-6 py-20 text-center">
           <h2 className="text-3xl font-bold tracking-tight">Build your first frame this weekend</h2>
           <p className="text-fd-muted-foreground">
