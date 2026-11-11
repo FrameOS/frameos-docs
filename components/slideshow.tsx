@@ -215,13 +215,15 @@ export function Slideshow({
           <ChevronRight className="size-5" />
         </button>
       </div>
-      {/* Fixed two-line caption height: captions of different lengths must not
-          resize the figure, or everything below it jumps on every slide change. */}
-      <figcaption className="mt-3 flex items-start justify-between gap-4">
-        <span className="line-clamp-2 min-h-[2.5rem] text-sm leading-5 text-fd-muted-foreground">
+      {/* A fixed caption height: captions of different lengths must not resize the
+          figure, or everything below it jumps on every slide change. Below lg the dots
+          get a row of their own above it, so it has the full width; three lines where
+          the column is narrow, two where it's wide. */}
+      <figcaption className="mt-3 flex flex-col gap-2 lg:flex-row lg:items-start lg:justify-between lg:gap-4">
+        <span className="line-clamp-3 min-h-[3.75rem] text-sm leading-5 text-fd-muted-foreground xl:line-clamp-2 xl:min-h-[2.5rem]">
           {slides[index].caption}
         </span>
-        <span className="flex shrink-0 gap-1.5">
+        <span className="order-first flex shrink-0 gap-1.5 self-center lg:order-none lg:self-auto lg:pt-1.5">
           {slides.map((slide, i) => (
             <button
               key={slide.src}

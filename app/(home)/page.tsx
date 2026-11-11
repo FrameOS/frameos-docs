@@ -54,8 +54,8 @@ const frameSlides: Slide[] = [
     caption: (
       <>
         <TextLink href={`${links.sceneStore}/s/form-showcase`}>Form showcase</TextLink> on a{' '}
-        <TextLink href="/devices/seeed-sensecap-indicator">Seeed SenseCAP Indicator</TextLink>, rendered as an SVG via
-        JSX on an ESP32.
+        <TextLink href="/devices/seeed-sensecap-indicator">Seeed SenseCAP Indicator</TextLink>. The entire page is
+        rendered as an SVG via JSX on an ESP32-S3.
       </>
     ),
   },
