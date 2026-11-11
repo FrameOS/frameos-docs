@@ -13,6 +13,8 @@ const THEME_MESSAGE = 'frameos-store:theme';
 // No ready message by then (the store refuses to be framed, or the network is
 // slow): the screenshot stays and the frame goes.
 const READY_TIMEOUT_MS = 20000;
+// How long a frame takes to fade in (the iframe's duration-500).
+const FADE_MS = 500;
 
 type Poster = { src: string; alt: string; width: number; height: number };
 
@@ -86,6 +88,10 @@ export function LiveSceneEmbed({
   // scene picked since starts out as neither, in the very render of the click.
   const [readySrc, setReadySrc] = useState<string | null>(null);
   const [failedSrc, setFailedSrc] = useState<string | null>(null);
+  // The frame on screen once one has come up, and its scene's name: while
+  // another pick loads, it stays there (no screenshot in between), and the new
+  // frame fades in over it.
+  const [shown, setShown] = useState<{ src: string; label: string } | null>(null);
   const dark = useSiteDark();
   const darkRef = useRef(dark);
   darkRef.current = dark;
@@ -96,8 +102,9 @@ export function LiveSceneEmbed({
     url.searchParams.set('theme', loadTheme);
     return url.toString();
   }, [near, scene.src, loadTheme]);
-  const ready = frameSrc !== null && readySrc === frameSrc;
+  const ready = frameSrc !== null && (readySrc === frameSrc || shown?.src === frameSrc);
   const failed = frameSrc !== null && failedSrc === frameSrc;
+  const holding = shown !== null && shown.src !== frameSrc && !failed;
   function pick(i: number) {
     setLoadTheme(darkRef.current ? 'dark' : 'light');
     setIndex(i);
@@ -132,6 +139,8 @@ export function LiveSceneEmbed({
         (event.data as { type?: unknown } | null)?.type === READY_MESSAGE
       ) {
         setReadySrc(frameSrc);
+        // The frame it replaces goes once this one has faded in over it.
+        window.setTimeout(() => setShown({ src: frameSrc, label: scene.label }), FADE_MS + 100);
       }
     };
     window.addEventListener('message', onMessage);
@@ -140,6 +149,7 @@ export function LiveSceneEmbed({
       window.removeEventListener('message', onMessage);
       window.clearTimeout(timer);
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [frameSrc, ready]);
 
   // The site switched between light and dark: so does the editor.
@@ -167,6 +177,8 @@ export function LiveSceneEmbed({
               i === index
                 ? 'border-transparent bg-fd-primary text-fd-primary-foreground'
                 : 'bg-fd-background text-fd-muted-foreground hover:bg-fd-accent hover:text-fd-foreground',
+              // Loading behind the scene on screen.
+              i === index && holding && !ready && 'animate-pulse',
             )}
           >
             {option.label}
@@ -185,7 +197,7 @@ export function LiveSceneEmbed({
         ) : null}
       </div>
       <div ref={boxRef} className="relative">
-        <div className={cn(ready && 'invisible')} aria-hidden={ready || undefined}>
+        <div className={cn((ready || holding) && 'invisible')} aria-hidden={ready || holding || undefined}>
           <div className={cn(scene.posterDark && 'dark:hidden')}>
             <PosterLink key={`${scene.key}-light`} poster={scene.poster} href={scene.href} />
           </div>
@@ -195,6 +207,17 @@ export function LiveSceneEmbed({
             </div>
           ) : null}
         </div>
+        {holding && shown ? (
+          <iframe
+            key={shown.src}
+            src={shown.src}
+            title={`The ${shown.label} scene, live in the FrameOS scene editor`}
+            sandbox="allow-scripts allow-same-origin allow-forms allow-popups allow-popups-to-escape-sandbox allow-top-navigation-by-user-activation allow-downloads"
+            allow="clipboard-write"
+            referrerPolicy="strict-origin-when-cross-origin"
+            className="pointer-events-none absolute inset-0 h-full w-full rounded-xl border bg-fd-background"
+          />
+        ) : null}
         {live ? (
           <iframe
             key={frameSrc}
