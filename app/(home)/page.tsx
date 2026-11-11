@@ -282,14 +282,12 @@ export default function HomePage() {
       <section className="border-t">
         <div className="mx-auto w-full max-w-6xl px-6 py-20">
           <SectionTitle
-            kicker="Made for e-ink"
+            kicker="Made for photography"
             title="Colors that actually look good"
             sub={
               <>
-                A color e-ink panel&apos;s white is a light grey. Dither a photo as is and every bright sky and
-                sunlit face clips to white. FrameOS maps each image&apos;s luminance histogram, and fits its
-                range onto the shades the panel can actually show. We then dither with a hashed jitter to smooth
-                out jagged lines and gradients. Images keep all the detail, while retaining excellent colors.
+                FrameOS maps each image&apos;s luminance histogram, and fits its range onto the shades the panel
+                can actually show. We then dither with a hashed jitter to smooth out jagged lines and gradients.
                 Want more? Grade each photo by hand. Drag the handle to compare.{' '}
                 <TextLink href="/guide/colors">Color controls guide →</TextLink>
               </>
@@ -300,11 +298,18 @@ export default function HomePage() {
             photos={calibrationPhotos}
             width={800}
             height={480}
-            beforeLabel="As is"
-            afterLabel="Calibrated"
+            beforeLabel="Clipped"
+            afterLabel="FrameOS"
           />
           <p className="mt-3 text-center text-sm text-fd-muted-foreground">
             Each pair is the editor&apos;s preview for a 7.3&quot; Spectra 6 panel at its real 800x480 pixels.
+          </p>
+          <p className="mx-auto mt-10 max-w-2xl text-center text-fd-muted-foreground">
+            Keep your pictures in <strong>Photos</strong>, on your own backend or in FrameOS Cloud: drop in
+            albums and folders at any size - a 40-megapixel original is fine, even on an ESP32 - and play an
+            album on any frame, shuffled or in order, cropped to fill or shown whole. Each photo can carry its
+            own color grade, and the frame gets it with the picture.{' '}
+            <TextLink href="/guide/photos">Photos guide&nbsp;→</TextLink>
           </p>
         </div>
       </section>
