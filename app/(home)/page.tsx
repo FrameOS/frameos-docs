@@ -33,8 +33,9 @@ const frameSlides: Slide[] = [
     ),
   },
   {
-    src: '/images/photos/frame-13in3-printing.jpg',
-    alt: 'The 13.3 inch frame being 3D printed on a Bambu Lab printer',
+    src: '/images/photos/frame-13in3-printing-clip.jpg',
+    video: '/videos/frame-13in3-printing.mp4',
+    alt: 'The 13.3 inch frame being 3D printed in rosewood PLA, the print head racing across it, on a Prusa XL',
     caption: (
       <>
         Printing the frame in{' '}
