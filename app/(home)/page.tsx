@@ -50,8 +50,9 @@ const frameSlides: Slide[] = [
     alt: 'Scrolling the Form showcase scene on a Seeed SenseCAP Indicator, picking Lisbon from a city dropdown, then dragging a brightness slider',
     caption: (
       <>
-        Form showcase on a <TextLink href="/devices/seeed-sensecap-indicator">Seeed SenseCAP Indicator</TextLink>,
-        rendered as an SVG via JSX on an ESP32
+        <TextLink href={`${links.sceneStore}/s/form-showcase`}>Form showcase</TextLink> on a{' '}
+        <TextLink href="/devices/seeed-sensecap-indicator">Seeed SenseCAP Indicator</TextLink>, rendered as an SVG via
+        JSX on an ESP32.
       </>
     ),
   },
@@ -74,11 +75,6 @@ const frameSlides: Slide[] = [
     src: '/images/photos/phone-pasta-2.jpg',
     alt: 'Phone scanning the QR code shown on a frame to control it',
     caption: 'Scanning a QR code on a Pimoroni display to control it from a phone, no backend needed',
-  },
-  {
-    src: '/images/photos/slop.jpg',
-    alt: 'AI-generated image and haiku on a 12.48 inch e-ink display',
-    caption: 'All the AI-slop you can generate, if you\'re into that kind of stuff',
   },
 ];
 
