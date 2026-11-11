@@ -55,13 +55,13 @@ const frameSlides: Slide[] = [
     caption: '7.3" and 13.3" panels in 3D-printed cases with print-in-place kickstands',
   },
   {
-    src: '/images/photos/sensecap-kitchen-sink.jpg',
-    video: '/videos/sensecap-kitchen-sink.mp4',
-    alt: 'Opening Kitchen sink on a Seeed SenseCAP Indicator, dragging its brightness slider, then drawing a circle in its Paint tab',
+    src: '/images/photos/sensecap-form-showcase.jpg',
+    video: '/videos/sensecap-form-showcase.mp4',
+    alt: 'Scrolling the Form showcase scene on a Seeed SenseCAP Indicator, picking Lisbon from a city dropdown, then dragging a brightness slider',
     caption: (
       <>
-        Kitchen sink on a <TextLink href="/devices/seeed-sensecap-indicator">Seeed SenseCAP Indicator</TextLink>:
-        a slider, then finger painting, redrawn live on the ESP32
+        Form showcase on a <TextLink href="/devices/seeed-sensecap-indicator">Seeed SenseCAP Indicator</TextLink>:
+        scrolling, a dropdown and a slider, redrawn live on the ESP32
       </>
     ),
   },
