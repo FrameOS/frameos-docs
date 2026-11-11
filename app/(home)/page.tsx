@@ -95,6 +95,7 @@ const jsxDevices = {
 };
 const jsxSceneList: { slug: string; label: string; device: keyof typeof jsxDevices; blurb: string }[] = [
   { slug: 'kitchen-sink', label: 'Kitchen sink', device: 'lcd', blurb: 'switches, a slider you drag, a form with a keyboard on the screen, a paint canvas and Lights Out - six touch pages in one file' },
+  { slug: 'flights-above-me', label: 'Flights', device: 'paper', blurb: 'the planes over a map of your area, from OpenSky' },
   { slug: 'colors', label: 'Colors', device: 'lcd', blurb: 'the Tailwind palette to tap through' },
   { slug: 'map', label: 'Map', device: 'lcd', blurb: 'OpenStreetMap drawn on the chip, to drag and pinch' },
   { slug: 'home', label: 'Home', device: 'lcd', blurb: 'a smart home panel to tap through' },
@@ -102,7 +103,6 @@ const jsxSceneList: { slug: string; label: string; device: keyof typeof jsxDevic
   { slug: 'gallery', label: 'Gallery', device: 'lcd', blurb: 'full-screen pictures from the FrameOS gallery - swipe for the next one or pick a category' },
   { slug: 'dvd-logo-bounce', label: 'DVD', device: 'lcd', blurb: 'the bouncing logo, an <svg> in JSX drawn about 30 times a second' },
   { slug: 'rainbow-clock', label: 'Rainbow clock', device: 'paper', blurb: 'an SVG clock written in JSX, dithered to the panel\'s six inks' },
-  { slug: 'flights-above-me', label: 'Flights', device: 'paper', blurb: 'the planes over a map of your area, from OpenSky' },
 ];
 const jsxScenes: EmbedScene[] = jsxSceneList.map(({ slug, label, device, blurb }) => {
   const d = jsxDevices[device];

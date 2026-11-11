@@ -213,7 +213,9 @@ export function LiveSceneEmbed({
             src={shown.src}
             title={`The ${shown.label} scene, live in the FrameOS scene editor`}
             sandbox="allow-scripts allow-same-origin allow-forms allow-popups allow-popups-to-escape-sandbox allow-top-navigation-by-user-activation allow-downloads"
-            allow="clipboard-write"
+            // Location for the scenes that ask for it (Flights' Locate),
+            // after the browser's own prompt.
+            allow="clipboard-write; geolocation"
             referrerPolicy="strict-origin-when-cross-origin"
             className="pointer-events-none absolute inset-0 h-full w-full rounded-xl border bg-fd-background"
           />
@@ -228,7 +230,9 @@ export function LiveSceneEmbed({
             // workers. Its bar's Back, Sign in, Fork, Install and AI open the
             // scene's page in this window, on a click; its zip downloads.
             sandbox="allow-scripts allow-same-origin allow-forms allow-popups allow-popups-to-escape-sandbox allow-top-navigation-by-user-activation allow-downloads"
-            allow="clipboard-write"
+            // Location for the scenes that ask for it (Flights' Locate),
+            // after the browser's own prompt.
+            allow="clipboard-write; geolocation"
             referrerPolicy="strict-origin-when-cross-origin"
             className={cn(
               'absolute inset-0 h-full w-full rounded-xl border bg-fd-background transition-opacity duration-500',
