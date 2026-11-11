@@ -45,16 +45,6 @@ const frameSlides: Slide[] = [
     ),
   },
   {
-    src: '/images/photos/hdmi-framebuffer.jpg',
-    alt: 'A portable HDMI monitor showing the FrameOS welcome screen from a Raspberry Pi',
-    caption: 'HDMI works too: a Pi Zero 2W with a portable 1080p monitor, managed from FrameOS Cloud',
-  },
-  {
-    src: '/images/photos/IMG_5975.jpg',
-    alt: 'Two e-ink frames with 3D-printed kickstands',
-    caption: '7.3" and 13.3" panels in 3D-printed cases with print-in-place kickstands',
-  },
-  {
     src: '/images/photos/sensecap-form-showcase.jpg',
     video: '/videos/sensecap-form-showcase.mp4',
     alt: 'Scrolling the Form showcase scene on a Seeed SenseCAP Indicator, picking Lisbon from a city dropdown, then dragging a brightness slider',
@@ -64,6 +54,16 @@ const frameSlides: Slide[] = [
         scrolling, a dropdown and a slider, redrawn live on the ESP32
       </>
     ),
+  },
+  {
+    src: '/images/photos/hdmi-framebuffer.jpg',
+    alt: 'A portable HDMI monitor showing the FrameOS welcome screen from a Raspberry Pi',
+    caption: 'HDMI works too: a Pi Zero 2W with a portable 1080p monitor, managed from FrameOS Cloud',
+  },
+  {
+    src: '/images/photos/IMG_5975.jpg',
+    alt: 'Two e-ink frames with 3D-printed kickstands',
+    caption: '7.3" and 13.3" panels in 3D-printed cases with print-in-place kickstands',
   },
   {
     src: '/images/photos/spectra6-vs-acep.jpg',
