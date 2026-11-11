@@ -309,107 +309,6 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* Case Maker */}
-      <section className="border-t bg-fd-card/50">
-        <div className="mx-auto grid w-full max-w-6xl items-center gap-10 px-6 py-20 md:grid-cols-2">
-          <div>
-            <p className="mb-2 text-sm font-semibold uppercase tracking-wider text-fd-primary">
-              Case Maker
-            </p>
-            <h2 className="mb-4 text-3xl font-bold tracking-tight">
-              Design a printable case around your exact frame
-            </h2>
-            <div className="flex flex-col gap-3 text-fd-muted-foreground">
-              <p>
-                The FrameOS Case Maker generates parametric, 3D-printable enclosures for supported
-                panels and Raspberry Pi layouts. Pick a template, tune the depth and bezel, add
-                wall mounts, kickstands, USB-C cutouts and screw posts, then download the STL.
-              </p>
-              <p>
-                It is built for the same hardware database as the docs, so common Waveshare and
-                Pimoroni builds start from sane dimensions instead of a blank CAD file.
-              </p>
-            </div>
-            <div className="mt-5 flex flex-wrap gap-3">
-              <Link
-                href={links.caseMaker}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center gap-2 rounded-lg bg-fd-primary px-5 py-2.5 font-medium text-fd-primary-foreground transition-opacity hover:opacity-90"
-              >
-                Open Case Maker
-                <ExternalLink className="size-4" aria-hidden="true" />
-              </Link>
-              <Link
-                href="/cases"
-                className="inline-flex items-center rounded-lg border px-5 py-2.5 font-medium transition-colors hover:bg-fd-accent"
-              >
-                Read the case guide
-              </Link>
-            </div>
-          </div>
-          <Link
-            href={links.caseMaker}
-            target="_blank"
-            rel="noopener noreferrer"
-            aria-label="Open the FrameOS Case Maker"
-          >
-            <Image
-              src="/images/guide/casemaker.png"
-              alt="The FrameOS Case Maker interface for configuring a 3D-printed frame enclosure"
-              width={2558}
-              height={1970}
-              className="aspect-[4/3] w-full rounded-xl border object-cover object-top"
-            />
-          </Link>
-        </div>
-      </section>
-
-      {/* Scenes strip */}
-      <section className="border-t">
-        <div className="mx-auto w-full max-w-6xl px-6 py-20">
-          <SectionTitle
-            kicker="Batteries included"
-            title="Deploy a scene in your first five minutes"
-            sub="SD card images, calendars, agendas, message boards, weather, AI art, and much more. Installable with one click, editable down to the source. Combine them, schedule them, make them yours."
-          />
-          <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">
-            {sceneStrip.map((s) => (
-              <Link
-                key={s.src}
-                href={`${links.sceneStore}/s/${s.slug}`}
-                target="_blank"
-                rel="noopener noreferrer"
-                title={`${s.alt} - open in the scene store`}
-                className="block overflow-hidden rounded-lg border transition-opacity hover:opacity-80"
-              >
-                <Image
-                  src={s.src}
-                  alt={s.alt}
-                  width={400}
-                  height={300}
-                  className="aspect-[4/3] w-full object-cover"
-                />
-              </Link>
-            ))}
-          </div>
-          <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
-            <Link
-              href={links.sceneStore}
-              className="inline-flex items-center gap-2 rounded-lg bg-fd-primary px-5 py-2.5 font-medium text-fd-primary-foreground transition-opacity hover:opacity-90"
-            >
-              Browse the scene store
-            </Link>
-            <Link
-              href="/guide/scene-store"
-              className="inline-flex items-center rounded-lg border px-5 py-2.5 font-medium transition-colors hover:bg-fd-accent"
-            >
-              How installing works
-            </Link>
-          </div>
-        </div>
-      </section>
-
       {/* Raspberry Pi or ESP32 */}
       <section className="border-t bg-fd-card/50">
         <div className="mx-auto w-full max-w-6xl px-6 py-20">
@@ -474,6 +373,107 @@ export default function HomePage() {
             </Link>
           ))}
         </div>
+        </div>
+      </section>
+
+      {/* Scenes strip */}
+      <section className="border-t">
+        <div className="mx-auto w-full max-w-6xl px-6 py-20">
+          <SectionTitle
+            kicker="Batteries included"
+            title="Deploy a scene in your first five minutes"
+            sub="SD card images, calendars, agendas, message boards, weather, AI art, and much more. Installable with one click, editable down to the source. Combine them, schedule them, make them yours."
+          />
+          <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">
+            {sceneStrip.map((s) => (
+              <Link
+                key={s.src}
+                href={`${links.sceneStore}/s/${s.slug}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                title={`${s.alt} - open in the scene store`}
+                className="block overflow-hidden rounded-lg border transition-opacity hover:opacity-80"
+              >
+                <Image
+                  src={s.src}
+                  alt={s.alt}
+                  width={400}
+                  height={300}
+                  className="aspect-[4/3] w-full object-cover"
+                />
+              </Link>
+            ))}
+          </div>
+          <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
+            <Link
+              href={links.sceneStore}
+              className="inline-flex items-center gap-2 rounded-lg bg-fd-primary px-5 py-2.5 font-medium text-fd-primary-foreground transition-opacity hover:opacity-90"
+            >
+              Browse the scene store
+            </Link>
+            <Link
+              href="/guide/scene-store"
+              className="inline-flex items-center rounded-lg border px-5 py-2.5 font-medium transition-colors hover:bg-fd-accent"
+            >
+              How installing works
+            </Link>
+          </div>
+        </div>
+      </section>
+
+      {/* Case Maker */}
+      <section className="border-t bg-fd-card/50">
+        <div className="mx-auto grid w-full max-w-6xl items-center gap-10 px-6 py-20 md:grid-cols-2">
+          <div>
+            <p className="mb-2 text-sm font-semibold uppercase tracking-wider text-fd-primary">
+              Case Maker
+            </p>
+            <h2 className="mb-4 text-3xl font-bold tracking-tight">
+              Design a printable case around your exact frame
+            </h2>
+            <div className="flex flex-col gap-3 text-fd-muted-foreground">
+              <p>
+                The FrameOS Case Maker generates parametric, 3D-printable enclosures for supported
+                panels and Raspberry Pi layouts. Pick a template, tune the depth and bezel, add
+                wall mounts, kickstands, USB-C cutouts and screw posts, then download the STL.
+              </p>
+              <p>
+                It is built for the same hardware database as the docs, so common Waveshare and
+                Pimoroni builds start from sane dimensions instead of a blank CAD file.
+              </p>
+            </div>
+            <div className="mt-5 flex flex-wrap gap-3">
+              <Link
+                href={links.caseMaker}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-2 rounded-lg bg-fd-primary px-5 py-2.5 font-medium text-fd-primary-foreground transition-opacity hover:opacity-90"
+              >
+                Open Case Maker
+                <ExternalLink className="size-4" aria-hidden="true" />
+              </Link>
+              <Link
+                href="/cases"
+                className="inline-flex items-center rounded-lg border px-5 py-2.5 font-medium transition-colors hover:bg-fd-accent"
+              >
+                Read the case guide
+              </Link>
+            </div>
+          </div>
+          <Link
+            href={links.caseMaker}
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="Open the FrameOS Case Maker"
+          >
+            <Image
+              src="/images/guide/casemaker.png"
+              alt="The FrameOS Case Maker interface for configuring a 3D-printed frame enclosure"
+              width={2558}
+              height={1970}
+              className="aspect-[4/3] w-full rounded-xl border object-cover object-top"
+            />
+          </Link>
         </div>
       </section>
 
