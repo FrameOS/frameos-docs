@@ -134,8 +134,10 @@ export default function HomePage() {
             sub={
               <>
                 A scene&apos;s app is a <code>.tsx</code> file that returns JSX styled with Tailwind classes, with{' '}
-                <code>onClick</code>, sliders, text fields and scrolling lists. The ESP32-S3 parses it, lays it out
-                and draws it by itself - no browser, and no server sending it screenshots. The same file runs on a
+                <code>onClick</code>, sliders, text fields and scrolling lists. On the ESP32-S3 itself, FrameOS lays
+                it out with flexbox and grid and turns it into an SVG tree, then reconciles each render with the
+                last, React-style: unchanged components and text are reused, and only the parts of the screen that
+                changed are redrawn. No browser, and no server sending it screenshots. The same file runs on a
                 Raspberry Pi, on HDMI, on e-paper, and in your browser&apos;s preview.
               </>
             }
