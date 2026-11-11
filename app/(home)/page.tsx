@@ -91,7 +91,7 @@ const sceneHalves: { title: string; blurb: string; scenes: SceneThumb[] }[] = [
   {
     title: 'Real time',
     blurb:
-      'Dashboards, lists and controls for touch screens. A tap answers in under a tenth of a second, and animations run at about 29 fps, even on an ESP32.',
+      'Dashboards, lists and controls for touch screens. Tuned for the ESP32, where a tap answers in under a tenth of a second and animations run at about 29 fps, and even smoother on a Raspberry Pi.',
     scenes: [
       { name: 'Home', src: '/images/scenes/samples/home.jpg', alt: 'Home scene with toggles for the lights, heating and front door', slug: 'home' },
       { name: 'To-do', src: '/images/scenes/samples/to-do.jpg', alt: 'To-do scene with a checklist for today', slug: 'to-do' },
@@ -281,7 +281,7 @@ const aiWays: {
   },
 ];
 
-function SectionTitle({ kicker, title, sub }: { kicker?: string; title: string; sub?: React.ReactNode }) {
+function SectionTitle({ kicker, title, sub }: { kicker?: string; title: React.ReactNode; sub?: React.ReactNode }) {
   return (
     <div className="mx-auto mb-10 max-w-2xl text-center">
       {kicker && <p className="mb-2 text-sm font-semibold uppercase tracking-wider text-fd-primary">{kicker}</p>}
@@ -325,13 +325,21 @@ export default function HomePage() {
         <div className="mx-auto w-full max-w-6xl px-6 py-20">
           <SectionTitle
             kicker="JSX + Tailwind on a microcontroller"
-            title="Write it like a web app. Run it on an ESP32."
+            title={
+              <>
+                <s className="text-fd-muted-foreground/60 decoration-2">Write</s> Prompt it like a web app.{' '}
+                <br className="hidden md:inline" />
+                Run it on an ESP32.
+              </>
+            }
             sub={
               <>
                 Build a frame&apos;s UI like a web app: a <code>.tsx</code> file with Tailwind classes,{' '}
                 <code>onClick</code>, sliders and text fields, which all build up to an SVG. The ESP32 renders it
                 on the chip, React-style, redrawing only what changed - no server, no browser. The same file runs
                 on a Pi, on HDMI, on e-paper and in your browser.
+                {/* The editor below is live only where it loads: wide screens (LiveSceneEmbed). */}
+                <span className="hidden md:inline"> Try it below, it&apos;s live!</span>
               </>
             }
           />
