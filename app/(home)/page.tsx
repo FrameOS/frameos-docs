@@ -99,6 +99,8 @@ const jsxSceneList: { slug: string; label: string; device: keyof typeof jsxDevic
   { slug: 'map', label: 'Map', device: 'lcd', blurb: 'OpenStreetMap drawn on the chip, to drag and pinch' },
   { slug: 'home', label: 'Home', device: 'lcd', blurb: 'a smart home panel to tap through' },
   { slug: 'weather-demo', label: 'Weather', device: 'lcd', blurb: 'a week of made-up weather - tap a day for its details' },
+  { slug: 'gallery', label: 'Gallery', device: 'lcd', blurb: 'full-screen pictures from the FrameOS gallery - swipe for the next one or pick a category' },
+  { slug: 'dvd-logo-bounce', label: 'DVD', device: 'lcd', blurb: 'the bouncing logo, an <svg> in JSX drawn about 30 times a second' },
   { slug: 'rainbow-clock', label: 'Rainbow clock', device: 'paper', blurb: 'an SVG clock written in JSX, dithered to the panel\'s six inks' },
   { slug: 'flights-above-me', label: 'Flights', device: 'paper', blurb: 'the planes over a map of your area, from OpenSky' },
 ];
@@ -450,7 +452,7 @@ export default function HomePage() {
             caption="An ESP32-S3 wired to a Waveshare 7.3&quot; e-paper HAT, rendering a scene on the chip"
           />
         </div>
-        <div className="mx-auto mt-12 grid max-w-5xl grid-cols-2 gap-4 md:grid-cols-4">
+        <div className="mx-auto mt-12 grid max-w-5xl grid-cols-2 gap-4 lg:grid-cols-4">
           {hardwarePicks.map((pick) => (
             <Link
               key={pick.href}
@@ -461,12 +463,12 @@ export default function HomePage() {
                 src={pick.image}
                 alt={pick.name}
                 fill
-                sizes="(min-width: 768px) 25vw, 50vw"
+                sizes="(min-width: 1024px) 25vw, 50vw"
                 className="object-cover transition-transform duration-300 group-hover:scale-105"
               />
-              <div className="absolute inset-x-0 bottom-0 flex flex-col gap-0.5 bg-gradient-to-t from-black/85 via-black/60 to-transparent p-4 pt-12 text-white">
+              <div className="absolute inset-x-0 bottom-0 flex flex-col gap-0.5 bg-gradient-to-t from-black/85 via-black/60 to-transparent px-3.5 pb-4 pt-12 text-white">
                 <span className="text-xs font-semibold uppercase tracking-wider text-white/80">{pick.best}</span>
-                <span className="font-semibold leading-snug group-hover:underline">{pick.name}</span>
+                <span className="text-sm font-semibold leading-snug group-hover:underline">{pick.name}</span>
                 <span className="hidden text-sm leading-snug text-white/80 sm:block">{pick.note}</span>
               </div>
             </Link>
