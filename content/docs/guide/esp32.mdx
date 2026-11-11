@@ -172,7 +172,12 @@ survive to the next render - keep values in scene state or `frameos.remember()`
 ([JavaScript apps](/guide/apps#javascript-apps)).
 
 Scenes are stored one file per scene, so a frame can hold many of them (up to 32, or 512&nbsp;KB
-of scene JSON) while keeping only the active one parsed in memory. Switching scenes - from the
+of scene JSON) while keeping only the active one parsed in memory. Each one is added, replaced or
+removed on its own: the backend and the cloud send only what changed, so a push that changed one
+scene of twenty writes one, and **Push & activate** has it on an awake frame's screen in a second or
+two, plus the scene's own first render. A changed scene is written whole before the old one goes,
+so a power cut or a full partition leaves the scene that worked. The frame's page shows how much
+of the scene storage is free, and each scene tile shows its size on the frame. Switching scenes - from the
 backend, an event, a button or the schedule - loads the new one and drops the old. A scene that
 ran the board out of memory is skipped at the next boot - the frame starts on the next scene
 instead of looping.
@@ -279,6 +284,15 @@ fallback - `NotoColorEmoji.ttf` is 10&nbsp;MB of bitmaps with no outlines to dra
   route except `/ping` needs the frame's API key or its admin login; firmware
   before 2026.10.21 answered a request without them with *Authentication required* but still
   carried it out, so update a frame on an older release.
+- **Settings on the frame itself**: on a touch board, the scene settings you swipe down for have a
+  gear that opens the frame's own page - the Wi-Fi network (with a scan and *Other network…*) and
+  its password, the rotation, the [scale](/guide/settings#render-scale), the date and time when
+  it's offline, the battery and the signal, **Check for updates** and **Install update**, and
+  **Render again**, **Restart FrameOS** and **Reboot**. An update installed there gets the same
+  signature checks as one from the backend or the cloud. A frame you change there tells its
+  control plane its new rotation and scale. Turn the page off with
+  [Frame settings on the screen](/guide/settings#on-screen); `set settings_unlock 1` on the USB
+  console brings it back whatever the control plane says.
 - **Logs and metrics** stream to the backend, and the last 128 lines are kept in a ring buffer on
   the device, readable over the serial console when the network is down. When the backend doesn't
   answer, the frame keeps its lines and tries again once a minute instead of waiting out a timeout
@@ -361,8 +375,8 @@ knows what the last sentence did. A sentence can be up to 30 seconds long.
 - **Which key**: a [button action](#button-actions) set to *Voice chat*, always on a long press -
   the frame listens while the key is held and stops when it's let go.
 - **What it may do**: four switches under **Settings → Buzzer, LED and microphone → Voice chat
-  may**. *Change settings*, *Use installed scenes* and *Access photo albums* are on by default;
-  *Create new scenes* is off until you turn it on. A picture or scene made by voice lands on the
+  may**: *Change settings*, *Use installed scenes*, *Create new scenes* and *Access photo albums*,
+  all on until you switch one off, so "show a picture of a chicken" works out of the box. A picture or scene made by voice lands on the
   frame as a preview, never on its saved list: the scene list shows it with **Install** and
   **Discard** ([preview on frame](/guide/scenes#push-activate-preview)).
 - **What it needs**: the OpenAI key the AI chat uses - **Settings → OpenAI** on the backend; your
@@ -375,26 +389,35 @@ The [SenseCAP Indicator](/devices/seeed-sensecap-indicator) brings a 4" 480×480
 to the ESP32. An LCD changes what a microcontroller frame can do:
 
 - **Animation.** A scene whose render interval is under a second runs back to back: the store's
-  *DVD Logo Bounce* moves at about 20 frames a second, and the board checks for new scenes,
-  settings and commands once a second meanwhile. The scene draws straight into the LCD's own frame
-  buffer, and only the part of the picture that changed is drawn again.
+  *DVD Logo Bounce*, written in JSX, moves at about 29 frames a second, and the board's talk with
+  the backend - scenes, settings, commands, logs and the picture - runs on a task of its own
+  meanwhile. The scene draws straight into the LCD's own frame buffer, and only the part of the
+  picture that changed is drawn again.
 - **Touch.** The touch glass of the Indicator, the [reTerminal Sticky](/devices/seeed-reterminal-sticky)
   and the [E1003](/devices/seeed-reterminal-e1003) reaches scenes as the same `pointerDown`,
   `pointerMove`, `pointerUp`, `tap`, `doubleTap`, `longPress` and `swipe` events a Pi's
   touchscreen sends ([details](/guide/scenes#input)). A swipe in from the screen's edge is the
-  frame's: out of the box on the Indicator and the E1003 it's the
+  frame's: out of the box on the Indicator, the Sticky and the E1003 it's the
   [scene switcher, the scene settings, back and forward](/guide/scenes#input), or whichever
   [button action](#button-actions) you bind. A touch on a dark screen only turns it on. Build touch
   interfaces with [JSX and Tailwind classes](/guide/apps#jsx-uis), which have fields with a keyboard
-  on the screen.
+  on the screen: on the SenseCAP Indicator a tap on a JSX home panel is back on the glass in about
+  85&nbsp;ms. A touch board boots straight into its scenes and joins WiFi in the background, so it
+  never opens the setup hotspot by itself. On touch e-paper only the changed part of the panel is
+  refreshed while you tap, `hover:` and `active:` are not drawn (each would cost a refresh), and with
+  **Touch beep** on, a press that something takes clicks at once, before the picture can answer.
 - **Display on and off.** *Display on*, *Display off* and *Display on/off* switch the backlight,
   and nothing renders while it's dark. Over HTTP they're the `turnOn`, `turnOff` and `toggleScreen`
   [events](/guide/api#esp32).
-- **Scene switches.** A switch that hasn't put its first picture up within 200 ms shows three
-  pulsing dots until it does.
+- **Slow renders.** A scene switch, a tap or a refresh that hasn't put its picture up within
+  200 ms shows three pulsing dots until it does. Animations never show them.
+- **Storing scenes.** While a push writes scenes to flash, the LCD shows the FrameOS mark and
+  *Updating*: a flash write stops the chip from refreshing the screen, so the picture would tear.
+  The new scene replaces it when it's stored.
 - **Boot.** The FrameOS mark shows on black while the board starts, with a line saying what it's
   waiting for (*Connecting to Wi-Fi*, *Updating firmware*, *Starting*), and an LCD renders as soon
-  as WiFi is up rather than waiting for the clock.
+  as WiFi is up rather than waiting for the clock. A frame whose setup hotspot is up shows a QR
+  code your phone joins it with, and the password and address under it.
 
 ## Battery and deep sleep [#power]
 
@@ -418,6 +441,10 @@ scene is too slow for its interval. Below 3% battery the
 frame skips the refresh and sleeps for six hours rather than cycling a flat cell into damage - and
 it takes two readings a moment apart and two passes in a row to believe it, so one noisy ADC
 sample can't park a healthy cell in the six-hour sleep.
+
+**Input keeps it awake.** After a button press or a tap, a deep-sleeping frame stays up for five
+minutes (**Stay awake after a press or tap** under Power), so the next one is answered at once
+instead of waking it again.
 
 **Buttons wake the frame.** Every GPIO button on a wake-capable pin is armed as a wake source
 next to the timer. A press brings the frame up early and reaches the scene like any
@@ -460,7 +487,8 @@ The reTerminal E-series also carry a charger and a clock chip, which FrameOS rea
 so it doesn't deep-sleep on your desk - and the metrics show whether the cell is charging. The
 clock sets the time on a cold boot, before WiFi is up, and every time sync writes it back. The
 [reTerminal Sticky](/devices/seeed-reterminal-sticky) has a fuel gauge instead of a divider, which
-reports the charge itself.
+reports the charge itself, and the [PhotoPainter](/devices/waveshare-esp32-s3-photopainter)
+reads its cell and its charging from its power chip.
 
 ## How fast is it? [#performance]
 
@@ -486,9 +514,11 @@ before you flash rather than leaving you with a frame that can't render.
 The scene canvas is claimed once from PSRAM before WiFi starts and reused for every render. Its
 format is decided by the panel first:
 
-- **A grey or black-and-white panel draws in one byte per pixel.** Sixteen grey levels need no
-  color, so an 800×480 black-and-white canvas is 384&nbsp;KB instead of 1.5&nbsp;MB, and the
-  [E1003](/devices/seeed-reterminal-e1003)'s 1872×1404 fits in 2.5&nbsp;MB.
+- **A grey or black-and-white panel draws in one byte per pixel.** Grey levels need no color, so
+  an 800×480 black-and-white canvas is 384&nbsp;KB instead of 1.5&nbsp;MB. A sixteen-grey panel
+  draws in four bits, in its controller's own layout, so the
+  [E1003](/devices/seeed-reterminal-e1003)'s 1872×1404 is 1.3&nbsp;MB and goes to the panel as it
+  is.
 - **A color e-paper panel draws in full color when two canvases fit in PSRAM, 16-bit RGB565
   otherwise.** An 800×480 panel on 8&nbsp;MB and a 1200×1600 panel on 16&nbsp;MB render in full
   color; a 1200×1600 panel on an 8&nbsp;MB module - the
@@ -537,7 +567,7 @@ Straight, so you can decide before you buy:
   the backend. (`GET /status` does report the chip, the hardware preset, and internal heap and
   largest-block figures - useful when a thin client runs out of memory.)
 - **It's slow.** Seconds per render on e-paper, not milliseconds. On the SenseCAP Indicator's LCD a
-  simple animation runs at about 20 frames a second and a tap answers in a fraction of a second,
+  simple animation runs at about 29 frames a second and a tap answers in under a tenth of a second,
   but that's still no Pi 5 at 60.
 - **PSRAM is the ceiling.** No PSRAM means thin-client mode, where the backend has to be reachable
   at render time.

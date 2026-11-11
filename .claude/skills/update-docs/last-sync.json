@@ -1,7 +1,7 @@
 {
-  "frameos_sha": "cc1f792c5f09594f9f023a21c21ba4adb3f88a55",
-  "frameos_version": "2026.11.0",
-  "synced_at": "2026-11-02",
+  "frameos_sha": "d321185f22b03e78105588e0e683ebc608d9cd97",
+  "frameos_version": "2026.11.6",
+  "synced_at": "2026-11-11",
   "docs_commit": null,
-  "previous_frameos_sha": "57ac392de420bad2da0079792ce3c060d74d32f2"
+  "previous_frameos_sha": "cc1f792c5f09594f9f023a21c21ba4adb3f88a55"
 }

@@ -1,10 +1,10 @@
 ---
 title: Virtual frames
-description: Run a frame with no hardware at all - the backend renders the scene and serves it as an image URL and a self-refreshing kiosk page.
+description: Run a frame with no hardware at all - the backend or FrameOS Cloud renders the scene and serves it as an image URL and a self-refreshing page.
 ---
 
-A **virtual frame** is a frame with no device behind it. The backend renders its scenes and
-serves the result two ways:
+A **virtual frame** is a frame with no device behind it. A [self-hosted backend](/guide/backend)
+renders its scenes and serves the result two ways:
 
 - **An image URL** - one PNG per request, at whatever size and color mode you picked.
 - **A self-refreshing page** - a black, full-bleed kiosk page that swaps the image in place on
@@ -12,10 +12,10 @@ serves the result two ways:
 
 Both URLs appear in the frame's settings once it is added.
 
-<Callout type="warn" title="Self-hosted backend only">
-  Virtual frames exist only in the [self-hosted backend](/guide/backend), since it is the backend
-  that renders them. [FrameOS Cloud](/guide/cloud) never renders on your behalf, so it has no
-  virtual frames.
+<Callout title="Self-hosted backend and FrameOS Cloud">
+  Both have virtual frames. On a backend they're free and as many as you like, since your own
+  machine renders them. In [FrameOS Cloud](/guide/cloud) they're part of the paid plans - see
+  [below](#in-frameos-cloud).
 </Callout>
 
 ## What it's for
@@ -51,6 +51,18 @@ From there it's an ordinary frame: install scenes, edit them in the
   panel-specific behaviour - has nothing to talk to.
 
 Everything else works: the same apps, the same scenes, the same state fields.
+
+## In FrameOS Cloud [#in-frameos-cloud]
+
+The cloud renders virtual frames too, on the paid plans: one for each dollar of the plan a month
+(two on the $2 plan, nine on the $9 one), none on Free. **Add frame → Virtual frame** creates one,
+and its settings hold its size and a private link that shows the picture and nothing else - open
+it in a browser on a spare screen, an old tablet, a TV or a dashboard. It renders when you push a
+scene or ask for a render, and on its interval while someone has the link open, but no more often
+than every five minutes.
+
+From there it's managed like any cloud frame - scenes, the editor, the schedule, the activity
+trail - minus what needs a body: assets, metrics, reboots and firmware updates.
 
 ## Sharing the URLs
 

@@ -24,7 +24,7 @@ device:
       url: "https://wiki.seeedstudio.com/seeed_epaper_displays/"
   platforms:
     - "esp32-s3"
-  status: "untested"
+  status: "tested"
 ---
 
 The **Seeed reTerminal Sticky** is a pocket-sized 3.97" e-ink board with an ESP32-S3
@@ -40,7 +40,10 @@ The preset also brings:
   next ([button actions](/guide/esp32#button-actions)), and AI held is the
   [voice chat](/guide/esp32#voice-chat): hold it, say what you want, let go.
 - **Touch**: the glass sends taps, long presses and swipes to scenes like a Pi touchscreen
-  ([input events](/guide/scenes#input)), and a touch wakes a sleeping frame.
+  ([input events](/guide/scenes#input)), and a touch wakes a sleeping frame. Only the parts of the
+  panel that changed are refreshed, so a tap answers at once, and the edges are bound like the
+  other touch boards': up from the bottom for the [scene switcher](/guide/scenes#input), down from
+  the top for the scene's settings. With **Touch beep** on, a press that something takes clicks.
 - **The battery gauge**: the Sticky's fuel gauge reports the charge and whether it's on USB, so
   the frame deep-sleeps on its cell and stays connected when plugged in.
 - **The TF card** for assets.
@@ -58,6 +61,5 @@ Small panel, small battery: this is a good candidate for
 
 ## Status
 
-🟡 **Should work, not yet confirmed on real hardware.** The keys, touch, microphone and gauge
-follow Seeed's hardware specification and haven't been tried on a board yet.
-Tell us on [GitHub](https://github.com/FrameOS/frameos/issues/new) or [Discord](https://discord.gg/9dT9y7EzUw) if you try it.
+🟢 **Confirmed working** - tested on real hardware: touch, partial refresh, taps that answer at
+once, and edge swipes.

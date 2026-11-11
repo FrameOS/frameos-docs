@@ -41,9 +41,9 @@ A Pi keeps rendering while its display is off, so `turnOn` brings back the curre
 
 ### From Home Assistant [#home-assistant]
 
-The Home Assistant add-on doesn't create an entity for the display. A
-[`rest_command`](https://www.home-assistant.io/integrations/rest_command/) does the job, and works
-for any frame, add-on or not:
+A frame shared from a self-hosted backend has a **Display** switch in
+[Home Assistant](/guide/backend#home-assistant) already. For any other frame, a
+[`rest_command`](https://www.home-assistant.io/integrations/rest_command/) does the job:
 
 ```yaml title="configuration.yaml"
 rest_command:
@@ -304,10 +304,13 @@ Either one can send every event the board accepts, device events included.
 | `POST /api/action/scene` | Switches scene, with the form field `scene_id`. |
 | `POST /api/action/commands`, `/scenes_sync` | Pull queued commands or scenes from the backend now. |
 | `POST /api/action/remount-sd`, `/format-sd` | SD card maintenance. |
-| `POST /api/setup` | The setup form. |
+| `GET /api/setup`, `POST /api/setup` | The setup form's values, and saving them. |
 | `GET /api/frames`, `/api/frames/<id>` | The frame's details. |
 | `GET /api/frames/<id>/ping`, `/state`, `/states`, `/uploaded_scenes`, `/image`, `/scene_images/<id>`, `/logs`, `/metrics`, `/assets`, `/asset` | The same answers under the frame's id. Logs and metrics are only here. |
 | `POST /api/frames/<id>` | Saves settings. |
+| `GET /api/frames/<id>/scenes`, `/api/frames/<id>/scenes/<sceneId>` | The scenes on the board with their sizes and the free space, or one scene's JSON. |
+| `POST /api/frames/<id>/scenes` | Adds or replaces one scene, its JSON as the body, leaving the others alone. `?activate=1` also shows it. |
+| `POST /api/frames/<id>/scenes/delete?id=<sceneId>` | Removes one scene. A refused change answers `400`, `404` or `500` with the reason. |
 | `POST /api/frames/<id>/event/<name>`, `/reload`, `/upload_scenes`, `/assets/upload`, `/assets/mkdir`, `/assets/delete`, `/assets/rename`, `/assets/remount-sd`, `/assets/format-sd` | The same actions under the frame's id. |
 
 Four things to watch for:

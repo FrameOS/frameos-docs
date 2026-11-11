@@ -1,6 +1,6 @@
 ---
 title: Editing scenes
-description: Build scenes visually with the node-based editor - events, apps, data sources and state.
+description: Build scenes visually with the node-based editor - events, apps, data sources, state, nested scenes and layouts.
 ---
 
 A **scene** is what a frame shows: a graph of connected nodes that runs on the device. Scenes are
@@ -87,6 +87,61 @@ own interval is the fastest it renders, so set it to the quick cell's pace; each
 say when that cell renders. A render asked for from outside - a button, the API, the schedule -
 redraws every cell.
 
+In a [JSX app](/guide/apps#jsx-uis), `<Scene id="weather" />` does the same inside a UI: another
+scene of the frame drawn into a box, on its own schedule, with the tag's props as its state, and
+taps on it reach it in its own coordinates. Up to eight fit in one UI, and the scene draws straight
+into its part of the canvas - a dashboard of scene tiles redraws only the tile that's due.
+
+## Layouts [#layouts]
+
+A **layout** is a scene that wraps your other scenes: a taskbar with the clock and the battery, a
+newspaper masthead, a Polaroid border.
+
+![The Windows 98 layout: a gray taskbar with Start, the scene's button, Control Panel and a clock, around a scene](/images/scenes/samples/windows-98-layout.jpg)
+
+![The Front page layout: a newspaper masthead with the date and the scene's name above the scene](/images/scenes/samples/front-page-layout.jpg)
+
+It's one [JSX app](/guide/apps#jsx-uis) with a `<yield />` where the scene goes:
+
+```tsx title="app.tsx"
+export function get(app: FrameOSApp) {
+  const now = new Date()
+  frameos.setNextSleep(60 - now.getSeconds()) // nothing to redraw until the minute changes
+  return (
+    <div className="flex flex-col bg-slate-900 text-white">
+      <yield />
+      <div className="flex justify-between px-4 py-2 text-xl">
+        <span onClick={() => frameos.dispatch('sceneSwitcher')}>{app.frame.sceneName}</span>
+        <span>{now.toTimeString().slice(0, 5)}</span>
+      </div>
+    </div>
+  )
+}
+```
+
+The scene draws straight into the hole and keeps its own schedule, and the chrome around it redraws
+only when it's due, so a 20 fps animation inside a clock bar pays for the bar only when the clock
+changes. Taps go to whatever is under them. A layout's app can read `app.frame.sceneName`, `app.frame.batteryPercent` and
+`app.frame.wifiRssi`, and open the frame's own screens with `frameos.dispatch('sceneSwitcher')`,
+`frameos.dispatch('sceneSettings')` and `frameos.dispatch('sceneSettings', { page: 'frame' })`.
+
+- **Starters**: *Top bar*, *Bottom bar*, *Side rail*, *Windows 98*, *Polaroid*, *Front page*,
+  *Terminal* and *Gallery wall* are one click away under **New layout** in the frame's Layouts group,
+  and the [scene store](/guide/scene-store) has a Layouts shelf.
+- **Any scene can be one**: **Use as layout** in its settings turns it into a layout and back, if
+  its render is one JSX app with a `<yield />` - the switch says why when it isn't. A layout stays
+  out of the scene list, the switcher and next/previous, and a frame never boots to one.
+- **Wearing one**: **Activate** in a layout's drawer puts it on every scene and pushes it, and
+  **Deactivate** takes it off. A scene added later wears it too. Each scene can pick its own under
+  **Advanced** in the frame's [Layout setting](/guide/settings#layout), and the frame's on-screen
+  settings can change it on the device.
+- **Around the built-in screens**: the scene switcher and the settings open inside the layout, so
+  a taskbar stays up. A layout that wants them full-screen returns a bare `<yield />` while
+  `app.frame.systemScene` is true.
+- **Safe mode**: a layout can make a frame hard to use. Ten pulls down from the top edge of a touch
+  screen, each within five seconds of the last, open the frame's settings without the layout:
+  **Cancel** goes back as it was, and only **Save** changes anything.
+
 ## Buttons, touch and keyboards [#input]
 
 A frame's GPIO buttons reach a scene as two events:
@@ -110,16 +165,17 @@ The older `mouseMove` / `mouseDown` / `mouseUp` names keep working. The *Touch t
 *Keyboard test* sample scenes show every event as it arrives. The browser preview sends the same
 events from your mouse and keyboard, and a preview button you hold down is held like a frame's key.
 The touch screens of [ESP32 boards](/guide/esp32#lcd) send the same
-pointer events and gestures, and a touch `longPress` is held a second, like a button's. A swipe that starts at the very edge of a touch screen is the frame's (`edgeSwipe`) and
+pointer events and gestures. A touch `longPress` is held half a second, as on a phone; a
+button's is a second. A swipe that starts at the very edge of a touch screen is the frame's (`edgeSwipe`) and
 never reaches the scene.
 
-**Swipes in from the edge.** On every HyperPixel, the SenseCAP Indicator and the reTerminal E1003,
-the edges come bound to the frame:
+**Swipes in from the edge.** On every HyperPixel, the SenseCAP Indicator and the reTerminal E1003
+and Sticky, the edges come bound to the frame:
 
 | Swipe | What it does |
 | --- | --- |
 | Up from the bottom | The **scene switcher**: every scene on the frame as a tile, in the frame's order. Tap one to show it. |
-| Down from the top | The **scene settings**: the public fields of the scene showing, as a form, with a keyboard on the screen. **Save** applies them; **Cancel** or the same swipe goes back as it was. |
+| Down from the top | The **scene settings**: the public fields of the scene showing, as a form, with a keyboard on the screen. **Save** applies them; **Cancel** or the same swipe goes back as it was. The gear left of **Save** opens the [frame's own settings](/guide/settings#on-screen). |
 | In from the left | `back`, delivered to the scene: the photo or the page before. |
 | In from the right | `forward`, the other way. |
 
@@ -129,6 +185,8 @@ and in the settings `back` is Cancel. Both screens close themselves if left alon
 after 60 seconds (five minutes on e-paper), the settings after five minutes. A press on the
 on-screen keyboard is always a key, even on the outer keys at the edge of the glass.
 
+The switcher's tiles keep one size however many scenes there are. A Pi shows a picture of each
+scene; an ESP32 shows name cards, which open in a moment where pictures from flash took seconds.
 The switcher works without touch too. On e-paper it's black on white and the keys walk a highlight:
 `next` and `prev` step, `primary`, `refresh` and `menu` show the scene, `back` goes back. E-paper
 without touch doesn't come with a binding for it, so add one under **Button actions** (a double
@@ -148,9 +206,10 @@ and your frame has the keys it has. Two maps sit between them:
 A `setCurrentScene` event can name a `direction` (`next` or `prev`) instead of a scene, to walk the
 frame's scene list.
 
-On an LCD - an HDMI screen, a HyperPixel, the SenseCAP Indicator - a scene switch that hasn't put
-its first picture up within 200 ms shows three pulsing dots over the old picture until it does.
-A quick switch looks as it always did.
+On an LCD - an HDMI screen, a HyperPixel, the SenseCAP Indicator - any render that hasn't put its
+picture up within 200 ms shows three pulsing dots over the old picture until it does: a scene
+switch, a slow tap, a slow refresh. A quick one looks as it always did, and animations never show
+them.
 
 ## Code nodes
 
@@ -214,6 +273,10 @@ the frame doesn't have your latest edits, plain **Activate** (or **Apply**) once
 scene and the scenes it draws or switches to - settings and your other unsaved edits stay where
 they are. **Preview** runs the scene in your browser with the values in the drawer, and **Reset**
 puts them back. Scenes are *pushed*; settings and FrameOS itself are *deployed*.
+
+Installing a scene - from the store, the Scenes page, or dropped on a frame's tile - saves it and
+pushes it to the frame without changing what's showing. **Install & activate**, in the install
+dialog and on every catalog row, does both in one push.
 
 Two ways to see a scene without committing to it:
 

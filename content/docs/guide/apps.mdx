@@ -36,8 +36,8 @@ leaving the original untouched.
 Many of the apps that fetch photos and data are JavaScript apps that travel inside the scene, so
 they change without a firmware release and you can fork them like your own: FrameOS Gallery,
 Unsplash, Wikimedia Commons, Google Photos, Immich, OpenAI Image and Text, Home Assistant Sensor,
-Weather (Open-Meteo), the Belgian recycling calendar, Chart, Photo album and Events to
-Agenda. The rest of the built-in apps are
+Weather (Open-Meteo), the Belgian recycling calendar, Chart, Calendar, iCal to Events, Photo album
+and Events to Agenda. The rest of the built-in apps are
 compiled Nim, so in an [interpreted scene](/guide/scenes#execution) their source opens
 **read only**, with an **Open in GitHub** link; to customize one, write a JavaScript app or an
 inline code node instead. In a legacy compiled scene on a Raspberry Pi, a scene-local Nim app
@@ -77,6 +77,37 @@ which downloads and decodes natively, straight into the canvas on an ESP32, so t
 enter the JavaScript heap. They return text, JSON, SVG markup, or images, and plug
 into scenes exactly like the built-in ones. They work on every kind of frame, and they're the
 **only** option on [ESP32](/guide/esp32) and [Pico](/guide/pico) boards.
+
+Text too big for the heap - a 6&nbsp;MB calendar feed - is read a line at a time. Give the field
+`"capabilities": { "byteIter": {} }` in `config.json` and the download stays on disk; then
+`frameos.openLines()` and `frameos.nextLine()` read it through one 8&nbsp;KB window, keeping only
+the lines you ask for, and `frameos.nextBlock()` hands over a whole record at once:
+
+```ts
+const lines = frameos.openLines(app.config.feed, { unfold: true, only: ['BEGIN:VEVENT', 'SUMMARY'] })
+let line
+while ((line = frameos.nextLine(lines)) !== null) {
+  if (line.startsWith('BEGIN:VEVENT')) {
+    const record = frameos.nextBlock(lines, 'END:VEVENT')
+  }
+}
+```
+
+That's how *iCal to Events* reads a real calendar in under 1&nbsp;MB of heap. `frameos.timeZone()`
+gives an app a zone's offsets, for wall-clock arithmetic in any zone.
+
+An app can hear the frame's events without an event node: name them under `events` in its
+`config.json` (`"*"` for all of them but finger motion) and export `onEvent`. Return `true` to
+draw the scene again:
+
+```tsx
+export function onEvent(app, context) {
+  if (context.event === 'button') frameos.setState('presses', (app.state.presses || 0) + 1)
+  return true
+}
+```
+
+`frameos.dispatch(event, payload)` goes the other way and sends an event, as a dispatch node does.
 
 An app that returns an image should size it by the canvas it's handed - `context.imageWidth` and
 `imageHeight`, already turned with the frame - never by the panel. When the picture's destination
@@ -137,6 +168,8 @@ export function get(app: FrameOSApp) {
 }
 ```
 
+![The Now playing scene's app.tsx in the scene store's editor, next to its preview as a SenseCAP Indicator inside the ESP32's memory limit](/images/editor/jsx-now-playing-esp32.png)
+
 - **An `<svg>`** is drawn exactly as the same markup would be, without the markup being written
   or parsed.
 - **Anything else is a UI**, laid out at the size of the node's image: block and flex layout
@@ -148,15 +181,21 @@ export function get(app: FrameOSApp) {
   `onPointerMove` and `onSwipe` run on a touch screen's or a mouse's events, and the frame renders
   again after each. An event says where the pointer is in its element (`localX`, `localY`) and
   how big the element is (`width`, `height`), so `e.localX / e.width` is how far
-  along a slider a finger is on any frame. `hover:`, `active:` and `group-hover:` classes follow
-  the pointer. On e-paper every one of those is a refresh, so they're for LCDs, HyperPixels, the
-  browser preview and the [SenseCAP Indicator](/devices/seeed-sensecap-indicator).
+  along a slider a finger is on any frame. A mouse passing over an element sends it moves too, with
+  `e.buttons` at 0, so a slider should follow a move only while `e.buttons` says something is held.
+  `hover:`, `active:` and `group-hover:` classes follow the pointer on LCDs, HyperPixels, the
+  browser preview and the [SenseCAP Indicator](/devices/seeed-sensecap-indicator). E-paper doesn't
+  draw them, since each would cost a refresh: there one tap is one render.
 - **Fields to type into**: `<input>` and `<textarea>` are controlled as in React,
   with `value`, `onChange` or `onInput` (`e.target.value`), `onKeyDown`, `placeholder`, the
   `password` and `number` types, and `focus:` and `placeholder:` classes. A tap gives the field
   the keyboard, with the caret where you tapped. A frame with no keyboard of its own - always on
   an ESP32 - draws a US one on the screen under the UI and scrolls the field into view, and a
-  `number` field gets a number pad.
+  `number` field gets a number pad. Hold a key for its accents, or a letter for the symbol in its
+  corner; backspace repeats, and dragging the space bar moves the caret. In a `<textarea>`, Up and
+  Down move a line, and one with more text than fits scrolls by itself.
+- **Select boxes**: `<select>` with its `<option>`s, controlled as in React. A tap opens the list
+  on top of everything, as wide as the select, scrolling what doesn't fit.
 - **Boxes that scroll**: `overflow-y-auto` follows a finger or the mouse wheel, with
   a scroll bar, and `overflow-hidden` clips to a rectangle.
 - **Laid out for a smaller screen**: a `.tsx` or `.jsx` app lays out at the panel's
@@ -169,7 +208,23 @@ export function get(app: FrameOSApp) {
   tap.
 - **Canvases**: `frameos.canvas(key, width, height, color)` is a picture the app draws into with
   `frameos.draw(canvas, <line … />)`, kept between renders - a paint page, a chart that grows a
-  point at a time.
+  point at a time. `image-rendering="pixelated"` on an `<img>` scales it as hard-edged pixels.
+- **Other scenes inside**: `<Scene id="…" />` draws another scene of the frame into a box, on its
+  own schedule ([scenes inside scenes](/guide/scenes#scenes-inside-scenes)), and a
+  [layout](/guide/scenes#layouts) is a UI with a `<yield />` where the scene it wraps goes.
+- **What the frame knows**: `app.frame.color` is false on black-and-white and grey panels, so a UI
+  can switch to high contrast there; `app.frame.paper` says a change costs a refresh;
+  `app.frame.batteryPercent` and `app.frame.wifiRssi` are what the hardware reports, and undefined
+  where it can't say.
+
+Two habits from the browser to drop: a UI reads class names only, so a size in `style={{…}}` is
+ignored - put a computed one in a bracket class, `` className={`p-[${pad}px] text-[${size}px]`} ``.
+And a flex item has no automatic minimum width, so give the parts that keep their width `shrink-0`
+or a `w-*`, and the long text `flex-1`.
+
+The scene AI draws this way too: anything a scene draws itself, it writes as an `app.tsx` returning
+JSX, and the store's samples - *Analog clock face*, *Word clock*, *Chess puzzle of the day*, *Day
+agenda*, *Now playing*, *Home* - are good ones to read.
 
 Not there yet: rounded clipping, shadows, transforms, letter spacing, and selecting text in a field.
 

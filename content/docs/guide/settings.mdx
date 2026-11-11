@@ -1,6 +1,6 @@
 ---
 title: Useful settings
-description: Access keys, QR codes, asset storage, button actions, voice chat, power management, nightly reboots and debug logging.
+description: Access keys, QR codes, settings on the frame's screen, layouts, asset storage, button actions, voice chat, power management, nightly reboots and debug logging.
 ---
 
 A tour of the most useful options under a frame's **Settings** tab. Unless noted otherwise, each
@@ -19,6 +19,27 @@ Each frame's HTTP server (port `8787`) has three access modes - **private**, **p
 
 By default the frame overlays its control URL as a QR code on the display. You can position it,
 restyle it, or turn it off entirely.
+
+## Settings on the frame's screen [#on-screen]
+
+On a touch frame - a HyperPixel, a Pi touch display, the SenseCAP Indicator, the reTerminal E1003
+and Sticky - a swipe down from the top opens the scene's settings, and a gear left of **Save**
+opens the frame's own page: the WiFi network and password, the rotation, the
+[scale](#render-scale), the date and time on an offline ESP32, the battery and the signal, an
+update check, and **Render again**, **Restart FrameOS** and **Reboot**. A rotation or scale changed
+there reaches the backend or the cloud too, so the two stay in step.
+
+**Frame settings on the screen**, on by default, decides whether that gear is there at all. Switch
+it off for a frame in a public place and the screen offers the scene's settings only. Someone with
+the device in hand can always get it back: a file named `frameos-settings-unlock` on a Pi's boot
+partition, or `set settings_unlock 1` on an ESP32's USB console.
+
+## Layout [#layout]
+
+**Layout** wraps every scene on the frame in a [layout](/guide/scenes#layouts) - a taskbar, a clock
+bar, a Polaroid border - and its gear sets the layout's own fields. Each scene's own choice is
+under **Advanced**. The frame's on-screen settings have the same select, and what's picked there
+is the frame's to keep until **As each scene says** is picked again.
 
 ## Assets [#assets]
 
@@ -75,11 +96,14 @@ ESP32 boards get a **Buzzer, LED and microphone** box under the buttons:
 
 - **Button beep GPIO** and **Button beep tone (Hz)**: boards with a buzzer - the Seeed
   reTerminals - click when a press registers.
+- **Touch beep**: on touch e-paper, a click the moment something on the screen takes a press - a
+  button, a field, a scene that listens - and another when it lifts, since the picture takes a
+  moment to answer. While what you asked for loads, the buzzer chirps quietly.
 - **Status LED GPIO** and its type: the reTerminal E-series' green LED lights with the buzzer's
   notes. The placeholder shows the board's own pin.
 - **Microphone GPIO** (clock, data, power) and the **Voice chat** switch, with the four **Voice
   chat may** switches under it: *Change settings*, *Use installed scenes*, *Create new scenes*
-  (off by default) and *Access photo albums*. See [voice chat](/guide/esp32#voice-chat). The voice
+  and *Access photo albums*, all on until you switch one off. See [voice chat](/guide/esp32#voice-chat). The voice
   chat controls only show on a frame with a microphone: the E1001/E1002/E1003 presets have one,
   the E1004 doesn't, and filling in the pins of one you added makes them appear.
 
@@ -96,7 +120,8 @@ sleeping only while on battery, aligning wake-ups to wall-clock boundaries, waki
 pick up queued commands, and battery voltage sensing (the ADC pin, the divider ratio and, on
 boards that switch the divider, its enable pin - the hardware presets fill these in). A sleeping
 ESP32 also wakes on any of its GPIO buttons, and the frame list says **asleep · wakes in 5 min**
-while it's down. A Raspberry Pi is always awake and always wall-powered, so it has none of this.
+while it's down. **Stay awake after a press or tap** keeps it up for a while after someone uses it -
+five minutes by default - so the next press is answered at once. A Raspberry Pi is always awake and always wall-powered, so it has none of this.
 
 ## Nightly reboot
 
@@ -120,9 +145,11 @@ canvas is the panel divided by the scale, lays its UI out at that size, and what
 drawn sharp at the panel's full size. An app that fetches for its size asks for less too: at 2, a
 quarter of the data.
 
-**Automatic**, the default, is the panel's shorter edge over 600 pixels, rounded down to a quarter
-and never below 1: 800×480 and 720×720 stay at 1, 1200×1600 is 2, 1872×1404 is 2.25. A scene can
-override it in its own settings, or with a numeric state field whose role is `renderScale`. On an
+**Automatic**, the default, is 1 - and 2 on a 4K or bigger screen on HDMI. Above 1 a UI is laid
+out smaller and drawn bigger; at 0.75, 0.5 or 0.25 it gets more room than the panel has and
+everything is drawn smaller. A scene can override it in its own settings, or with a numeric state
+field whose role is `renderScale`. The scale is also on the frame's own
+[settings page](#on-screen), and the scene switcher and settings follow it. On an
 ESP32's console it's `set render_scale 2`, with `0` for automatic. Plain `.js` and `.ts` apps keep
 the panel's pixels, and a picture an app hands over as pixels is stretched, so it goes soft where
 vectors stay sharp.

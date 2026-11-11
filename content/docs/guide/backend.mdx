@@ -58,6 +58,39 @@ source needs a [build host](/guide/settings#builds-self-hosted-backend-only) con
 **Settings → Builds**. Browser flashing of ESP32 boards needs the add-on reached over `https://`
 or `localhost` - behind plain-`http://` ingress there is no Web Serial.
 
+Frames talk to the backend on port `8989`. To serve that port over HTTPS, switch on the add-on's
+`ssl` option and name the `certfile` and `keyfile` in Home Assistant's `/ssl` folder, as the
+Mosquitto and Node-RED add-ons do. In a plain container, set `FRAMEOS_SSL_CERTFILE` and
+`FRAMEOS_SSL_KEYFILE`. New frames then start out pointed at `https://<host>:8989`, and an address
+typed anywhere - with its `https://` and port - is read as it's written. A configured file that's
+missing stops the backend with the reason in the log, rather than serving plain HTTP to frames told
+to use HTTPS.
+
+### Frames in Home Assistant [#home-assistant]
+
+Switch on **Settings → Home Assistant → Share frames with Home Assistant** and every frame becomes a
+Home Assistant device over MQTT. As an add-on, the broker and the connection are found by
+themselves; a backend elsewhere needs the Home Assistant URL, a long-lived access token and an MQTT
+login. Each frame gets:
+
+| Entity | What it does |
+| --- | --- |
+| **Image** | The latest render, scaled to fit an MQTT message. |
+| **Status**, **Last seen** | Sensors. |
+| **Scene** (sensor) | The scene showing. Its attributes are that scene's public fields, so a template reads `state_attr('sensor.kitchen_frame_scene', 'fields').city`. |
+| **Scene** (select) | Pick a scene to show it. |
+| **Display** | A switch: the panel or backlight on and off. |
+| **Refresh image** | Fetches what the panel shows now, without touching the scene. |
+| **Re-render** | Runs the scene again - a random-photo scene moves to its next photo. |
+| **Next scene**, **Previous scene**, **Restart FrameOS**, **Reboot** | Buttons. |
+
+For anything else, publish to the frame's `frameos/frame/<project id>/<frame id>/command` topic:
+`{"scene": "Weather", "state": {"city": "Paris"}}` shows a scene with its settings in one go, and
+`{"event": "render"}` sends any event the frame's [HTTP API](/guide/api#events) accepts. The
+frames' events arrive on Home Assistant's event bus as `frameos_event`, ready to trigger
+automations. Anyone who can publish on the broker can command the frames, so protect it as you
+would Home Assistant itself. FrameOS Cloud has no Home Assistant link.
+
 ## Running via Docker manually
 
 This is what the install script does under the hood:

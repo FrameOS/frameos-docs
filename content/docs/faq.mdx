@@ -34,7 +34,8 @@ over the air with automatic rollback. It deep-sleeps between refreshes and wakes
 press, so battery-powered frames are real. On boards with a microphone you can
 [hold a key and talk to it](/guide/esp32#voice-chat), and the
 [SenseCAP Indicator](/devices/seeed-sensecap-indicator)'s touch LCD runs animations and tap-driven
-interfaces.
+interfaces written in [JSX and Tailwind](/guide/apps#jsx-uis), answering a tap in under a tenth of a
+second.
 
 The short list of what a microcontroller frame *can't* do: Waveshare-family SPI e-paper plus a
 couple of special panels only (no HDMI, no other LCDs, no Pimoroni HATs), no custom Nim apps
@@ -59,7 +60,8 @@ proxy, no resize server, no `?width=` parameters. See
 ## Can I run a frame with no hardware? [#virtual]
 
 Yes - a [virtual frame](/guide/virtual) is rendered by the backend and served as an image URL and
-a self-refreshing kiosk page. Point an old tablet, a browser or a signage player at it and you
+a self-refreshing kiosk page, or rendered by FrameOS Cloud on a paid plan and shown at a private
+link. Point an old tablet, a browser or a signage player at it and you
 have a frame with nothing installed on the device. It's also the fastest way to try FrameOS while
 you wait for a panel to arrive.
 
@@ -78,7 +80,8 @@ the frame on the network. When connectivity returns, everything catches up on th
 
 ## How fast can it render?
 
-On a Raspberry Pi 5 over HDMI: up to **60 frames per second**. On e-ink, the panel itself is the
+On a Raspberry Pi 5 over HDMI: up to **60 frames per second**; on an ESP32-S3 with a 480×480 LCD,
+about 29. On e-ink, the panel itself is the
 bottleneck - color e-ink takes ~15-30 seconds per refresh, monochrome panels a second or two.
 FrameOS only refreshes the physical display when the rendered image actually changed, so e-ink
 panels don't flash needlessly.
@@ -107,10 +110,12 @@ own, on the frames home and on every frame.
 
 ## Does it integrate with Home Assistant?
 
-Three ways: the backend runs as a [Home Assistant add-on](/guide/backend#home-assistant-add-on);
-the **HA Sensor** app pulls any Home Assistant entity into a scene; and HA automations can drive
-frames through the [HTTP API](/guide/api#home-assistant) - change text, switch scenes, trigger
-renders, turn the display off and on.
+Four ways: the backend runs as a [Home Assistant add-on](/guide/backend#home-assistant-add-on);
+it can [share every frame with Home Assistant](/guide/backend#home-assistant) as a device - its
+picture, a scene select, a display switch, buttons and the scene's settings; the **HA Sensor** app
+pulls any Home Assistant entity into a scene; and HA automations can drive any frame through the
+[HTTP API](/guide/api#home-assistant) - change text, switch scenes, trigger renders, turn the
+display off and on.
 
 ## How do I share scenes or apps I made?
 

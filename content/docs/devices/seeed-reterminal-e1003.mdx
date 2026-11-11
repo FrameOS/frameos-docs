@@ -22,7 +22,7 @@ device:
       url: "https://wiki.seeedstudio.com/getting_started_with_reterminal_e1003/"
   platforms:
     - "esp32-s3"
-  status: "untested"
+  status: "tested"
 ---
 
 The **Seeed reTerminal E1003** is the 10.3" model in the reTerminal E-series: a 1404×1872
@@ -39,14 +39,22 @@ scenes on the device. Pick the **Seeed reTerminal E1003** hardware preset
   [Waveshare 10.3" HAT](/devices/waveshare-epd-10in3) - tuned for this board. Between refreshes
   the controller keeps its picture, so only the rows that changed are sent: a whole frame is about
   half a second on the wire, a clock's digits a few milliseconds. The board's temperature sensor
-  feeds the refresh, as the panel needs.
-- **Memory**: a grayscale panel needs no color, so the scene canvas takes one byte per pixel -
-  2.5&nbsp;MB for 1872×1404 - and leaves the 8&nbsp;MB of PSRAM room for scenes and apps.
+  feeds the refresh, as the panel needs. While you tap, one fast update covers everything that
+  changed, and the greys get their full-quality pass once you stop, so a page turn is on the glass
+  in about a second. Quick pictures - an animation, a slideshow on a short timer - go up the same
+  fast way.
+- **Memory**: the scene canvas is four bits a pixel, laid out the way the IT8951 wants it -
+  1.3&nbsp;MB for 1872×1404 - so the picture goes to the panel as it is, and the 8&nbsp;MB of
+  PSRAM keeps room for scenes, apps and full-size photos. Every shade is dithered as it's drawn,
+  so gradients stay smooth.
 - **Touch**: taps, long presses and swipes reach scenes like a Pi touchscreen's
   ([input events](/guide/scenes#input)), and [JSX interfaces](/guide/apps#jsx-uis) can be tapped.
   The edges are bound to the frame too: swipe up from the bottom
   for the [scene switcher](/guide/scenes#input), down from the top for the scene's settings, and
-  in from the left or right for the scene's own back and forward.
+  in from the left or right for the scene's own back and forward. A tap keeps a deep-sleeping frame
+  awake for five minutes (**Stay awake after a press or tap**, under Power), so the next one is
+  answered at once. The [Windows 98 layout](/guide/scenes#layouts) - a taskbar with Start, the
+  scene's button, the battery and the clock - fits it well.
 - **Keys and voice**: REFRESH, LEFT and RIGHT on GPIO 3, 4 and 5. Out of the box LEFT held is the
   previous scene, RIGHT held the next, and REFRESH held is the [voice chat](/guide/esp32#voice-chat):
   hold it, say what you want, let go. Change them under
@@ -66,7 +74,5 @@ scenes on the device. Pick the **Seeed reTerminal E1003** hardware preset
 
 ## Status
 
-🟡 **Should work, not yet confirmed on real hardware.** The pins come from Seeed's examples and
-board files; nobody has run FrameOS on an E1003 yet. If you have one, tell us on
-[GitHub](https://github.com/FrameOS/frameos/issues/new) or
-[Discord](https://discord.gg/9dT9y7EzUw) how it goes.
+🟢 **Confirmed working** - tested on real hardware: the panel with partial refresh, touch and edge
+swipes, the scene switcher, and full-size photos in Gallery.

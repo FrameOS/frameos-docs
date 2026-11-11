@@ -7,15 +7,29 @@ description: Browse, preview, fork and install community scenes from scenes.fram
 galleries, message boards, generative art - published by the community and by the FrameOS
 project, and installable on any frame. Signed in to [FrameOS Cloud](/guide/cloud), the same store
 is the first page of **Scenes** in the rail; on a backend it's **Scenes → Public scene store**.
-Scenes sit on shelves by category - *Real time* is the one for scenes that redraw every second -
-with their install counts, sorted by **Most installed**, **Latest** or **A to Z**.
+Scenes sit on shelves by category - *Real time* is the one for scenes that redraw every second,
+*Layouts* the one for [layouts](/guide/scenes#layouts) that wrap other scenes - with their install
+counts, sorted by **Most installed**, **Latest** or **A to Z**.
 
-Each scene page is a small workspace with four panels you can toggle - **Info** (publisher,
-install count, the FrameOS version it needs, description and gallery), **Editor** (the same
-node-graph [scene editor](/guide/scenes) the backend has, so you can read exactly what a scene
-does before you install it), **AI** ([edit it in plain language](#ai)) and **Preview**, a **live
-preview rendered in your browser**. A version dropdown in the bar swaps the whole workspace to any
-published version, and **Download .zip** hands you the scene as a file.
+Each scene page is a small workspace with three panels you can toggle - **Editor**, **AI**
+([edit it in plain language](#ai)) and **Preview**, a **live preview rendered in your browser**. A
+version dropdown in the bar swaps the whole workspace to any published version, and **Download
+.zip** hands you the scene as a file.
+
+The editor is a tree of files beside a pane, every folder open:
+
+- **template.json** comes first and opens first: the scene's listing - publisher, install count,
+  the FrameOS version it needs, description, gallery, category, tags and sharing - as a form, with
+  its JSON one click away.
+- **A folder per scene**, named after it. Its `scene.json` opens the same node-graph
+  [scene editor](/guide/scenes) the backend has, so you can read exactly what a scene does before
+  you install it.
+- **A folder per app** the scene carries, under its scene: `app.tsx`, `config.json` (as a form) and
+  any other files, each opening in the pane with Save and Discard above it. A node's **Edit app**
+  selects its app in the tree. FrameOS's own built-in apps aren't files of the scene and open over
+  the pane instead.
+
+![The Now playing scene in the store: the file tree with template.json, the scene's folder and its app's files, app.tsx open in the pane, and the live preview beside it](/images/editor/jsx-now-playing-esp32.png)
 
 The preview is the real FrameOS renderer compiled to WebAssembly, and it can show the scene the
 way a panel would: tick **Dither** and pick the panel to simulate - Spectra 6, 7-color ACeP,
@@ -45,7 +59,9 @@ The **Install** button opens one dialog with every way in:
   within seconds (or as soon as an offline frame reconnects). The frame remembers where the scene came from and which version it is on.
   When a newer version is published, the scene's image says **Update available** - on the cloud, a
   backend and the frame's own admin page - and **Update to latest** in its **…** menu takes it
-  there.
+  there. Each version names the FrameOS release it needs: a frame on an older one isn't offered
+  that update, and an install that would move it there says to update the frame first.
+  **Install & activate** adds the scene and shows it in one push.
 - **On a self-hosted backend**: copy the **Install on a self-hosted FrameOS** link and paste it
   into the search box of a frame's **Add scene** drawer in the backend. You rarely need the link:
   **Add scene → Scene store** lists the public store on every backend, linked to a cloud account or

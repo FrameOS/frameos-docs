@@ -175,6 +175,12 @@ previews, schedules and signed over-the-air updates. PSRAM-less boards (ESP32-C3
 TRMNL, XTEINK X4) would need the cloud to render every refresh for them, which it doesn't offer
 yet - their enrolment is refused. Run those from a [self-hosted backend](/guide/backend).
 
+### A virtual frame
+
+On a paid plan, **Add frame → Virtual frame** makes a frame with no hardware at all: the cloud
+renders its scenes and shows the picture at a private link, for a browser on a spare screen, a
+tablet or a TV. See [virtual frames](/guide/virtual#in-frameos-cloud).
+
 <Callout>
   Every path offers **Start it with the scenes from…** an existing frame, so a second kitchen frame
   can be a clone of the first. Scenes are copied; assets on the SD card are not. Every path also
@@ -224,14 +230,15 @@ and its scenes at `/frames/<id>/scenes/<sceneId>`.
   response cap, palette, [colors](/guide/colors) and
   partial-refresh policy, GPIO buttons, [local network access](#local-network-access), and on
   ESP32 the [power options](/guide/esp32#power) - deep sleep, battery pins and the
-  battery enable pin - and the button beep. Also
+  battery enable pin, how long it stays awake after a tap - the button and touch beep, and
+  whether the frame's own screen offers its [settings page](/guide/settings#on-screen). Also
   [button actions](/guide/esp32#button-actions), and on an ESP32 the status LED, the microphone's
   pins and the [voice chat](/guide/esp32#voice-chat) with its four permission switches. A Pi's **Display driver** can be
   switched too: the frame runs the new driver's setup and restarts or reboots
   by itself. An ESP32's GPIO buttons show as the board reports them, with **Edit buttons** to
   change them. Everything else about the device - WiFi, mount points, an ESP32's panel - is owned
-  by the device. A setting newer than the frame's firmware is shown disabled with the version it
-  needs.
+  by the device. A rotation or scale someone changes on the frame's own screen shows up here too.
+  A setting newer than the frame's firmware is shown disabled with the version it needs.
 - **Schedule.** Scene switches, events, and `restart`/`reboot` entries, evaluated on the frame in
   its own time zone.
 - **Logs and metrics.** Off by default for privacy: flip **Ship logs and metrics to the cloud**
@@ -340,9 +347,11 @@ storage per account, 100 MB of backups, 100 MB of logs, and 250 MB of [photos](/
 **Settings → Usage** shows where you stand, and under **Need more?** the plans: **Free**,
 **Private** ($2 to $29 a month, 40 to 160 frames) and **Business** ($49 to $499, 199 to 999
 frames, with priority support). A slider sets the price, and $N a month is N times the free plan's
-storage. Sharing frames, virtual frames and SSO with SAML are planned for the paid plans and not
-part of them yet. A paid plan is bought by card from the same page and can be changed or cancelled
-there at any time. The account, enrolling and managing frames,
+storage plus N [virtual frames](/guide/virtual#in-frameos-cloud). Sharing frames and SSO with SAML
+are planned for the paid plans and not part of them yet. A paid plan is bought by card from the same
+page and can be changed or cancelled there at any time: **Your plan** then leads it - when it renews,
+**Card and billing details**, and **Cancel plan**, which runs to the end of the month you paid for -
+and **Invoices** lists each one with its VAT and a PDF. The account, enrolling and managing frames,
 and installing public store scenes are meant to stay free; nothing security-related (two-factor
 auth, revocation, signed updates, the sandbox) will ever be paywalled. [Pricing](/pricing) has the
 full table and the reasoning.
