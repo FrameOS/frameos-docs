@@ -5,6 +5,7 @@ import { InstallPathChooser } from '@/components/install-path-chooser';
 import { Slideshow, type Slide } from '@/components/slideshow';
 import { TextLink } from '@/components/text-link';
 import { LightboxImage } from '@/components/lightbox';
+import { LiveSceneEmbed } from '@/components/live-scene-embed';
 import { CompareGallery, type ComparePhoto } from '@/components/compare-gallery';
 import { links } from '@/lib/shared';
 
@@ -239,20 +240,34 @@ export default function HomePage() {
               </>
             }
           />
-          <LightboxImage
-            src="/images/editor/jsx-now-playing-esp32.png"
-            alt="The FrameOS scene editor on scenes.frameos.net: the Now playing scene's app.tsx with JSX and Tailwind classes on the left, and its live preview on the right, rendered as a Seeed SenseCAP Indicator with the ESP32's 8 MB memory limit"
-            width={3200}
-            height={1800}
-            className="mx-auto max-w-5xl"
-            caption="Now playing in the scene editor, previewed as a SenseCAP Indicator inside the ESP32's 8 MB of memory"
+          <LiveSceneEmbed
+            src={`${links.sceneStore}/s/now-playing?embed=1&file=app.tsx&device=sensecap-indicator&memory=esp32`}
+            title="The Now playing scene, live in the FrameOS scene editor"
+            poster={{
+              src: '/images/editor/jsx-now-playing-esp32.png',
+              alt: "The FrameOS scene editor on scenes.frameos.net: the Now playing scene's app.tsx with JSX and Tailwind classes on the left, and its live preview on the right, rendered as a Seeed SenseCAP Indicator with the ESP32's 8 MB memory limit",
+              width: 3200,
+              height: 2000,
+              caption: "Now playing in the scene editor, previewed as a SenseCAP Indicator inside the ESP32's 8 MB of memory",
+            }}
+            caption={
+              <>
+                <TextLink href={`${links.sceneStore}/s/now-playing`}>Now playing</TextLink> in the scene editor: a
+                gradient cover, a seek bar you drag (<code>onPointerMove</code>) and play buttons, previewed as a{' '}
+                <TextLink href="/devices/seeed-sensecap-indicator">SenseCAP Indicator</TextLink>{' '}
+                inside the ESP32&apos;s 8&nbsp;MB of memory.
+              </>
+            }
+            liveCaption={
+              <>
+                This is live: change a class or a color in <code>app.tsx</code> and the preview re-renders, as a{' '}
+                <TextLink href="/devices/seeed-sensecap-indicator">SenseCAP Indicator</TextLink>{' '}
+                inside the ESP32&apos;s 8&nbsp;MB of memory. Drag the seek bar, press play. Nothing you change is
+                saved.
+              </>
+            }
+            className="mx-auto max-w-6xl"
           />
-          <p className="mx-auto mt-3 max-w-3xl text-center text-sm text-fd-muted-foreground">
-            <TextLink href={`${links.sceneStore}/s/now-playing`}>Now playing</TextLink> in the scene editor: a
-            gradient cover, a seek bar you drag (<code>onPointerMove</code>) and play buttons, previewed as a{' '}
-            <TextLink href="/devices/seeed-sensecap-indicator">SenseCAP Indicator</TextLink>{' '}
-            inside the ESP32&apos;s 8&nbsp;MB of memory.
-          </p>
           <div className="mx-auto mt-10 grid max-w-5xl gap-4 sm:grid-cols-2 lg:grid-cols-4">
             {[
               {
