@@ -138,6 +138,38 @@ const jsxScenes: EmbedScene[] = jsxSceneList.map(({ slug, label, device, blurb }
   };
 });
 
+// The "Best for…" cards under Pick your hardware.
+const hardwarePicks = [
+  {
+    best: 'Best for large photos',
+    name: 'Seeed reTerminal E1004',
+    note: '13.3" Spectra 6 color, on a 5000 mAh battery',
+    href: '/devices/seeed-reterminal-e1004',
+    image: '/images/devices/seeed-reterminal-e1004.jpg',
+  },
+  {
+    best: 'Best for daily use',
+    name: 'Seeed reTerminal Sticky',
+    note: 'A 3.97" touch screen for a desk or a fridge',
+    href: '/devices/seeed-reterminal-sticky',
+    image: '/images/devices/seeed-reterminal-sticky.jpg',
+  },
+  {
+    best: 'Best for DIY',
+    name: 'Waveshare 7.3" (E) e-Paper',
+    note: 'Spectra 6 for a Pi or an ESP32, in a case you print',
+    href: '/devices/waveshare-epd-7in3e',
+    image: '/images/devices/waveshare-epd-7in3e.jpg',
+  },
+  {
+    best: 'Best for Raspberry Pi',
+    name: 'Pimoroni Inky Impression 7.3"',
+    note: 'Spectra 6 that plugs onto a Pi, with four buttons',
+    href: '/devices/pimoroni-inky-impression-7-2025',
+    image: '/images/devices/pimoroni-inky-impression-spectra-7-1.jpg',
+  },
+];
+
 function SectionTitle({ kicker, title, sub }: { kicker?: string; title: string; sub?: React.ReactNode }) {
   return (
     <div className="mx-auto mb-10 max-w-2xl text-center">
@@ -417,6 +449,28 @@ export default function HomePage() {
             height={1200}
             caption="An ESP32-S3 wired to a Waveshare 7.3&quot; e-paper HAT, rendering a scene on the chip"
           />
+        </div>
+        <div className="mx-auto mt-12 grid max-w-5xl grid-cols-2 gap-4 md:grid-cols-4">
+          {hardwarePicks.map((pick) => (
+            <Link
+              key={pick.href}
+              href={pick.href}
+              className="group relative aspect-square overflow-hidden rounded-xl border bg-white"
+            >
+              <Image
+                src={pick.image}
+                alt={pick.name}
+                fill
+                sizes="(min-width: 768px) 25vw, 50vw"
+                className="object-cover transition-transform duration-300 group-hover:scale-105"
+              />
+              <div className="absolute inset-x-0 bottom-0 flex flex-col gap-0.5 bg-gradient-to-t from-black/85 via-black/60 to-transparent p-4 pt-12 text-white">
+                <span className="text-xs font-semibold uppercase tracking-wider text-white/80">{pick.best}</span>
+                <span className="font-semibold leading-snug group-hover:underline">{pick.name}</span>
+                <span className="hidden text-sm leading-snug text-white/80 sm:block">{pick.note}</span>
+              </div>
+            </Link>
+          ))}
         </div>
         </div>
       </section>
