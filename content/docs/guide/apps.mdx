@@ -1,6 +1,6 @@
 ---
 title: Editing apps
-description: Every node on a scene is an app you can fork and edit - in JavaScript, or in Nim.
+description: Every node on a scene is an app - built in, or JavaScript you can fork and edit.
 ---
 
 Every blue and green node on a scene is an **app**: a small program with typed config fields, an
@@ -21,9 +21,6 @@ What's in the box, roughly:
 <Callout title="Self-hosted backend, FrameOS Cloud and standalone frames">
   JavaScript apps can be written and edited in the [self-hosted backend](/guide/backend), in
   [FrameOS Cloud](/guide/cloud) and on a [standalone frame's](/guide/standalone) admin page alike.
-  Custom **Nim** apps and Nim code nodes need a compiled scene, which only the self-hosted backend
-  can build - the cloud never compiles code. That path is legacy:
-  [convert such scenes to JavaScript](/guide/scenes#execution) where you can.
 </Callout>
 
 ## Edit any app
@@ -37,11 +34,9 @@ Many of the apps that fetch photos and data are JavaScript apps that travel insi
 they change without a firmware release and you can fork them like your own: FrameOS Gallery,
 Unsplash, Wikimedia Commons, Google Photos, Immich, OpenAI Image and Text, Home Assistant Sensor,
 Weather (Open-Meteo), the Belgian recycling calendar, Chart, Calendar, iCal to Events, Photo album
-and Events to Agenda. The rest of the built-in apps are
-compiled Nim, so in an [interpreted scene](/guide/scenes#execution) their source opens
+and Events to Agenda. The rest are [built into FrameOS](#built-in-apps): their source opens
 **read only**, with an **Open in GitHub** link; to customize one, write a JavaScript app or an
-inline code node instead. In a legacy compiled scene on a Raspberry Pi, a scene-local Nim app
-still opens for editing, under a notice offering to convert the scene to interpreted.
+inline code node instead.
 
 ![Editing an app](/images/app/apps-edit.gif)
 
@@ -249,63 +244,12 @@ The frame enforces the lists: an app that asks for neither `assets` nor
 calls, and one with `assets` alone can't write. Caching a download with
 `fetchImage({ saveAsset })` needs no permission.
 
-## Nim apps
+## Built-in apps [#built-in-apps]
 
-The built-in apps are written in [Nim](https://nim-lang.org/) and compiled into the frame's binary
-- this is how a $15 Pi Zero 2 W stays fast. Reading them is the best way to learn what an app can
-do.
-
-Editing that Nim source is a different matter: it only takes effect in a
-[compiled scene](/guide/scenes#execution) on a Raspberry Pi, and every change means a rebuild. For
-new work, reach for JavaScript first. A minimal render app looks like this:
-
-```python title="color.nim"
-import pixie
-import options
-import frameos/apps
-import frameos/types
-
-type
-  AppConfig* = object
-    inputImage*: Option[Image]
-    color*: Color
-
-  App* = ref object of AppRoot
-    appConfig*: AppConfig
-
-proc render*(self: App, context: ExecutionContext, image: Image) =
-  image.fill(self.appConfig.color)
-
-# called when used as a render app (blue node)
-proc run*(self: App, context: ExecutionContext) =
-  render(self, context, context.image)
-
-# called when used as a data app (green node)
-proc get*(self: App, context: ExecutionContext): Image =
-  result = if self.appConfig.inputImage.isSome:
-    self.appConfig.inputImage.get()
-  elif context.hasImage:
-    newImage(context.image.width, context.image.height)
-  else:
-    newImage(self.frameConfig.renderWidth(), self.frameConfig.renderHeight())
-  render(self, context, result)
-```
-
-Things to know:
-
-- The `render` event is your starting point - it fires on the scene's timer, or when dispatched
-  by another app.
-- The `context` carries the `image` you draw on (via [pixie](https://github.com/treeform/pixie))
-  and the scene's `state`, a standard Nim
-  [JsonNode](https://nim-lang.org/docs/json.html): read with `state{"field"}.getStr()`, write with
-  `state{"field"} = %*("value")`.
-- State is cleared on every render; use instance variables on the `App` object to persist data
-  between renders.
-- Learn by example: the
-  [built-in apps](https://github.com/FrameOS/frameos/tree/main/frameos/src/apps),
-  [types.nim](https://github.com/FrameOS/frameos/blob/main/frameos/src/frameos/types.nim), and the
-  [utils/](https://github.com/FrameOS/frameos/tree/main/frameos/src/frameos/utils) folder show
-  what's available.
+The other built-in apps - text, images, QR codes, splits, gradients and the rest - are written in
+[Nim](https://nim-lang.org/) and compiled into FrameOS itself, which is how a $15 Pi Zero 2 W stays
+fast. Use them on a diagram like any other node: add one, wire it up, set its fields. Their source
+opens read only; to make one do something else, write a JavaScript app.
 
 ## Where each kind runs
 
@@ -313,8 +257,6 @@ Things to know:
 | --- | --- | --- | --- |
 | Built-in apps | All of them | All but Chromium screenshots and RTSP | Rendered on the backend |
 | Custom JavaScript apps | ✅ | ✅ | Rendered on the backend |
-| Custom Nim apps | Legacy compiled scenes only (self-hosted backend) | ❌ | ❌ |
-| Nim code nodes | Legacy compiled scenes only (self-hosted backend) | ❌ - use JS code nodes | ❌ |
 
 ## SVG, fonts and text
 

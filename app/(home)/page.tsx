@@ -64,50 +64,6 @@ const frameSlides: Slide[] = [
   },
 ];
 
-const appSlides: Slide[] = [
-  {
-    src: '/images/editor/editor-agenda.png',
-    alt: 'The FrameOS scene editor showing the iCal agenda scene as a node graph',
-    caption: (
-      <>
-        <TextLink href={`${links.sceneStore}/s/ical-agenda#scene-editor`}>The iCal agenda scene</TextLink>: fetch a URL,
-        turn it into events, lay them out as text - every step is a node you can inspect and change
-      </>
-    ),
-  },
-  {
-    src: '/images/editor/inline-code.png',
-    alt: 'A code node in the scene editor with a few lines of JavaScript building a caption from photo metadata',
-    caption: (
-      <>
-        Need a line of logic? Drop a code node into the graph and write it right there, as we do in{' '}
-        <TextLink href={`${links.sceneStore}/s/unsplash-image`}>Unsplash image</TextLink>
-      </>
-    ),
-  },
-  {
-    src: '/images/editor/weatherpanel-js-app.png',
-    alt: 'The TypeScript source of the weather panel app open in the in-browser editor',
-    caption: (
-      <>
-        Apps are TypeScript and you can edit them in the browser - this is the{' '}
-        <TextLink href={`${links.sceneStore}/s/weather`}>weather panel</TextLink> drawing its forecast chart
-      </>
-    ),
-  },
-  {
-    src: '/images/editor/live-preview.png',
-    alt: 'The browser preview of the weather scene in FrameOS Cloud, with its state and runtime log',
-    caption: (
-      <>
-        Preview any scene in the browser before it touches a frame - the{' '}
-        <TextLink href={`${links.sceneStore}/s/weather`}>weather panel</TextLink> again, rendered with the
-        FrameOS interpreter compiled to WebAssembly, with its live state and runtime log
-      </>
-    ),
-  },
-];
-
 // Each thumbnail links to the scene's page in the store: `${links.sceneStore}/s/${slug}`.
 const sceneStrip = [
   { src: '/images/scenes/gallery/made-in-space.jpg', alt: 'Made in Space gallery scene', slug: 'made-in-space' },
@@ -167,17 +123,6 @@ export default function HomePage() {
           </p>
         </div>
         <Slideshow slides={frameSlides} aspect="aspect-[4/3]" />
-      </section>
-
-      {/* Get started */}
-      <section className="border-t bg-fd-card/50">
-        <div className="mx-auto w-full max-w-4xl px-6 py-20">
-          <SectionTitle
-            title="How do you want to get started?"
-            sub="All three render on the device, and a frame can move between them without reflashing."
-          />
-          <InstallPathChooser hideHeader />
-        </div>
       </section>
 
       {/* Raspberry Pi or ESP32 */}
@@ -262,8 +207,8 @@ export default function HomePage() {
               <>
                 This is live: change a class or a color in <code>app.tsx</code> and the preview re-renders, as a{' '}
                 <TextLink href="/devices/seeed-sensecap-indicator">SenseCAP Indicator</TextLink>{' '}
-                inside the ESP32&apos;s 8&nbsp;MB of memory. Drag the seek bar, press play. Nothing you change is
-                saved.
+                inside the ESP32&apos;s 8&nbsp;MB of memory. Drag the seek bar, press play. Sign in to keep what you
+                change.
               </>
             }
             className="mx-auto max-w-6xl"
@@ -323,53 +268,8 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* Scenes strip */}
-      <section className="border-t">
-        <div className="mx-auto w-full max-w-6xl px-6 py-20">
-          <SectionTitle
-            kicker="Batteries included"
-            title="Deploy a scene in your first five minutes"
-            sub="SD card images, calendars, agendas, message boards, weather, AI art, and much more. Installable with one click, editable down to the source. Combine them, schedule them, make them yours."
-          />
-          <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">
-            {sceneStrip.map((s) => (
-              <Link
-                key={s.src}
-                href={`${links.sceneStore}/s/${s.slug}`}
-                target="_blank"
-                rel="noopener noreferrer"
-                title={`${s.alt} - open in the scene store`}
-                className="block overflow-hidden rounded-lg border transition-opacity hover:opacity-80"
-              >
-                <Image
-                  src={s.src}
-                  alt={s.alt}
-                  width={400}
-                  height={300}
-                  className="aspect-[4/3] w-full object-cover"
-                />
-              </Link>
-            ))}
-          </div>
-          <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
-            <Link
-              href={links.sceneStore}
-              className="inline-flex items-center gap-2 rounded-lg bg-fd-primary px-5 py-2.5 font-medium text-fd-primary-foreground transition-opacity hover:opacity-90"
-            >
-              Browse the scene store
-            </Link>
-            <Link
-              href="/guide/scene-store"
-              className="inline-flex items-center rounded-lg border px-5 py-2.5 font-medium transition-colors hover:bg-fd-accent"
-            >
-              How installing works
-            </Link>
-          </div>
-        </div>
-      </section>
-
       {/* Color calibration */}
-      <section className="border-t bg-fd-card/50">
+      <section className="border-t">
         <div className="mx-auto w-full max-w-6xl px-6 py-20">
           <SectionTitle
             kicker="Made for e-ink"
@@ -397,25 +297,6 @@ export default function HomePage() {
             Each pair is the editor&apos;s preview for a 7.3&quot; Spectra 6 panel at its real 800x480 pixels.
           </p>
         </div>
-      </section>
-
-      {/* The app */}
-      <section className="border-t">
-      <div className="mx-auto w-full max-w-6xl px-6 py-20">
-        <SectionTitle
-          kicker="The editor"
-          title="A visual editor backed by real code"
-          sub={
-            <>
-              Build a scene by wiring nodes together, then open any of them to see the code underneath.
-              Apps are written in TypeScript or JSX, the built-in ones in Nim.{' '}
-              Preview changes <TextLink href={`${links.sceneStore}/s/wikimedia-commons#live-preview`}>in the browser</TextLink>,
-              or on the frame directly. Check out the <TextLink href={links.sceneStore}>scene store</TextLink> for more examples!
-            </>
-          }
-        />
-        <Slideshow slides={appSlides} aspect="aspect-[10/7]" fit="contain" frame={false} interval={6000} className="mx-auto max-w-4xl" />
-      </div>
       </section>
 
       {/* Case Maker */}
@@ -474,27 +355,85 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* Video */}
-      <section className="mx-auto w-full max-w-6xl px-6 py-20">
-        <SectionTitle
-          kicker="Watch a full build (Raspberry Pi)"
-          title="From bare panel to finished frame"
-          sub="Recorded over a year ago, before FrameOS Cloud and ESP32 support existed."
-        />
-        <div className="mx-auto max-w-4xl">
-          <iframe
-            className="aspect-video w-full rounded-xl border"
-            src="https://www.youtube-nocookie.com/embed/jutMOLQYxSw"
-            title="eInk Spectra frame build guide - Waveshare vs Pimoroni"
-            allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-            referrerPolicy="strict-origin-when-cross-origin"
-            allowFullScreen
+      {/* Scenes strip */}
+      <section className="border-t">
+        <div className="mx-auto w-full max-w-6xl px-6 py-20">
+          <SectionTitle
+            kicker="Batteries included"
+            title="Deploy a scene in your first five minutes"
+            sub="SD card images, calendars, agendas, message boards, weather, AI art, and much more. Installable with one click, editable down to the source. Combine them, schedule them, make them yours."
           />
+          <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">
+            {sceneStrip.map((s) => (
+              <Link
+                key={s.src}
+                href={`${links.sceneStore}/s/${s.slug}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                title={`${s.alt} - open in the scene store`}
+                className="block overflow-hidden rounded-lg border transition-opacity hover:opacity-80"
+              >
+                <Image
+                  src={s.src}
+                  alt={s.alt}
+                  width={400}
+                  height={300}
+                  className="aspect-[4/3] w-full object-cover"
+                />
+              </Link>
+            ))}
+          </div>
+          <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
+            <Link
+              href={links.sceneStore}
+              className="inline-flex items-center gap-2 rounded-lg bg-fd-primary px-5 py-2.5 font-medium text-fd-primary-foreground transition-opacity hover:opacity-90"
+            >
+              Browse the scene store
+            </Link>
+            <Link
+              href="/guide/scene-store"
+              className="inline-flex items-center rounded-lg border px-5 py-2.5 font-medium transition-colors hover:bg-fd-accent"
+            >
+              How installing works
+            </Link>
+          </div>
+        </div>
+      </section>
+
+      {/* Video */}
+      <section className="border-t bg-fd-card/50">
+        <div className="mx-auto w-full max-w-6xl px-6 py-20">
+          <SectionTitle
+            kicker="Watch a full build (Raspberry Pi)"
+            title="From bare panel to finished frame"
+            sub="Recorded over a year ago, before FrameOS Cloud and ESP32 support existed."
+          />
+          <div className="mx-auto max-w-4xl">
+            <iframe
+              className="aspect-video w-full rounded-xl border"
+              src="https://www.youtube-nocookie.com/embed/jutMOLQYxSw"
+              title="eInk Spectra frame build guide - Waveshare vs Pimoroni"
+              allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+              referrerPolicy="strict-origin-when-cross-origin"
+              allowFullScreen
+            />
+          </div>
+        </div>
+      </section>
+
+      {/* Get started */}
+      <section className="border-t">
+        <div className="mx-auto w-full max-w-4xl px-6 py-20">
+          <SectionTitle
+            title="How do you want to get started?"
+            sub="All three render on the device, and a frame can move between them without reflashing."
+          />
+          <InstallPathChooser hideHeader />
         </div>
       </section>
 
       {/* Final CTA */}
-      <section className="border-t">
+      <section className="border-t bg-fd-card/50">
         <div className="mx-auto flex w-full max-w-3xl flex-col items-center gap-6 px-6 py-20 text-center">
           <h2 className="text-3xl font-bold tracking-tight">Build your first frame this weekend</h2>
           <p className="text-fd-muted-foreground">
