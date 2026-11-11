@@ -551,7 +551,7 @@ export default function HomePage() {
       <section className="border-t">
         <div className="mx-auto w-full max-w-6xl px-6 py-20">
           <SectionTitle
-            kicker="AI, if you want it"
+            kicker="Also intelligent"
             title="Just ask for a scene"
             sub="Plug in your own agent, chat with the assistant in FrameOS Cloud, or talk to the frame itself. A scene the AI makes is rendered and checked before it reaches a frame, and a switch in Settings turns AI off."
           />
