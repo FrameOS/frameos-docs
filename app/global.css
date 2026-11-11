@@ -10,3 +10,30 @@ html > body[data-scroll-locked] {
   margin-right: 0px !important;
   --removed-body-scroll-bar-size: 0px !important;
 }
+
+/* The slideshow's slow moves on its still slides (components/slideshow.tsx). Pans
+   scale up first so the edges never show. */
+@keyframes slide-zoom-in {
+  from { transform: scale(1); }
+  to { transform: scale(1.12); }
+}
+@keyframes slide-zoom-out {
+  from { transform: scale(1.14); }
+  to { transform: scale(1.02); }
+}
+@keyframes slide-pan-left {
+  from { transform: scale(1.1) translateX(-3%); }
+  to { transform: scale(1.1) translateX(3%); }
+}
+@keyframes slide-pan-right {
+  from { transform: scale(1.1) translateX(3%); }
+  to { transform: scale(1.1) translateX(-3%); }
+}
+@keyframes slide-pan-up {
+  from { transform: scale(1.1) translateY(-3%); }
+  to { transform: scale(1.1) translateY(3%); }
+}
+@keyframes slide-pan-down {
+  from { transform: scale(1.1) translateY(3%); }
+  to { transform: scale(1.1) translateY(-3%); }
+}

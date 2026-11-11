@@ -13,6 +13,8 @@ import { links } from '@/lib/shared';
 const frameSlides: Slide[] = [
   {
     src: '/images/photos/frame-13in3-spectra6.jpg',
+    motion: 'zoom-in',
+    origin: '50% 45%',
     alt: '13.3 inch Spectra 6 color e-ink panel in a 3D-printed rosewood frame',
     caption: (
       <>
@@ -58,21 +60,25 @@ const frameSlides: Slide[] = [
   },
   {
     src: '/images/photos/hdmi-framebuffer.jpg',
+    motion: 'pan-right',
     alt: 'A portable HDMI monitor showing the FrameOS welcome screen from a Raspberry Pi',
     caption: 'HDMI works too: a Pi Zero 2W with a portable 1080p monitor, managed from FrameOS Cloud',
   },
   {
     src: '/images/photos/IMG_5975.jpg',
+    motion: 'zoom-out',
     alt: 'Two e-ink frames with 3D-printed kickstands',
     caption: '7.3" and 13.3" panels in 3D-printed cases with print-in-place kickstands',
   },
   {
     src: '/images/photos/spectra6-vs-acep.jpg',
+    motion: 'pan-left',
     alt: 'Two 4 inch frames side by side, one with a Spectra 6 panel and one with an ACeP panel',
     caption: 'Same image on Spectra 6 (left) and 7-color ACeP (right) - Spectra is brighter and more saturated',
   },
   {
     src: '/images/photos/phone-pasta-2.jpg',
+    motion: 'pan-down',
     alt: 'Phone scanning the QR code shown on a frame to control it',
     caption: 'Scanning a QR code on a Pimoroni display to control it from a phone, no backend needed',
   },

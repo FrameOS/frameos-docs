@@ -14,7 +14,26 @@ export interface Slide {
    * slideshow moves on when it ends, and replays it while the pointer is over the figure. Where
    * it can't play (reduced motion, autoplay blocked), the slide is its `src` image. */
   video?: string;
+  /** A slow move while a still slide is up (a pan travels that way), from where `origin` says
+   * (a transform-origin, for the zooms). None under reduced motion. */
+  motion?: SlideMotion;
+  origin?: string;
 }
+
+export type SlideMotion = 'zoom-in' | 'zoom-out' | 'pan-left' | 'pan-right' | 'pan-up' | 'pan-down';
+
+// The keyframes are in app/global.css. Each runs longer than a slide is up, so it is still
+// moving as the slide fades out.
+const motionClass: Record<SlideMotion, string> = {
+  'zoom-in': 'animate-[slide-zoom-in_7s_ease-in-out_both]',
+  'zoom-out': 'animate-[slide-zoom-out_7s_ease-in-out_both]',
+  'pan-left': 'animate-[slide-pan-left_7s_ease-in-out_both]',
+  'pan-right': 'animate-[slide-pan-right_7s_ease-in-out_both]',
+  'pan-up': 'animate-[slide-pan-up_7s_ease-in-out_both]',
+  'pan-down': 'animate-[slide-pan-down_7s_ease-in-out_both]',
+};
+// How long a slide takes to fade out (the stage's duration-700), plus a little.
+const FADE_OUT_MS = 800;
 
 // For a video slide, the timer is only a backstop for a clip that stalls: its end moves on.
 const VIDEO_BACKSTOP_MS = 15000;
@@ -46,6 +65,16 @@ export function Slideshow({
   const pausedRef = useRef(paused);
   pausedRef.current = paused;
   const playsVideo = Boolean(slides[index]?.video) && !stillsOnly;
+  // The slide fading out keeps its move until it's gone; from its next turn it starts over.
+  const [leaving, setLeaving] = useState<number | null>(null);
+  const onScreen = useRef(index);
+  useEffect(() => {
+    if (onScreen.current === index) return;
+    setLeaving(onScreen.current);
+    onScreen.current = index;
+    const t = setTimeout(() => setLeaving(null), FADE_OUT_MS);
+    return () => clearTimeout(t);
+  }, [index]);
 
   const go = useCallback(
     (delta: number) => setIndex((i) => (i + delta + slides.length) % slides.length),
@@ -143,7 +172,11 @@ export function Slideshow({
               fill
               sizes="(max-width: 768px) 100vw, 640px"
               priority={i === 0}
-              className={className}
+              style={slide.origin ? { transformOrigin: slide.origin } : undefined}
+              className={cn(
+                className,
+                slide.motion && (i === index || i === leaving) && [motionClass[slide.motion], 'motion-reduce:animate-none'],
+              )}
             />
           );
         })}
