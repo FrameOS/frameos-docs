@@ -64,16 +64,32 @@ const frameSlides: Slide[] = [
   },
 ];
 
-// Each thumbnail links to the scene's page in the store: `${links.sceneStore}/s/${slug}`.
-const sceneStrip = [
-  { src: '/images/scenes/gallery/made-in-space.jpg', alt: 'Made in Space gallery scene', slug: 'made-in-space' },
-  { src: '/images/scenes/samples/word-clock.jpg', alt: 'Word clock scene spelling out the time in a letter grid', slug: 'word-clock' },
-  { src: '/images/scenes/samples/message-board.jpg', alt: 'Message board scene', slug: 'message-board' },
-  { src: '/images/scenes/samples/year-progress-memento-mori.jpg', alt: 'Year progress / memento mori scene, showing the year as a dot grid', slug: 'year-progress-memento-mori' },
-  { src: '/images/scenes/samples/weather.jpg', alt: 'Weather scene with current conditions and an hourly forecast', slug: 'weather' },
-  { src: '/images/scenes/samples/calendar.jpg', alt: 'Calendar scene', slug: 'calendar' },
-  { src: '/images/scenes/gallery/cuteness-overload.jpg', alt: 'Cuteness Overload gallery scene with a cartoon toucan', slug: 'cuteness-overload' },
-  { src: '/images/scenes/samples/xkcd.jpg', alt: 'XKCD scene', slug: 'xkcd' },
+// The two halves of "Static or real time". Each thumbnail is the scene's
+// store screenshot and links to its page there: `${links.sceneStore}/s/${slug}`.
+type SceneThumb = { name: string; src: string; alt: string; slug: string };
+const sceneHalves: { title: string; blurb: string; scenes: SceneThumb[] }[] = [
+  {
+    title: 'Static',
+    blurb:
+      'Photos, calendars, weather and art for e-ink. A scene renders on a schedule or at the press of a button, and an ESP32 deep-sleeps on its battery in between.',
+    scenes: [
+      { name: 'Calendar', src: '/images/scenes/samples/calendar.jpg', alt: 'Calendar scene showing a month of events', slug: 'calendar' },
+      { name: 'Immich', src: '/images/scenes/samples/immich.jpg', alt: 'Immich scene showing a photo of clouds at sunrise', slug: 'immich' },
+      { name: 'Weather', src: '/images/scenes/samples/weather.jpg', alt: 'Weather scene with current conditions and an hourly forecast', slug: 'weather' },
+      { name: 'Low Poly Animals', src: '/images/scenes/samples/low-poly-animals.jpg', alt: 'Low Poly Animals scene: a parrot in low-poly art', slug: 'low-poly-animals' },
+    ],
+  },
+  {
+    title: 'Real time',
+    blurb:
+      'Dashboards, lists and controls for touch screens. A tap answers in under a tenth of a second, and animations run at about 29 fps, even on an ESP32.',
+    scenes: [
+      { name: 'Home', src: '/images/scenes/samples/home.jpg', alt: 'Home scene with toggles for the lights, heating and front door', slug: 'home' },
+      { name: 'To-do', src: '/images/scenes/samples/to-do.jpg', alt: 'To-do scene with a checklist for today', slug: 'to-do' },
+      { name: 'Kitchen sink', src: '/images/scenes/samples/kitchen-sink.jpg', alt: 'Kitchen sink scene with toggles, a brightness slider and a counter', slug: 'kitchen-sink' },
+      { name: 'Form showcase', src: '/images/scenes/samples/form-showcase.jpg', alt: 'Form showcase scene with text fields, a number stepper and choice buttons', slug: 'form-showcase' },
+    ],
+  },
 ];
 
 // Rendered by the Assets panel's Set colors editor for an 800x480 Spectra 6
@@ -390,35 +406,47 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* Scenes strip */}
+      {/* Static or real time */}
       <section className="border-t bg-fd-card/50">
         <div className="mx-auto w-full max-w-6xl px-6 py-20">
           <SectionTitle
             kicker="Batteries included"
-            title="Deploy a scene in your first five minutes"
-            sub="SD card images, calendars, agendas, message boards, weather, AI art, and much more. Installable with one click, editable down to the source. Combine them, schedule them, make them yours."
+            title="Static or real time"
+            sub="One OS for both kinds of frame. On e-ink, a scene renders when it's due and the frame sleeps in between. On a touch screen it runs live, answers taps and redraws only what changed. Either way, scenes install with one click and are editable down to the source."
           />
-          <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">
-            {sceneStrip.map((s) => (
-              <Link
-                key={s.src}
-                href={`${links.sceneStore}/s/${s.slug}`}
-                target="_blank"
-                rel="noopener noreferrer"
-                title={`${s.alt} - open in the scene store`}
-                className="block overflow-hidden rounded-lg border transition-opacity hover:opacity-80"
-              >
-                <Image
-                  src={s.src}
-                  alt={s.alt}
-                  width={400}
-                  height={300}
-                  className="aspect-[4/3] w-full object-cover"
-                />
-              </Link>
+          <div className="grid gap-12 md:grid-cols-2 md:gap-10">
+            {sceneHalves.map((half) => (
+              // A column, so both halves' grids line up whatever their blurbs' length.
+              <div key={half.title} className="flex flex-col">
+                <h3 className="text-xl font-semibold tracking-tight">{half.title}</h3>
+                <p className="mt-1 text-sm text-fd-muted-foreground">{half.blurb}</p>
+                <div className="mt-auto grid grid-cols-2 gap-3 pt-5">
+                  {half.scenes.map((s) => (
+                    <Link
+                      key={s.slug}
+                      href={`${links.sceneStore}/s/${s.slug}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      title={`${s.name} - open in the scene store`}
+                      className="group block"
+                    >
+                      <Image
+                        src={s.src}
+                        alt={s.alt}
+                        width={400}
+                        height={300}
+                        className="aspect-[4/3] w-full rounded-lg border object-cover transition-opacity group-hover:opacity-80"
+                      />
+                      <span className="mt-1.5 block text-sm font-medium text-fd-muted-foreground group-hover:text-fd-foreground">
+                        {s.name}
+                      </span>
+                    </Link>
+                  ))}
+                </div>
+              </div>
             ))}
           </div>
-          <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
+          <div className="mt-12 flex flex-wrap items-center justify-center gap-3">
             <Link
               href={links.sceneStore}
               className="inline-flex items-center gap-2 rounded-lg bg-fd-primary px-5 py-2.5 font-medium text-fd-primary-foreground transition-opacity hover:opacity-90"
