@@ -186,9 +186,9 @@ export default function HomePage() {
             sub={
               <>
                 Build a frame&apos;s UI like a web app: a <code>.tsx</code> file with Tailwind classes,{' '}
-                <code>onClick</code>, sliders and text fields. The ESP32 renders it on the chip, React-style,
-                redrawing only what changed - no server, no browser. The same file runs on a Pi, on HDMI, on
-                e-paper and in your browser.
+                <code>onClick</code>, sliders and text fields, which all build up to an SVG. The ESP32 renders it
+                on the chip, React-style, redrawing only what changed - no server, no browser. The same file runs
+                on a Pi, on HDMI, on e-paper and in your browser.
               </>
             }
           />
