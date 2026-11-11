@@ -76,7 +76,7 @@ const frameSlides: Slide[] = [
 // The two halves of "Static or real time". Each thumbnail is the scene's
 // store screenshot and links to its page there: `${links.sceneStore}/s/${slug}`.
 type SceneThumb = { name: string; src: string; alt: string; slug: string };
-const sceneHalves: { title: string; blurb: string; scenes: SceneThumb[] }[] = [
+const sceneHalves: { title: string; blurb: React.ReactNode; scenes: SceneThumb[] }[] = [
   {
     title: 'Static',
     blurb:
@@ -90,8 +90,13 @@ const sceneHalves: { title: string; blurb: string; scenes: SceneThumb[] }[] = [
   },
   {
     title: 'Real time',
-    blurb:
-      'Dashboards, lists and controls for touch screens. Tuned for the ESP32, where a tap answers in under a tenth of a second and animations run at about 29 fps, and even smoother on a Raspberry Pi.',
+    blurb: (
+      <>
+        Dashboards, lists and controls for touch screens. Tuned for the ESP32, where a tap answers in under a
+        tenth of a second and the <TextLink href={`${links.sceneStore}/s/dvd-logo-bounce`}>DVD logo</TextLink>{' '}
+        runs at about 29 fps. Everything&apos;s even smoother on a Raspberry Pi.
+      </>
+    ),
     scenes: [
       { name: 'Home', src: '/images/scenes/samples/home.jpg', alt: 'Home scene with toggles for the lights, heating and front door', slug: 'home' },
       { name: 'To-do', src: '/images/scenes/samples/to-do.jpg', alt: 'To-do scene with a checklist for today', slug: 'to-do' },
@@ -170,14 +175,14 @@ const hardwarePicks = [
   {
     best: 'Best for large photos',
     name: 'Seeed reTerminal E1004',
-    note: '13.3" Spectra 6 color, on a 5000 mAh battery',
+    note: '13.3" Spectra 6 color, on a 5000 mAh battery and an ESP32',
     href: '/devices/seeed-reterminal-e1004',
     image: '/images/devices/seeed-reterminal-e1004.jpg',
   },
   {
     best: 'Best for daily use',
     name: 'Seeed reTerminal Sticky',
-    note: 'A 3.97" touch screen for a desk or a fridge',
+    note: 'A 3.97" touch screen for a desk or a fridge, on an ESP32',
     href: '/devices/seeed-reterminal-sticky',
     image: '/images/devices/seeed-reterminal-sticky.jpg',
   },
@@ -283,10 +288,12 @@ const aiWays: {
 
 function SectionTitle({ kicker, title, sub }: { kicker?: string; title: React.ReactNode; sub?: React.ReactNode }) {
   return (
-    <div className="mx-auto mb-10 max-w-2xl text-center">
+    // The title may run wider than the text under it, so it stays on one line where it fits;
+    // where it doesn't, its lines are balanced.
+    <div className="mx-auto mb-10 max-w-4xl text-center">
       {kicker && <p className="mb-2 text-sm font-semibold uppercase tracking-wider text-fd-primary">{kicker}</p>}
-      <h2 className="text-3xl font-bold tracking-tight">{title}</h2>
-      {sub ? <p className="mt-3 text-fd-muted-foreground">{sub}</p> : null}
+      <h2 className="text-balance text-3xl font-bold tracking-tight">{title}</h2>
+      {sub ? <p className="mx-auto mt-3 max-w-2xl text-fd-muted-foreground">{sub}</p> : null}
     </div>
   );
 }
@@ -325,12 +332,7 @@ export default function HomePage() {
         <div className="mx-auto w-full max-w-6xl px-6 py-20">
           <SectionTitle
             kicker="JSX + Tailwind on a microcontroller"
-            title={
-              <>
-                Written like a web app. <br className="hidden md:inline" />
-                Running on an ESP32.
-              </>
-            }
+            title="Written like a web app. Running on an ESP32."
             sub={
               <>
                 Build a frame&apos;s UI like a web app: a <code>.tsx</code> file with Tailwind classes,{' '}
@@ -459,6 +461,7 @@ export default function HomePage() {
               <TextLink href="/guide/raspberry">Raspberry Pi guide →</TextLink>
               <TextLink href="/guide/esp32">ESP32 guide →</TextLink>
               <TextLink href="/guide/esp32#raspberry-pi-or-esp32">Which one should I pick?</TextLink>
+              <TextLink href="/devices">See all supported devices →</TextLink>
             </div>
           </div>
           <LightboxImage
