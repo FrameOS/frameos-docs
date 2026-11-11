@@ -224,8 +224,92 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* Scenes strip */}
+      {/* JSX + Tailwind on an ESP32 */}
       <section className="border-t bg-fd-card/50">
+        <div className="mx-auto w-full max-w-6xl px-6 py-20">
+          <SectionTitle
+            kicker="JSX + Tailwind on a microcontroller"
+            title="Write it like a web app. Run it on an ESP32."
+            sub={
+              <>
+                A scene&apos;s app is a <code>.tsx</code> file that returns JSX styled with Tailwind classes, with{' '}
+                <code>onClick</code>, sliders, text fields and scrolling lists. The ESP32-S3 parses it, lays it out
+                and draws it by itself - no browser, and no server sending it screenshots. The same file runs on a
+                Raspberry Pi, on HDMI, on e-paper, and in your browser&apos;s preview.
+              </>
+            }
+          />
+          <LightboxImage
+            src="/images/editor/jsx-now-playing-esp32.png"
+            alt="The FrameOS scene editor on scenes.frameos.net: the Now playing scene's app.tsx with JSX and Tailwind classes on the left, and its live preview on the right, rendered as a Seeed SenseCAP Indicator with the ESP32's 8 MB memory limit"
+            width={3200}
+            height={1800}
+            className="mx-auto max-w-5xl"
+            caption="Now playing in the scene editor, previewed as a SenseCAP Indicator inside the ESP32's 8 MB of memory"
+          />
+          <p className="mx-auto mt-3 max-w-3xl text-center text-sm text-fd-muted-foreground">
+            <TextLink href={`${links.sceneStore}/s/now-playing`}>Now playing</TextLink> in the scene editor: a
+            gradient cover, a seek bar you drag (<code>onPointerMove</code>) and play buttons, previewed as a{' '}
+            <TextLink href="/devices/seeed-sensecap-indicator">SenseCAP Indicator</TextLink>{' '}
+            inside the ESP32&apos;s 8&nbsp;MB of memory.
+          </p>
+          <div className="mx-auto mt-10 grid max-w-5xl gap-4 sm:grid-cols-2 lg:grid-cols-4">
+            {[
+              {
+                stat: '~85 ms',
+                title: 'from tap to picture',
+                body: 'A tap on a JSX smart-home panel on a 480x480 SenseCAP Indicator. Only what changed is redrawn.',
+              },
+              {
+                stat: '29.5 fps',
+                title: 'animated JSX',
+                body: 'The DVD logo bounce, written as JSX, on the same ESP32-S3 LCD.',
+              },
+              {
+                stat: 'Real UI',
+                title: 'not just pictures',
+                body: 'Flexbox and grid, gradients, inline SVG icons, inputs with an on-screen keyboard, select boxes and lists that scroll.',
+              },
+              {
+                stat: 'One file',
+                title: 'every screen',
+                body: (
+                  <>
+                    <code>sm:</code> to <code>2xl:</code> and <code>portrait:</code> follow the panel, and{' '}
+                    <code>app.frame.color</code> says when to switch to high contrast.
+                  </>
+                ),
+              },
+            ].map((f) => (
+              <div key={f.stat} className="rounded-xl border bg-fd-background p-5">
+                <p className="text-2xl font-bold tracking-tight text-fd-primary">{f.stat}</p>
+                <p className="mb-2 font-semibold">{f.title}</p>
+                <p className="text-sm text-fd-muted-foreground">{f.body}</p>
+              </div>
+            ))}
+          </div>
+          <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
+            <Link
+              href="/guide/apps#jsx-uis"
+              className="inline-flex items-center gap-2 rounded-lg bg-fd-primary px-5 py-2.5 font-medium text-fd-primary-foreground transition-opacity hover:opacity-90"
+            >
+              JSX interfaces guide
+            </Link>
+            <Link
+              href={`${links.sceneStore}/s/now-playing`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-2 rounded-lg border px-5 py-2.5 font-medium transition-colors hover:bg-fd-accent"
+            >
+              Open it in the editor
+              <ExternalLink className="size-4" aria-hidden="true" />
+            </Link>
+          </div>
+        </div>
+      </section>
+
+      {/* Scenes strip */}
+      <section className="border-t">
         <div className="mx-auto w-full max-w-6xl px-6 py-20">
           <SectionTitle
             kicker="Batteries included"
@@ -270,7 +354,7 @@ export default function HomePage() {
       </section>
 
       {/* Color calibration */}
-      <section className="border-t">
+      <section className="border-t bg-fd-card/50">
         <div className="mx-auto w-full max-w-6xl px-6 py-20">
           <SectionTitle
             kicker="Made for e-ink"
@@ -301,20 +385,22 @@ export default function HomePage() {
       </section>
 
       {/* The app */}
-      <section className="mx-auto w-full max-w-6xl px-6 py-20">
+      <section className="border-t">
+      <div className="mx-auto w-full max-w-6xl px-6 py-20">
         <SectionTitle
           kicker="The editor"
           title="A visual editor backed by real code"
           sub={
             <>
               Build a scene by wiring nodes together, then open any of them to see the code underneath.
-              Apps are written in Nim (built in) or TypeScript.{' '}
+              Apps are written in TypeScript or JSX, the built-in ones in Nim.{' '}
               Preview changes <TextLink href={`${links.sceneStore}/s/wikimedia-commons#live-preview`}>in the browser</TextLink>,
               or on the frame directly. Check out the <TextLink href={links.sceneStore}>scene store</TextLink> for more examples!
             </>
           }
         />
         <Slideshow slides={appSlides} aspect="aspect-[10/7]" fit="contain" frame={false} interval={6000} className="mx-auto max-w-4xl" />
+      </div>
       </section>
 
       {/* Case Maker */}
