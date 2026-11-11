@@ -50,8 +50,8 @@ const frameSlides: Slide[] = [
     alt: 'Scrolling the Form showcase scene on a Seeed SenseCAP Indicator, picking Lisbon from a city dropdown, then dragging a brightness slider',
     caption: (
       <>
-        Form showcase on a <TextLink href="/devices/seeed-sensecap-indicator">Seeed SenseCAP Indicator</TextLink>:
-        scrolling, a dropdown and a slider, redrawn live on the ESP32
+        Form showcase on a <TextLink href="/devices/seeed-sensecap-indicator">Seeed SenseCAP Indicator</TextLink>,
+        rendered as an SVG via JSX on an ESP32
       </>
     ),
   },
