@@ -18,6 +18,9 @@ export interface Slide {
    * (a transform-origin, for the zooms). None under reduced motion. */
   motion?: SlideMotion;
   origin?: string;
+  /** A longer move, at an even pace, for a slide that may stay up longer than its turn: the
+   * first, whose move starts with the page while its timer waits for the scripts. */
+  motionSeconds?: number;
 }
 
 export type SlideMotion = 'zoom-in' | 'zoom-out' | 'pan-left' | 'pan-right' | 'pan-up' | 'pan-down';
@@ -66,15 +69,19 @@ export function Slideshow({
   pausedRef.current = paused;
   const playsVideo = Boolean(slides[index]?.video) && !stillsOnly;
   // The slide fading out keeps its move until it's gone; from its next turn it starts over.
+  // Set in the render that changes the slide (not in an effect after it): one commit without
+  // the move's class would restart it, a jump back on a slide still fading out.
+  const [shownIndex, setShownIndex] = useState(index);
   const [leaving, setLeaving] = useState<number | null>(null);
-  const onScreen = useRef(index);
+  if (shownIndex !== index) {
+    setShownIndex(index);
+    setLeaving(shownIndex);
+  }
   useEffect(() => {
-    if (onScreen.current === index) return;
-    setLeaving(onScreen.current);
-    onScreen.current = index;
+    if (leaving === null) return;
     const t = setTimeout(() => setLeaving(null), FADE_OUT_MS);
     return () => clearTimeout(t);
-  }, [index]);
+  }, [leaving, index]);
 
   const go = useCallback(
     (delta: number) => setIndex((i) => (i + delta + slides.length) % slides.length),
@@ -172,7 +179,12 @@ export function Slideshow({
               fill
               sizes="(max-width: 768px) 100vw, 640px"
               priority={i === 0}
-              style={slide.origin ? { transformOrigin: slide.origin } : undefined}
+              style={{
+                transformOrigin: slide.origin,
+                ...(slide.motionSeconds
+                  ? { animationDuration: `${slide.motionSeconds}s`, animationTimingFunction: 'linear' }
+                  : null),
+              }}
               className={cn(
                 className,
                 slide.motion && (i === index || i === leaving) && [motionClass[slide.motion], 'motion-reduce:animate-none'],

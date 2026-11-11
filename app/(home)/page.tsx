@@ -15,6 +15,7 @@ const frameSlides: Slide[] = [
     src: '/images/photos/frame-13in3-spectra6.jpg',
     motion: 'zoom-in',
     origin: '50% 45%',
+    motionSeconds: 20,
     alt: '13.3 inch Spectra 6 color e-ink panel in a 3D-printed rosewood frame',
     caption: (
       <>
