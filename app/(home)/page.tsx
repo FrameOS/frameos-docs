@@ -70,18 +70,6 @@ const frameSlides: Slide[] = [
     alt: 'Two e-ink frames with 3D-printed kickstands',
     caption: '7.3" and 13.3" panels in 3D-printed cases with print-in-place kickstands',
   },
-  {
-    src: '/images/photos/spectra6-vs-acep.jpg',
-    motion: 'pan-left',
-    alt: 'Two 4 inch frames side by side, one with a Spectra 6 panel and one with an ACeP panel',
-    caption: 'Same image on Spectra 6 (left) and 7-color ACeP (right) - Spectra is brighter and more saturated',
-  },
-  {
-    src: '/images/photos/phone-pasta-2.jpg',
-    motion: 'pan-down',
-    alt: 'Phone scanning the QR code shown on a frame to control it',
-    caption: 'Scanning a QR code on a Pimoroni display to control it from a phone, no backend needed',
-  },
 ];
 
 // The two halves of "Static or real time". Each thumbnail is the scene's
