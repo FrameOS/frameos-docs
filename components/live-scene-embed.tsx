@@ -4,24 +4,43 @@ import { useEffect, useRef, useState, type ReactNode } from 'react';
 import { LightboxImage } from '@/components/lightbox';
 import { cn } from '@/lib/cn';
 
-// What the store's embed posts once its scene has loaded
+// What the store's embed posts once its scene has loaded, and what it takes
+// from us when the site switches between light and dark
 // (frameos cloud/apps/auth-web/src/lib/store-embed.ts).
 const READY_MESSAGE = 'frameos-store:embed-ready';
+const THEME_MESSAGE = 'frameos-store:theme';
 // No ready message by then (the store refuses to be framed, or the network is
 // slow): the screenshot stays and the frame goes.
 const READY_TIMEOUT_MS = 20000;
 
+type Poster = { src: string; alt: string; width: number; height: number; caption?: string };
+
+/** Whether the site is in dark mode (fumadocs puts `dark` on <html>), live. */
+function useSiteDark(): boolean {
+  const [dark, setDark] = useState(false);
+  useEffect(() => {
+    const read = () => setDark(document.documentElement.classList.contains('dark'));
+    read();
+    const observer = new MutationObserver(read);
+    observer.observe(document.documentElement, { attributeFilter: ['class'], attributes: true });
+    return () => observer.disconnect();
+  }, []);
+  return dark;
+}
+
 /**
  * A scene from scenes.frameos.net, live in its editor: the store's embed mode
- * in an iframe on wide screens, loaded when it nears the viewport. The
- * screenshot stands in until the embed says its scene is loaded, and stays on
- * phones (an editor in a phone-sized frame would swallow the page's scroll)
- * and wherever the embed doesn't come up.
+ * in an iframe on wide screens, loaded when it nears the viewport, in the
+ * site's light or dark. The screenshot (one per theme) stands in until the
+ * embed says its scene is loaded, and stays on phones (an editor in a
+ * phone-sized frame would swallow the page's scroll) and wherever the embed
+ * doesn't come up.
  */
 export function LiveSceneEmbed({
   src,
   title,
   poster,
+  posterDark,
   caption,
   liveCaption,
   className,
@@ -30,7 +49,9 @@ export function LiveSceneEmbed({
   src: string;
   /** The iframe's accessible name. */
   title: string;
-  poster: { src: string; alt: string; width: number; height: number; caption?: string };
+  poster: Poster;
+  /** The same in dark mode. */
+  posterDark?: Poster;
   /** Under the screenshot. */
   caption?: ReactNode;
   /** Under the live editor, once it has come up. */
@@ -39,11 +60,15 @@ export function LiveSceneEmbed({
 }) {
   const boxRef = useRef<HTMLDivElement | null>(null);
   const frameRef = useRef<HTMLIFrameElement | null>(null);
-  const [mounted, setMounted] = useState(false);
+  const [frameSrc, setFrameSrc] = useState<string | null>(null);
   const [ready, setReady] = useState(false);
   const [failed, setFailed] = useState(false);
+  const dark = useSiteDark();
+  const darkRef = useRef(dark);
+  darkRef.current = dark;
 
-  // Wide screens only, once the section is close.
+  // Wide screens only, once the section is close; it starts in the site's
+  // theme as it is then.
   useEffect(() => {
     const box = boxRef.current;
     if (!box || typeof IntersectionObserver === 'undefined') return;
@@ -52,7 +77,9 @@ export function LiveSceneEmbed({
     const observer = new IntersectionObserver(
       (entries) => {
         if (entries.some((entry) => entry.isIntersecting)) {
-          setMounted(true);
+          const url = new URL(src);
+          url.searchParams.set('theme', darkRef.current ? 'dark' : 'light');
+          setFrameSrc(url.toString());
           observer.disconnect();
         }
       },
@@ -60,10 +87,10 @@ export function LiveSceneEmbed({
     );
     observer.observe(box);
     return () => observer.disconnect();
-  }, []);
+  }, [src]);
 
   useEffect(() => {
-    if (!mounted || ready) return;
+    if (!frameSrc || ready) return;
     const origin = new URL(src).origin;
     const onMessage = (event: MessageEvent) => {
       if (
@@ -80,20 +107,36 @@ export function LiveSceneEmbed({
       window.removeEventListener('message', onMessage);
       window.clearTimeout(timer);
     };
-  }, [mounted, ready, src]);
+  }, [frameSrc, ready, src]);
 
-  const live = mounted && !failed;
+  // The site switched between light and dark: so does the editor.
+  useEffect(() => {
+    if (!ready) return;
+    frameRef.current?.contentWindow?.postMessage(
+      { type: THEME_MESSAGE, theme: dark ? 'dark' : 'light' },
+      new URL(src).origin,
+    );
+  }, [dark, ready, src]);
+
+  const live = frameSrc !== null && !failed;
   const shownCaption = ready ? (liveCaption ?? caption) : caption;
   return (
     <div className={className}>
       <div ref={boxRef} className="relative">
         <div className={cn(ready && 'invisible')} aria-hidden={ready || undefined}>
-          <LightboxImage {...poster} caption={poster.caption} />
+          <div className={cn(posterDark && 'dark:hidden')}>
+            <LightboxImage {...poster} caption={poster.caption} />
+          </div>
+          {posterDark ? (
+            <div className="hidden dark:block">
+              <LightboxImage {...posterDark} caption={posterDark.caption} />
+            </div>
+          ) : null}
         </div>
         {live ? (
           <iframe
             ref={frameRef}
-            src={src}
+            src={frameSrc}
             title={title}
             // Scripts and its own origin for the editor and the preview's
             // workers. Its bar's Back, Sign in, Fork, Install and AI open the

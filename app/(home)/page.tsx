@@ -141,29 +141,37 @@ export default function HomePage() {
             }
           />
           <LiveSceneEmbed
-            src={`${links.sceneStore}/s/now-playing?embed=1&file=app.tsx&device=sensecap-indicator&memory=esp32`}
-            title="The Now playing scene, live in the FrameOS scene editor"
+            src={`${links.sceneStore}/s/kitchen-sink?embed=1&file=app.tsx&device=sensecap-indicator&memory=esp32`}
+            title="The Kitchen sink scene, live in the FrameOS scene editor"
             poster={{
-              src: '/images/editor/jsx-now-playing-esp32.png',
-              alt: "The FrameOS scene editor on scenes.frameos.net: the Now playing scene's app.tsx with JSX and Tailwind classes on the left, and its live preview on the right, rendered as a Seeed SenseCAP Indicator with the ESP32's 8 MB memory limit",
-              width: 3200,
-              height: 2000,
-              caption: "Now playing in the scene editor, previewed as a SenseCAP Indicator inside the ESP32's 8 MB of memory",
+              src: '/images/editor/jsx-kitchen-sink-light.png',
+              alt: "The FrameOS scene editor showing the Kitchen sink scene's app.tsx, JSX with Tailwind classes, beside its live preview as a Seeed SenseCAP Indicator inside the ESP32's 8 MB memory limit",
+              width: 2204,
+              height: 1470,
+              caption: "Kitchen sink in the scene editor, previewed as a SenseCAP Indicator inside the ESP32's 8 MB of memory",
+            }}
+            posterDark={{
+              src: '/images/editor/jsx-kitchen-sink-dark.png',
+              alt: "The FrameOS scene editor in dark mode showing the Kitchen sink scene's app.tsx beside its live preview as a Seeed SenseCAP Indicator",
+              width: 2204,
+              height: 1470,
+              caption: "Kitchen sink in the scene editor, previewed as a SenseCAP Indicator inside the ESP32's 8 MB of memory",
             }}
             caption={
               <>
-                <TextLink href={`${links.sceneStore}/s/now-playing`}>Now playing</TextLink> in the scene editor: a
-                gradient cover, a seek bar you drag (<code>onPointerMove</code>) and play buttons, previewed as a{' '}
+                <TextLink href={`${links.sceneStore}/s/kitchen-sink`}>Kitchen sink</TextLink> in the scene editor:
+                switches, a slider you drag, a form with a keyboard on the screen, a paint canvas and Lights Out -
+                six touch pages in one <code>.tsx</code> file, previewed as a{' '}
                 <TextLink href="/devices/seeed-sensecap-indicator">SenseCAP Indicator</TextLink>{' '}
                 inside the ESP32&apos;s 8&nbsp;MB of memory.
               </>
             }
             liveCaption={
               <>
-                This is live: change a class or a color in <code>app.tsx</code> and the preview re-renders, as a{' '}
+                This is live: tap through the six pages, type in Forms, paint, or change a class in{' '}
+                <code>app.tsx</code> and the preview re-renders, as a{' '}
                 <TextLink href="/devices/seeed-sensecap-indicator">SenseCAP Indicator</TextLink>{' '}
-                inside the ESP32&apos;s 8&nbsp;MB of memory. Drag the seek bar, press play. Sign in to keep what you
-                change.
+                inside the ESP32&apos;s 8&nbsp;MB of memory. Sign in to keep what you change.
               </>
             }
             className="mx-auto max-w-6xl"
@@ -211,7 +219,7 @@ export default function HomePage() {
               JSX interfaces guide
             </Link>
             <Link
-              href={`${links.sceneStore}/s/now-playing`}
+              href={`${links.sceneStore}/s/kitchen-sink`}
               target="_blank"
               rel="noopener noreferrer"
               className="inline-flex items-center gap-2 rounded-lg border px-5 py-2.5 font-medium transition-colors hover:bg-fd-accent"
@@ -421,19 +429,8 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* Get started */}
-      <section className="border-t bg-fd-card/50">
-        <div className="mx-auto w-full max-w-4xl px-6 py-20">
-          <SectionTitle
-            title="How do you want to get started?"
-            sub="All three render on the device, and a frame can move between them without reflashing."
-          />
-          <InstallPathChooser hideHeader />
-        </div>
-      </section>
-
       {/* Final CTA */}
-      <section className="border-t">
+      <section className="border-t bg-fd-card/50">
         <div className="mx-auto flex w-full max-w-3xl flex-col items-center gap-6 px-6 py-20 text-center">
           <h2 className="text-3xl font-bold tracking-tight">Build your first frame this weekend</h2>
           <p className="text-fd-muted-foreground">
@@ -463,6 +460,17 @@ export default function HomePage() {
               Newsletter
             </TextLink>
           </div>
+        </div>
+      </section>
+
+      {/* Get started */}
+      <section className="border-t">
+        <div className="mx-auto w-full max-w-4xl px-6 py-20">
+          <SectionTitle
+            title="How do you want to get started?"
+            sub="All three render on the device, and a frame can move between them without reflashing."
+          />
+          <InstallPathChooser hideHeader />
         </div>
       </section>
     </main>
