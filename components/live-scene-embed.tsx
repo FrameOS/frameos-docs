@@ -1,7 +1,8 @@
 'use client';
 
-import { useEffect, useRef, useState, type ReactNode } from 'react';
+import { useEffect, useMemo, useRef, useState, type ReactNode } from 'react';
 import Image from 'next/image';
+import { ArrowRight } from 'lucide-react';
 import { cn } from '@/lib/cn';
 
 // What the store's embed posts once its scene has loaded, and what it takes
@@ -15,14 +16,22 @@ const READY_TIMEOUT_MS = 20000;
 
 type Poster = { src: string; alt: string; width: number; height: number };
 
-/** The screenshot: a link to the scene's page, where the editor is. */
-function PosterLink({ poster, href }: { poster: Poster; href: string }) {
-  return (
-    <a href={href} target="_blank" rel="noopener noreferrer" className="block" title="Open the scene in the editor">
-      <Image src={poster.src} alt={poster.alt} width={poster.width} height={poster.height} className="w-full rounded-xl border" />
-    </a>
-  );
-}
+export type EmbedScene = {
+  key: string;
+  /** The button's name, and the iframe's. */
+  label: string;
+  /** The embed's URL: `https://scenes.frameos.net/s/<slug>?embed=1&…`. */
+  src: string;
+  /** The scene's own page, which its screenshot opens. */
+  href: string;
+  poster: Poster;
+  /** The same in dark mode. */
+  posterDark?: Poster;
+  /** Under the screenshot. */
+  caption?: ReactNode;
+  /** Under the live editor, once it has come up. */
+  liveCaption?: ReactNode;
+};
 
 /** Whether the site is in dark mode (fumadocs puts `dark` on <html>), live. */
 function useSiteDark(): boolean {
@@ -37,61 +46,73 @@ function useSiteDark(): boolean {
   return dark;
 }
 
+/** The screenshot: a link to the scene's page, where the editor is. */
+function PosterLink({ poster, href }: { poster: Poster; href: string }) {
+  return (
+    <a href={href} target="_blank" rel="noopener noreferrer" className="block" title="Open the scene in the editor">
+      <Image src={poster.src} alt={poster.alt} width={poster.width} height={poster.height} className="w-full rounded-xl border" />
+    </a>
+  );
+}
+
 /**
- * A scene from scenes.frameos.net, live in its editor: the store's embed mode
- * in an iframe on wide screens, loaded when it nears the viewport, in the
- * site's light or dark. The screenshot (one per theme) stands in until the
- * embed says its scene is loaded, and stays on phones (an editor in a
- * phone-sized frame would swallow the page's scroll) and wherever the embed
- * doesn't come up; a click on it opens the scene's page.
+ * Scenes from scenes.frameos.net, live in their editor: a row of small
+ * buttons picks one, and the store's embed mode shows it in an iframe on wide
+ * screens, loaded when it nears the viewport, in the site's light or dark. The
+ * scene's screenshot (one per theme) stands in until the embed says its scene
+ * is loaded, and stays on phones (an editor in a phone-sized frame would
+ * swallow the page's scroll) and wherever the embed doesn't come up; a click
+ * on it opens the scene's page.
  */
 export function LiveSceneEmbed({
-  src,
-  href,
-  title,
-  poster,
-  posterDark,
-  caption,
-  liveCaption,
+  scenes,
+  moreHref,
+  moreLabel,
   className,
 }: {
-  /** The embed's URL: `https://scenes.frameos.net/s/<slug>?embed=1&…`. */
-  src: string;
-  /** The scene's own page, which the screenshot opens. */
-  href: string;
-  /** The iframe's accessible name. */
-  title: string;
-  poster: Poster;
-  /** The same in dark mode. */
-  posterDark?: Poster;
-  /** Under the screenshot. */
-  caption?: ReactNode;
-  /** Under the live editor, once it has come up. */
-  liveCaption?: ReactNode;
+  scenes: EmbedScene[];
+  /** The link after the buttons: the scene store. */
+  moreHref?: string;
+  moreLabel?: string;
   className?: string;
 }) {
   const boxRef = useRef<HTMLDivElement | null>(null);
   const frameRef = useRef<HTMLIFrameElement | null>(null);
-  const [frameSrc, setFrameSrc] = useState<string | null>(null);
-  const [ready, setReady] = useState(false);
-  const [failed, setFailed] = useState(false);
+  const [index, setIndex] = useState(0);
+  const [near, setNear] = useState(false);
+  // The theme a scene's frame was loaded in (later switches are messages).
+  const [loadTheme, setLoadTheme] = useState<'light' | 'dark'>('light');
+  // Which frame URL said it is ready, or gave up: tied to the URL, so a
+  // scene picked since starts out as neither, in the very render of the click.
+  const [readySrc, setReadySrc] = useState<string | null>(null);
+  const [failedSrc, setFailedSrc] = useState<string | null>(null);
   const dark = useSiteDark();
   const darkRef = useRef(dark);
   darkRef.current = dark;
+  const scene = scenes[index] ?? scenes[0];
+  const frameSrc = useMemo(() => {
+    if (!near) return null;
+    const url = new URL(scene.src);
+    url.searchParams.set('theme', loadTheme);
+    return url.toString();
+  }, [near, scene.src, loadTheme]);
+  const ready = frameSrc !== null && readySrc === frameSrc;
+  const failed = frameSrc !== null && failedSrc === frameSrc;
+  function pick(i: number) {
+    setLoadTheme(darkRef.current ? 'dark' : 'light');
+    setIndex(i);
+  }
 
-  // Wide screens only, once the section is close; it starts in the site's
-  // theme as it is then.
+  // Wide screens only, once the section is close.
   useEffect(() => {
     const box = boxRef.current;
     if (!box || typeof IntersectionObserver === 'undefined') return;
-    const wide = window.matchMedia('(min-width: 768px)');
-    if (!wide.matches) return;
+    if (!window.matchMedia('(min-width: 768px)').matches) return;
     const observer = new IntersectionObserver(
       (entries) => {
         if (entries.some((entry) => entry.isIntersecting)) {
-          const url = new URL(src);
-          url.searchParams.set('theme', darkRef.current ? 'dark' : 'light');
-          setFrameSrc(url.toString());
+          setLoadTheme(darkRef.current ? 'dark' : 'light');
+          setNear(true);
           observer.disconnect();
         }
       },
@@ -99,57 +120,87 @@ export function LiveSceneEmbed({
     );
     observer.observe(box);
     return () => observer.disconnect();
-  }, [src]);
+  }, []);
 
   useEffect(() => {
     if (!frameSrc || ready) return;
-    const origin = new URL(src).origin;
+    const origin = new URL(frameSrc).origin;
     const onMessage = (event: MessageEvent) => {
       if (
         event.origin === origin &&
         event.source === frameRef.current?.contentWindow &&
         (event.data as { type?: unknown } | null)?.type === READY_MESSAGE
       ) {
-        setReady(true);
+        setReadySrc(frameSrc);
       }
     };
     window.addEventListener('message', onMessage);
-    const timer = window.setTimeout(() => setFailed(true), READY_TIMEOUT_MS);
+    const timer = window.setTimeout(() => setFailedSrc(frameSrc), READY_TIMEOUT_MS);
     return () => {
       window.removeEventListener('message', onMessage);
       window.clearTimeout(timer);
     };
-  }, [frameSrc, ready, src]);
+  }, [frameSrc, ready]);
 
   // The site switched between light and dark: so does the editor.
   useEffect(() => {
-    if (!ready) return;
+    if (!ready || !frameSrc) return;
     frameRef.current?.contentWindow?.postMessage(
       { type: THEME_MESSAGE, theme: dark ? 'dark' : 'light' },
-      new URL(src).origin,
+      new URL(frameSrc).origin,
     );
-  }, [dark, ready, src]);
+  }, [dark, ready, frameSrc]);
 
   const live = frameSrc !== null && !failed;
-  const shownCaption = ready ? (liveCaption ?? caption) : caption;
+  const shownCaption = ready ? (scene.liveCaption ?? scene.caption) : scene.caption;
   return (
     <div className={className}>
+      <div className="mb-4 flex flex-wrap items-center justify-center gap-2" role="group" aria-label="Scenes">
+        {scenes.map((option, i) => (
+          <button
+            key={option.key}
+            type="button"
+            aria-pressed={i === index}
+            onClick={() => pick(i)}
+            className={cn(
+              'rounded-full border px-3 py-1 text-sm font-medium transition-colors',
+              i === index
+                ? 'border-transparent bg-fd-primary text-fd-primary-foreground'
+                : 'bg-fd-background text-fd-muted-foreground hover:bg-fd-accent hover:text-fd-foreground',
+            )}
+          >
+            {option.label}
+          </button>
+        ))}
+        {moreHref ? (
+          <a
+            href={moreHref}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center gap-1 px-2 py-1 text-sm font-medium text-fd-muted-foreground hover:text-fd-foreground"
+          >
+            {moreLabel ?? 'More scenes'}
+            <ArrowRight className="size-3.5" aria-hidden="true" />
+          </a>
+        ) : null}
+      </div>
       <div ref={boxRef} className="relative">
         <div className={cn(ready && 'invisible')} aria-hidden={ready || undefined}>
-          <div className={cn(posterDark && 'dark:hidden')}>
-            <PosterLink poster={poster} href={href} />
+          <div className={cn(scene.posterDark && 'dark:hidden')}>
+            <PosterLink key={`${scene.key}-light`} poster={scene.poster} href={scene.href} />
           </div>
-          {posterDark ? (
+          {scene.posterDark ? (
             <div className="hidden dark:block">
-              <PosterLink poster={posterDark} href={href} />
+              <PosterLink key={`${scene.key}-dark`} poster={scene.posterDark} href={scene.href} />
             </div>
           ) : null}
         </div>
         {live ? (
           <iframe
+            key={frameSrc}
             ref={frameRef}
             src={frameSrc}
-            title={title}
+            title={`The ${scene.label} scene, live in the FrameOS scene editor`}
             // Scripts and its own origin for the editor and the preview's
             // workers. Its bar's Back, Sign in, Fork, Install and AI open the
             // scene's page in this window, on a click; its zip downloads.

@@ -5,7 +5,7 @@ import { InstallPathChooser } from '@/components/install-path-chooser';
 import { Slideshow, type Slide } from '@/components/slideshow';
 import { TextLink } from '@/components/text-link';
 import { LightboxImage } from '@/components/lightbox';
-import { LiveSceneEmbed } from '@/components/live-scene-embed';
+import { LiveSceneEmbed, type EmbedScene } from '@/components/live-scene-embed';
 import { CompareGallery, type ComparePhoto } from '@/components/compare-gallery';
 import { links } from '@/lib/shared';
 
@@ -86,6 +86,58 @@ const calibrationPhotos: ComparePhoto[] = [
   { id: 'toucan', label: 'Toucan', alt: 'A cartoon toucan from the Cuteness Overload scene', before: '/images/guide/dither/toucan-none.png', after: '/images/guide/dither/toucan-auto.png' },
 ];
 
+// The scenes the JSX section's buttons open, live in the store's editor (its
+// embed mode) or as screenshots of it: public/images/editor/jsx/<slug>-<theme>.png,
+// taken at the frame's size, scrolled to each scene's JSX.
+const jsxDevices = {
+  lcd: { key: 'sensecap-indicator', name: 'SenseCAP Indicator', href: '/devices/seeed-sensecap-indicator' },
+  paper: { key: 'reterminal-e1002', name: 'reTerminal E1002 (Spectra 6)', href: '/devices/seeed-reterminal-e1002' },
+};
+const jsxSceneList: { slug: string; label: string; device: keyof typeof jsxDevices; blurb: string }[] = [
+  { slug: 'kitchen-sink', label: 'Kitchen sink', device: 'lcd', blurb: 'switches, a slider you drag, a form with a keyboard on the screen, a paint canvas and Lights Out - six touch pages in one file' },
+  { slug: 'colors', label: 'Colors', device: 'lcd', blurb: 'the Tailwind palette to tap through' },
+  { slug: 'map', label: 'Map', device: 'lcd', blurb: 'OpenStreetMap drawn on the chip, to drag and pinch' },
+  { slug: 'home', label: 'Home', device: 'lcd', blurb: 'a smart home panel to tap through' },
+  { slug: 'weather-demo', label: 'Weather', device: 'lcd', blurb: 'a week of made-up weather - tap a day for its details' },
+  { slug: 'rainbow-clock', label: 'Rainbow clock', device: 'paper', blurb: 'an SVG clock written in JSX, dithered to the panel\'s six inks' },
+  { slug: 'flights-above-me', label: 'Flights', device: 'paper', blurb: 'the planes over a map of your area, from OpenSky' },
+];
+const jsxScenes: EmbedScene[] = jsxSceneList.map(({ slug, label, device, blurb }) => {
+  const d = jsxDevices[device];
+  const href = `${links.sceneStore}/s/${slug}`;
+  const poster = (theme: 'light' | 'dark') => ({
+    src: `/images/editor/jsx/${slug}-${theme}.png`,
+    alt: `The FrameOS scene editor${theme === 'dark' ? ' in dark mode' : ''} with the ${label} scene's app.tsx beside its live preview as a ${d.name}`,
+    width: 2204,
+    height: 1470,
+  });
+  const onDevice = (
+    <>
+      <TextLink href={d.href}>{d.name}</TextLink>{' '}
+      inside the ESP32&apos;s 8&nbsp;MB of memory
+    </>
+  );
+  return {
+    key: slug,
+    label,
+    src: `${href}?embed=1&file=app.tsx&device=${d.key}&memory=esp32`,
+    href,
+    poster: poster('light'),
+    posterDark: poster('dark'),
+    caption: (
+      <>
+        <TextLink href={href}>{label}</TextLink> in the scene editor: {blurb}. Previewed as a {onDevice}.
+      </>
+    ),
+    liveCaption: (
+      <>
+        This is live: {label} - {blurb}. Change a class in <code>app.tsx</code> and the preview re-renders, as a{' '}
+        {onDevice}. Sign in to keep what you change.
+      </>
+    ),
+  };
+});
+
 function SectionTitle({ kicker, title, sub }: { kicker?: string; title: string; sub?: React.ReactNode }) {
   return (
     <div className="mx-auto mb-10 max-w-2xl text-center">
@@ -141,38 +193,9 @@ export default function HomePage() {
             }
           />
           <LiveSceneEmbed
-            src={`${links.sceneStore}/s/kitchen-sink?embed=1&file=app.tsx&device=sensecap-indicator&memory=esp32`}
-            href={`${links.sceneStore}/s/kitchen-sink`}
-            title="The Kitchen sink scene, live in the FrameOS scene editor"
-            poster={{
-              src: '/images/editor/jsx-kitchen-sink-light.png',
-              alt: "The FrameOS scene editor showing the Kitchen sink scene's app.tsx, JSX with Tailwind classes, beside its live preview as a Seeed SenseCAP Indicator inside the ESP32's 8 MB memory limit",
-              width: 2204,
-              height: 1470,
-            }}
-            posterDark={{
-              src: '/images/editor/jsx-kitchen-sink-dark.png',
-              alt: "The FrameOS scene editor in dark mode showing the Kitchen sink scene's app.tsx beside its live preview as a Seeed SenseCAP Indicator",
-              width: 2204,
-              height: 1470,
-            }}
-            caption={
-              <>
-                <TextLink href={`${links.sceneStore}/s/kitchen-sink`}>Kitchen sink</TextLink> in the scene editor:
-                switches, a slider you drag, a form with a keyboard on the screen, a paint canvas and Lights Out -
-                six touch pages in one <code>.tsx</code> file, previewed as a{' '}
-                <TextLink href="/devices/seeed-sensecap-indicator">SenseCAP Indicator</TextLink>{' '}
-                inside the ESP32&apos;s 8&nbsp;MB of memory.
-              </>
-            }
-            liveCaption={
-              <>
-                This is live: tap through the six pages, type in Forms, paint, or change a class in{' '}
-                <code>app.tsx</code> and the preview re-renders, as a{' '}
-                <TextLink href="/devices/seeed-sensecap-indicator">SenseCAP Indicator</TextLink>{' '}
-                inside the ESP32&apos;s 8&nbsp;MB of memory. Sign in to keep what you change.
-              </>
-            }
+            scenes={jsxScenes}
+            moreHref={links.sceneStore}
+            moreLabel="All scenes in the store"
             className="mx-auto max-w-6xl"
           />
           <div className="mx-auto mt-10 grid max-w-5xl gap-4 sm:grid-cols-2 lg:grid-cols-4">
@@ -216,15 +239,6 @@ export default function HomePage() {
               className="inline-flex items-center gap-2 rounded-lg bg-fd-primary px-5 py-2.5 font-medium text-fd-primary-foreground transition-opacity hover:opacity-90"
             >
               JSX interfaces guide
-            </Link>
-            <Link
-              href={`${links.sceneStore}/s/kitchen-sink`}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 rounded-lg border px-5 py-2.5 font-medium transition-colors hover:bg-fd-accent"
-            >
-              Open it in the editor
-              <ExternalLink className="size-4" aria-hidden="true" />
             </Link>
           </div>
         </div>
