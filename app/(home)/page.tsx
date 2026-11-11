@@ -125,51 +125,6 @@ export default function HomePage() {
         <Slideshow slides={frameSlides} aspect="aspect-[4/3]" />
       </section>
 
-      {/* Raspberry Pi or ESP32 */}
-      <section className="border-t">
-        <div className="mx-auto w-full max-w-6xl px-6 py-20">
-        <div className="mx-auto grid max-w-5xl items-center gap-10 md:grid-cols-2">
-          <div>
-            <p className="mb-2 text-sm font-semibold uppercase tracking-wider text-fd-primary">
-              Pick your hardware
-            </p>
-            <h2 className="mb-4 text-3xl font-bold tracking-tight">
-              Raspberry Pi or ESP32?
-            </h2>
-            <div className="flex flex-col gap-3 text-fd-muted-foreground">
-              <p>
-                A <TextLink href="/guide/raspberry"><strong>Raspberry Pi</strong></TextLink> is the classic option. Any model from the Zero W to the Pi 5 will do.
-                Supports <TextLink href="/devices">120+ e-ink panels</TextLink> and other outputs like HDMI. You can manage the frame through{' '}
-                <TextLink href="/guide/control">their own admin page and HTTP API</TextLink>. Boot
-                from a <TextLink href="/guide/raspberry#option-1-prebuilt-frameos-sd-image-recommended">prebuilt SD image</TextLink>{' '}
-                or <TextLink href="/guide/raspberry#option-3-no-ssh-install-with-a-script">install on any Linux</TextLink> with a shell script.
-              </p>
-              <p>
-                An <TextLink href="/guide/esp32"><strong>ESP32-S3</strong></TextLink> lets you build battery-powered frames that <TextLink href="/guide/esp32#power">deep-sleep between refreshes</TextLink>.
-                It's still the full FrameOS experience. Everything is rendered on device, including 50MB JPEGs.
-                The easiest start is a ready-made <TextLink href="/devices/seeed-buying-guide">Seeed Studio reTerminal</TextLink>: pick
-                its preset and flash it from the browser. Waveshare&apos;s <TextLink href="/devices/waveshare-esp32-s3-photopainter">PhotoPainter</TextLink>,
-                Seeed&apos;s XIAO ePaper boards, TRMNL kits and <TextLink href="/guide/esp32#supported-boards">custom setups</TextLink> work too.
-                Boards without PSRAM (e.g. ESP32-C3) run as thin clients.
-              </p>
-            </div>
-            <div className="mt-4 flex flex-wrap gap-x-5 gap-y-1 text-sm font-medium">
-              <TextLink href="/guide/raspberry">Raspberry Pi guide →</TextLink>
-              <TextLink href="/guide/esp32">ESP32 guide →</TextLink>
-              <TextLink href="/guide/esp32#raspberry-pi-or-esp32">Which one should I pick?</TextLink>
-            </div>
-          </div>
-          <LightboxImage
-            src="/images/photos/esp32-waveshare-7in3.jpg"
-            alt="An ESP32-S3 wired to a 7.3 inch Waveshare e-paper panel, showing a rendered scene"
-            width={1600}
-            height={1200}
-            caption="An ESP32-S3 wired to a Waveshare 7.3&quot; e-paper HAT, rendering a scene on the chip"
-          />
-        </div>
-        </div>
-      </section>
-
       {/* JSX + Tailwind on an ESP32 */}
       <section className="border-t bg-fd-card/50">
         <div className="mx-auto w-full max-w-6xl px-6 py-20">
@@ -400,8 +355,53 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* Video */}
+      {/* Raspberry Pi or ESP32 */}
       <section className="border-t bg-fd-card/50">
+        <div className="mx-auto w-full max-w-6xl px-6 py-20">
+        <div className="mx-auto grid max-w-5xl items-center gap-10 md:grid-cols-2">
+          <div>
+            <p className="mb-2 text-sm font-semibold uppercase tracking-wider text-fd-primary">
+              Pick your hardware
+            </p>
+            <h2 className="mb-4 text-3xl font-bold tracking-tight">
+              Raspberry Pi or ESP32?
+            </h2>
+            <div className="flex flex-col gap-3 text-fd-muted-foreground">
+              <p>
+                A <TextLink href="/guide/raspberry"><strong>Raspberry Pi</strong></TextLink> is the classic option. Any model from the Zero W to the Pi 5 will do.
+                Supports <TextLink href="/devices">120+ e-ink panels</TextLink> and other outputs like HDMI. You can manage the frame through{' '}
+                <TextLink href="/guide/control">their own admin page and HTTP API</TextLink>. Boot
+                from a <TextLink href="/guide/raspberry#option-1-prebuilt-frameos-sd-image-recommended">prebuilt SD image</TextLink>{' '}
+                or <TextLink href="/guide/raspberry#option-3-no-ssh-install-with-a-script">install on any Linux</TextLink> with a shell script.
+              </p>
+              <p>
+                An <TextLink href="/guide/esp32"><strong>ESP32-S3</strong></TextLink> lets you build battery-powered frames that <TextLink href="/guide/esp32#power">deep-sleep between refreshes</TextLink>.
+                It's still the full FrameOS experience. Everything is rendered on device, including 50MB JPEGs.
+                The easiest start is a ready-made <TextLink href="/devices/seeed-buying-guide">Seeed Studio reTerminal</TextLink>: pick
+                its preset and flash it from the browser. Waveshare&apos;s <TextLink href="/devices/waveshare-esp32-s3-photopainter">PhotoPainter</TextLink>,
+                Seeed&apos;s XIAO ePaper boards, TRMNL kits and <TextLink href="/guide/esp32#supported-boards">custom setups</TextLink> work too.
+                Boards without PSRAM (e.g. ESP32-C3) run as thin clients.
+              </p>
+            </div>
+            <div className="mt-4 flex flex-wrap gap-x-5 gap-y-1 text-sm font-medium">
+              <TextLink href="/guide/raspberry">Raspberry Pi guide →</TextLink>
+              <TextLink href="/guide/esp32">ESP32 guide →</TextLink>
+              <TextLink href="/guide/esp32#raspberry-pi-or-esp32">Which one should I pick?</TextLink>
+            </div>
+          </div>
+          <LightboxImage
+            src="/images/photos/esp32-waveshare-7in3.jpg"
+            alt="An ESP32-S3 wired to a 7.3 inch Waveshare e-paper panel, showing a rendered scene"
+            width={1600}
+            height={1200}
+            caption="An ESP32-S3 wired to a Waveshare 7.3&quot; e-paper HAT, rendering a scene on the chip"
+          />
+        </div>
+        </div>
+      </section>
+
+      {/* Video */}
+      <section className="border-t">
         <div className="mx-auto w-full max-w-6xl px-6 py-20">
           <SectionTitle
             kicker="Watch a full build (Raspberry Pi)"
@@ -422,7 +422,7 @@ export default function HomePage() {
       </section>
 
       {/* Get started */}
-      <section className="border-t">
+      <section className="border-t bg-fd-card/50">
         <div className="mx-auto w-full max-w-4xl px-6 py-20">
           <SectionTitle
             title="How do you want to get started?"
@@ -433,7 +433,7 @@ export default function HomePage() {
       </section>
 
       {/* Final CTA */}
-      <section className="border-t bg-fd-card/50">
+      <section className="border-t">
         <div className="mx-auto flex w-full max-w-3xl flex-col items-center gap-6 px-6 py-20 text-center">
           <h2 className="text-3xl font-bold tracking-tight">Build your first frame this weekend</h2>
           <p className="text-fd-muted-foreground">
