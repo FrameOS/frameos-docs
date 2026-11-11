@@ -223,7 +223,7 @@ const aiWays: {
       <>
         Add FrameOS as an MCP server in Claude Code, Cursor or any other MCP client, from FrameOS Cloud or
         your own backend. Around 80 tools - frames, screenshots, scenes, renders, photo albums - and an
-        agent only changes a frame when you asked it to.
+        agent only changes a frame when you ask it to.
       </>
     ),
     href: '/guide/cloud#developer',
@@ -327,9 +327,8 @@ export default function HomePage() {
             kicker="JSX + Tailwind on a microcontroller"
             title={
               <>
-                <s className="text-fd-muted-foreground/60 decoration-2">Write</s> Prompt it like a web app.{' '}
-                <br className="hidden md:inline" />
-                Run it on an ESP32.
+                Written like a web app. <br className="hidden md:inline" />
+                Running on an ESP32.
               </>
             }
             sub={
