@@ -22,9 +22,14 @@ const frameSlides: Slide[] = [
     ),
   },
   {
-    src: '/images/photos/frame-13in3-inside.jpg',
-    alt: 'The back of the 13.3 inch frame: Raspberry Pi Zero, Waveshare e-paper HAT and a soldered SD card extension',
-    caption: 'Inside: a Pi Zero, the Waveshare HAT, and a soldered SD card extension made from a micro SD adapter',
+    src: '/images/photos/sticky-todo.jpg',
+    alt: 'A to-do list with an on-screen keyboard on the Seeed reTerminal Sticky, held in two hands',
+    caption: (
+      <>
+        A to-do list on the <TextLink href="/devices/seeed-reterminal-sticky">Seeed reTerminal Sticky</TextLink>
+        &apos;s 3.97&quot; e-ink touch screen, with an on-screen keyboard
+      </>
+    ),
   },
   {
     src: '/images/photos/frame-13in3-printing.jpg',
@@ -46,6 +51,16 @@ const frameSlides: Slide[] = [
     src: '/images/photos/IMG_5975.jpg',
     alt: 'Two e-ink frames with 3D-printed kickstands',
     caption: '7.3" and 13.3" panels in 3D-printed cases with print-in-place kickstands',
+  },
+  {
+    src: '/images/photos/sensecap-kitchen-sink.jpg',
+    alt: 'The Kitchen sink scene with toggles, a brightness slider and a counter on a Seeed SenseCAP Indicator',
+    caption: (
+      <>
+        Kitchen sink on a <TextLink href="/devices/seeed-sensecap-indicator">Seeed SenseCAP Indicator</TextLink>:
+        toggles, sliders and counters, redrawn live on the ESP32
+      </>
+    ),
   },
   {
     src: '/images/photos/spectra6-vs-acep.jpg',
