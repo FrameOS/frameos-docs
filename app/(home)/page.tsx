@@ -164,7 +164,12 @@ const jsxScenes: EmbedScene[] = jsxSceneList.map(({ slug, label, device, blurb }
     liveCaption: (
       <>
         This is live: {label} - {blurb}. Change a class in <code>app.tsx</code> and the preview re-renders, as a{' '}
-        {onDevice}. Sign in to keep what you change.
+        {onDevice}. Sign in to keep what you change. Press{' '}
+        <span className="inline-flex items-center gap-1 whitespace-nowrap rounded border bg-fd-background px-1.5 align-[-1px] font-medium text-fd-foreground">
+          <Sparkles className="size-3.5" aria-hidden="true" />
+          AI
+        </span>{' '}
+        to ask for changes.
       </>
     ),
   };
