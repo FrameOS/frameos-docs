@@ -142,20 +142,19 @@ export default function HomePage() {
           />
           <LiveSceneEmbed
             src={`${links.sceneStore}/s/kitchen-sink?embed=1&file=app.tsx&device=sensecap-indicator&memory=esp32`}
+            href={`${links.sceneStore}/s/kitchen-sink`}
             title="The Kitchen sink scene, live in the FrameOS scene editor"
             poster={{
               src: '/images/editor/jsx-kitchen-sink-light.png',
               alt: "The FrameOS scene editor showing the Kitchen sink scene's app.tsx, JSX with Tailwind classes, beside its live preview as a Seeed SenseCAP Indicator inside the ESP32's 8 MB memory limit",
               width: 2204,
               height: 1470,
-              caption: "Kitchen sink in the scene editor, previewed as a SenseCAP Indicator inside the ESP32's 8 MB of memory",
             }}
             posterDark={{
               src: '/images/editor/jsx-kitchen-sink-dark.png',
               alt: "The FrameOS scene editor in dark mode showing the Kitchen sink scene's app.tsx beside its live preview as a Seeed SenseCAP Indicator",
               width: 2204,
               height: 1470,
-              caption: "Kitchen sink in the scene editor, previewed as a SenseCAP Indicator inside the ESP32's 8 MB of memory",
             }}
             caption={
               <>

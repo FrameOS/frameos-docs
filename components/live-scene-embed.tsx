@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useRef, useState, type ReactNode } from 'react';
-import { LightboxImage } from '@/components/lightbox';
+import Image from 'next/image';
 import { cn } from '@/lib/cn';
 
 // What the store's embed posts once its scene has loaded, and what it takes
@@ -13,7 +13,16 @@ const THEME_MESSAGE = 'frameos-store:theme';
 // slow): the screenshot stays and the frame goes.
 const READY_TIMEOUT_MS = 20000;
 
-type Poster = { src: string; alt: string; width: number; height: number; caption?: string };
+type Poster = { src: string; alt: string; width: number; height: number };
+
+/** The screenshot: a link to the scene's page, where the editor is. */
+function PosterLink({ poster, href }: { poster: Poster; href: string }) {
+  return (
+    <a href={href} target="_blank" rel="noopener noreferrer" className="block" title="Open the scene in the editor">
+      <Image src={poster.src} alt={poster.alt} width={poster.width} height={poster.height} className="w-full rounded-xl border" />
+    </a>
+  );
+}
 
 /** Whether the site is in dark mode (fumadocs puts `dark` on <html>), live. */
 function useSiteDark(): boolean {
@@ -34,10 +43,11 @@ function useSiteDark(): boolean {
  * site's light or dark. The screenshot (one per theme) stands in until the
  * embed says its scene is loaded, and stays on phones (an editor in a
  * phone-sized frame would swallow the page's scroll) and wherever the embed
- * doesn't come up.
+ * doesn't come up; a click on it opens the scene's page.
  */
 export function LiveSceneEmbed({
   src,
+  href,
   title,
   poster,
   posterDark,
@@ -47,6 +57,8 @@ export function LiveSceneEmbed({
 }: {
   /** The embed's URL: `https://scenes.frameos.net/s/<slug>?embed=1&…`. */
   src: string;
+  /** The scene's own page, which the screenshot opens. */
+  href: string;
   /** The iframe's accessible name. */
   title: string;
   poster: Poster;
@@ -125,11 +137,11 @@ export function LiveSceneEmbed({
       <div ref={boxRef} className="relative">
         <div className={cn(ready && 'invisible')} aria-hidden={ready || undefined}>
           <div className={cn(posterDark && 'dark:hidden')}>
-            <LightboxImage {...poster} caption={poster.caption} />
+            <PosterLink poster={poster} href={href} />
           </div>
           {posterDark ? (
             <div className="hidden dark:block">
-              <LightboxImage {...posterDark} caption={posterDark.caption} />
+              <PosterLink poster={posterDark} href={href} />
             </div>
           ) : null}
         </div>
