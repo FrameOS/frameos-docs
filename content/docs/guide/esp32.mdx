@@ -17,7 +17,7 @@ do is a short, specific list - it's [at the bottom of this page](#what-it-cannot
   An **ESP32-S3** can be set up and managed from either a [self-hosted backend](/guide/backend)
   or [FrameOS Cloud](/guide/cloud). The cloud flashes the generic release firmware from your
   browser and pushes interpreted scenes. The **thin-client** boards below need the self-hosted
-  backend, as Cloud does not support virtual frames. There is no standalone mode:
+  backend for now: the cloud's flasher doesn't offer them yet. There is no standalone mode:
   an ESP32 frame has no admin page of its own.
 </Callout>
 
@@ -25,7 +25,8 @@ do is a short, specific list - it's [at the bottom of this page](#what-it-cannot
   An **ESP32-S3 with PSRAM** renders scenes on the device itself. A **PSRAM-less board**
   (ESP32-C3, and the [Pico W boards](/guide/pico)) can't hold a renderer, so it runs as a *thin
   client*: the backend renders and dithers the scene and the device streams the finished panel
-  bytes. Both are set up the same way and look identical in the backend.
+  bytes. Both are set up the same way and look identical in the backend. An S3 can work the same
+  way by choice - see [rendering on the server](#render-on-server).
 </Callout>
 
 ## What you need
@@ -403,14 +404,22 @@ to the ESP32. An LCD changes what a microcontroller frame can do:
   interfaces with [JSX and Tailwind classes](/guide/apps#jsx-uis), which have fields with a keyboard
   on the screen: on the SenseCAP Indicator a tap on a JSX home panel is back on the glass in about
   85&nbsp;ms. A touch board boots straight into its scenes and joins WiFi in the background, so it
-  never opens the setup hotspot by itself. On touch e-paper only the changed part of the panel is
+  never opens the setup hotspot by itself. The Indicator's glass tracks one finger, and the keyboard
+  on the screen still types both keys when two thumbs overlap. On touch e-paper only the changed part of the panel is
   refreshed while you tap, `hover:` and `active:` are not drawn (each would cost a refresh), and with
   **Touch beep** on, a press that something takes clicks at once, before the picture can answer.
 - **Display on and off.** *Display on*, *Display off* and *Display on/off* switch the backlight,
   and nothing renders while it's dark. Over HTTP they're the `turnOn`, `turnOff` and `toggleScreen`
   [events](/guide/api#esp32).
-- **Slow renders.** A scene switch, a tap or a refresh that hasn't put its picture up within
-  200 ms shows three pulsing dots until it does. Animations never show them.
+- **Slow renders.** A scene switch or a refresh that hasn't put its picture up within 200 ms shows
+  three pulsing dots until it does. One that answers a tap, a swipe or a key waits 500 ms, so a UI
+  that answers in a few hundred milliseconds never flashes them - and an animation that takes a
+  second or two to draw its next scene after a swipe shows them too.
+- **Pixel scenes.** The *Pixel toys* and *Color cycling* samples compute every cell in JavaScript
+  and hand it over in the [8-bit palette mode](/guide/apps#javascript-apps): Hellfire runs at 26
+  frames a second at 8&nbsp;px cells, the other effects at 13 to 19.
+- **Windows.** A [desktop layout](/guide/scenes#windows) runs two scenes side by side on an
+  8&nbsp;MB board, four on a bigger one.
 - **Storing scenes.** While a push writes scenes to flash, the LCD shows the FrameOS mark and
   *Updating*: a flash write stops the chip from refreshing the screen, so the picture would tear.
   The new scene replaces it when it's stored.
@@ -461,7 +470,8 @@ announces when it will be back, and the frame list shows **asleep · wakes in 5 
 small moon badge. Battery frames show their
 charge in place of the status dot. Click it for a popup with charge, voltage, how often the frame
 wakes, drain per day, a two-week history with a forecast to empty, and a slider that shows the
-battery life at another wake cadence. A lone reading far below its neighbours is an ADC misread,
+battery life at another wake cadence. The status says **Charging**, **On USB**, **Full** (only on
+USB, from 98%) or how the cell is doing. A lone reading far below its neighbours is an ADC misread,
 not a discharge: the frame reads the cell in rounds and reports the value it
 believes, and the charts leave the rest out and say how many misreads they ignored. On the 13.3"
 E1004 a heavy scene keeps the frame awake for 80-90 s per cycle: ~23 s to render, ~22 s to dither
@@ -488,7 +498,39 @@ so it doesn't deep-sleep on your desk - and the metrics show whether the cell is
 clock sets the time on a cold boot, before WiFi is up, and every time sync writes it back. The
 [reTerminal Sticky](/devices/seeed-reterminal-sticky) has a fuel gauge instead of a divider, which
 reports the charge itself, and the [PhotoPainter](/devices/waveshare-esp32-s3-photopainter)
-reads its cell and its charging from its power chip.
+reads its cell and its charging from its power chip, and powers its audio chips and panel down
+before each deep sleep.
+
+**Processor speed** under Power picks the chip's clock: 160&nbsp;MHz on e-paper and 240&nbsp;MHz on
+LCD and touch boards by default, or either by choice ([settings](/guide/settings#power-and-battery)).
+
+## Rendering on the server [#render-on-server]
+
+An ESP32-S3 can hand its scenes to its control plane: set **Render scenes** under Power to *On the
+backend* or *On FrameOS Cloud*. The backend or the cloud runs the scene in the same WebAssembly
+runtime as the browser preview, dithers it to the panel's palette, and the frame downloads the
+finished picture. The frame keeps WiFi, its schedule, its keys and touch, its panel and its deep
+sleep, and stops doing the scene's work - no JavaScript, no image decoding, no fetches to the
+scene's data sources - so a battery frame's wake is WiFi, one request and the refresh.
+
+- **Nothing changed, nothing done.** When the picture is the one the panel shows, the frame skips
+  the download and the refresh. A sleeping frame's next picture is drawn just before it wakes,
+  with the scene's clock set to the wake, so the wake is a download.
+- **Keys, touch and the schedule keep working.** What they would have told the scene goes with the
+  next download, so a press answers in a second or three. On grey and black-and-white panels only
+  the parts that changed are sent: a key typed on the E1003 is a few kilobytes.
+- **The scene still decides when it renders.** Its refresh interval reaches the frame - at least
+  10 seconds on a backend, the plan's floor on the cloud.
+- **It runs where the plane is.** On a backend a scene reaches what the backend reaches, its LAN
+  included. On the cloud it reaches public addresses only. Either way it can't read the frame's
+  own assets or SD card yet; a [photo album](/guide/photos) works.
+- **What it costs.** Nothing on a backend. On the cloud the frame counts as one of your plan's
+  [cloud-rendered frames](/guide/cloud#limits), with a five-minute floor on its interval.
+- **The board holds nothing a scene does.** It's sent one empty scene, no service keys and no
+  scene state.
+
+This is how the thin-client boards (ESP32-C3, Pico) always work; on an S3 it's a choice you can
+undo at any time. The frame changes over at its next render.
 
 ## How fast is it? [#performance]
 

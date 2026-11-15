@@ -60,7 +60,9 @@ for exactly one deployment.
 ## Create an account
 
 Sign up at [cloud.frameos.net/signup](https://cloud.frameos.net/signup) with an email address and a
-password, or **Continue with Google**. Verify your email and sign in; you land on **Home**: your
+password, or **Continue with Google** or **Continue with Apple**. An Apple or Google sign-in whose
+email matches an account you already have is linked to it once you prove it's yours with any way
+that account signs in - its password, Google, or a passkey. Verify your email and sign in; you land on **Home**: your
 most recent frames, the latest additions to the scene store, your private scenes and photo albums,
 and your usage at a glance.
 
@@ -193,8 +195,10 @@ Each frame has an overview page at `/frames/<id>`, with its tools as sub-paths -
 **Preview**, **Schedule**, **Logs**, **Metrics**, **Assets** and **Activity** (`/frames/<id>/logs`) -
 and its scenes at `/frames/<id>/scenes/<sceneId>`.
 
-- **Scenes.** Install from the [scene store](/guide/scene-store), or open a scene in the built-in
-  editor - the same node-graph editor the backend has - and save it. A scene's drawer has three
+- **Scenes.** Install from the [scene store](/guide/scene-store), or open a scene's page - the
+  store's workspace with **Editor**, **AI** and **Preview**, the file tree and the node-graph editor
+  the backend has - and **Save** or **Save & push** ([details](/guide/scenes#push-activate-preview)).
+  A scene's drawer has three
   buttons: the main one puts the scene on the frame as it stands - **Push & activate** while the
   frame doesn't have your latest edits, plain **Activate** once it does - **Preview** runs it in
   your browser with the values in the drawer, and **Reset** puts them back. A push sends only that
@@ -207,7 +211,8 @@ and its scenes at `/frames/<id>/scenes/<sceneId>`.
   scene's **…** menu, and after one confirmation the frame moves to the newest version - order,
   pins and key grants are kept. The confirmation says what the new version may do
   that the old one couldn't ([permissions](/guide/apps#permissions)), and **Update all scenes**
-  takes every pending update in one push. A scene that asks for a service key the frame isn't
+  takes every pending update in one push. A deploy from the deploy drawer takes them too, listed
+  under **Scene updates** with what each one changes. A scene that asks for a service key the frame isn't
   allowed says so in its drawer - *Uses your Unsplash key, not allowed on this frame* - with an
   **Allow** button. **Map buttons** in the scene's menu says which of the frame's keys the scene's
   button listeners answer to ([details](/guide/scenes#input)), and a scene shown with **Preview on
@@ -230,7 +235,8 @@ and its scenes at `/frames/<id>/scenes/<sceneId>`.
   response cap, palette, [colors](/guide/colors) and
   partial-refresh policy, GPIO buttons, [local network access](#local-network-access), and on
   ESP32 the [power options](/guide/esp32#power) - deep sleep, battery pins and the
-  battery enable pin, how long it stays awake after a tap - the button and touch beep, and
+  battery enable pin, how long it stays awake after a tap, the processor speed and whether the
+  cloud [renders its scenes](/guide/esp32#render-on-server) - the button and touch beep, and
   whether the frame's own screen offers its [settings page](/guide/settings#on-screen). Also
   [button actions](/guide/esp32#button-actions), and on an ESP32 the status LED, the microphone's
   pins and the [voice chat](/guide/esp32#voice-chat) with its four permission switches. A Pi's **Display driver** can be
@@ -347,7 +353,8 @@ storage per account, 100 MB of backups, 100 MB of logs, and 250 MB of [photos](/
 **Settings → Usage** shows where you stand, and under **Need more?** the plans: **Free**,
 **Private** ($2 to $29 a month, 40 to 160 frames) and **Business** ($49 to $499, 199 to 999
 frames, with priority support). A slider sets the price, and $N a month is N times the free plan's
-storage plus N [virtual frames](/guide/virtual#in-frameos-cloud). Sharing frames and SSO with SAML
+storage plus N cloud-rendered frames: [virtual frames](/guide/virtual#in-frameos-cloud), and ESP32
+boards set to [render on the cloud](/guide/esp32#render-on-server). Sharing frames and SSO with SAML
 are planned for the paid plans and not part of them yet. A paid plan is bought by card from the same
 page and can be changed or cancelled there at any time: **Your plan** then leads it - when it renews,
 **Card and billing details**, and **Cancel plan**, which runs to the end of the month you paid for -

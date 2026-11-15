@@ -39,7 +39,9 @@ partition, or `set settings_unlock 1` on an ESP32's USB console.
 **Layout** wraps every scene on the frame in a [layout](/guide/scenes#layouts) - a taskbar, a clock
 bar, a Polaroid border - and its gear sets the layout's own fields. Each scene's own choice is
 under **Advanced**. The frame's on-screen settings have the same select, and what's picked there
-is the frame's to keep until **As each scene says** is picked again.
+is the frame's to keep until **As each scene says** is picked again. The frame's own screens -
+these settings, the scene switcher, the keyboard - take their look from the layout, and on a Pi or
+an ESP32 a desktop layout runs the frame's scenes [side by side](/guide/scenes#windows).
 
 ## Assets [#assets]
 
@@ -122,6 +124,19 @@ boards that switch the divider, its enable pin - the hardware presets fill these
 ESP32 also wakes on any of its GPIO buttons, and the frame list says **asleep · wakes in 5 min**
 while it's down. **Stay awake after a press or tap** keeps it up for a while after someone uses it -
 five minutes by default - so the next press is answered at once. A Raspberry Pi is always awake and always wall-powered, so it has none of this.
+
+An ESP32 that renders its own scenes has two more:
+
+- **Render scenes**: *On the frame* (the default), or *On the backend* / *On FrameOS Cloud*,
+  which runs the frame's scenes on its control plane and sends it the finished picture. The frame
+  only wakes, downloads and refreshes, so a battery lasts longer
+  ([details](/guide/esp32#render-on-server)). The battery popup says how much longer when it would
+  be worth it.
+- **Processor speed**: *Battery* (160&nbsp;MHz), *Performance* (240&nbsp;MHz) or *Automatic* -
+  battery on e-paper, performance on LCD and touch screens. Performance renders about a third
+  faster, but the chip also waits out the panel's refresh at that speed, which costs a battery
+  e-paper frame roughly 5 to 10% of its life. The frame reboots to take a change; on the console
+  it's `set cpu_mode`.
 
 ## Nightly reboot
 

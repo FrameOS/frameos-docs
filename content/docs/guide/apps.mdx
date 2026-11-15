@@ -91,6 +91,22 @@ while ((line = frameos.nextLine(lines)) !== null) {
 That's how *iCal to Events* reads a real calendar in under 1&nbsp;MB of heap. `frameos.timeZone()`
 gives an app a zone's offsets, for wall-clock arithmetic in any zone.
 
+Two calls are for scenes that compute every pixel themselves - fire, plasma, a game of Life:
+
+- `return frameos.pixels(cells, palette, { width, height, pixelSize })` is the **8-bit palette
+  mode**: a byte a cell, each an index into up to 256 `0xRRGGBB` colors, written straight into the
+  panel's buffer with no SVG or JSX in between. Only the cells whose index or color changed are
+  written again, so an app that animates only its palette - the *Color cycling* sample - costs
+  almost nothing a frame.
+- `frameos.ops` runs the loops such scenes are made of over whole typed arrays in one call, at
+  native speed: `map` through a lookup table, `add` / `sub` / `mul`, and a 3×3 `convolve` for blurs
+  and waves. On an ESP32 a 120×120 fade goes from 58&nbsp;ms in JavaScript to under 2.
+
+The *Pixel toys* sample (fireworks, a fountain, a starfield, Hellfire, Matrix rain, ripples,
+Life…) and *Color cycling* are both written this way, and run at 13 to 26 frames a second on the
+SenseCAP Indicator. Build an effect's tables when it starts, not when the module loads: on an ESP32
+that's the difference between a scene that starts in half a second and one that takes three.
+
 An app can hear the frame's events without an event node: name them under `events` in its
 `config.json` (`"*"` for all of them but finger motion) and export `onEvent`. Return `true` to
 draw the scene again:
@@ -192,7 +208,8 @@ export function get(app: FrameOSApp) {
 - **Select boxes**: `<select>` with its `<option>`s, controlled as in React. A tap opens the list
   on top of everything, as wide as the select, scrolling what doesn't fit.
 - **Boxes that scroll**: `overflow-y-auto` follows a finger or the mouse wheel, with
-  a scroll bar, and `overflow-hidden` clips to a rectangle.
+  a scroll bar, and `overflow-hidden` clips to a rectangle. Negative insets (`-top-1`,
+  `left-[-40px]`) hang a box off its parent's edge, as in a browser.
 - **Laid out for a smaller screen**: a `.tsx` or `.jsx` app lays out at the panel's
   size divided by the frame's [render scale](/guide/settings#render-scale) and is drawn sharp at
   full size. `app.frame.scale` says which scale, for anything drawn in the canvas's own pixels.
@@ -210,7 +227,8 @@ export function get(app: FrameOSApp) {
 - **What the frame knows**: `app.frame.color` is false on black-and-white and grey panels, so a UI
   can switch to high contrast there; `app.frame.paper` says a change costs a refresh;
   `app.frame.batteryPercent` and `app.frame.wifiRssi` are what the hardware reports, and undefined
-  where it can't say.
+  where it can't say. A layout on a desktop also gets `app.frame.scenes`, `sceneId` and `windows`
+  ([desktops](/guide/scenes#windows)).
 
 Two habits from the browser to drop: a UI reads class names only, so a size in `style={{…}}` is
 ignored - put a computed one in a bracket class, `` className={`p-[${pad}px] text-[${size}px]`} ``.
@@ -229,13 +247,16 @@ What an app may do on the frame is listed in its `config.json` under `permission
 
 - `assets` - read the frame's assets folder (`listAssets`, `readAsset`, `loadAssetImage`…);
 - `assets-write` - also write and delete there (`writeAsset`, `appendAsset`, `deleteAsset`);
+- `frame` - what the frame's own [settings page](/guide/settings#on-screen) can do: read its
+  facts, change its WiFi, rotation and scale, render, restart and reboot (`frameos.frame()`), and
+  only while the frame offers that page. The *Terminal* sample uses it;
 - `files` and `shell` - for built-in apps: *Local image* reads any folder, *Chromium screenshot*
   and *RTSP camera snapshot* run programs.
 
 You rarely write the list yourself: saving a scene fills each JavaScript app's list from its code.
 A scene asks for what its apps ask for, and every surface shows that as tags - *reads assets
 folder*, *writes assets folder*, *reads all files*, *runs shell commands*, and *uses OpenAI key*
-for each service key an app reads - on the scene list, in the drawer, on store tiles and in the
+for each service key an app reads, and a red *changes frame settings* for `frame` - on the scene list, in the drawer, on store tiles and in the
 install dialog. Installing a scene is approving its tags; **Update to latest** says which ones a
 new version adds and turns red when it gains shell, file or write access.
 

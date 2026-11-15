@@ -125,8 +125,8 @@ changes. Taps go to whatever is under them. A layout's app can read `app.frame.s
 `app.frame.wifiRssi`, and open the frame's own screens with `frameos.dispatch('sceneSwitcher')`,
 `frameos.dispatch('sceneSettings')` and `frameos.dispatch('sceneSettings', { page: 'frame' })`.
 
-- **Starters**: *Top bar*, *Bottom bar*, *Side rail*, *Windows 98*, *Polaroid*, *Front page*,
-  *Terminal* and *Gallery wall* are one click away under **New layout** in the frame's Layouts group,
+- **Starters**: *Top bar*, *Bottom bar*, *Side rail*, *Windows 98*, *macOS*, *BeOS*, *Tiling*,
+  *Polaroid*, *Front page*, *Terminal* and *Gallery wall* are one click away under **New layout** in the frame's Layouts group,
   and the [scene store](/guide/scene-store) has a Layouts shelf.
 - **Any scene can be one**: **Use as layout** in its settings turns it into a layout and back, if
   its render is one JSX app with a `<yield />` - the switch says why when it isn't. A layout stays
@@ -140,7 +140,41 @@ changes. Taps go to whatever is under them. A layout's app can read `app.frame.s
   `app.frame.systemScene` is true.
 - **Safe mode**: a layout can make a frame hard to use. Ten pulls down from the top edge of a touch
   screen, each within five seconds of the last, open the frame's settings without the layout:
-  **Cancel** goes back as it was, and only **Save** changes anything.
+  **Cancel** goes back as it was, and only **Save** changes anything. A swipe in from another edge
+  in between starts the count again.
+- **Its look on the frame's own screens**: the scene settings, the frame page, the switcher and the
+  keyboard on the screen take their look from the layout around them. The desktops below have a
+  **Look of the settings pages** field - Windows Standard, Light and Dark, BeOS, High contrast, or
+  FrameOS's own - and e-paper gets High contrast.
+
+### Desktops: scenes side by side [#windows]
+
+On a Raspberry Pi, an ESP32 and in the browser preview, the *Windows 98*, *macOS*, *BeOS* and
+*Tiling* layouts are desktops: every scene you open gets a window (or a tile) of its own, and they
+all run at once. The one in front is the frame's current scene - the one the scene list, next and
+previous, the API and the control planes move.
+
+- **Windows 98**, **macOS** and **BeOS** open overlapping windows at the layout's **Window size**,
+  moved and sized with a finger or the mouse, snapped to half or all of the desktop at its edges,
+  put away and brought back, each in its own chrome: a taskbar and Start menu, a Dock and menu bar,
+  a Deskbar and Be menu. Alt+Tab, F11 for full screen, and a gear on each window for that scene's
+  settings.
+- **Tiling** keeps the scenes in tiles, in five arrangements its top bar steps through. Drag a gap
+  to move that split, drag a tile's bar onto another tile to swap them, and a press anywhere in a
+  tile is its scene's.
+- **The frame's own screens are windows too.** Each scene's settings open as a window beside it,
+  and **Save** there applies the values to the running scene and keeps the window open. The
+  scene list and the frame page stay where you left them.
+- **Memory.** On an ESP32 only so many scenes run at once - two on a board with 8&nbsp;MB of PSRAM,
+  four with more - and the desktop closes the window that's been in the background longest. A Pi
+  and the browser have no limit. A scene brought forward from its window doesn't reload.
+
+Pick another desktop and it opens the windows the last one had open. In your own layout,
+`app.frame.scenes` lists the frame's scenes (only where they can run side by side),
+`app.frame.sceneId` is the one in front, `app.frame.windows` how many may run at once, and a bare
+`<Scene id="…" />` is that scene itself, state and all, not a copy. Where scenes can't run side by
+side - a [board rendered on the server](/guide/esp32#render-on-server), a virtual frame - a
+desktop draws its bar around the one scene.
 
 ## Buttons, touch and keyboards [#input]
 
@@ -208,8 +242,27 @@ frame's scene list.
 
 On an LCD - an HDMI screen, a HyperPixel, the SenseCAP Indicator - any render that hasn't put its
 picture up within 200 ms shows three pulsing dots over the old picture until it does: a scene
-switch, a slow tap, a slow refresh. A quick one looks as it always did, and animations never show
-them.
+switch, a slow tap, a slow refresh. A quick one looks as it always did. On the Indicator a render
+that answers a tap, a swipe or a key waits 500 ms before showing them, animations included, so a
+UI that answers in a few hundred milliseconds never flashes them.
+
+## The store, your assets and a terminal, on the frame [#frame-apps]
+
+Three sample scenes work the frame itself from its own screen. Install them like any other scene;
+the [desktops](#windows) give each an entry of its own.
+
+- **Scene store** browses the [scene store](/guide/scene-store) on the glass: shelves (*Real time*
+  first on a screen that animates), search, a page of cards a screen, and **Preview**,
+  **Install**, **Open**, **Update** and **Delete**. It reopens where you left it after a preview.
+  The frame asks its backend or the cloud to make the change, so only public store scenes go in,
+  and never while the [settings on the screen](/guide/settings#on-screen) are off. In the browser
+  preview it previews and installs nothing.
+- **Asset browser** walks the frame's [assets folder](/guide/settings#assets): folders and pictures
+  as a grid, a picture on the whole screen with a swipe to the next, and a slideshow.
+- **Terminal** is the ESP32 serial console's commands - `help`, `status`, `set`, `wifi`,
+  `wifi-scan`, `render`, `event`, `scenes`, `scene`, `restart`, `reboot` - on the screen, with the
+  keyboard on the screen and the last 200 lines kept. It can do what the frame's settings page can
+  and nothing more, and wears a red *changes frame settings* tag ([permissions](/guide/apps#permissions)).
 
 ## Code nodes
 
@@ -222,14 +275,18 @@ expressions; those nodes show a "Legacy Nim" chip with a **Convert scene** butto
 
 ## How scenes run [#execution]
 
-Scenes are **interpreted**: the frame runs the graph as you drew it. New scenes are created that
-way, every scene FrameOS ships is built that way, and it's the only way [ESP32](/guide/esp32) and
-[Pico](/guide/pico) frames can work at all. What you get:
+Scenes are **interpreted**: nothing about them is built into the frame's binary. When a scene
+starts, the frame turns its graph into one small JavaScript program and runs that. New scenes are
+created that way, every scene FrameOS ships is built that way, and it's the only way
+[ESP32](/guide/esp32) and [Pico](/guide/pico) frames can work at all. What you get:
 
 - **Deploys are near-instant** - nothing is recompiled, so a change is on the frame in seconds.
 - **Code nodes are JavaScript, TypeScript or JSX**, and apps can be customised in JavaScript.
 - It costs a little more per render, which matters very little on a display that takes 20 seconds
   to refresh anyway.
+- **Scenes are kept apart.** A scene with code of its own runs in a JavaScript runtime of its own
+  on a Pi and on an ESP32 with more than 8&nbsp;MB of PSRAM, so one that runs out of memory takes no
+  other scene with it. On an 8&nbsp;MB board each gets a sandbox of its own in a shared runtime.
 
 There is a second, older mode - **compiled** - which turns the scene into native code inside the
 frame's binary. It is a **legacy** path: it's the only mode that can run custom **Nim** app source
@@ -267,6 +324,13 @@ one binary, which is what a compiled scene forces). Frames still configured with
 
 ## Push, activate, preview
 
+**Edit** on a scene - from its tile, its drawer, the frames home, the library or a chat link -
+opens the scene's page: the same workspace as a [scene store](/guide/scene-store) page, with
+**Editor**, **AI** and **Preview** as columns you toggle and resize. The editor is a file tree
+(the scene, its apps and their files) beside the node graph, the AI edits the scene with the
+frame as context, and the preview runs it in your browser. **Save** saves it, **Save & push** puts
+it on the frame too. A saved scene on a self-hosted backend opens in the same workspace.
+
 A frame's scene drawer has three buttons. The main one puts the scene on the frame as it stands,
 saved or not: **Push & activate** (or **Push to frame** on the scene that's already active) while
 the frame doesn't have your latest edits, plain **Activate** (or **Apply**) once it does. It pushes only that
@@ -277,6 +341,11 @@ puts them back. Scenes are *pushed*; settings and FrameOS itself are *deployed*.
 Installing a scene - from the store, the Scenes page, or dropped on a frame's tile - saves it and
 pushes it to the frame without changing what's showing. **Install & activate**, in the install
 dialog and on every catalog row, does both in one push.
+
+A deploy from the frame's deploy drawer also moves installed store scenes to their newest
+versions, on the cloud and on a backend. They're listed under **Scene updates**, ticked: untick
+one to keep the version the frame has, or click it to see what changes - the scene and each app's
+code as files, line by line. On a backend, a scene you edited keeps your field values.
 
 Two ways to see a scene without committing to it:
 
@@ -289,7 +358,8 @@ Two ways to see a scene without committing to it:
   real panel - the Seeed reTerminal E1001 to E1004 and Sticky, the Waveshare PhotoPainter and 13.3",
   Inky Impressions and the Inky Frame, the CrowPanel, the SenseCAP Indicator, HyperPixels, the Pi
   touch displays, a 1080p or 4K screen - with that panel's size and inks. **Rotate** turns it and
-  keeps the device.
+  keeps the device. A **Layout** select under it tries the scene inside any of your layouts or the
+  starters, without changing the scene.
 - **Preview on frame** temporarily shows the scene on the actual frame without saving or
   deploying it. Good for checking how a color dithers on real e-ink. A sleeping ESP32 gets it on
   its next wake. While it's on the frame, the scene list shows it as a dashed *preview* row above
