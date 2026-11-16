@@ -1,0 +1,578 @@
+---
+title: "JSX and Tailwind on an ESP32"
+description: "How FrameOS renders a React-style UI on a microcontroller with 8 MB of PSRAM: TypeScript parsed by QuickJS, JSX read straight into SVG nodes, a Tailwind and flexbox layout engine, damage-tracked repaints, a low-memory fork of pixie, async hooks, and windowed desktops."
+date: 2026-11-15
+---
+
+This is a FrameOS app:
+
+```tsx
+let on = new Set<string>()
+
+const Card = memo(({ name, lit }: { name: string; lit: boolean }) => (
+  <div
+    className={`rounded-2xl p-4 flex flex-col gap-1 ${lit ? 'bg-amber-400 text-slate-900' : 'bg-slate-800 text-slate-300'} active:opacity-70`}
+    onClick={() => (on.has(name) ? on.delete(name) : on.add(name))}
+  >
+    <span className="text-sm uppercase">{name}</span>
+    <span className="text-3xl font-bold">{lit ? 'On' : 'Off'}</span>
+  </div>
+))
+
+export function get(app) {
+  return (
+    <div className="flex flex-col gap-4 p-6 bg-slate-950 text-white">
+      <h1 className="text-2xl font-semibold">{on.size} lights on</h1>
+      <div className="grid grid-cols-2 gap-4 flex-1">
+        {['Kitchen', 'Hall', 'Desk', 'Porch'].map((n) => <Card key={n} name={n} lit={on.has(n)} />)}
+      </div>
+    </div>
+  )
+}
+```
+
+It is TypeScript with JSX, Tailwind classes, `memo`, an `onClick` handler and a module variable for state. It looks like React. It runs on a
+[Seeed SenseCAP Indicator](/devices/seeed-sensecap-indicator): a 4" 480×480 touch LCD driven by an **ESP32-S3**. That chip has two
+240 MHz Xtensa cores, 512 KB of internal SRAM, 8 MB of PSRAM on an 80 MHz octal bus and a 16 KB instruction cache. There is no
+browser, no React, no Node and no Linux on it. A tap on a card redraws the screen in about 300 ms, and only the card you tapped and the
+count above it are repainted. An animated full-screen SVG runs at about 20 fps.
+
+<video src="/videos/sensecap-form-showcase.mp4" autoPlay muted loop playsInline controls style={{ width: '100%', borderRadius: 8 }} />
+
+You could call it React Native for microcontrollers, except nothing native gets generated and there are no widgets. The whole screen is
+one SVG, recomputed on every render the way React recomputes a virtual DOM, and then diffed so that only what changed reaches the pixels.
+The same code also runs on a Raspberry Pi, in the browser preview (as WebAssembly), and on the server for boards too small to render
+for themselves.
+
+This post goes through how that works, one stage at a time.
+
+## The constraint: PSRAM is the wall
+
+Most of the design follows from one fact: **on an ESP32-S3, touching memory is the expensive part.**
+
+The SenseCAP's canvas is 480×480. As RGBX that is 921 KB, which does not fit in internal RAM, so it lives in PSRAM. Octal PSRAM at
+80 MHz moves about **27 MB/s** when copying PSRAM to PSRAM through the cache (the write-allocate cache fetches every line before writing
+it) and 40-50 MB/s for straight writes. So **one pass over the canvas costs 20-35 ms.**
+
+The panel takes its share as well. The ST7701S is an RGB panel with no memory of its own, so the ESP32 streams the frame to it
+continuously. At a 12 MHz pixel clock that is 19.5 MB/s read out of PSRAM forever. A refill interrupt runs on the render core every
+0.9 ms and copies the next 19.2 KB "bounce buffer". Every instruction-cache miss is also a flash read on the same bus, and a 3.2 MB
+firmware with a JavaScript engine in it misses a 16 KB cache a lot.
+
+The first version of the pipeline made about six full passes per frame:
+
+1. fill the background
+2. draw the SVG's own full-screen background rect over it
+3. read the canvas to pack it into RGB565
+4. write the packed copy
+5. copy that into the panel's back buffer
+6. hash it to check whether anything changed
+
+That came to about 6.5 MB of traffic per frame, more than the bus can deliver at 24 fps. Tuning loops would never fix it. The only
+fix was to **touch the frame at most once per render, and then only the part that changed.** Every section below is a piece of that.
+
+## The pipeline at a glance
+
+Here is what happens between a tap on the glass and a lit pixel on the SenseCAP:
+
+```
+FT6336U touch IC ──I²C──▶ fos_touch.c (touch task) ──queue──▶ render task
+                                                               │
+   event_loop.nim  (one dispatcher: Linux, ESP32, wasm)  ◀─────┘
+        │  pointerDown / pointerUp → tap
+        ▼
+   ui/events.nim   hit-test the last layout's regions → onClick()   ── QuickJS
+        │
+        ▼
+   compiled scene program (scene_compiler.nim → JS, run by QuickJS)
+        │  calls the app's get()
+        ▼
+   get() returns JSX  ── __frameosJsx builds plain {type, props} objects
+        │
+        ▼
+   js_runtime/jsx.nim   reads the JS objects directly → pixie SvgNode tree
+        │
+        ▼
+   ui/layout.nim + ui/tailwind.nim   block / flex / grid / absolute → SVG nodes
+        │                            (unchanged subtrees come back as the same objects)
+        ▼
+   utils/svg_frames.nim   diff against the SVG this buffer last held → ≤ 6 damage boxes
+        │
+        ▼
+   pixie (FrameOS fork)   renderInto each box, RGB565, straight into the panel's back buffer
+        │
+        ▼
+   lcd_st7701s_rgb.c   switch buffers at the next vertical blank (3 buffers, no copy)
+```
+
+None of that is a browser, and almost none of it existed a year ago.
+
+## Stage 1: TypeScript and JSX parsed by QuickJS itself
+
+FrameOS runs scene code in [QuickJS](https://bellard.org/quickjs/), Fabrice Bellard's small embeddable JavaScript engine. Scene apps are
+written in TypeScript, so for a long time every frame carried its own TypeScript transpiler: about 4,300 lines of Nim and 80-90 KB of
+flash. On the 36 KB Weather app, it built a token array that peaked at **1.4 MB** of RAM. That alone stopped the reTerminal E1004 from
+rendering the Weather scene.
+
+So instead of moving the transpiler to the server, we removed it. **[quickts](https://github.com/FrameOS/quickts)** is upstream QuickJS
+plus one commit. Its parser erases type syntax as it reads the tokens. It lowers the three constructs that actually need code (enums,
+constructor parameter properties and JSX) straight into bytecode. No JavaScript source is ever generated, so no source map is needed
+either, and errors point at the original `.ts` line.
+
+What it costs, measured on the Weather app:
+
+| | Pristine QuickJS | quickts |
+|---|---|---|
+| `quickjs.o` text, `-Os` | 482,460 B | 498,220 B (+15.8 KB) |
+| Parse, TS/JSX passes on | n/a | 0.685 ms (+4%) |
+| Peak parser heap | 159,452 B | 159,764 B (+312 B) |
+
+That replaced 80-90 KB of flash and up to 1.4 MB of RAM with 13 KB of flash on Xtensa and 312 bytes of RAM. quickts parses 1,026 of the
+1,027 `.ts` and `.tsx` files in the FrameOS monorepo. The one holdout is `import './index.css'`. QuickJS's own test suite passes
+unchanged, and plain JavaScript compiles to byte-identical bytecode with the passes on or off. The flags are set per eval: `.js` gets
+neither pass, `.jsx` gets JSX, and everything else gets both.
+
+FrameOS patches nothing else in QuickJS, but it does compile it unevenly. The interpreter loop (`JS_CallInternal`), the small-block
+allocator and the cycle collector are built at `-O2`, and the rest of `quickjs.c` at `-Os`. That costs 8 KB of flash and makes bytecode
+about 25% faster and small objects about 30% faster. Building all of `quickjs.c` at `-O2` would have cost 166 KB for a few percent more.
+
+## Stage 2: a scene is a compiled program
+
+A FrameOS scene is a diagram: event nodes, app nodes, code nodes and edges, stored as JSON. Until recently the runtime walked that graph
+on every render. Each pass did a table lookup per node and per edge, allocated a `visited` table, read each node's cache settings out of
+JSON, and wrapped every code node in a JSON envelope that was stringified in JS and parsed again in Nim.
+
+Now `scene_compiler.nim` turns the graph into **one JavaScript program** when the scene first starts, on the device, from the same JSON:
+
+```js
+"use strict";(__K)=>{const{console,__S,__C,__E}=__K;
+const __F=((__K)=>{
+function __c42(A){const items=A["items"];return((state,args,context)=>(
+items.map(i => i.title)
+))(__S,A,__C)}
+return{__c42}})();
+return __K.glue((N,Z)=>{const{__c42}=__F;
+const{g,r,s,p,q,t,j,v,…}=N,{T,JE,I,X,A,EI,…}=Z;
+function i7(){try{s(7,"image",g3())}catch(x){EI(0,7,"image",3,x)}}
+function g3(){let h;h=g(3);return h}
+function f7(V){const P=p(7);i7();q(7,P);r(7);;f8(V)}
+…
+return{ev(n){…},flow(i){…},data(i){…}}},[…])}
+```
+
+Every node becomes a function. `g<id>()` returns the node's value, and `f<id>(V)` runs the node in a flow and then calls the next one.
+The natives have one-letter names in an inner scope that the user's snippets cannot reach. All the graph analysis happens once at compile
+time: cycle detection, producer chains deeper than 64, which events the scene listens for, and whether the render is a single node that
+draws the whole frame. That last fact matters later.
+
+Values never become JSON on the way through. An image, a colour or a streamed HTTP body passes between apps as a handle into the scene's
+`Value` table, so a value reaches the next app exactly as the previous app made it. The shared helpers (the kit) are evaluated once per
+JS context, and on the ESP32 the kit ships as precompiled bytecode in the firmware image, so a scene start does not re-parse 2.3 KB of
+glue every time.
+
+## Stage 3: JSX without React
+
+quickts lowers every JSX site to a call to one factory, which lives in the runtime's prelude:
+
+```js
+const __frameosJsx = (type, props, ...children) => {
+  const nextProps = props ?? {};
+  if (children.length !== 0) {
+    nextProps.children = children.length === 1 ? children[0] : children;
+  }
+  if (type === __frameosFragment) return nextProps.children ?? null;
+  // A function component runs now: the tree an app returns is plain elements.
+  return typeof type === "function" ? type(nextProps) : { type, props: nextProps };
+};
+```
+
+That is nearly the whole "React" part. There is no virtual DOM library, no fiber scheduler and no `useState`. Components are plain
+functions called on the spot, so `get()` returns a tree of plain `{type, props}` objects. Since quickts always passes either `null` or a
+fresh object literal for the attributes, the factory can adopt `props` without copying it. That halved the bytecodes and allocations per
+element: it had been 76 bytecodes and about 15 allocations each.
+
+Module variables serve as state, and the frame re-renders after every handler. The one hook that pays its way on a frame is "data that
+arrives later", which comes up again in the async section below.
+
+**No markup is built, and none is parsed.** The obvious design would have `get()` produce an SVG string for the runtime to parse. Instead,
+`js_runtime/jsx.nim` walks the returned objects through the QuickJS C API (`JS_GetProperty` with pre-interned atoms) and builds
+[pixie's](https://github.com/treeform/pixie) `SvgNode` tree directly. On DVD Logo Bounce, a full-screen SVG drawn every frame, building
+from JSX took a frame from 104 µs to 64 µs on a laptop. Reading the markup alone cost 18 µs, against 4 µs to build the same drawing from
+nodes. On the SenseCAP, parsing the markup had been about 10 ms of a 50 ms frame.
+
+A root `<svg>` is drawn as it is. Anything else is a **UI** and goes through the layout engine.
+
+## Stage 4: Tailwind and flexbox, in 30 KB of flash
+
+`ui/layout.nim` is a small CSS layout engine and `ui/tailwind.nim` reads the class names. It supports the subset of CSS that a dashboard
+actually uses:
+
+- **Block flow** with inline text that wraps, and white space handled like React's (`{count} items` keeps its space, indentation adds
+  none).
+- **Flexbox**: `flex-row`/`flex-col`, `grow`, `shrink`, `basis`, `flex-1`, `flex-wrap`, `gap`, every `justify-*` and `items-*`, `self-*`,
+  `auto` margins, and CSS's automatic minimum size.
+- **Grid**: `grid-cols-N` and `col-span-N`, laid out as a wrapping flex row whose items are as wide as the columns they span.
+- **Absolute positioning** with `inset-*`, drawn after the in-flow children.
+- **Overflow**: `overflow-hidden` clips, and `overflow-y-auto` scrolls with finger drag, the mouse wheel and a scroll bar. The scrolled
+  content is emitted inside a nested `<svg viewBox>`, and scrolling moves the viewBox.
+- Tailwind's 4 px spacing scale, fractions, arbitrary values like `w-[37px]` and `bg-[#123456]`, the full colour palette with
+  `/opacity`, gradients, borders, rounded corners, the type scale, `truncate` and `line-clamp-N`, plus `sm:`/`md:`/`portrait:` (tested
+  against the canvas) and `hover:`/`active:`/`focus:`/`group-hover:` (tested against the pointer).
+- Form controls: `<input>`, `<textarea>` and `<select>`. When the frame has no keyboard, an on-screen one appears, with long-press accents
+  and a draggable space bar for moving the caret. The keyboard is itself just another Tailwind tree laid out below the UI.
+
+Unknown classes are ignored, the same way a browser ignores a class Tailwind never generated. Every box is `border-box` with Tailwind's
+preflight, so no tag has a default style.
+
+The output of the layout is not pixels. It is **another SVG node tree**: rects and paths for boxes, `<image>` elements that carry an
+already-decoded picture, and text set by pixie's typesetter and emitted as glyph outlines. A UI therefore costs exactly as much to draw
+as the SVG it becomes, and there is **one rasterizer for everything**: hand-written SVG, `frameos.svg(...)` markup, JSX `<svg>` and
+Tailwind UIs all reach the screen the same way. Everything that follows (damage tracking, the background waiver, drawing straight into
+the panel) works for all of them at once.
+
+Flash on the ESP32 is the real budget. The first working version of the layer was twice its current size. The shipped version reads
+classes **in place against packed word lists**, with no string copies, no allocation, and Nim's bounds checks and exception tracking
+turned off in the hot modules. Measured against the build before it:
+
+| Piece | Flash |
+|---|---|
+| Layout and SVG output (`layout.nim`) | 19.9 KB |
+| Class reader and palette (`tailwind.nim`) | 10.1 KB |
+| JSX reader and glue | 3.6 KB |
+| pixie node input and `<image>` | 2.9 KB |
+| **Total** | **+37.3 KB** |
+| Later: fields, on-screen keyboard, scrolling, clipping | +18.8 KB |
+| Later: select boxes | +2.9 KB |
+
+A scene that returns no JSX allocates nothing for any of this.
+
+## Stage 5: reconcile the pictures, not the code
+
+Each render rebuilds the whole tree, as in React. What keeps a tap cheap is that the *output* is reconciled at every stage:
+
+- **Text that did not change is not set again.** Each UI keeps a `UiMemo` with what the last layout typeset: each text's arrangement,
+  keyed by its runs, style, width and alignment, and the outlines it emitted at a given position. Text that comes back the same is neither
+  typeset nor outlined. It is handed to pixie as *the very same node objects and shared paths*, so pixie can compare it by pointer.
+- **Unchanged subtrees come back as the same objects.** An element whose node at the same position is identical or equal, and which the
+  pointer did not affect, takes back its laid-out node. No classes are read, its size comes from the layout cache, and if its position,
+  size and opacity are unchanged, it returns the same SVG nodes it emitted last time. The cache keeps two calls per node, because flexbox
+  measures an item and then places it.
+- **`memo(Component)`** works as in React. When a component is called with props shallow-equal to its last call at the same place (its
+  turn in the render, or its `key`), it returns *the same element object*. The JSX walker tagged that object with a node number, so it
+  takes the previous nodes back without walking it. The memo table is two `Map`s swapped every render. An earlier single map that only
+  grew hit the interpreter's 4 MB heap cap after about a thousand renders of a list with changing keys.
+- **Hover does not run `get()`.** When the only change is that a `hover:`, `active:` or `group-hover:` class turned on or off, the last
+  tree is laid out again with the new pointer state, the way a browser restyles `:hover` without re-rendering React.
+
+## Stage 6: damage detection on SVGs
+
+The panel's back buffer *is* the canvas (more on that below), and it still holds whatever was drawn there a few frames ago. So the cheapest
+render is one that only touches the pixels that differ.
+
+`utils/svg_frames.nim` keeps, for each frame buffer, the parsed SVG that buffer currently holds. The next render into that buffer asks
+pixie for `damageRects(previous, next)`:
+
+- The two element lists are **matched in order, identical with identical, like a keyed list**. An element added or removed (a check mark
+  appearing) is damage only where it is, and the elements after it still match.
+- Because unchanged elements are the same objects (stage 5), and pixie caches parsed `<path d>` data per thread keyed by its text,
+  "this element did not change" is usually a **pointer comparison**. Bounds are measured once.
+- The result is **up to six boxes**, merged where they touch. Each box is repainted on its own through a `view()` of the buffer, and pixie
+  skips every element whose bounds miss it. A card's box costs that card's paths and nothing else.
+- Filled shapes keep their flattened polygons per scale. A path that moves every frame is cached at quarter-pixel offsets, so a logo
+  bouncing around under a new `translate()` is flattened once, not 24 times a second.
+
+The SenseCAP has **three** frame buffers: one being scanned out, one waiting for the next vertical blank, and one being drawn. With two,
+a 55 ms render had to wait for the panel's frame boundary and took three 23.6 ms scans, about 71 ms. With three, a writer only waits if
+the frame it handed over before still isn't on the glass. Each buffer therefore holds the frame from *three renders back*, and the damage
+is computed against that frame, not the previous one.
+
+Damage tracking only works if nothing else writes into the buffer behind its back. The firmware counts every write that is not a render
+in place (`s_generation` in the LCD driver: a copy, a clear, an overlay such as the loading mark). If the count moved, or the last render
+failed or drew a different scene, that buffer has no record and its next frame is drawn whole. A test renders every frame both ways and
+compares them.
+
+Toggling one card on the home panel from the example at the top, on the SenseCAP:
+
+| One card toggled | Before | After |
+|---|---|---|
+| Pixels repainted | 93,522 (one box from the count to the card) | 28,564 (the card, the count) |
+| Raster | ~790 ms | 68-97 ms |
+| The JS app's node (get, layout, parse, damage, raster) | ~900 ms | 135-167 ms |
+| Tap to `render:done` | ~1,040 ms | **~300 ms** |
+
+For DVD Logo Bounce, the damage is a box around where the logo was and where it is now: about 130×85 pixels instead of 230,400.
+
+Drawing canvases get the same treatment through a different mechanism. A `frameos.canvas()` is the same image object across renders, so
+pixie cannot see that it changed. Instead, each `frameos.draw()` into it is logged with its bounding box, and each LCD buffer remembers
+which version of the canvas it last showed. Finger-painting on the SenseCAP repaints about 4,000 pixels per frame in about 4 ms, and that
+stays flat after hundreds of strokes.
+
+## Stage 7: a low-memory fork of pixie
+
+[pixie](https://github.com/treeform/pixie) is treeform's excellent pure-Nim 2D library (paths, text, SVG, codecs), and it was a big reason
+FrameOS [moved to Nim](/blog/nim-rewrite) in the first place. Upstream pixie makes the right trade-off for a desktop: allocate the finished
+image plus every intermediate the codec wants. On a frame, that is the difference between rendering and rebooting. Since November the
+FrameOS fork lives in the monorepo (`frameos/pixie`). It is a strict superset of upstream and still tracks it. What it adds:
+
+**A decode budget decoders respect.** `setDecodeBudgetBytes` sets a ceiling that covers the intermediates *and* the output. Decoders plan
+their allocations before making them and raise a catchable `PixieError` if the plan doesn't fit, instead of taking the process down. The
+"largest free block" half of the budget is measured lazily, only when a decode asks for it, because answering that question on ESP-IDF
+means walking the whole heap (more below).
+
+**Decode straight to the size you want.** `decodeImageScaledInto(data, target, fitCover)` downscales *during* decoding with box filtering,
+so a 4000×3000 JPEG headed for an 800×480 panel never exists at full size. JPEG chroma is interpolated, not point-sampled, so heavy
+downscales don't shimmer.
+
+**Streaming decoders that never hold the file.** PNG, JPEG, BMP, PPM and WebP all have pull-source forms driven by a callback that returns
+the next chunk. PNG runs on a vendored streaming inflate with a fixed ~64 KB window, scanlines are unfiltered in place, and multi-`IDAT`
+files are inflated as segments. Fed from a socket or an SD card, neither the compressed file nor the full-size pixels are ever resident.
+That is how an 8 MB ESP32 renders a 100 MB JPEG from an SD card, and why FrameOS has a hard rule against image proxies: when a device
+can't handle an image, the fix is a better decoder on the device.
+
+**A JPEG line sink with no calls in its loop.** pixie's JPEG output (`drawLineInto`) works out once per decode where each target pixel
+samples each channel, and writes each line through one tight loop per pixel format at `-O2`. Per pixel, the old path was a chain of calls
+and divisions costing 11 µs on the S3: 24.5 s of a 30.8 s decode of a gallery photo into the reTerminal E1003's 1848×1179 window. Now
+that part takes 4 s, with byte-for-byte the same pixels. The JPEG scan loops also call a `breathe()` hook once per MCU row, so the idle task on that core gets
+to run and the task watchdog stays quiet during a long decode.
+
+**Canvases in the panel's own pixel format.** `newImage565(w, h)` is an `Image` whose pixels are packed RGB565, half the bytes of RGBA, and
+`newImage565Over(buffer)` wraps memory the caller already owns, such as an LCD frame buffer. *Every* drawing operation works on it:
+antialiased paths and text, every blend mode, gradients, opacity, views, and the scaled and streamed decoders writing directly into it. The
+result matches drawing on RGBA and then quantising: bit for bit for a single layer, within one 5-bit step for layers over layers. A test
+oracle enforces that. Stores are ordered-dithered as they land, which used to be the packer's job. Grey panels get `pfGray8`, and
+sixteen-grey e-paper gets `pfGray4`: half a byte per pixel, laid out exactly like the panel's buffer and dithered through a 4×4 matrix keyed
+on screen position. On the 1872×1404 reTerminal E1003, that canvas *is* the buffer the firmware reserved at boot, which freed 1.31 MB of an
+8 MB board.
+
+**Fast paths where it counts.** A fully covered pixel of an opaque fill is written packed, with no unpack, blend and repack. Gradients and
+translucent fills onto 565 or grey skip the intermediate paint image. `drawResampled` scales an image with fixed-point per-axis weight
+tables and no allocation the size of the picture: a 2400×1600 photo into a window went from 45 to 12 ms on a laptop. The raster modules
+(`paths`, `images`, `blends`, `rgb565`) build at `-O2` on the ESP32, which cost 36 KB of flash and took the DVD logo's raster from 31 ms to
+26 ms. The XML and string modules gained nothing at `-O2` and stay at `-Os`.
+
+**SVG that draws into your buffer.** `Svg.renderInto(target)` rasterizes into an image the caller already owns, which for a correctly sized
+canvas means one image instead of two. `<text>` becomes glyph outlines and then ordinary paths. There is a fast XML reader for app-written
+markup (checked against the full parser over pixie's SVG corpus, and it falls back whenever it would differ), plus nested viewports for
+scrolling and an `<image>` element that carries a decoded image rather than a URL.
+
+## Stage 8: the frame loop
+
+With those pieces in place, here is how the SenseCAP went from **570 ms per frame to 50 ms per frame** on DVD Logo Bounce. Every row was
+measured on the board.
+
+**Round one: stop touching the canvas.**
+
+| Phase | Before | After |
+|---|---|---|
+| Background fill (921 KB RGBX canvas) | 47 ms | **0.7 ms** (owed, waived by the SVG's rect) |
+| SVG raster | 79 ms | 57 ms (565 canvas, half the bytes) |
+| RGB565 pack | 66 ms | **0** (drawn in place) |
+| Hash, log lines, copy into back buffer, swap | ~150 ms | **~0** on a quiet frame |
+| **Per frame** | ~570 ms (1.75 fps) | ~290 ms (3.3 fps) |
+
+Two ideas did most of that work:
+
+- **The background is owed, not painted.** A render used to start by filling the canvas with the scene's background colour, and then
+  most scenes immediately painted their own full-screen background over it. Now the render *owes* the fill (`backgroundPending`), and the
+  first thing that draws pays it. If that first thing is an SVG whose first element is an opaque, square-cornered rect covering the whole
+  canvas (pixie's `coversOpaque`), the debt is waived. A test starts every case from a canvas still holding an old frame, so an unpaid
+  debt shows up.
+- **The panel's back buffer is the canvas.** `fos_display_render_target` gives the render task whichever buffer is neither being scanned
+  out nor queued, and pixie draws into it through `newImage565Over`. "Present" becomes a pointer switch at vertical blank, with no pack,
+  no copy and no hash.
+
+**Round two: stop rebuilding things.**
+
+| Step | Frame | fps |
+|---|---|---|
+| After round one | ~290 ms | 3.3 |
+| JS interpreters kept between frames | ~120 ms | 8.0 |
+| Repaint only damage; shared parsed paths; `-O2` raster | 94 ms | 10.2 |
+| QIO flash | 71 ms | 13.5 |
+| A third frame buffer | 56 ms | 17.0 |
+| No heap walk per frame; SVG spec read off the JS object; fast XML; cached flattening | ~50 ms | 19.3 |
+| Metrics sampled only with the frame that is logged in full | ~50 ms | 19.6 |
+
+A few of those deserve a closer look:
+
+- **Kept interpreters.** Tearing QuickJS down after each render and building it again (runtime, the 6.4 KB prelude, the app) cost about
+  170 ms per frame. A frame that stays awake now keeps them, which takes about 181 KB for DVD Logo Bounce. They are released only when
+  render memory runs short (under 2 MB free). That is also why app state that has to survive belongs in `frameos.remember`, not only in
+  module variables.
+- **QIO flash.** Every instruction-cache miss is a flash read, and in DIO mode a miss moves two bits per clock. Switching the S3 image to
+  quad I/O took DVD Logo Bounce from 10.2 to 13.5 fps. That is exactly what a 32 KB instruction cache had bought in DIO mode, and the
+  bigger cache costs 16 KB of precious internal RAM.
+- **Never walk the heap per frame.** `heap_caps_get_largest_free_block` walks every block of the PSRAM heap: 0.5-2 ms normally, and 5-7 ms
+  once a UI-heavy scene has fragmented it. Worse, it holds the heap lock the whole time, and a task on the other core that allocates
+  meanwhile waits *with interrupts masked*, including the LCD refill interrupt. Each walk cost a frame of stale lines: 20-35 glitched frames
+  per 40 renders, until per-frame code switched to asking for the free *total* (8 µs) and logged numbers came from a cached reading.
+- **Logs off the render task.** Every log line also goes out the 115200-baud UART, and the ~2.2 KB that a fully logged frame prints takes
+  ~190 ms on the wire. Lines now go into a 16 KB PSRAM ring that a low-priority task on the other core drains. In animation mode, only one
+  frame every ten seconds is logged in full, with a `render:animation` summary of the quiet frames in between.
+
+At 50 ms, the remaining budget is roughly: `get()` ~5 ms, SVG build ~10 ms, raster of the damage box ~20 ms, the interpreter around them
+~7 ms, and the rest is the allocator (~560 allocations a frame at 3-6 µs each on the PSRAM heap) plus the refill interrupt.
+
+### Raw pixels, when SVG is the wrong tool
+
+Some things are not vector drawings. `frameos.pixels(cells, palette, { width, height, pixelSize })` takes one byte per cell, an index into
+up to 256 colours, and writes it straight into the panel buffer. Each buffer remembers the cells and the palette it holds (`PixelFrame`),
+so the next frame writes only the cells whose index or colour changed. It is deliberately the *only* raster API. RGBA cells, layers and
+canvas writes were all built and then removed again to save flash.
+
+The Doom fire, with its spread rule written in the app's own JavaScript, runs at **25 fps** on the SenseCAP with 8 px cells. That number
+came from a sequence of changes, each measured: locals instead of module variables, xorshift instead of `Math.imul`, a branchless
+`Uint8ClampedArray`, starting the pass at the first warm row, and recompiling QuickJS's hot loop at `-O2`. The rule deliberately stays in
+JS. A native `frameos.fire` was tried and removed, because the interpreter's speed is what this benchmark is supposed to measure. Palette
+cycling, the old 8-bit trick, is even cheaper: rotate a range of colours and only the cells that use them are written.
+
+## Stage 9: events, one dispatcher for every host
+
+Input takes the reverse path. The SenseCAP's FT6336U touch controller is read over I²C by `fos_touch.c` on its own task, which queues
+`pointerDown`, `pointerMove` and `pointerUp` events. Scene code only ever runs on the render task. The first time an HTTP `pointerMove`
+compiled a scene's JS on the 8 KB HTTP task, the frame crashed, so everything that arrives from another task (HTTP, the cloud link, the
+USB console) is deferred onto the render task.
+
+From there, **one dispatcher**, `frameos/src/frameos/event_loop.nim`, handles the queue, the origin allow-list (who may send which event),
+the split between commands and events, and the rule for when to re-render. It is the same code on Linux, on the ESP32 and in the
+WebAssembly preview, and a host only supplies callbacks. Event names, payloads and policies live in one JSON contract that generates Nim,
+C, TypeScript and Python tables, and a fixtures corpus that every host replays.
+
+`input_state.nim` turns raw input into gestures: `tap`, `doubleTap`, `longPress`, `swipe`, and edge swipes, which belong to the frame
+(swipe down for scene settings, up for the scene switcher) and never reach the UI. Then `ui/events.nim` hit-tests the last layout's
+regions:
+
+- The innermost element with a handler takes the event, so a tap on a label inside a card runs the card's `onClick`.
+- **A press is captured** the way a browser captures a touch: the element that took `onPointerDown` gets every move and the release,
+  inside its box or not. `localX / width` is how far along a slider the finger is, on any screen size.
+- A handler runs in the app's interpreter with the same bridge as `get()`. After it runs, the frame renders again, and stage 5 makes sure
+  that render costs only what changed.
+- While a finger is on the glass, the frame enters **burst mode**. The command and settings pulls and the metrics sample drop to once a
+  second, moves are coalesced to the newest position while a render runs, and slow chores (network round trips, flash writes, a full
+  e-paper refresh that only clears ghosting) wait until the finger lifts. A flash erase disables the cache, which stalls both cores, so
+  scene-state writes have their own paced task.
+
+Some of the input handling is specific to bad hardware. The FT6336U tracks a single touch point, so when a second thumb lands before the
+first lifts, the point *glides* from one thumb to the other and only one tap arrives. The on-screen keyboard spots a tap that started 1.5
+keys or more to one side, mostly sideways and within 250 ms, and types both keys.
+
+### Async: the render thread never waits on the network
+
+The Scene store used to freeze: every cover image was a synchronous `frameos.fetchImage` inside `get()`, so the render task almost always
+sat in the middle of a TLS handshake, and every tap waited behind it. With async JavaScript, scenes get APIs much closer to the web:
+
+```tsx
+export function get(app) {
+  const cover = frameos.useImage(url, { width: 240, height: 240, fit: 'cover' }) // {image} | {loading} | {error}
+  const data = frameos.useFetch(apiUrl, { maxAge: 600 })                         // {data, error, loading, status}
+  return (
+    <div className="flex gap-4 p-4">
+      {cover.image ? <img className="w-60 h-60 rounded-xl" src={cover.image} /> : <div className="w-60 h-60 rounded-xl bg-slate-800" />}
+      <span className="text-xl">{data.loading ? '…' : data.data.title}</span>
+    </div>
+  )
+}
+```
+
+- **`fetch(url, init)`** resolves to a `Response` with `ok`, `status`, `text()` and `json()`. A 404 is an answer, and a network error
+  rejects with a `TypeError`. `setTimeout` and `setInterval` work, and `export async function background(app)` runs off the render.
+- **The hooks are keyed by URL and options, not by call order,** so unlike React's hooks they work inside conditions and loops. Every hook
+  in a pass starts its download at once, and however many land together, the scene renders once more. A churn guard stops two pictures
+  from evicting each other in a loop.
+- **We didn't add `useState` or `useEffect`.** Module variables already work as state, and handlers already trigger re-renders. What a
+  frame actually needs from hooks is data that arrives later.
+- **On the ESP32, requests run on their own FreeRTOS task** (`fos_js_io.c`). It is created when there is work and gone when there isn't,
+  runs one TLS session at a time, keeps its queues in PSRAM, and goes through the same network guard and PSRAM-chunked download code as
+  every other app. The promise pump is `frameos_nim_tick` in the render task's idle wait, whose sleep ends when a JS timer is due.
+  Answers wait while someone is touching the screen, so a JPEG decode never delays a tap. All of it costs 22.6 KB of flash and 40 bytes
+  of internal RAM.
+- **Where nothing pumps** (the wasm preview, a server render, a deep-sleeping ESP32 that wakes, renders once and powers down), the same
+  calls block and resolve immediately. A scene written with hooks works everywhere and is faster where it can be. On e-paper the store
+  passes `wait: true`, so a page of covers is still a single refresh.
+
+With async, the Scene store draws its placeholders in about 10 ms while six covers download, answers a tap during the downloads at once,
+and redraws once when the covers land.
+
+## Stage 10: scenes inside scenes, and desktops
+
+Once the screen is a tree of boxes, a box can hold another scene:
+
+```tsx
+<div className="flex flex-col h-full">
+  <header className="h-10 flex items-center px-3 bg-slate-900">{time} · {battery}%</header>
+  <yield />
+</div>
+```
+
+That is a **layout**: a JSX app with a `<yield />` where the frame's current scene goes. `<Scene id="clock" city="Oslo" />` embeds any
+other scene, with its props becoming that scene's state.
+
+The naive way to do this would be to render the inner scene to an image and composite it, and on an animated scene on the S3 that was
+five times slower. Instead, `<yield />` and `<Scene>` are **holes in the canvas**. The layout engine records their rectangles (`seekHoles`),
+pixie draws the chrome *around* them, and each inner scene renders straight into a `view()` of the canvas at its rectangle. Its own damage
+repaint works inside the hole exactly as it does on the full panel.
+
+Each scene keeps its own rhythm (`scene_rhythm.nim`). A nested scene runs on its own `refreshInterval`. On a pass where it isn't due, its
+pixels are left alone and it doesn't run at all: no fetch, no decode, no JS. A pass that the UI has nothing to do in never enters the UI:
+no JavaScript, no tree, no raster. A 20 fps animation inside a clock bar pays for the bar once a second, and a dashboard of `<Scene>`
+tiles redraws only the tile that's due. The frame's next wake is worked out from whatever comes due first.
+
+A hole only becomes a picture when it has to be one: `opacity` on it, something painted over it, or a scrolling box around it. In that
+case it is composited as an `<image>` in the SVG tree, within a memory budget of a quarter of free render memory, at most 1 MiB on an
+ESP32.
+
+**Desktops** take the same idea all the way. On a Pi, on an ESP32 and in the browser, a layout can run every scene on the frame side by
+side. The `Windows 98`, `macOS`, `BeOS` and `Tiling` samples are ordinary JSX apps. The runtime gives a layout three things and keeps no
+window manager of its own:
+
+- **`app.frame.scenes`**: the list of the frame's scenes.
+- **A bare `<Scene id>` resolves to the host's own instance** of that scene, not a copy. It keeps running on its own interval inside its
+  window and is the same instance, state and all, when it comes forward.
+- **One layout instance is carried across scene switches** (`carryLayout`), so where the windows are, their z-order and which are minimized
+  all live in the layout's own `frameos.setState` and survive a switch.
+
+The focused window is simply the frame's current scene, so the scene list, next/previous, the API, both control planes and the voice chat
+all move the focus without knowing windows exist. UI drawn over a scene (a menu, the window in front) takes the pointer there. Even the
+built-in scene switcher and settings panels open as windows, and they take their look from the layout's `theme` state. Bevelled Windows 98
+buttons are a role defined as two nested boxes, because one box only has one border colour.
+
+On an 8 MB ESP32 only two windows run at once (`windowLimit`, four with more PSRAM), and the host enforces that whatever the layout tries.
+The whole windowing system costs about 22 KB of flash on the S3.
+
+## The same pixels everywhere
+
+Because the whole pipeline is Nim compiled to C, the exact same rendering code runs on:
+
+- **ESP32-S3 boards** (ESP-IDF, the Nim runtime compiled to C, QuickJS in the image). The generic S3 image is about 3.28 MB, 91% of its
+  OTA slot.
+- **Raspberry Pis.** A HyperPixel's 16 bpp framebuffer gets the same kept RGB565 canvas, and the driver `pwrite`s only the rows that
+  changed. On a Pi 5, the Touch test renders in 2.0 ms, against 4.8 ms on an RGBX canvas, because only its damage is drawn.
+- **The browser**, compiled with emscripten to WebAssembly, for the live preview in the editor. One caveat: wasm doesn't trap on a nil
+  dereference, so a green preview proves nothing about that class of crash.
+- **The server**, which renders in the same wasm runtime for boards too small to render for themselves. It packs the panel's bitmap and
+  sends only the 64-byte blocks that changed, deflated, with an ETag. It also sends a press map, so a thin client knows which taps to relay.
+
+E-paper uses the same pipeline at a different pace: no `hover:`, the whole drag as one `onSwipe`, and a partial-refresh driver that
+dithers only the runs of the canvas that changed. A whole-frame Floyd-Steinberg would shift every grey pixel below a change.
+
+## What it doesn't do (yet)
+
+No shadows, transforms or `z-*` (paint order is tree order, with absolutely positioned children last). Clipping is rectangular, so a
+`rounded-full` box doesn't round what it clips. Opacity multiplies into each paint instead of compositing a group. There is no text
+selection, copy and paste, or momentum scrolling, and the ESP32 has a single font face, with bold drawn as a thickened outline. The open
+list is in [`docs/ui-todo.md`](https://github.com/FrameOS/frameos/blob/main/docs/ui-todo.md).
+
+## Try it
+
+Grab a [SenseCAP Indicator](/devices/seeed-sensecap-indicator), a [reTerminal](/devices/seeed-reterminal-e1002) or a
+[HyperPixel](/devices/pimoroni-hyperpixel-4-square-touch), [flash it from the browser](/guide/cloud#flash-an-esp32-from-the-browser), and
+open a scene in the editor. Every `.tsx` app in the [scene store](https://scenes.frameos.net) is JSX and Tailwind, and the live preview
+runs the same runtime you just read about, compiled to WebAssembly. The deeper write-ups are in the repo:
+[`jsx-ui.md`](https://github.com/FrameOS/frameos/blob/main/docs/jsx-ui.md),
+[`realtime-rendering.md`](https://github.com/FrameOS/frameos/blob/main/docs/realtime-rendering.md),
+[`scene-compiler.md`](https://github.com/FrameOS/frameos/blob/main/docs/scene-compiler.md),
+[`scene-layouts.md`](https://github.com/FrameOS/frameos/blob/main/docs/scene-layouts.md) and
+[`quickts.md`](https://github.com/FrameOS/frameos/blob/main/docs/quickts.md).
+
+It's all [open source](https://github.com/FrameOS/frameos). If a scene renders slowly on your hardware, that's a bug, and we'd like to
+hear about it.
