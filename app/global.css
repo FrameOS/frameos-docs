@@ -37,3 +37,29 @@ html > body[data-scroll-locked] {
   from { transform: scale(1.1) translateY(3%); }
   to { transform: scale(1.1) translateY(-3%); }
 }
+
+/* The sparkly play badge on the homepage's "Full screen Playground" button. */
+@keyframes playground-twinkle {
+  0%, 100% { opacity: 0.35; transform: scale(0.6) rotate(0deg); }
+  50% { opacity: 1; transform: scale(1.1) rotate(25deg); }
+}
+@keyframes playground-glow {
+  0%, 100% { box-shadow: 0 0 0 0 rgb(217 70 239 / 0.35); }
+  50% { box-shadow: 0 0 12px 3px rgb(139 92 246 / 0.5); }
+}
+@keyframes playground-shimmer {
+  0% { transform: translateX(-110%); }
+  55%, 100% { transform: translateX(110%); }
+}
+.playground-twinkle { animation: playground-twinkle 2.4s ease-in-out infinite; }
+.playground-glow { animation: playground-glow 2.4s ease-in-out infinite; }
+.playground-shimmer {
+  background: linear-gradient(105deg, transparent 30%, rgb(217 70 239 / 0.16) 50%, transparent 70%);
+  animation: playground-shimmer 4s ease-in-out infinite;
+}
+@media (prefers-reduced-motion: reduce) {
+  .playground-twinkle,
+  .playground-glow,
+  .playground-shimmer { animation: none; }
+  .playground-shimmer { opacity: 0; }
+}

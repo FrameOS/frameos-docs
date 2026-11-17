@@ -17,6 +17,7 @@ export const links = {
   caseMaker: 'https://cases.frameos.net',
   sceneRepo: 'https://repo.frameos.net',
   sceneStore: 'https://scenes.frameos.net',
+  playground: 'https://playground.frameos.net',
   cloud: 'https://cloud.frameos.net',
   terms: 'https://cloud.frameos.net/legal/terms',
   privacy: 'https://cloud.frameos.net/legal/privacy',

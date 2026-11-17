@@ -1,6 +1,6 @@
 import Link from 'next/link';
 import Image from 'next/image';
-import { ExternalLink, Mic, Plug, Sparkles } from 'lucide-react';
+import { ExternalLink, Mic, Play, Plug, Sparkles } from 'lucide-react';
 import { InstallPathChooser } from '@/components/install-path-chooser';
 import { Slideshow, type Slide } from '@/components/slideshow';
 import { TextLink } from '@/components/text-link';
@@ -396,6 +396,22 @@ export default function HomePage() {
               className="inline-flex items-center gap-2 rounded-lg bg-fd-primary px-5 py-2.5 font-medium text-fd-primary-foreground transition-opacity hover:opacity-90"
             >
               JSX interfaces guide
+            </Link>
+            <Link
+              href={links.playground}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="group relative inline-flex items-center gap-2.5 overflow-hidden rounded-lg border border-fuchsia-500/40 bg-fd-background py-[9px] pl-3 pr-5 font-medium transition-colors hover:border-fuchsia-500/70 hover:bg-fd-accent"
+            >
+              <span aria-hidden="true" className="playground-shimmer pointer-events-none absolute inset-0" />
+              <span aria-hidden="true" className="relative inline-flex size-6 items-center justify-center">
+                <span className="playground-glow absolute inset-0 rounded-full bg-gradient-to-br from-fuchsia-500 via-violet-500 to-sky-400 transition-transform group-hover:scale-110" />
+                <Play className="relative ml-0.5 size-3 fill-white text-white" />
+                <Sparkles className="playground-twinkle absolute -right-2.5 -top-2 size-3.5 fill-amber-300 text-amber-400" />
+                <Sparkles className="playground-twinkle absolute -bottom-1.5 -left-2 size-3 fill-fuchsia-300 text-fuchsia-400 [animation-delay:0.8s]" />
+                <Sparkles className="playground-twinkle absolute -bottom-2 -right-2 size-2 fill-sky-300 text-sky-400 [animation-delay:1.6s]" />
+              </span>
+              <span className="relative">Full screen Playground</span>
             </Link>
           </div>
         </div>
