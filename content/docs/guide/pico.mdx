@@ -78,6 +78,10 @@ frameos> bootsel                         # reboot into the UF2 drive for an upda
 `https://` backends work: TLS 1.2 with hostname verification against a built-in bundle of the
 major public CA roots.
 
+The console stays live through a panel refresh: `status`, `logs` and `render` answer at once, and a
+line that would pull the panel, the flash or the power from under it - `set`, `wifi`, `restart`,
+`bootsel` - waits for the pass to end.
+
 ## What it does
 
 - **Every scene works.** The backend runs the scene in the real FrameOS runtime, so JavaScript
@@ -91,7 +95,9 @@ major public CA roots.
   on the backend and runs on the board's next pull, which the backend asks for at once. A board
   asleep on battery gets it when it wakes - that's a queued change, not an error.
 - **No wasted refreshes.** An unchanged picture skips the panel refresh, and the check survives
-  the board powering off between renders.
+  the board powering off between renders. A scene's refresh interval is held to at least a minute,
+  since the Inky Frames' color panels take up to half a minute to refresh; a press, a scene switch
+  or a value you set still shows at once.
 - **A [device API](/guide/api#pico)**: `/status`, `/logs`, `/image`, `/ping` and `/event/<name>` on
   port 80, and `<hostname>.local` over mDNS. Logs also land in the backend, and the deploy drawer has
   the USB console.

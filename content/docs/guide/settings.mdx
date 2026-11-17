@@ -27,9 +27,10 @@ and Sticky - a swipe down from the top opens the scene's settings, and a gear le
 opens the frame's own page: the WiFi network and password, the rotation, the
 [scale](#render-scale), the date and time on an offline ESP32, the battery and the signal, an
 update check, and **Render again**, **Restart FrameOS** and **Reboot**. A rotation or scale changed
-there reaches the backend or the cloud too, so the two stay in step.
+there reaches the backend or the cloud too, so the two stay in step. The scene switcher's header
+has the same gear, so the page is in reach even when a layout broke every scene.
 
-**Frame settings on the screen**, on by default, decides whether that gear is there at all. Switch
+**Frame settings on the screen**, on by default, decides whether those gears are there at all. Switch
 it off for a frame in a public place and the screen offers the scene's settings only. Someone with
 the device in hand can always get it back: a file named `frameos-settings-unlock` on a Pi's boot
 partition, or `set settings_unlock 1` on an ESP32's USB console.
@@ -38,8 +39,10 @@ partition, or `set settings_unlock 1` on an ESP32's USB console.
 
 **Layout** wraps every scene on the frame in a [layout](/guide/scenes#layouts) - a taskbar, a clock
 bar, a Polaroid border - and its gear sets the layout's own fields. Each scene's own choice is
-under **Advanced**. The frame's on-screen settings have the same select, and what's picked there
-is the frame's to keep until **As each scene says** is picked again. The frame's own screens -
+under **Advanced**, and both list the desktops apart from the full screen layouts. The frame's
+on-screen settings have the same select, its layouts grouped by category and sorted by name, and
+what's picked there is the frame's to keep until **As each scene says** is picked again. If a push
+takes that layout away, each scene wears its own until it comes back. The frame's own screens -
 these settings, the scene switcher, the keyboard - take their look from the layout, and on a Pi or
 an ESP32 a desktop layout runs the frame's scenes [side by side](/guide/scenes#windows).
 
@@ -132,11 +135,12 @@ An ESP32 that renders its own scenes has two more:
   only wakes, downloads and refreshes, so a battery lasts longer
   ([details](/guide/esp32#render-on-server)). The battery popup says how much longer when it would
   be worth it.
-- **Processor speed**: *Battery* (160&nbsp;MHz), *Performance* (240&nbsp;MHz) or *Automatic* -
-  battery on e-paper, performance on LCD and touch screens. Performance renders about a third
-  faster, but the chip also waits out the panel's refresh at that speed, which costs a battery
-  e-paper frame roughly 5 to 10% of its life. The frame reboots to take a change; on the console
-  it's `set cpu_mode`.
+- **Processor speed**: *Battery* (160&nbsp;MHz), *Performance* (240&nbsp;MHz) or *Automatic*.
+  Performance renders about a third faster, but the chip also waits out the panel's refresh at
+  that speed, which costs a battery e-paper frame roughly 5 to 10% of its life. *Automatic* gets
+  the best of both: on e-paper it renders at 240&nbsp;MHz and waits out the refresh at 160, and LCD
+  and touch screens run at 240 throughout. The frame reboots to take a change; on the console it's
+  `set cpu_mode`.
 
 ## Nightly reboot
 

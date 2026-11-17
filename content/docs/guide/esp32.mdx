@@ -397,7 +397,8 @@ to the ESP32. An LCD changes what a microcontroller frame can do:
 - **Touch.** The touch glass of the Indicator, the [reTerminal Sticky](/devices/seeed-reterminal-sticky)
   and the [E1003](/devices/seeed-reterminal-e1003) reaches scenes as the same `pointerDown`,
   `pointerMove`, `pointerUp`, `tap`, `doubleTap`, `longPress` and `swipe` events a Pi's
-  touchscreen sends ([details](/guide/scenes#input)). A swipe in from the screen's edge is the
+  touchscreen sends ([details](/guide/scenes#input)), and two fingers on the E1003 or the Sticky
+  make a `pinch`. A swipe in from the screen's edge is the
   frame's: out of the box on the Indicator, the Sticky and the E1003 it's the
   [scene switcher, the scene settings, back and forward](/guide/scenes#input), or whichever
   [button action](#button-actions) you bind. A touch on a dark screen only turns it on. Build touch
@@ -417,7 +418,8 @@ to the ESP32. An LCD changes what a microcontroller frame can do:
   second or two to draw its next scene after a swipe shows them too.
 - **Pixel scenes.** The *Pixel toys* and *Color cycling* samples compute every cell in JavaScript
   and hand it over in the [8-bit palette mode](/guide/apps#javascript-apps): Hellfire runs at 26
-  frames a second at 8&nbsp;px cells, the other effects at 13 to 19.
+  frames a second at 8&nbsp;px cells, the other effects at 13 to 19. A tap or a key moves to the
+  next one, and a footer along the bottom has Previous, Next, the frame rate and Hide.
 - **Windows.** A [desktop layout](/guide/scenes#windows) runs two scenes side by side on an
   8&nbsp;MB board, four on a bigger one.
 - **Storing scenes.** While a push writes scenes to flash, the LCD shows the FrameOS mark and
@@ -474,8 +476,8 @@ battery life at another wake cadence. The status says **Charging**, **On USB**, 
 USB, from 98%) or how the cell is doing. A lone reading far below its neighbours is an ADC misread,
 not a discharge: the frame reads the cell in rounds and reports the value it
 believes, and the charts leave the rest out and say how many misreads they ignored. On the 13.3"
-E1004 a heavy scene keeps the frame awake for 80-90 s per cycle: ~23 s to render, ~22 s to dither
-and pack, ~30 s for the Spectra 6 refresh.
+E1004 the Spectra 6 refresh is about 30 s of each cycle, and dithering and packing the picture for
+it about 4 s; the rest is the scene's own render.
 
 **Nothing is lost to a sleep**, on both control planes. What you ask of a
 sleeping frame - a scene switch, new state values, a render, a preview, a reboot, a firmware
@@ -501,8 +503,9 @@ reports the charge itself, and the [PhotoPainter](/devices/waveshare-esp32-s3-ph
 reads its cell and its charging from its power chip, and powers its audio chips and panel down
 before each deep sleep.
 
-**Processor speed** under Power picks the chip's clock: 160&nbsp;MHz on e-paper and 240&nbsp;MHz on
-LCD and touch boards by default, or either by choice ([settings](/guide/settings#power-and-battery)).
+**Processor speed** under Power picks the chip's clock. By default an e-paper board renders at
+240&nbsp;MHz and waits out the refresh at 160, and LCD and touch boards run at 240; or pick either
+([settings](/guide/settings#power-and-battery)).
 
 ## Rendering on the server [#render-on-server]
 
@@ -520,7 +523,9 @@ scene's data sources - so a battery frame's wake is WiFi, one request and the re
   next download, so a press answers in a second or three. On grey and black-and-white panels only
   the parts that changed are sent: a key typed on the E1003 is a few kilobytes.
 - **The scene still decides when it renders.** Its refresh interval reaches the frame - at least
-  10 seconds on a backend, the plan's floor on the cloud.
+  10 seconds on a backend, the plan's floor on the cloud, and at least a minute on a Spectra 6 or
+  7-color panel, so a fast scene can't keep its 15-30 second refresh going nonstop. A press, a
+  scene switch or a value you set still shows at once.
 - **It runs where the plane is.** On a backend a scene reaches what the backend reaches, its LAN
   included. On the cloud it reaches public addresses only. Either way it can't read the frame's
   own assets or SD card yet; a [photo album](/guide/photos) works.
@@ -565,7 +570,8 @@ format is decided by the panel first:
   otherwise.** An 800×480 panel on 8&nbsp;MB and a 1200×1600 panel on 16&nbsp;MB render in full
   color; a 1200×1600 panel on an 8&nbsp;MB module - the
   [reTerminal E1004](/devices/seeed-reterminal-e1004) - takes the 16-bit canvas (3.7&nbsp;MB
-  instead of 7.3&nbsp;MB), which is what lets it render on-device at all. The 16-bit canvas
+  instead of 7.3&nbsp;MB), which is what lets it render on-device at all, and packs the picture for
+  the panel into the start of that same canvas rather than a buffer of its own. The 16-bit canvas
   dithers its stores so gradients stay smooth, and a photo dithered to Spectra 6 through either
   canvas lands the same palette within 0.05% per color.
 - **An LCD draws straight into its own 16-bit frame buffer**, so there's nothing to copy or pack.

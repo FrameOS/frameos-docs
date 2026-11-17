@@ -78,6 +78,25 @@ it (`access: private`), add your own numeric field and switch on **Use as refres
 code it is `state.refreshInterval`. The **Next sleep duration** app is still a one-time override:
 it sets how long to sleep after *this* render, and the render after that is back on the interval.
 
+## Icon, category and window size [#icon]
+
+A scene's settings have three things that say how it shows up in lists:
+
+- **Icon** - a small picture of the scene, drawn wherever a list shows it without its picture: the
+  frame's scene switcher, the desktops' menus and windows, the scene tiles, the library and the
+  [scene store](/guide/scene-store). It's one SVG path in a 24×24 box, filled with the color of
+  the text around it, so it works on e-paper and in every theme. **Upload SVG** turns an `.svg`
+  of filled shapes into that path (strokes and text don't convert), or paste a path in: a solid
+  icon from Material Design Icons fits as it is. Every sample scene has one.
+- **Category** - one of the store's: *Photos*, *Art & galleries*, *Calendars & agendas*,
+  *Weather*, *AI & generative*, *Data & dashboards*, *Fun & comics*, *Real time*, *Tools &
+  utilities* or *Demos & examples*, and *Desktop layouts* or *Full screen layouts* for a layout.
+  The scene keeps the name as text (`"category": "Photos"`). The desktops group their lists of
+  scenes by it, and the store files a published scene under it.
+- **Window size** - the size the scene opens at in a window of a [desktop](#windows): square for
+  a music player, tall for a to-do list, 800×480 when it's not set. It changes nothing outside a
+  desktop.
+
 ## Scenes inside scenes
 
 A **split** (or any scene node) draws other scenes into cells, and each of them renders on its own
@@ -125,9 +144,14 @@ changes. Taps go to whatever is under them. A layout's app can read `app.frame.s
 `app.frame.wifiRssi`, and open the frame's own screens with `frameos.dispatch('sceneSwitcher')`,
 `frameos.dispatch('sceneSettings')` and `frameos.dispatch('sceneSettings', { page: 'frame' })`.
 
-- **Starters**: *Top bar*, *Bottom bar*, *Side rail*, *Windows 98*, *macOS*, *BeOS*, *Tiling*,
-  *Polaroid*, *Front page*, *Terminal* and *Gallery wall* are one click away under **New layout** in the frame's Layouts group,
-  and the [scene store](/guide/scene-store) has a Layouts shelf.
+- **Starters**: the [desktops](#windows) and the full screen layouts - *Top bar*, *Bottom bar*,
+  *Side rail*, *Polaroid*, *Front page*, *Terminal*, *Gallery wall*, *Teletext* and *E-reader* -
+  are one click away under **New layout** in the frame's Layouts group, the two kinds listed
+  apart, as they are in every layout select. *Teletext* gives each scene a page number, a clock
+  and colored links to the scenes before and after; *E-reader* puts the scene on a page, with a
+  footer whose halves turn to the scene before and after. *Terminal* has **F2 settings** at the
+  right of its prompt: a tap or the F2 key opens the settings of the scene it wraps. The
+  [scene store](/guide/scene-store) has a shelf for each kind.
 - **Any scene can be one**: **Use as layout** in its settings turns it into a layout and back, if
   its render is one JSX app with a `<yield />` - the switch says why when it isn't. A layout stays
   out of the scene list, the switcher and next/previous, and a frame never boots to one.
@@ -144,24 +168,39 @@ changes. Taps go to whatever is under them. A layout's app can read `app.frame.s
   in between starts the count again.
 - **Its look on the frame's own screens**: the scene settings, the frame page, the switcher and the
   keyboard on the screen take their look from the layout around them. The desktops below have a
-  **Look of the settings pages** field - Windows Standard, Light and Dark, BeOS, High contrast, or
-  FrameOS's own - and e-paper gets High contrast.
+  **Look of the settings pages** field - Windows Standard, Light and Dark, BeOS, Classic,
+  NeXTSTEP, Commander, High contrast, or FrameOS's own - and e-paper gets High contrast. A
+  JavaScript app can wear the same look ([`look`](/guide/apps#jsx-uis)), as the *Files* sample does.
 
 ### Desktops: scenes side by side [#windows]
 
-On a Raspberry Pi, an ESP32 and in the browser preview, the *Windows 98*, *macOS*, *BeOS* and
-*Tiling* layouts are desktops: every scene you open gets a window (or a tile) of its own, and they
-all run at once. The one in front is the frame's current scene - the one the scene list, next and
-previous, the API and the control planes move.
+On a Raspberry Pi, an ESP32 and in the browser preview, seven layouts are desktops: *Windows 98*,
+*macOS*, *BeOS*, *Classic Mac*, *NeXTSTEP*, *Tiling* and *Commander*. Every scene you open gets a
+window, a tile or a panel of its own, and they all run at once. The one in front is the frame's
+current scene - the one the scene list, next and previous, the API and the control planes move.
 
-- **Windows 98**, **macOS** and **BeOS** open overlapping windows at the layout's **Window size**,
+- **Windows 98**, **macOS**, **BeOS**, **Classic Mac** and **NeXTSTEP** open overlapping windows,
   moved and sized with a finger or the mouse, snapped to half or all of the desktop at its edges,
   put away and brought back, each in its own chrome: a taskbar and Start menu, a Dock and menu bar,
-  a Deskbar and Be menu. Alt+Tab, F11 for full screen, and a gear on each window for that scene's
-  settings.
+  a Deskbar and Be menu, System 7's pinstriped title bars in black and white, NeXTSTEP's main menu,
+  Dock and miniwindows in four greys. Alt+Tab, F11 for full screen, and a gear on each window for
+  that scene's settings.
+- **A new window** opens at its scene's own [window size](#icon), or 800×480. One too big for the
+  desktop fills it when it's the first, and is made smaller, keeping its shape, when it isn't. It
+  goes where it covers no other window if there's room, and where it covers the least if not, so
+  it never lands right on top of another. The zoom or maximize button, or letting go at the top
+  edge, fills the desktop, and the scene opens that way again until the frame restarts.
 - **Tiling** keeps the scenes in tiles, in five arrangements its top bar steps through. Drag a gap
   to move that split, drag a tile's bar onto another tile to swap them, and a press anywhere in a
   tile is its scene's.
+- **Commander** is two blue panels: the scene in front in one and a second scene running in the
+  other. Tab or a press moves between them, and the function keys along the bottom swap the
+  panels, show the next scene, turn the other panel into an Info panel or give one panel the whole
+  screen.
+- **Lists of scenes** - the Start menu, the Scenes menus, the Be menu, Tiling's + - go by
+  [category](#icon), a heading over each and the scenes without one last under *Other*, and scroll
+  under a finger when they're longer than the screen. Each scene shows its own [icon](#icon) where
+  it has one. The macOS Dock has the scenes with a window open, NeXTSTEP's the ones that have run.
 - **The frame's own screens are windows too.** Each scene's settings open as a window beside it,
   and **Save** there applies the values to the running scene and keeps the window open. The
   scene list and the frame page stay where you left them.
@@ -169,8 +208,9 @@ previous, the API and the control planes move.
   four with more - and the desktop closes the window that's been in the background longest. A Pi
   and the browser have no limit. A scene brought forward from its window doesn't reload.
 
-Pick another desktop and it opens the windows the last one had open. In your own layout,
-`app.frame.scenes` lists the frame's scenes (only where they can run side by side),
+Pick another desktop and it opens the windows the last one had open, where they were on the
+screen. In your own layout, `app.frame.scenes` lists the frame's scenes (only where they can run
+side by side) with each one's window size, icon and category,
 `app.frame.sceneId` is the one in front, `app.frame.windows` how many may run at once, and a bare
 `<Scene id="…" />` is that scene itself, state and all, not a copy. Where scenes can't run side by
 side - a [board rendered on the server](/guide/esp32#render-on-server), a virtual frame - a
@@ -194,10 +234,13 @@ the label and pin filters pick from the frame's own buttons.
 On a Pi with a touchscreen, a mouse or a keyboard, scenes also hear
 `pointerDown`, `pointerMove` and `pointerUp` (one pointer per finger), `wheel`, `keyDown` and
 `keyUp` with the key in the frame's keyboard layout, `textInput`, and the gestures `tap`,
-`doubleTap`, `longPress` and `swipe` - all in the scene's own pixels, rotated frames included.
+`doubleTap`, `longPress`, `swipe` and `pinch` (two fingers that moved, as one event when they
+lift, with the `scale` they ended at) - all in the scene's own pixels, rotated frames included.
 The older `mouseMove` / `mouseDown` / `mouseUp` names keep working. The *Touch test* and
-*Keyboard test* sample scenes show every event as it arrives. The browser preview sends the same
-events from your mouse and keyboard, and a preview button you hold down is held like a frame's key.
+*Keyboard test* sample scenes show every event as it arrives, and the Touch test draws a drag's
+path. The browser preview sends the same events from your mouse and keyboard, two fingers on a
+touch screen reach the scene as a pinch instead of zooming the page, and a preview button you hold
+down is held like a frame's key.
 The touch screens of [ESP32 boards](/guide/esp32#lcd) send the same
 pointer events and gestures. A touch `longPress` is held half a second, as on a phone; a
 button's is a second. A swipe that starts at the very edge of a touch screen is the frame's (`edgeSwipe`) and
@@ -208,7 +251,7 @@ and Sticky, the edges come bound to the frame:
 
 | Swipe | What it does |
 | --- | --- |
-| Up from the bottom | The **scene switcher**: every scene on the frame as a tile, in the frame's order. Tap one to show it. |
+| Up from the bottom | The **scene switcher**: every scene on the frame as a tile, in the frame's order. Tap one to show it, or the gear in its header for the [frame's own settings](/guide/settings#on-screen). |
 | Down from the top | The **scene settings**: the public fields of the scene showing, as a form, with a keyboard on the screen. **Save** applies them; **Cancel** or the same swipe goes back as it was. The gear left of **Save** opens the [frame's own settings](/guide/settings#on-screen). |
 | In from the left | `back`, delivered to the scene: the photo or the page before. |
 | In from the right | `forward`, the other way. |
@@ -222,7 +265,9 @@ on-screen keyboard is always a key, even on the outer keys at the edge of the gl
 The switcher's tiles keep one size however many scenes there are. A Pi shows a picture of each
 scene; an ESP32 shows name cards, which open in a moment where pictures from flash took seconds.
 The switcher works without touch too. On e-paper it's black on white and the keys walk a highlight:
-`next` and `prev` step, `primary`, `refresh` and `menu` show the scene, `back` goes back. E-paper
+`next` and `prev` step, `primary`, `refresh` and `menu` show the scene, `back` goes back. Past the
+last tile the highlight reaches the gear, which opens the frame's settings, so even a layout that
+broke every scene can be taken off from the switcher. E-paper
 without touch doesn't come with a binding for it, so add one under **Button actions** (a double
 press of REFRESH, say), or send `sceneSwitcher` [over HTTP](/guide/api#events).
 
@@ -256,9 +301,13 @@ the [desktops](#windows) give each an entry of its own.
   **Install**, **Open**, **Update** and **Delete**. It reopens where you left it after a preview.
   The frame asks its backend or the cloud to make the change, so only public store scenes go in,
   and never while the [settings on the screen](/guide/settings#on-screen) are off. In the browser
-  preview it previews and installs nothing.
-- **Asset browser** walks the frame's [assets folder](/guide/settings#assets): folders and pictures
-  as a grid, a picture on the whole screen with a swipe to the next, and a slideshow.
+  preview it previews and installs nothing. On a Pi and an ESP32 that stays awake the covers
+  download in the background, so a tap never waits for one, and a scene's own icon stands in
+  until its cover arrives.
+- **Files** walks the frame's [assets folder](/guide/settings#assets): folders and pictures as
+  thumbnails or a list, a picture on the whole screen with a swipe to the next, a slideshow, and
+  **New folder**. On a desktop it's drawn in that desktop's look. Making a folder is a write, so
+  it wears the *writes assets folder* tag.
 - **Terminal** is the ESP32 serial console's commands - `help`, `status`, `set`, `wifi`,
   `wifi-scan`, `render`, `event`, `scenes`, `scene`, `restart`, `reboot` - on the screen, with the
   keyboard on the screen and the last 200 lines kept. It can do what the frame's settings page can
@@ -359,7 +408,8 @@ Two ways to see a scene without committing to it:
   Inky Impressions and the Inky Frame, the CrowPanel, the SenseCAP Indicator, HyperPixels, the Pi
   touch displays, a 1080p or 4K screen - with that panel's size and inks. **Rotate** turns it and
   keeps the device. A **Layout** select under it tries the scene inside any of your layouts or the
-  starters, without changing the scene.
+  starters, without changing the scene, and **Settings** beside it sets that layout's fields for
+  the preview, kept in your browser.
 - **Preview on frame** temporarily shows the scene on the actual frame without saving or
   deploying it. Good for checking how a color dithers on real e-ink. A sleeping ESP32 gets it on
   its next wake. While it's on the frame, the scene list shows it as a dashed *preview* row above

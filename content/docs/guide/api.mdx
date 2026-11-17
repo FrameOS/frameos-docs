@@ -191,7 +191,7 @@ These take the access key:
 | `sceneSettings` | - | Open the [scene settings](/guide/scenes#input), or close them unsaved. |
 | `back`, `forward` | - | The scene's own back and forward, like the swipes in from the left and right. They never change the scene. |
 | `button` | `{"label": "A"}`, plus `pin`, `role` or `action` | A button press. No `action` means `press`; the others are `doublePress` and `longPress`. The frame's [button actions](/guide/settings#buttons) apply, as for a real press. |
-| `gpio`, `tap`, `doubleTap`, `longPress`, `swipe`, `edgeSwipe`, `pointerDown`, `pointerMove`, `pointerUp`, `pointerCancel`, `wheel`, `keyDown`, `keyUp`, `textInput` | The fields of that [input event](/guide/scenes#input) | Input, as if a person did it. |
+| `gpio`, `tap`, `doubleTap`, `longPress`, `swipe`, `pinch`, `edgeSwipe`, `pointerDown`, `pointerMove`, `pointerUp`, `pointerCancel`, `wheel`, `keyDown`, `keyUp`, `textInput` | The fields of that [input event](/guide/scenes#input) | Input, as if a person did it. |
 | `metrics` | - | Log the frame's metrics now (Pi only). |
 | Any other name, up to 63 characters | Any JSON object | A custom event, delivered to the current scene's listeners of that name. The frame renders afterwards if the scene's state changed. |
 

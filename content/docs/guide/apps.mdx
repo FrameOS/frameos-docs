@@ -189,11 +189,13 @@ export function get(app: FrameOSApp) {
   with `/opacity`, gradients, borders, corners, text sizes and weights work, as do the `sm:`…`2xl:`
   and `portrait:` / `landscape:` variants, which follow the size of the image being drawn.
 - **Handlers**: `onClick`, `onDoubleClick`, `onLongPress`, `onPointerDown`, `onPointerUp`,
-  `onPointerMove` and `onSwipe` run on a touch screen's or a mouse's events, and the frame renders
+  `onPointerMove`, `onSwipe` and `onPinch` run on a touch screen's or a mouse's events, and the frame renders
   again after each. An event says where the pointer is in its element (`localX`, `localY`) and
   how big the element is (`width`, `height`), so `e.localX / e.width` is how far
   along a slider a finger is on any frame. A mouse passing over an element sends it moves too, with
   `e.buttons` at 0, so a slider should follow a move only while `e.buttons` says something is held.
+  `onPinch` comes once, when two fingers that moved lift, with `e.scale`: below 1 drawn together,
+  above 1 spread apart.
   `hover:`, `active:` and `group-hover:` classes follow the pointer on LCDs, HyperPixels, the
   browser preview and the [SenseCAP Indicator](/devices/seeed-sensecap-indicator). E-paper doesn't
   draw them, since each would cost a refresh: there one tap is one render.
@@ -224,11 +226,22 @@ export function get(app: FrameOSApp) {
 - **Other scenes inside**: `<Scene id="…" />` draws another scene of the frame into a box, on its
   own schedule ([scenes inside scenes](/guide/scenes#scenes-inside-scenes)), and a
   [layout](/guide/scenes#layouts) is a UI with a `<yield />` where the scene it wraps goes.
-- **What the frame knows**: `app.frame.color` is false on black-and-white and grey panels, so a UI
-  can switch to high contrast there; `app.frame.paper` says a change costs a refresh;
+- **What the frame knows**: `app.frame.fast` is false where every change costs a refresh, as on
+  e-paper, so animate, follow a finger and show presses only where it's true, and take a drag
+  whole as one `onSwipe` (two fingers as one `onPinch`) where it's false. `app.frame.paper` says
+  the panel draws in inks, so draw solid colors there, and `app.frame.color` is false on
+  black-and-white and grey panels, so a UI can switch to high contrast there. All three describe
+  the frame's panel wherever an app asks - `get()`, `init()`, `onEvent` or a handler.
   `app.frame.batteryPercent` and `app.frame.wifiRssi` are what the hardware reports, and undefined
   where it can't say. A layout on a desktop also gets `app.frame.scenes`, `sceneId` and `windows`
   ([desktops](/guide/scenes#windows)).
+- **The desktop's look**: `look="button"` on an element - or `page`, `bar`, `primary`,
+  `selected`, `field`, `option`, `card`, `tile` and the theme's other roles - dresses it in the
+  theme of the [desktop](/guide/scenes#windows) around the scene, as the frame's own settings
+  are. Where there is none, the element keeps its own classes, so write its look as usual, and an
+  element without `look` always keeps them: leave it off a scene with a look of its own, like a
+  clock face or a game. `app.frame.theme` is the theme itself, for an SVG's colors. The *Files*
+  and *Theme roles* samples show it.
 
 Two habits from the browser to drop: a UI reads class names only, so a size in `style={{…}}` is
 ignored - put a computed one in a bracket class, `` className={`p-[${pad}px] text-[${size}px]`} ``.
@@ -246,7 +259,8 @@ Not there yet: rounded clipping, shadows, transforms, letter spacing, and select
 What an app may do on the frame is listed in its `config.json` under `permissions`:
 
 - `assets` - read the frame's assets folder (`listAssets`, `readAsset`, `loadAssetImage`…);
-- `assets-write` - also write and delete there (`writeAsset`, `appendAsset`, `deleteAsset`);
+- `assets-write` - also write and delete there (`writeAsset`, `appendAsset`, `deleteAsset`,
+  `makeAssetFolder`);
 - `frame` - what the frame's own [settings page](/guide/settings#on-screen) can do: read its
   facts, change its WiFi, rotation and scale, render, restart and reboot (`frameos.frame()`), and
   only while the frame offers that page. The *Terminal* sample uses it;

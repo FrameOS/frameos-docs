@@ -7,9 +7,14 @@ description: Browse, preview, fork and install community scenes from scenes.fram
 galleries, message boards, generative art - published by the community and by the FrameOS
 project, and installable on any frame. Signed in to [FrameOS Cloud](/guide/cloud), the same store
 is the first page of **Scenes** in the rail; on a backend it's **Scenes → Public scene store**.
-Scenes sit on shelves by category - *Real time* is the one for scenes that redraw every second,
-*Layouts* the one for [layouts](/guide/scenes#layouts) that wrap other scenes - with their install
-counts, sorted by **Most installed**, **Latest** or **A to Z**.
+Scenes sit on shelves by category, with their install counts, sorted by **Most installed**,
+**Latest** or **A to Z**. *Real time* has the scenes made for a fast screen - animations, and touch
+interfaces like *Calculator*, *To-do* and *Kitchen sink* - and a frame's own *Scene store* puts it
+first on an LCD and leaves it out on e-paper. Clocks like *Analog clock face* and *Word clock*, and
+*Year progress*, are under *Tools & utilities*. [Layouts](/guide/scenes#layouts) have two shelves:
+*Desktop layouts*, which run the frame's scenes side by side, and *Full screen layouts*, which wrap
+one scene. A scene names its own category in its [settings](/guide/scenes#icon), and a published
+version is filed under it. Each scene's icon shows on its tile and its page.
 
 Each scene page is a small workspace with three panels you can toggle - **Editor**, **AI**
 ([edit it in plain language](#ai)) and **Preview**, a **live preview rendered in your browser**. A
@@ -49,7 +54,8 @@ it, or double-click the handle to fit it again. The log has a handle of its own.
 preview is held like a frame's key, so long presses and double presses work. Tick
 **Memory limit** and pick a device (ESP32 with 8 or 16 MB, Pi Zero, Pi) to render under that
 frame's memory: the preview shows the peak and says "out of memory" where the frame would. A
-**Layout** select tries the scene inside any [layout](/guide/scenes#layouts) starter.
+**Layout** select tries the scene inside any [layout](/guide/scenes#layouts) starter, and
+**Settings** beside it sets that layout's fields for the preview.
 
 A frame can browse the store too: the *Scene store* sample scene puts the shelves on its own
 screen, with Preview and Install ([on the frame](/guide/scenes#frame-apps)).
