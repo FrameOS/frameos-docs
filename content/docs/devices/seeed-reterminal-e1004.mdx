@@ -67,7 +67,7 @@ the three battery fields under **Power**.
 ## Why 8 MB is enough
 
 A 1200×1600 RGBA canvas alone would be 7.3&nbsp;MB - most of this board's PSRAM before a single
-image is decoded. On this board the ESP32 renderer instead composites into a **16-bit canvas**
+image is decoded. Like every color e-paper on an ESP32, it instead composites into a **16-bit canvas**
 (3.7&nbsp;MB), reserved once at boot and reused for every render, with dithered stores so gradients
 stay smooth. The picture for the panel is packed into the start of that canvas as it's dithered,
 and the panel refreshes straight from there, so the board holds no second buffer for it (a rotated
@@ -75,6 +75,8 @@ frame still keeps one). Every panel the firmware drives is a dithered e-paper, s
 canvas a photo dithered to Spectra 6 lands the same palette within 0.05% per color. Images decode
 straight off the socket into that canvas - a 2&nbsp;MB gallery PNG renders with 1.5&nbsp;MB of
 PSRAM to spare. That is what makes this board render on-device rather than as a thin client.
+What the canvas leaves the scenes - about 2.5&nbsp;MB - runs one at a time, so a
+[desktop layout](/guide/scenes#windows) shows one scene here rather than windows side by side.
 
 ## Setup
 

@@ -52,12 +52,12 @@ password you set during setup (or in the backend under **Settings → Admin**) a
   where you **connect a standalone frame to a backend** with an adoption code, link it to
   [FrameOS Cloud](/guide/cloud), or disconnect it again.
 - **Preview** - the current image, live over a WebSocket.
-- **Schedule** - render intervals and cron-like [schedules](#scheduling), plus the maintenance
+- **Schedule** - cron-like [schedules](#scheduling) of scenes and their settings, plus the maintenance
   restart and reboot timers.
 - **Logs** and **Metrics** - runtime output and health charts (CPU, memory, temperature, render
   times), straight from the device. Logs only leave the frame if you switch on
   *Send logs to backend*, or *Ship logs and metrics to the cloud* on a cloud-linked frame.
-- **Assets** - files on the frame's SD card: fonts, images, downloaded scenes.
+- **Files** - files on the frame's SD card: fonts, images, downloaded scenes.
 - **Debug** - on-device diagnostics. (**Ping** and **Terminal** exist only in the backend.)
 - **Settings → FrameOS upgrade** - the frame downloads a new release itself, verifies the
   signature, swaps it in and restarts - rebooting only when the new release needs it. Cloud and
@@ -151,9 +151,10 @@ scripts and Home Assistant send no `Origin` and are unaffected. Behind your own 
 
 ## Scheduling
 
-Frames have their own on-device scheduler: render intervals per scene, plus cron-like schedules
-(minute/hour/weekday) that can switch scenes or fire events - for example, a calendar during the
-day and art in the evening. Configure it under the frame's **Schedule** tab. The schedule runs on
+Frames have their own on-device scheduler: cron-like schedules (minute/hour/weekday) that can
+switch scenes, set a scene's fields or fire events - for example, a calendar during the day and art
+in the evening. An entry's fields are the scene's own, its refresh interval included, so an entry
+can slow a slideshow down from 10 pm on. Configure it under the frame's **Schedule** tab. The schedule runs on
 the frame, in the frame's own [time zone](/guide/settings#time-zone), so it keeps working with the
 backend off. When in doubt about what the frame will do next, check **Logs**: on start and after
 every schedule change it logs `scheduler:loaded` with its zone, local time and the next due entry

@@ -192,7 +192,7 @@ tablet or a TV. See [virtual frames](/guide/virtual#in-frameos-cloud).
 ## Managing a frame
 
 Each frame has an overview page at `/frames/<id>`, with its tools as sub-paths - **Settings**,
-**Preview**, **Schedule**, **Logs**, **Metrics**, **Assets** and **Activity** (`/frames/<id>/logs`) -
+**Preview**, **Schedule**, **Logs**, **Metrics**, **Files** and **Activity** (`/frames/<id>/logs`) -
 and its scenes at `/frames/<id>/scenes/<sceneId>`.
 
 - **Scenes.** Install from the [scene store](/guide/scene-store), or open a scene's page - the
@@ -230,8 +230,8 @@ and its scenes at `/frames/<id>/scenes/<sceneId>`.
   frame's page show **asleep · wakes in 5 min** (or **overdue**) rather than a stale "last seen",
   and battery frames show their charge in place of the status dot - click it for the charge,
   a two-week history and a forecast of the battery's life.
-- **Settings.** The set a cloud-managed frame accepts is declarative: name, rotation, render
-  interval, scaling, time zone, debug logging, the QR control code, metrics interval, HTTP
+- **Settings.** The set a cloud-managed frame accepts is declarative: name, rotation,
+  scaling, time zone, debug logging, the QR control code, metrics interval, HTTP
   response cap, palette, [colors](/guide/colors) and
   partial-refresh policy, GPIO buttons, [local network access](#local-network-access), and on
   ESP32 the [power options](/guide/esp32#power) - deep sleep, battery pins and the
@@ -252,7 +252,9 @@ and its scenes at `/frames/<id>/scenes/<sceneId>`.
   last 5000 lines per frame; metrics charts include reboot markers.
 - **Service API keys.** Enter OpenAI, Unsplash, Immich, Home Assistant and similar keys once under
   **Settings → Service keys**. Each frame has a **Deliver keys to this frame** switch, and only receives the
-  keys its scenes actually ask for, pulled by the device over HTTPS.
+  keys its scenes actually ask for, pulled by the device over HTTPS. A scene preview in your
+  browser may use the saved keys for a while after you sign in - two hours by default; a day, a
+  week or only right after signing in on the **Security** page.
 - **Ask AI.** The frames home and every frame's page have an AI box. Ask *what's on the kitchen
   frame right now?* or *put a weather scene on the hallway frame*: the chat answers from live data
   and acts with the same tools as the [MCP server](#developer), asking before anything that

@@ -312,6 +312,7 @@ Either one can send every event the board accepts, device events included.
 | `POST /api/frames/<id>/scenes` | Adds or replaces one scene, its JSON as the body, leaving the others alone. `?activate=1` also shows it. |
 | `POST /api/frames/<id>/scenes/delete?id=<sceneId>` | Removes one scene. A refused change answers `400`, `404` or `500` with the reason. |
 | `POST /api/frames/<id>/event/<name>`, `/reload`, `/upload_scenes`, `/assets/upload`, `/assets/mkdir`, `/assets/delete`, `/assets/rename`, `/assets/remount-sd`, `/assets/format-sd` | The same actions under the frame's id. |
+| `?storage=internal` on any asset route | The board's [internal storage](/guide/esp32#assets-and-the-sd-card) instead of the TF card. Listings name the board's storages in `storages`; one the board doesn't have answers `storage_unavailable`. |
 
 Four things to watch for:
 

@@ -7,14 +7,21 @@ description: Browse, preview, fork and install community scenes from scenes.fram
 galleries, message boards, generative art - published by the community and by the FrameOS
 project, and installable on any frame. Signed in to [FrameOS Cloud](/guide/cloud), the same store
 is the first page of **Scenes** in the rail; on a backend it's **Scenes → Public scene store**.
-Scenes sit on shelves by category, with their install counts, sorted by **Most installed**,
-**Latest** or **A to Z**. *Real time* has the scenes made for a fast screen - animations, and touch
-interfaces like *Calculator*, *To-do* and *Kitchen sink* - and a frame's own *Scene store* puts it
-first on an LCD and leaves it out on e-paper. Clocks like *Analog clock face* and *Word clock*, and
-*Year progress*, are under *Tools & utilities*. [Layouts](/guide/scenes#layouts) have two shelves:
-*Desktop layouts*, which run the frame's scenes side by side, and *Full screen layouts*, which wrap
-one scene. A scene names its own category in its [settings](/guide/scenes#icon), and a published
-version is filed under it. Each scene's icon shows on its tile and its page.
+The store front has two tabs, **Scenes** and **Layouts**. Scenes sit on shelves by topic -
+*Photos*, *Art & galleries*, *Clocks & time*, *Calendars & agendas*, *Weather*, *Home &
+dashboards*, *Games*, *Fun & animations*, *Notes & tools*, *AI & generative*, *Demos & examples* -
+each saying what it holds, with their install counts, newest first or sorted by **Most
+installed** or **A to Z**, and **See all** past the first twelve. A scene names its own category in
+its [settings](/guide/scenes#icon), and a published version is filed under it.
+[Layouts](/guide/scenes#layouts) are shelved by kind: *Multi app layouts*, which run the frame's
+scenes side by side, *Single app layouts*, which wrap one scene, and *Device layouts*, made for one
+frame like the reTerminals.
+
+Which screen a scene suits is what it needs, not what it's about: every tile says whether it wants
+a fast screen, **Touch & mouse**, a **Keyboard**, the frame's **Buttons**, or a Linux frame, and a
+filter shows only the scenes for your screen. Each scene's icon shows on its tile and its page, and
+a tile says **Installed** once every one of your frames has the scene, or **Installed on 2 frames**
+while some do.
 
 Each scene page is a small workspace with three panels you can toggle - **Editor**, **AI**
 ([edit it in plain language](#ai)) and **Preview**, a **live preview rendered in your browser**. A
@@ -53,12 +60,15 @@ while the log, the settings and the state form scroll under it: drag the handle 
 it, or double-click the handle to fit it again. The log has a handle of its own. A button in the
 preview is held like a frame's key, so long presses and double presses work. Tick
 **Memory limit** and pick a device (ESP32 with 8 or 16 MB, Pi Zero, Pi) to render under that
-frame's memory: the preview shows the peak and says "out of memory" where the frame would. A
+frame's memory: the preview shows the peak and says "out of memory" where the frame would, then
+stops with a **Restart** button. A
 **Layout** select tries the scene inside any [layout](/guide/scenes#layouts) starter, and
-**Settings** beside it sets that layout's fields for the preview.
+**Settings** beside it sets that layout's fields for the preview. A layout's own page runs it
+around sample scenes (Clock, Weather demo, Calculator), and a desktop runs windowed.
 
 A frame can browse the store too: the *Scene store* sample scene puts the shelves on its own
-screen, with Preview and Install ([on the frame](/guide/scenes#frame-apps)).
+screen, with Preview and Install, and tries a layout on the frame before you keep it
+([on the frame](/guide/scenes#frame-apps)).
 
 ## Install a scene
 
@@ -83,7 +93,7 @@ Installing a store scene on a backend grants it the service keys it declares; re
 the frame's settings, **Service keys for store scenes**.
 
 Every scene carries tags for what its apps may do on the frame - *runs shell commands*, *reads
-all files*, *reads assets folder*, *writes assets folder*, *uses OpenAI key* - on its tile, in the
+all files*, *reads files*, *writes files*, *uses OpenAI key* - on its tile, in the
 install dialog and on the frame ([permissions](/guide/apps#permissions)). Installing a scene is
 approving its tags, and **Update to latest** says which ones a new version adds, in red when it
 gains shell, file or write access. The cloud never runs the shell apps (Chromium screenshot and
@@ -137,8 +147,8 @@ same assistant is available to scripts and agents through the
 [cloud's MCP server](/guide/cloud#developer).
 
 Published scenes, private ones included, pass an automated content check on their name,
-description and preview image. Limits while in beta: 200 scenes per account, 100 MB of private
-storage (public scenes are free), 8 MB per scene ZIP.
+description and preview image. Limits while in beta: 200 scenes per account, 100 new scenes a
+day, 100 MB of private storage (public scenes are free), 8 MB per scene ZIP.
 
 ## Publishing for others
 

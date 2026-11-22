@@ -22,6 +22,10 @@ last time" into edits on the guide pages, device pages and FAQ - and moves the b
   ```
 
 - No global `node`: use `.flox/run/aarch64-darwin.frameos-docs.dev/bin/{node,npm,npx}`.
+- On the Linux dev box the checkouts are `/home/marius/Projects/FrameOS/{frameos,frameos-docs}` and
+  the frameos checkout's flox env (`.flox/run/x86_64-linux.frameos-dev/bin`) has `node` and `npm`.
+  If `frameos-docs` is on another branch, sync in a worktree of `origin/main` with `node_modules`
+  symlinked from the main checkout.
 
 ## 1. Find the delta
 

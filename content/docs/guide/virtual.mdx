@@ -7,8 +7,8 @@ A **virtual frame** is a frame with no device behind it. A [self-hosted backend]
 renders its scenes and serves the result two ways:
 
 - **An image URL** - one PNG per request, at whatever size and color mode you picked.
-- **A self-refreshing page** - a black, full-bleed kiosk page that swaps the image in place on
-  the frame's interval, without the white flash a meta-refresh would cause.
+- **A self-refreshing page** - a black, full-bleed kiosk page that swaps the image in place when
+  the scene's refresh interval says, without the white flash a meta-refresh would cause.
 
 Both URLs appear in the frame's settings once it is added.
 
@@ -38,7 +38,10 @@ Click **New frame → Virtual frame**, then set:
   real panel would be.
 
 From there it's an ordinary frame: install scenes, edit them in the
-[scene editor](/guide/scenes), set a render interval, change its state fields live.
+[scene editor](/guide/scenes), set a scene's refresh interval, change its state fields live.
+Scenes on it may reach your LAN only with **Local network access** on in its settings. Behind Home
+Assistant's ingress, the image and page links use the add-on's frames port (8989, or whichever
+port you published it on), since the ingress address is Home Assistant's own.
 
 ## How it differs from a real frame
 
@@ -59,8 +62,8 @@ The cloud renders virtual frames too, on the paid plans: one for each dollar of 
 [render on the cloud](/guide/esp32#render-on-server) count against the same number. **Add frame → Virtual frame** creates one,
 and its settings hold its size and a private link that shows the picture and nothing else - open
 it in a browser on a spare screen, an old tablet, a TV or a dashboard. It renders when you push a
-scene or ask for a render, and on its interval while someone has the link open, but no more often
-than every five minutes.
+scene or ask for a render, and on its scene's refresh interval while someone has the link open,
+but no more often than every five minutes.
 
 From there it's managed like any cloud frame - scenes, the editor, the schedule, the activity
 trail - minus what needs a body: assets, metrics, reboots and firmware updates.

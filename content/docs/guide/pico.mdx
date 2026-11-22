@@ -107,7 +107,8 @@ line that would pull the panel, the flash or the power from under it - `set`, `w
 `deep_sleep` (always) or `deep_sleep_on_battery` (only while unplugged) - the two settings in the
 frame's **Power** section, or `set deep_sleep 1` on the console - powers the board off completely
 after each render, using the Inky Frame's onboard RTC and power latch: around 20&nbsp;µA between
-refreshes. It cold-boots on the next interval, or when someone presses a front button. On USB power
+refreshes. It cold-boots when the scene's next render is due (five minutes if nothing said), or
+when someone presses a front button. On USB power
 the latch can't cut the supply, so the firmware waits in place instead, and anything a person does
 ends the wait. A watchdog backed by an RTC timer makes sure a hang or a reset on battery ends in a
 wake rather than a dark frame.

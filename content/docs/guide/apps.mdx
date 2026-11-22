@@ -33,8 +33,9 @@ leaving the original untouched.
 Many of the apps that fetch photos and data are JavaScript apps that travel inside the scene, so
 they change without a firmware release and you can fork them like your own: FrameOS Gallery,
 Unsplash, Wikimedia Commons, Google Photos, Immich, OpenAI Image and Text, Home Assistant Sensor,
-Weather (Open-Meteo), the Belgian recycling calendar, Chart, Calendar, iCal to Events, Photo album
-and Events to Agenda. The rest are [built into FrameOS](#built-in-apps): their source opens
+Weather (Open-Meteo), the Belgian recycling calendar, Chart, Calendar, iCal to Events, Photo album,
+Events to Agenda and Clock (formatted with `{hour/2}:{minute/2}` tokens, as code nodes are; scenes
+that used the old built-in clock keep its format through a port of it). The rest are [built into FrameOS](#built-in-apps): their source opens
 **read only**, with an **Open in GitHub** link; to customize one, write a JavaScript app or an
 inline code node instead.
 
@@ -69,7 +70,10 @@ JS apps can fetch data with `frameos.fetchText()`, `frameos.fetchJson()` and
 `frameos.httpRequest()` - headers, methods and bodies, plus a `find` option that pulls snippets
 out of a page too big to parse on a microcontroller - and photos with `frameos.fetchImage()`,
 which downloads and decodes natively, straight into the canvas on an ESP32, so the pixels never
-enter the JavaScript heap. They return text, JSON, SVG markup, or images, and plug
+enter the JavaScript heap. `httpRequest()` answers the response's `headers` too, can write a
+base64 field of the reply straight to an asset (`saveBase64Field`) and put an asset's bytes into
+the request body (`bodyAsset`), so a generated 1&nbsp;MB image never becomes a JavaScript string on
+an ESP32. `btoa`, `atob`, `TextEncoder` and `TextDecoder` are there as in a browser. They return text, JSON, SVG markup, or images, and plug
 into scenes exactly like the built-in ones. They work on every kind of frame, and they're the
 **only** option on [ESP32](/guide/esp32) and [Pico](/guide/pico) boards.
 
@@ -90,6 +94,16 @@ while ((line = frameos.nextLine(lines)) !== null) {
 
 That's how *iCal to Events* reads a real calendar in under 1&nbsp;MB of heap. `frameos.timeZone()`
 gives an app a zone's offsets, for wall-clock arithmetic in any zone.
+
+Files on the frame go through the asset calls (with the [permissions](#permissions) for them).
+`readAsset` reads a slice of a file as base64, as text (`{ text: true }`) or as a `Uint8Array`
+(`{ bytes: true }`); with `entry` it reads one member of a ZIP file, and with `offset`, `length`
+and `inflate` a deflated stream inside any file, so an EPUB chapter or a PDF page costs its slice,
+never the whole file. `loadAssetImage` decodes a picture at the size asked, from a file, a ZIP
+member or a slice, even raw pixel rows (`pixels`), and `background` fills where it's transparent.
+`writeAsset` and `appendAsset` take `{ text: true }` for a string, and `deleteAsset` removes an
+empty folder too. On an ESP32 with a TF card and internal storage, `app.frame.storages` lists both
+by name and a `storage` option picks one; the *Books* and *PDF viewer* samples read both.
 
 Two calls are for scenes that compute every pixel themselves - fire, plasma, a game of Life:
 
@@ -133,6 +147,8 @@ module-level variables are gone and `init()` runs again before the next render. 
 stays awake keeps its interpreters between renders while memory allows.) Keep
 values the scene shares in its state (`frameos.setState()`), and private ones with
 `frameos.remember(key, value)` / `frameos.recall(key)`, which survive between renders everywhere.
+A scene's JavaScript apps share one interpreter with its code nodes: each app's module scope is its
+own, but `globalThis` is the scene's, so don't park values there.
 The browser preview behaves like an ESP32 when its memory limit is set to an ESP32
 board, so the difference shows up before you deploy.
 
@@ -203,14 +219,31 @@ export function get(app: FrameOSApp) {
   with `value`, `onChange` or `onInput` (`e.target.value`), `onKeyDown`, `placeholder`, the
   `password` and `number` types, and `focus:` and `placeholder:` classes. A tap gives the field
   the keyboard, with the caret where you tapped. A frame with no keyboard of its own - always on
-  an ESP32 - draws a US one on the screen under the UI and scrolls the field into view, and a
-  `number` field gets a number pad. Hold a key for its accents, or a letter for the symbol in its
-  corner; backspace repeats, and dragging the space bar moves the caret. In a `<textarea>`, Up and
-  Down move a line, and one with more text than fits scrolls by itself.
+  an ESP32 - draws a US one on the screen and scrolls the field into view, and a
+  `number` field gets a number pad. The keyboard is the frame's: docked along the bottom with the
+  whole layout moved up above it, or on a desktop a window of its own. Hold a key for its accents,
+  or a letter for the symbol in its corner; backspace repeats, and dragging the space bar moves the
+  caret. In a `<textarea>`, Up and Down move a line, and one with more text than fits scrolls by
+  itself. `<span>`s with colors inside a field color its text, as a code editor needs.
+- **Selecting text**: Shift with the arrows, a Shift+click or a mouse drag selects, and
+  Ctrl/Cmd + A, C, X and V select all, copy, cut and paste through the frame's clipboard (never a
+  password's). By touch, as on a phone: a long press or a double tap selects a word, handles drag
+  its ends, and a menu offers Cut, Copy, Paste and Select all. In the browser preview the clipboard
+  is your computer's.
+- **Links**: `<a href>` with an http, https, `mailto:` or `tel:` address. A tap on a frame shows
+  the address's QR code, to open on your phone; in the browser preview it opens a tab.
+- **Keys**: Tab and Shift+Tab walk every element there is to press - fields, selects, links,
+  anything with `onClick` - drawing a ring around it (or its own `focus:` classes), Enter presses
+  it and Escape lets go. A frame's buttons are those keys by their role: `next` is Tab, `prev`
+  Shift+Tab, `primary` and `refresh` Enter, `back` and `menu` Escape, so a UI written for touch
+  works from a reTerminal's keys. The scene's own code hears a key first and keeps it by returning
+  `true` from `onEvent`.
 - **Select boxes**: `<select>` with its `<option>`s, controlled as in React. A tap opens the list
   on top of everything, as wide as the select, scrolling what doesn't fit.
 - **Boxes that scroll**: `overflow-y-auto` follows a finger or the mouse wheel, with
-  a scroll bar, and `overflow-hidden` clips to a rectangle. Negative insets (`-top-1`,
+  a scroll bar, `onScroll` hears it and setting `scrollTop` scrolls it, and `overflow-hidden`
+  clips to a rectangle. `frameos.measureText()` says how tall a text will be set, for an app that
+  lays out long lists itself. Negative insets (`-top-1`,
   `left-[-40px]`) hang a box off its parent's edge, as in a browser.
 - **Laid out for a smaller screen**: a `.tsx` or `.jsx` app lays out at the panel's
   size divided by the frame's [render scale](/guide/settings#render-scale) and is drawn sharp at
@@ -226,6 +259,10 @@ export function get(app: FrameOSApp) {
 - **Other scenes inside**: `<Scene id="…" />` draws another scene of the frame into a box, on its
   own schedule ([scenes inside scenes](/guide/scenes#scenes-inside-scenes)), and a
   [layout](/guide/scenes#layouts) is a UI with a `<yield />` where the scene it wraps goes.
+- **Emoji**: with `NotoColorEmoji.ttf` among the frame's fonts, emoji in JSX and SVG text draw
+  in color, on a Pi and on an ESP32 alike.
+- **The mouse cursor**: on a Pi with a mouse, `cursor-pointer`, `cursor-text`, `cursor-move`,
+  `cursor-grab`, the resize cursors and `cursor-none` set the cursor's shape over an element.
 - **What the frame knows**: `app.frame.fast` is false where every change costs a refresh, as on
   e-paper, so animate, follow a finger and show presses only where it's true, and take a drag
   whole as one `onSwipe` (two fingers as one `onPinch`) where it's false. `app.frame.paper` says
@@ -234,7 +271,9 @@ export function get(app: FrameOSApp) {
   the frame's panel wherever an app asks - `get()`, `init()`, `onEvent` or a handler.
   `app.frame.batteryPercent` and `app.frame.wifiRssi` are what the hardware reports, and undefined
   where it can't say. A layout on a desktop also gets `app.frame.scenes`, `sceneId` and `windows`
-  ([desktops](/guide/scenes#windows)).
+  ([desktops](/guide/scenes#windows)), and any layout `app.frame.eventMap` (the frame's
+  [button actions](/guide/settings#buttons), to label its keys) and `app.frame.typing` (true while
+  the scene it wraps has the keyboard up).
 - **The desktop's look**: `look="button"` on an element - or `page`, `bar`, `primary`,
   `selected`, `field`, `option`, `card`, `tile` and the theme's other roles - dresses it in the
   theme of the [desktop](/guide/scenes#windows) around the scene, as the frame's own settings
@@ -245,14 +284,15 @@ export function get(app: FrameOSApp) {
 
 Two habits from the browser to drop: a UI reads class names only, so a size in `style={{…}}` is
 ignored - put a computed one in a bracket class, `` className={`p-[${pad}px] text-[${size}px]`} ``.
-And a flex item has no automatic minimum width, so give the parts that keep their width `shrink-0`
-or a `w-*`, and the long text `flex-1`.
+And a flex item keeps at least its content's size, as in a browser, so a column too short for its
+items overflows rather than squashing them: give the part that may shrink `min-h-0` (or
+`min-w-0`, `overflow-hidden`, `truncate`).
 
 The scene AI draws this way too: anything a scene draws itself, it writes as an `app.tsx` returning
 JSX, and the store's samples - *Analog clock face*, *Word clock*, *Chess puzzle of the day*, *Day
 agenda*, *Now playing*, *Home* - are good ones to read.
 
-Not there yet: rounded clipping, shadows, transforms, letter spacing, and selecting text in a field.
+Not there yet: rounded clipping, shadows, transforms and letter spacing.
 
 ## Permissions [#permissions]
 
@@ -264,13 +304,16 @@ What an app may do on the frame is listed in its `config.json` under `permission
 - `frame` - what the frame's own [settings page](/guide/settings#on-screen) can do: read its
   facts, change its WiFi, rotation and scale, render, restart and reboot (`frameos.frame()`), and
   only while the frame offers that page. The *Terminal* sample uses it;
+- `code` - read and change the frame's scenes, and ask the control plane's scene AI for a draft
+  (`frameos.code()`), also only while the frame offers its settings page. The *Code editor* uses it;
 - `files` and `shell` - for built-in apps: *Local image* reads any folder, *Chromium screenshot*
   and *RTSP camera snapshot* run programs.
 
 You rarely write the list yourself: saving a scene fills each JavaScript app's list from its code.
-A scene asks for what its apps ask for, and every surface shows that as tags - *reads assets
-folder*, *writes assets folder*, *reads all files*, *runs shell commands*, and *uses OpenAI key*
-for each service key an app reads, and a red *changes frame settings* for `frame` - on the scene list, in the drawer, on store tiles and in the
+A scene asks for what its apps ask for, and every surface shows that as tags - *reads files*,
+*writes files* (both together read *reads & writes files*), *reads all files*, *runs shell
+commands*, and *uses OpenAI key* for each service key an app reads, a red *changes frame
+settings* for `frame` and a red *reads and changes this frame's scenes* for `code` - on the scene list, in the drawer, on store tiles and in the
 install dialog. Installing a scene is approving its tags; **Update to latest** says which ones a
 new version adds and turns red when it gains shell, file or write access.
 
@@ -303,11 +346,10 @@ the fonts on the frame - `"PT Sans"`, `PTSans-Bold.ttf` and `font-weight="bold"`
 `PTSans-Bold.ttf` - and anything the frame doesn't have falls back to the built-in face rather than
 failing the drawing. `text-anchor`, `dominant-baseline`, `<tspan>`, entities and stroked or
 transformed text all work. FrameOS implements a subset of SVG rather than the whole spec: `<defs>`
-and external references are ignored, a Pi holds at most eight typefaces per SVG, and on a
-microcontroller SVG text always renders in the one built-in typeface.
+and external references are ignored.
 
 On a Raspberry Pi you can upload your own TrueType fonts under the frame's assets and pick them in
 any text or font field. Drop a `NotoColorEmoji.ttf` in there and it's used automatically as a
-fallback for characters your font doesn't cover (SVG text excluded - color emoji are bitmaps with
-no outlines). An [ESP32 with an SD card](/guide/esp32#fonts) can load TTFs from `fonts/` on the
-card too, one face at a time.
+fallback for characters your font doesn't cover, in color, in the Text app, JSX and SVG text. An
+[ESP32 with an SD card](/guide/esp32#fonts) reads every TTF in `fonts/` on the card where it
+lies, as many as a scene names, emoji included.

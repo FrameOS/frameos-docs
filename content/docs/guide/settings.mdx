@@ -1,6 +1,6 @@
 ---
 title: Useful settings
-description: Access keys, QR codes, settings on the frame's screen, layouts, asset storage, button actions, voice chat, power management, nightly reboots and debug logging.
+description: Access keys, QR codes, settings on the frame's screen, layouts, files, button actions, voice chat, power management, nightly reboots and debug logging.
 ---
 
 A tour of the most useful options under a frame's **Settings** tab. Unless noted otherwise, each
@@ -42,19 +42,24 @@ bar, a Polaroid border - and its gear sets the layout's own fields. Each scene's
 under **Advanced**, and both list the desktops apart from the full screen layouts. The frame's
 on-screen settings have the same select, its layouts grouped by category and sorted by name, and
 what's picked there is the frame's to keep until **As each scene says** is picked again. If a push
-takes that layout away, each scene wears its own until it comes back. The frame's own screens -
+takes that layout away, each scene wears its own until it comes back. **Edit a layout** lists the
+frame's layouts, each a link to its scene page. The frame's own screens -
 these settings, the scene switcher, the keyboard - take their look from the layout, and on a Pi or
 an ESP32 a desktop layout runs the frame's scenes [side by side](/guide/scenes#windows).
 
-## Assets [#assets]
+## Files [#assets]
 
 Downloaded images (OpenAI, Unsplash, galleries…) are saved to `/srv/assets` on the frame's SD card
 when there's enough free space. This avoids re-downloading (and re-paying for) the same images
-after a reboot. Browse, upload, rename and delete them under the frame's **Assets** tab, reuse
-them with the **Local image** app, or point a `path` state field at a file or folder so the
-control page gets a picker.
+after a reboot. Browse, upload, rename and delete them in the frame's **Files** panel (*Upload &
+download*), reuse them with the **Local image** app, or point a `path` state field at a file or
+folder so the control page gets a picker. **Resize and upload…**, under the upload button, shrinks
+photos in your browser before they go up - to a frame's panel size, a common size or one you type,
+fitted, cropped, padded or stretched, as JPEG, PNG or WebP, with their metadata kept unless you
+untick it. A photo that already fits goes up untouched.
 
-This works the same way on [ESP32 boards with a TF card slot](/guide/esp32#assets-and-the-sd-card).
+This works the same way on [ESP32 boards with a TF card slot](/guide/esp32#assets-and-the-sd-card),
+where the panel also switches between the card and the board's **Internal storage**.
 Images too large to decode in memory also spool here on their way to the screen - see
 [Big images on small devices](/guide/images).
 
@@ -80,14 +85,18 @@ after five minutes by default.
 
 List the frame's buttons by pin and label under **GPIO buttons** - the hardware presets fill them
 in. Each button has a **role** (`primary`, `next`, `prev`, `back`, `menu`, `refresh`…), defaulting
-from its label, and scenes hear presses as `button` and `gpio`
-[events](/guide/scenes#input). On an ESP32 a changed map reaches the board with its next settings
+from its label - the reTerminal's green REFRESH key is `primary` - and scenes hear presses as
+`button` and `gpio` [events](/guide/scenes#input). In a [JSX UI](/guide/apps#jsx-uis) the roles
+are keys: `next` and `prev` walk the elements, `primary` presses one, `back` and `menu` let go. On an ESP32 a changed map reaches the board with its next settings
 sync, and it restarts to rebind the pins (the cloud pushes it too).
 
 **Button actions** say what a press does on this frame whatever scene is
 showing: next or previous scene, render, show a particular scene, **Scene switcher** and **Scene
 settings**, **Back** and **Forward**, and - on displays that can
-switch their panel off - display on, off or on/off. Each row is one press (press, double press or
+switch their panel off - display on, off or on/off. A **Show scene** row lists that scene's
+settings too: what you set there is applied as the scene comes up, like a schedule entry's, and
+what you leave alone keeps the scene's own value. (An ESP32 keeps the whole map in 1&nbsp;KB, and
+the section warns before a longer one is saved.) Each row is one press (press, double press or
 long press) of one of the frame's buttons, or on a touch screen one
 [edge swipe](/guide/scenes#input), and a press bound there never reaches the scene. The Seeed
 reTerminal presets come with LEFT held = previous scene and RIGHT held = next; the
@@ -130,6 +139,9 @@ five minutes by default - so the next press is answered at once. A Raspberry Pi 
 
 An ESP32 that renders its own scenes has two more:
 
+The battery popup shows how often the frame re-renders (the showing scene's refresh interval)
+and, while it sleeps, how often it checks in.
+
 - **Render scenes**: *On the frame* (the default), or *On the backend* / *On FrameOS Cloud*,
   which runs the frame's scenes on its control plane and sends it the finished picture. The frame
   only wakes, downloads and refreshes, so a battery lasts longer
@@ -141,6 +153,12 @@ An ESP32 that renders its own scenes has two more:
   the best of both: on e-paper it renders at 240&nbsp;MHz and waits out the refresh at 160, and LCD
   and touch screens run at 240 throughout. The frame reboots to take a change; on the console it's
   `set cpu_mode`.
+
+## How often it renders
+
+There's no refresh interval for the frame as a whole: each scene has its own **Refresh interval**
+([state fields](/guide/scenes#state-fields)), 300 seconds for a new scene, and a
+[schedule entry](/guide/control#scheduling) can change it from a time of day on.
 
 ## Nightly reboot
 
