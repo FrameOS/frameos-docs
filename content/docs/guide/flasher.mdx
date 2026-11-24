@@ -1,0 +1,154 @@
+---
+title: Flash an ESP32 in the browser
+description: flash.frameos.net puts FrameOS on an ESP32-S3 over USB from Chrome or Edge, with no account - for a standalone frame, for a backend on plain http, or from a setup file.
+---
+
+[flash.frameos.net](https://flash.frameos.net) writes FrameOS onto an [ESP32](/guide/esp32) board
+over USB, straight from your browser. It is a page of [FrameOS Cloud](/guide/cloud), but it needs
+no account and no sign-in. There are three ways in:
+
+- **[A standalone ESP32](#standalone)**: pick the board, give it a name and your WiFi, and it runs
+  on its own - no backend, no account.
+- **[From a self-hosted backend](#backend)** on plain `http://`: the backend's USB buttons open the
+  flasher in a popup and hand it the frame's setup.
+- **[From a setup file](#setup-file)** the backend saved, on whichever computer the board is
+  plugged into.
+
+## What you need
+
+- **Chrome or Edge on a desktop computer.** The page talks to the board over Web Serial.
+- **A USB cable that carries data.** A charge-only cable powers the board but shows no port.
+- **On macOS, WCH's serial driver for a Seeed reTerminal.** Its USB-C port goes to a CH340
+  bridge that macOS doesn't recognise out of the box
+  ([the steps](/devices/seeed-reterminal-e1004#macos-install-the-wch-serial-driver-first)).
+
+## A standalone ESP32 [#standalone]
+
+These boards can run standalone. Each link opens the flasher with the board already picked, and
+each board's device page has a **Flash in the browser** button that does the same:
+
+| Board | Link |
+| --- | --- |
+| [Waveshare ESP32-S3 PhotoPainter](/devices/waveshare-esp32-s3-photopainter) | [`?board=waveshare_esp32_s3_photopainter`](https://flash.frameos.net/?board=waveshare_esp32_s3_photopainter) |
+| [Waveshare ESP32-S3 ePaper 13.3E6](/devices/waveshare-esp32-s3-epaper-13in3e6) | [`?board=waveshare_esp32_s3_epaper_13_3e6`](https://flash.frameos.net/?board=waveshare_esp32_s3_epaper_13_3e6) |
+| [TRMNL 7.5" DIY Kit](/devices/trmnl-og-diy-kit) | [`?board=trmnl_og_diy_kit`](https://flash.frameos.net/?board=trmnl_og_diy_kit) |
+| [TRMNL 4.26" DIY Kit](/devices/trmnl-4in26-diy-kit) | [`?board=trmnl_4in26_diy_kit`](https://flash.frameos.net/?board=trmnl_4in26_diy_kit) |
+| [Seeed reTerminal E1001](/devices/seeed-reterminal-e1001) | [`?board=seeed_reterminal_e1001`](https://flash.frameos.net/?board=seeed_reterminal_e1001) |
+| [Seeed reTerminal E1002](/devices/seeed-reterminal-e1002) | [`?board=seeed_reterminal_e1002`](https://flash.frameos.net/?board=seeed_reterminal_e1002) |
+| [Seeed reTerminal E1003](/devices/seeed-reterminal-e1003) | [`?board=seeed_reterminal_e1003`](https://flash.frameos.net/?board=seeed_reterminal_e1003) |
+| [Seeed reTerminal E1004](/devices/seeed-reterminal-e1004) | [`?board=seeed_reterminal_e1004`](https://flash.frameos.net/?board=seeed_reterminal_e1004) |
+| [Seeed reTerminal Sticky](/devices/seeed-reterminal-sticky) | [`?board=seeed_reterminal_sticky`](https://flash.frameos.net/?board=seeed_reterminal_sticky) |
+| [Seeed SenseCAP Indicator](/devices/seeed-sensecap-indicator) | [`?board=seeed_sensecap_indicator_d1`](https://flash.frameos.net/?board=seeed_sensecap_indicator_d1) |
+| Sunton ESP32-8048S070 (7" LCD) | [`?board=sunton_esp32_8048s070`](https://flash.frameos.net/?board=sunton_esp32_8048s070) |
+| Waveshare ESP32-S3-Touch-AMOLED-1.75 | [`?board=waveshare_esp32_s3_touch_amoled_1_75`](https://flash.frameos.net/?board=waveshare_esp32_s3_touch_amoled_1_75) |
+| [Seeed XIAO ePaper Display Board EE02](/devices/seeed-xiao-epaper-ee02) | [`?board=seeed_xiao_ee02`](https://flash.frameos.net/?board=seeed_xiao_ee02) |
+| [Seeed XIAO ePaper Display Board EE03](/devices/seeed-xiao-epaper-ee03) | [`?board=seeed_xiao_ee03`](https://flash.frameos.net/?board=seeed_xiao_ee03) |
+| [Seeed XIAO ePaper Display Board EE04](/devices/seeed-xiao-epaper-ee04) | [`?board=seeed_xiao_ee04`](https://flash.frameos.net/?board=seeed_xiao_ee04) |
+| [Seeed XIAO ePaper Display Board EE05](/devices/seeed-xiao-epaper-ee05) | [`?board=seeed_xiao_ee05`](https://flash.frameos.net/?board=seeed_xiao_ee05) |
+| [Elecrow CrowPanel 5.79"](/devices/elecrow-crowpanel-5in79) | [`?board=elecrow_crowpanel_5in79`](https://flash.frameos.net/?board=elecrow_crowpanel_5in79) |
+| **Other ESP32-S3 board**: pick the panel; the pins default to the [Seeed XIAO ESP32-S3 layout](/guide/esp32#wiring) | [`?board=custom`](https://flash.frameos.net/?board=custom) |
+
+ESP32-C3 boards (the TRMNL OG and BWRY, the XTEINK X4, the XIAO 7.5" ePaper Panel, the 0.42"
+OLED) and the [Pimoroni Inky Frames](/guide/pico) are thin clients: they need a
+[backend](/guide/backend) to render for them, so the standalone flasher doesn't offer them.
+
+### Set it up
+
+1. Open [flash.frameos.net](https://flash.frameos.net) and pick the board.
+2. Give the frame a **name** and your **WiFi**. On a touch board WiFi is optional: the frame's own
+   settings page joins a network too - swipe down from the top, then tap the gear.
+3. Check the **time zone**. It is taken from your browser.
+4. Pick the **starter scenes**. The on-frame **Scene store** and a **Clock** are ticked already;
+   tick any of the other samples you want as well.
+5. Plug the board in, click **Flash FrameOS & set it up**, and pick the board's USB port.
+
+### What happens
+
+The page reads the chip and its flash size, and downloads the signed release image for that chip
+and flash layout. It checks the image's [signature](#signatures) in the browser and writes it to
+the board.
+
+Then it waits for the first boot. A brand-new board formats its storage on first boot, which takes
+about four minutes on a 32&nbsp;MB board - leave it plugged in. Once FrameOS is up, the page sends
+the frame's settings over the USB console, uploads the scenes, and the board joins your WiFi.
+
+### Afterwards
+
+The frame renders its scenes itself. To add more, open the **Scene store** scene on the frame and
+install from there - by touch, or with the board's buttons on e-paper
+([the store on the frame](/guide/scenes#frame-apps)).
+
+A standalone ESP32 has no admin web page, and it doesn't update over the air. Its settings come
+over USB from the flasher, a touch board can change WiFi on its own screen, and a new release goes
+on with **Update firmware** in the [board tools](#board-tools).
+
+To hand the frame to a [self-hosted backend](/guide/backend) or [FrameOS Cloud](/guide/cloud)
+later, flash it from there.
+
+## Board tools [#board-tools]
+
+The page keeps a few tools for a board on its cable - right after a flash, or when you plug the
+board in again later:
+
+- **USB log** - what the board prints, as it prints it.
+- **Change Wi-Fi** - another network or password.
+- **Update firmware** - writes the current release and keeps the frame's settings and scenes.
+- **Restart**.
+
+## From a self-hosted backend [#backend]
+
+Browsers only offer Web Serial on `https://` and on `localhost`. A [backend](/guide/backend)
+reached over plain `http://` from another machine - `http://192.168.1.10:8989`, say, or Home
+Assistant at `http://homeassistant.local:8123` - can't talk to the board itself. Its USB buttons
+open flash.frameos.net in a popup instead: **Flash FrameOS & set up this frame**,
+**Update firmware, keep settings**, **Apply frame settings**, and the settings step of a [Pico](/guide/pico).
+
+- The backend hands the popup this frame's setup - its settings, WiFi and scenes - and the
+  firmware image it downloaded itself.
+- The flasher shows which backend asked and what it will write. Nothing happens until you click
+  and pick the port.
+- Progress and the USB log stream back into the backend's **Logs** panel. Keep the backend's tab
+  open while it runs.
+- Nothing about the frame is sent to FrameOS Cloud.
+
+A backend reached over `https://` or on `localhost` flashes the board itself, with no popup.
+
+## From a setup file [#setup-file]
+
+The frame's USB card in the backend also has **Download setup file**. It saves
+`<frame name>.frameos-setup.json`: the frame's settings, WiFi and scenes in one file. Drop it onto
+flash.frameos.net to flash or set up that frame from any computer - when the backend runs on a
+headless box and the board is plugged into your laptop, for instance.
+
+<Callout type="warn" title="Keep the setup file private">
+  The file holds the frame's API key and your WiFi password. Don't share it, and delete it once
+  the frame is set up.
+</Callout>
+
+## Signatures [#signatures]
+
+Every image the flasher writes is checked against the FrameOS release signing key, wherever it came
+from: downloaded by the page, or handed over by a backend. It must be signed as that exact release
+and that board layout. The flasher refuses anything else, so it writes nothing but published
+FrameOS [releases](https://github.com/FrameOS/frameos/releases).
+
+## Privacy [#privacy]
+
+- There is no account, and nothing to sign in to.
+- The firmware download is anonymous.
+- The frame's settings and your WiFi go from the page to the board over the USB cable.
+- From a backend, nothing about the frame reaches FrameOS Cloud: the setup and the image come from
+  the backend, and the progress goes back to it.
+
+## Troubleshooting [#troubleshooting]
+
+- **The port is missing or busy.** Only one program can hold a serial port. Close anything else
+  that has it open - a serial monitor, the Arduino IDE, `idf.py monitor`, another flasher tab -
+  and try again. Check the cable carries data, and on macOS that a reTerminal's CH340 driver is
+  installed.
+- **The board stays in download mode.** A board stuck in its bootloader doesn't start FrameOS by
+  itself: press its **RESET** button.
+- **The first boot takes minutes.** A brand-new board formats its storage on first boot, about
+  four minutes on a 32&nbsp;MB board. The flasher waits for it; don't unplug the board.
+- **Your board isn't listed.** ESP32-C3 boards and the Inky Frames need a backend to render for
+  them. Any other ESP32-S3 with PSRAM can be set up as **Other ESP32-S3 board**.

@@ -22,6 +22,7 @@ device:
   buttons: 3
   platforms:
     - "esp32-s3"
+  flasherBoard: "seeed_reterminal_e1004"
   status: "tested"
 ---
 
@@ -79,6 +80,9 @@ What the canvas leaves the scenes - about 2.5&nbsp;MB - runs one at a time, so a
 [desktop layout](/guide/scenes#windows) shows one scene here rather than windows side by side.
 
 ## Setup
+
+With no backend and no account, [flash it in the browser](https://flash.frameos.net/?board=seeed_reterminal_e1004)
+and it runs [standalone](/guide/flasher). To manage it from the backend instead:
 
 1. In the FrameOS backend, create a frame with **Flash embedded device**.
 2. Choose **ESP32-S3**, select the **Seeed reTerminal E1004** preset, and enter your WiFi details.

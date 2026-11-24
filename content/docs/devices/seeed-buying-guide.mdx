@@ -25,6 +25,10 @@ support yet.
 | [XIAO 7.5" ePaper Panel](/devices/seeed-xiao-7in5-epaper-panel) | 7.5" 800×480 black/white, XIAO ESP32-C3 | 🟡 Preset `seeed_xiao_epaper_7in5`, thin client (needs a backend) |
 | [reTerminal D1001](/devices/seeed-reterminal-d1001) | 8" 800×1280 touch LCD, ESP32-P4 | ⚪ Not supported yet |
 
+Every supported board on this page except the XIAO 7.5" panel can be
+[flashed in the browser](/guide/flasher) and run standalone: its device page has a
+**Flash in the browser** button.
+
 ## Which one should I buy?
 
 - **An art frame for photos and paintings**: the [E1004](/devices/seeed-reterminal-e1004). A
@@ -65,7 +69,8 @@ nRF52840 boards (EN04, EN05) are not ESP32s and don't run FrameOS.
 
 - **The preset does the setup.** Choosing a reTerminal preset fills in the panel, pins, buttons,
   buzzer, battery wiring and flash size - see the [ESP32 guide](/guide/esp32#flash-the-device) for
-  the whole flow, from the backend or [FrameOS Cloud](/guide/cloud).
+  the whole flow, from the backend or [FrameOS Cloud](/guide/cloud). With neither, flash it at
+  [flash.frameos.net](/guide/flasher) and it runs standalone, no account needed.
 - **macOS needs a driver first.** The reTerminal E-series talks USB through a WCH CH340 chip, which
   macOS doesn't recognise out of the box. Install WCH's driver before flashing - the
   [E1004 page](/devices/seeed-reterminal-e1004#macos-install-the-wch-serial-driver-first) has the
@@ -81,7 +86,8 @@ nRF52840 boards (EN04, EN05) are not ESP32s and don't run FrameOS.
 - **Color takes time.** A Spectra 6 refresh is about half a minute on the 13.3" panel. Perfect for
   a frame that changes a few times an hour, not for a clock with a second hand.
 - **FrameOS replaces the factory firmware.** Flashing it overwrites the firmware the device ships
-  with, and the frame then talks to your own backend or FrameOS Cloud - no other account needed.
+  with, and the frame then talks to your own backend or FrameOS Cloud, or to nothing at all when it
+  runs standalone - no other account needed.
 
 Tested a board marked "should work", or want one that isn't supported yet? Tell us on
 [GitHub](https://github.com/FrameOS/frameos/issues/new) or [Discord](https://discord.gg/9dT9y7EzUw).

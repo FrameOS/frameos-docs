@@ -25,6 +25,7 @@ device:
       url: "https://www.waveshare.com/wiki/4.26inch_e-Paper_HAT"
   platforms:
     - "esp32-s3"
+  flasherBoard: "trmnl_4in26_diy_kit"
   status: "untested"
 ---
 
@@ -38,6 +39,9 @@ profile and the two buttons are set up for you.
 
 ## Setup
 
+With no backend and no account, [flash it in the browser](https://flash.frameos.net/?board=trmnl_4in26_diy_kit)
+and it runs [standalone](/guide/flasher). To manage it from the backend instead:
+
 1. In the FrameOS backend, create a frame with **Flash embedded device**.
 2. Choose **ESP32-S3**, select the **TRMNL 4.26" DIY Kit** preset, and enter your WiFi details.
 3. Flash it over USB from the browser - the backend writes the release image for the board and sets
@@ -45,7 +49,7 @@ profile and the two buttons are set up for you.
 4. Install scenes as usual - they sync over WiFi, and the device updates itself over the air.
 
 Flashing FrameOS replaces the TRMNL firmware on the board, and needs no TRMNL account - the frame
-talks to your own [backend](/guide/backend).
+talks to your own [backend](/guide/backend), or to nothing at all when it runs standalone.
 
 ## Battery
 

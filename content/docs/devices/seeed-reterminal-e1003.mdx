@@ -22,6 +22,7 @@ device:
       url: "https://wiki.seeedstudio.com/getting_started_with_reterminal_e1003/"
   platforms:
     - "esp32-s3"
+  flasherBoard: "seeed_reterminal_e1003"
   status: "tested"
 ---
 
@@ -63,6 +64,9 @@ scenes on the device. Pick the **Seeed reTerminal E1003** hardware preset
   battery on GPIO 1, switched by GPIO 40, with deep sleep on battery.
 
 ## Setup
+
+With no backend and no account, [flash it in the browser](https://flash.frameos.net/?board=seeed_reterminal_e1003)
+and it runs [standalone](/guide/flasher). To manage it from the backend or FrameOS Cloud instead:
 
 1. In the FrameOS backend or [FrameOS Cloud](/guide/cloud), create a frame with **Flash embedded
    device**.

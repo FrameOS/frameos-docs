@@ -51,6 +51,9 @@ export const deviceSchema = z.object({
   links: z.array(deviceLinkSchema).optional(),
   cases: z.array(deviceCaseSchema).optional(),
   platforms: z.array(devicePlatformSchema).optional(),
+  // The board key flash.frameos.net takes (?board=<key>), the ESP32-S3 hardware preset's key in the
+  // main repo. Set it on a board the flasher can set up standalone; the spec card then links to it.
+  flasherBoard: z.string().optional(),
 });
 
 export type Device = z.infer<typeof deviceSchema>;

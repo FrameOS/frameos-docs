@@ -19,6 +19,7 @@ export const links = {
   sceneStore: 'https://scenes.frameos.net',
   playground: 'https://playground.frameos.net',
   cloud: 'https://cloud.frameos.net',
+  flasher: 'https://flash.frameos.net',
   terms: 'https://cloud.frameos.net/legal/terms',
   privacy: 'https://cloud.frameos.net/legal/privacy',
   imprint: 'https://cloud.frameos.net/legal/imprint',

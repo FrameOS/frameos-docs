@@ -27,7 +27,7 @@ between them without reflashing:
 
 | | Best for | What it is |
 | --- | --- | --- |
-| **[A standalone frame](/guide/standalone)** | One frame, nothing else | Flash a FrameOS SD image to a Pi, set it up from your phone, manage it from the admin page the frame serves itself. No backend, no account. |
+| **[A standalone frame](/guide/standalone)** | One frame, nothing else | Flash a FrameOS SD image to a Pi, set it up from your phone, manage it from the admin page the frame serves itself - or set up an ESP32-S3 at [flash.frameos.net](/guide/flasher). No backend, no account. |
 | **[The self-hosted backend](/guide/backend)** | Tinkerers, many frames, custom Nim | A Docker container (or Home Assistant add-on) on your laptop, server or NAS. Designs scenes, flashes ESP32 boards, deploys over SSH, and can be switched off afterwards. |
 | **[FrameOS Cloud](/guide/cloud)** | Nothing to host, frames anywhere | A hosted account at cloud.frameos.net: build an SD image or flash an ESP32 from the browser, then assign scenes from the [scene store](/guide/scene-store). Free for a normal home; see [pricing](/pricing). |
 
@@ -45,8 +45,10 @@ is that it stays that way.
 | **[ESP32-C3](/guide/esp32) / [Pico W](/guide/pico)** | Boards without PSRAM | Thin clients: the backend renders, the device draws. Covers the TRMNL, XTEINK X4 and Pimoroni Inky Frame |
 | **[Virtual frame](/guide/virtual)** | No hardware at all | The backend renders to an image URL and a kiosk page - for tablets, browsers and signage players |
 
-With a standalone or cloud-managed Pi you need nothing else. ESP32, Pico and virtual frames are
-set up from a [backend](/guide/backend) or from [FrameOS Cloud](/guide/cloud) (ESP32 only).
+With a standalone or cloud-managed Pi you need nothing else, and a standalone ESP32-S3 needs only
+a browser: [flash.frameos.net](/guide/flasher) sets it up. Otherwise ESP32, Pico and virtual
+frames are set up from a [backend](/guide/backend) or from [FrameOS Cloud](/guide/cloud) (ESP32
+only).
 
 <Callout title="Which one should I get?">
   If you're starting from nothing, get a **Raspberry Pi Zero 2 W** and an e-ink panel: it's the
@@ -67,7 +69,8 @@ set up from a [backend](/guide/backend) or from [FrameOS Cloud](/guide/cloud) (E
 - **A control page and HTTP API on every frame**, on port 8787, plus a QR code on the display so
   anyone standing in front of it can take over.
 - **Prebuilt SD images** for the Pi and browser flashing for the ESP32, both preconfigured with
-  your WiFi - from the backend or straight from the cloud.
+  your WiFi - from the backend, straight from the cloud, or for a standalone ESP32 at
+  [flash.frameos.net](/guide/flasher).
 - **A [scene store](/guide/scene-store)** of community scenes with live previews, installable on
   any frame.
 - **A [photo library](/guide/photos)** on the backend and the cloud: upload albums once, and any
@@ -83,6 +86,7 @@ Pick the path that fits, then deploy a scene:
 
 - **Standalone frame**: [flash a generic FrameOS image](/guide/standalone), join its `FrameOS-XXXX`
   setup hotspot from your phone, pick **Nothing (standalone)**, and open the frame's admin page.
+  For an ESP32-S3, [flash it in the browser](/guide/flasher) at flash.frameos.net instead.
 - **Self-hosted**: [install the backend](/guide/backend) on **your computer or server** (not on
   the frame's Raspberry Pi) with one command, then
   [set up the Pi](/guide/raspberry) or [flash an ESP32](/guide/esp32):

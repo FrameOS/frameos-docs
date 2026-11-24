@@ -13,12 +13,15 @@ S3, with the same apps, the same JavaScript runtime, the same image pipeline, an
 assets, logs, metrics and scheduler the backend shows for a Pi frame. What a $6 board *cannot*
 do is a short, specific list - it's [at the bottom of this page](#what-it-cannot-do).
 
-<Callout title="Self-hosted backend or FrameOS Cloud">
+<Callout title="Self-hosted backend, FrameOS Cloud or standalone">
   An **ESP32-S3** can be set up and managed from either a [self-hosted backend](/guide/backend)
   or [FrameOS Cloud](/guide/cloud). The cloud flashes the generic release firmware from your
-  browser and pushes interpreted scenes. The **thin-client** boards below need the self-hosted
-  backend for now: the cloud's flasher doesn't offer them yet. There is no standalone mode:
-  an ESP32 frame has no admin page of its own.
+  browser and pushes interpreted scenes. An ESP32-S3 can also run **standalone**, with no backend
+  and no account, set up from [flash.frameos.net](/guide/flasher). It still has no admin web page
+  of its own: its settings go over USB from the flasher, a touch board joins WiFi from its own
+  screen, and it installs scenes from the *Scene store* scene on the frame. The **thin-client**
+  boards below need the self-hosted backend for now: neither the cloud nor the standalone flasher
+  offers them.
 </Callout>
 
 <Callout title="Two kinds of microcontroller frame">
@@ -42,10 +45,11 @@ do is a short, specific list - it's [at the bottom of this page](#what-it-cannot
   one tiny I2C OLED, the 4" touch LCD of the
   [SenseCAP Indicator](/devices/seeed-sensecap-indicator) - or no display at all.
   The 12.48" panels use a different controller stack and still need a Pi.
-- **The [backend](/guide/backend)** or [FrameOS Cloud](/guide/cloud), to flash the board and
-  design scenes. Nothing is compiled: both write the signed
-  [release](https://github.com/FrameOS/frameos/releases) image for your chip and flash size, then
-  configure the board over USB.
+- **The [backend](/guide/backend)**, [FrameOS Cloud](/guide/cloud) **or**
+  [flash.frameos.net](/guide/flasher), to flash the board. Nothing is compiled: each writes the
+  signed [release](https://github.com/FrameOS/frameos/releases) image for your chip and flash size,
+  then configures the board over USB. The backend and the cloud also design and push scenes; a
+  standalone board installs them from the store on its own screen.
 
 ## Supported boards [#supported-boards]
 
@@ -92,6 +96,10 @@ Boards people ask about that FrameOS can't drive yet. Each has a device page say
 
 ## Flash the device
 
+These are the backend's steps. The cloud's are
+[much the same](/guide/cloud#flash-an-esp32-from-the-browser), and a standalone board is set up at
+[flash.frameos.net](/guide/flasher).
+
 1. Click **New frame** in the backend and choose **Flash embedded device**.
 2. Pick the platform (**ESP32-S3** or **ESP32-C3**), your hardware preset or panel, and enter
    your WiFi credentials.
@@ -103,10 +111,13 @@ Boards people ask about that FrameOS can't drive yet. Each has a device page say
    and then sends this frame's settings over the USB console - preset, panel, pins, WiFi, backend
    address, API key, hostname, HTTP response limit and admin login. What a console line can't carry
    (an HTTPS certificate, service keys, the schedule) arrives with the first settings sync over
-   WiFi. Nothing is compiled, so a first flash takes about a minute. This uses Web Serial, so it works
-   in Chrome and Edge, on `https://` or `localhost` - a backend served over plain `http://` from
-   another machine (the Home Assistant add-on behind ingress, for instance) has no Web Serial; the
-   Logs panel tells you when that's the case. Either USB port a board offers works: the chip's own
+   WiFi. Nothing is compiled, so a first flash takes about a minute. This uses Web Serial, which
+   Chrome and Edge offer on `https://` or `localhost` only. A backend served over plain `http://`
+   from another machine (the Home Assistant add-on behind ingress, for instance) opens
+   [flash.frameos.net](/guide/flasher#backend) in a popup for these buttons instead, hands it this
+   frame's setup and firmware image, and streams the progress back into the Logs panel - or
+   **Download setup file** and [drop it onto flash.frameos.net](/guide/flasher#setup-file) on the
+   computer the board is plugged into. Either USB port a board offers works: the chip's own
    *USB JTAG/serial debug unit*, or a *USB Single Serial* UART bridge like the CH340 on the Seeed
    reTerminals. Or download the image from the
    [release](https://github.com/FrameOS/frameos/releases) and flash it by hand - there is one per
@@ -279,7 +290,9 @@ their drawn size, as on a Pi.
   byte, and the verdict reaches the backend or cloud even though the board restarts right after.
   An update waits for a render in progress rather than fighting it for
   WiFi and memory, and the image must carry the version its signature was made for. (The
-  4&nbsp;MB flash profile has no OTA slot; those boards update over USB.)
+  4&nbsp;MB flash profile has no OTA slot; those boards update over USB.) A standalone frame has
+  no backend or cloud to update from: plug it in and use **Update firmware** on
+  [flash.frameos.net](/guide/flasher#board-tools), which keeps its settings and scenes.
 - **Deploys and update progress**: the backend's deploy drawer has three buttons for an ESP32 -
   **Deploy scenes & settings**, **Deploy new firmware** and **Deploy both** - and both control
   planes show a running update on the frame's card: *updating firmware 42%*, *rebooting into
@@ -297,9 +310,10 @@ their drawn size, as on a Pi.
 - **Settings on the frame itself**: on a touch board, the scene settings you swipe down for have a
   gear that opens the frame's own page - the Wi-Fi network (with a scan and *Other network…*) and
   its password, the rotation, the [scale](/guide/settings#render-scale), the date and time when
-  it's offline, the battery and the signal, **Check for updates** and **Install update**, and
-  **Render again**, **Restart FrameOS** and **Reboot**. An update installed there gets the same
-  signature checks as one from the backend or the cloud. A frame you change there tells its
+  it's offline, the battery and the signal, **Check for updates** and **Install update** (on a
+  frame with a backend or the cloud), and **Render again**, **Restart FrameOS** and **Reboot**. An
+  update installed there gets the same signature checks as one from the backend or the cloud. A
+  frame you change there tells its
   control plane its new rotation and scale. Turn the page off with
   [Frame settings on the screen](/guide/settings#on-screen); `set settings_unlock 1` on the USB
   console brings it back whatever the control plane says.
@@ -633,8 +647,9 @@ Straight, so you can decide before you buy:
   the SD card ([Fonts](#fonts)); other formats need converting first.
 - **No on-device admin web app.** The frame answers the HTTP API and serves a setup page, but the
   full `/admin` panel and the control page with the QR code are Pi-side. Manage ESP32 frames from
-  the backend. (`GET /status` does report the chip, the hardware preset, and internal heap and
-  largest-block figures - useful when a thin client runs out of memory.)
+  the backend or the cloud; a standalone one gets its settings over USB from
+  [flash.frameos.net](/guide/flasher). (`GET /status` does report the chip, the hardware preset,
+  and internal heap and largest-block figures - useful when a thin client runs out of memory.)
 - **It's slow.** Seconds per render on e-paper, not milliseconds. On the SenseCAP Indicator's LCD a
   simple animation runs at about 29 frames a second and a tap answers in under a tenth of a second,
   but that's still no Pi 5 at 60.
@@ -651,7 +666,7 @@ Straight, so you can decide before you buy:
 | Apps | All of them | All but Chromium screenshots and RTSP |
 | Fonts | Any TTF you upload, emoji fallback | Built-in typeface, plus TTFs and emoji on the SD card |
 | Power | ~1 W, wall-powered | Deep sleep between refreshes - battery is viable |
-| Updates | SSH / Remote deploys | Signed OTA with A/B rollback |
+| Updates | SSH / Remote deploys | Signed OTA with A/B rollback; over USB when standalone |
 | Price | ~$15-20 (Zero 2 W) | ~$6-10 (bare S3), or an all-in-one board |
 
 In short: pick the Pi for the broadest hardware and the deepest customisation, and the ESP32 for

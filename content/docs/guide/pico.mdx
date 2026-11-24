@@ -52,7 +52,9 @@ build per-frame images for it.
    (or `RP2350`) drive that appears. The board reboots into FrameOS.
 4. Back in the drawer, **Connect over USB → Set up as this frame**. The browser sends the preset,
    the backend's address, the frame's id and API key and your WiFi over USB (Chrome or Edge, as
-   for an ESP32), and the board restarts and renders its first scene.
+   for an ESP32), and the board restarts and renders its first scene. On a backend reached over
+   plain `http://`, this step opens [flash.frameos.net](/guide/flasher#backend) in a popup, which
+   sends the same settings; the `.uf2` still goes onto the BOOTSEL drive by hand.
 
 Updating later is the same file onto the same drive - **Reboot into BOOTSEL** in the drawer (or
 `bootsel` on the console) saves holding the button - and the board keeps its settings through it.
