@@ -24,6 +24,7 @@ device:
       url: "https://www.seeedstudio.com/13-3inch-Six-Color-eInk-ePaper-Display-with-1200x1600-Pixels-p-6569.html"
   platforms:
     - "esp32-s3"
+  flasherBoard: "seeed_xiao_ee02"
   status: "untested"
 ---
 
@@ -36,6 +37,9 @@ connector with a charger and power switch. Buy it with the panel and you have th
 FrameOS runs the **full on-device renderer** on it, on the same 16-bit canvas as the E1004.
 
 ## Setup
+
+With no backend and no account, [flash it in the browser](https://flash.frameos.net/?board=seeed_xiao_ee02)
+and it runs [standalone](/guide/flasher). To manage it from the backend or FrameOS Cloud instead:
 
 1. In the FrameOS backend or [FrameOS Cloud](/guide/cloud), create a frame with **Flash embedded
    device** and choose **ESP32-S3**.

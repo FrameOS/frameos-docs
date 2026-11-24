@@ -24,6 +24,7 @@ device:
       url: "https://www.seeedstudio.com/10-3inch-Monochrome-eInk-ePaper-Display-with-1404x1872-Pixels-p-6568.html"
   platforms:
     - "esp32-s3"
+  flasherBoard: "seeed_xiao_ee03"
   status: "untested"
 ---
 
@@ -35,6 +36,9 @@ keys and a battery connector with a charger. It's the DIY counterpart of the
 rendering on the device.
 
 ## Setup
+
+With no backend and no account, [flash it in the browser](https://flash.frameos.net/?board=seeed_xiao_ee03)
+and it runs [standalone](/guide/flasher). To manage it from the backend or FrameOS Cloud instead:
 
 1. In the FrameOS backend or [FrameOS Cloud](/guide/cloud), create a frame with **Flash embedded
    device** and choose **ESP32-S3**.

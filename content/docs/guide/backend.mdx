@@ -55,8 +55,9 @@ If you run Home Assistant, FrameOS is one click away:
 
 The add-on deploys precompiled release binaries; it has no Docker socket, so building FrameOS from
 source needs a [build host](/guide/settings#builds-self-hosted-backend-only) configured under
-**Settings → Builds**. Browser flashing of ESP32 boards needs the add-on reached over `https://`
-or `localhost` - behind plain-`http://` ingress there is no Web Serial.
+**Settings → Builds**. Behind plain-`http://` ingress the browser has no Web Serial, so the USB
+buttons for ESP32 and Pico boards open flash.frameos.net in a popup instead
+([details](#usb-over-http)).
 
 Frames talk to the backend on port `8989`. To serve that port over HTTPS, switch on the add-on's
 `ssl` option and name the `certfile` and `keyfile` in Home Assistant's `/ssl` folder, as the
@@ -159,6 +160,34 @@ address in `FRAMEOS_TRUSTED_PROXIES`. The live logs and the Terminal use WebSock
 refused unless the browser's origin matches the host the backend sees - so the proxy must pass
 `Host` through (`proxy_set_header Host $host` in nginx) or send `X-Forwarded-Host`. Without the
 trusted-proxy list the login rate limiter also sees every user as the proxy.
+
+## USB flashing on plain http [#usb-over-http]
+
+The USB buttons of an [ESP32](/guide/esp32#flash-the-device) or [Pico](/guide/pico) frame use Web
+Serial, which Chrome and Edge only offer on `https://` or `localhost`. Reached that way, the
+backend flashes the board itself. Reached over plain `http://` from another machine -
+`http://192.168.1.10:8989`, say, or Home Assistant at `http://homeassistant.local:8123` - its
+**Flash FrameOS & set up this frame**, **Update over USB**, **Apply frame settings** and a Pico's
+settings open [flash.frameos.net](/guide/flasher#backend) in a popup instead:
+
+- The backend hands the popup this frame's setup - its settings, WiFi and scenes - and the
+  firmware image it downloaded itself. The flasher writes only an image signed as that exact
+  FrameOS release and board layout.
+- The flasher shows which backend asked and what it will write. Nothing happens until you click
+  and pick the port.
+- Progress and the USB log stream back into the frame's **Logs** panel. Keep the backend's tab
+  open while it runs.
+- Nothing about the frame is sent to FrameOS Cloud.
+
+If the board is plugged into another computer - the backend runs on a headless box, the board is
+on your laptop - use **Download setup file** on the frame's USB card. It saves
+`<frame name>.frameos-setup.json`, the frame's settings, WiFi and scenes in one file;
+[drop it onto flash.frameos.net](/guide/flasher#setup-file) on the computer with the board. The
+file holds the frame's API key and WiFi password, so keep it private and delete it when you're
+done.
+
+To use another copy of the flasher, set `FRAMEOS_FLASHER_URL` (it defaults to
+`https://flash.frameos.net`).
 
 ## AI, API tokens and the MCP server [#mcp]
 

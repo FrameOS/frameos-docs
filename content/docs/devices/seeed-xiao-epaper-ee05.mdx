@@ -19,6 +19,7 @@ device:
       url: "https://www.seeedstudio.com/XIAO-ePaper-DIY-Kit-ESP32-S3-EE05.html"
   platforms:
     - "esp32-s3"
+  flasherBoard: "seeed_xiao_ee05"
   status: "untested"
 ---
 
@@ -32,6 +33,9 @@ XIAO ePaper DIY Kit.
 FrameOS runs the **full on-device renderer** on it.
 
 ## Setup
+
+With no backend and no account, [flash it in the browser](https://flash.frameos.net/?board=seeed_xiao_ee05)
+and it runs [standalone](/guide/flasher). To manage it from the backend or FrameOS Cloud instead:
 
 1. In the FrameOS backend or [FrameOS Cloud](/guide/cloud), create a frame with **Flash embedded
    device** and choose **ESP32-S3**.

@@ -25,6 +25,7 @@ device:
       url: "https://www.waveshare.com/wiki/13.3inch_e-Paper_HAT%2B_(E)"
   platforms:
     - "esp32-s3"
+  flasherBoard: "waveshare_esp32_s3_epaper_13_3e6"
   status: "tested"
 ---
 
@@ -51,6 +52,9 @@ The firmware renders [scenes](/guide/scenes) on-device, dithers them to the Spec
 and refreshes the panel over the board's SPI wiring.
 
 ## Setup
+
+With no backend and no account, [flash it in the browser](https://flash.frameos.net/?board=waveshare_esp32_s3_epaper_13_3e6)
+and it runs [standalone](/guide/flasher). To manage it from the backend instead:
 
 1. In the FrameOS backend, create a frame with **Flash embedded device**.
 2. Choose **ESP32-S3**, select the **Waveshare ESP32-S3 ePaper 13.3E6** hardware preset, and

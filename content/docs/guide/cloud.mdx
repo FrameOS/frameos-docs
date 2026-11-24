@@ -170,7 +170,8 @@ console. Either port a board offers works - the chip's *USB JTAG/serial debug un
 those). A brand-new board formats its storage on first boot - about four minutes on a 32&nbsp;MB
 board - so the flasher waits as long as the image's storage takes to format, gives up only after
 90 seconds of silence, and tells you what it saw if the prompt never comes. It also refuses to
-write an S3 image onto a different chip.
+write an S3 image onto a different chip. Without an account, [flash.frameos.net](/guide/flasher)
+does the same for a standalone frame.
 
 ESP32 frames are full frames in the cloud too: scenes render on the chip, with logs, metrics,
 previews, schedules and signed over-the-air updates. PSRAM-less boards (ESP32-C3: the original
@@ -387,6 +388,8 @@ device:
 - **Standalone → cloud**: [link it](#link-a-frame-that-already-runs) with the code on its display.
 - **Standalone → backend**: **Adopt frame** in the backend imports its settings and scenes - see
   [First deploy](/guide/first-deploy#add-the-frame).
+- **A standalone ESP32** (set up at [flash.frameos.net](/guide/flasher)) moves to the cloud or a
+  backend by being flashed from there.
 - **Backend → cloud** and back: disconnect from one side, then enroll or adopt from the other.
   A guided migration is planned but not built yet.
 - **A cloud ESP32 with a backend set on it too** (`set backend` on its console, a bench setup) stays

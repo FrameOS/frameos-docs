@@ -24,6 +24,7 @@ device:
       url: "https://github.com/waveshareteam/ESP32-S3-PhotoPainter"
   platforms:
     - "esp32-s3"
+  flasherBoard: "waveshare_esp32_s3_photopainter"
   status: "tested"
 ---
 
@@ -54,6 +55,9 @@ panel's supply, which the power chip would otherwise keep up all night - that wa
 drain on a frame set to deep sleep on battery.
 
 ## Setup
+
+With no backend and no account, [flash it in the browser](https://flash.frameos.net/?board=waveshare_esp32_s3_photopainter)
+and it runs [standalone](/guide/flasher). To manage it from the backend instead:
 
 1. In the FrameOS backend, create a frame with **Flash embedded device**.
 2. Choose **ESP32-S3**, select the **Waveshare ESP32-S3 PhotoPainter** hardware preset, and enter

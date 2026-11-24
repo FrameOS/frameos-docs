@@ -22,6 +22,7 @@ device:
       url: "https://www.elecrow.com/wiki/CrowPanel_ESP32_E-paper_5.79-inch_HMI_Display.html"
   platforms:
     - "esp32-s3"
+  flasherBoard: "elecrow_crowpanel_5in79"
   status: "untested"
 ---
 
@@ -36,6 +37,9 @@ buttons (HOME, EXIT, NEXT, OK, PREV) are configured for you. Buttons dispatch sc
 you can wire them to scene switches or anything else in the editor.
 
 ## Setup
+
+With no backend and no account, [flash it in the browser](https://flash.frameos.net/?board=elecrow_crowpanel_5in79)
+and it runs [standalone](/guide/flasher). To manage it from the backend instead:
 
 1. In the FrameOS backend, create a frame with **Flash embedded device**.
 2. Choose **ESP32-S3**, select the **Elecrow CrowPanel 5.79"** preset, and enter your WiFi details.

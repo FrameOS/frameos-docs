@@ -3,6 +3,7 @@ import { ExternalLink } from 'lucide-react';
 import type { Device } from '@/lib/device-schema';
 import { DevicePhoto } from '@/components/device-photo';
 import { deviceSupportsEsp32, platformLabels } from '@/lib/device-support';
+import { links } from '@/lib/shared';
 
 const waveshareAffiliateId = '79380';
 // The referral query Seeed's affiliate dashboard (My Account → Affiliate Programs → Promo data)
@@ -91,6 +92,10 @@ export function DeviceSpecs({ device }: { device: Device }) {
   const isAffiliateLink =
     device.vendor === 'Waveshare' || (affiliateProductUrl !== null && affiliateProductUrl !== device.productUrl);
   const productRel = isAffiliateLink ? 'sponsored noopener noreferrer' : 'noopener noreferrer';
+  const flasherUrl =
+    device.flasherBoard && device.status !== 'unsupported'
+      ? `${links.flasher}/?board=${encodeURIComponent(device.flasherBoard)}`
+      : null;
 
   return (
     <div className="not-prose rounded-lg border bg-fd-card p-4">
@@ -134,6 +139,28 @@ export function DeviceSpecs({ device }: { device: Device }) {
               <ExternalLink className="size-4" aria-hidden="true" />
             </Link>
           ) : null}
+        </div>
+      ) : null}
+      {flasherUrl ? (
+        <div className="mb-4 flex flex-col gap-3 border-b pb-4 sm:flex-row sm:items-center sm:justify-between">
+          <div className="min-w-0">
+            <p className="text-xs uppercase tracking-wide text-fd-muted-foreground">Install FrameOS</p>
+            <p className="text-sm font-medium text-fd-foreground">
+              Flash this board from Chrome or Edge over USB - no account, no backend.{' '}
+              <Link href="/guide/flasher" className="font-normal text-fd-primary hover:underline">
+                How it works
+              </Link>
+            </p>
+          </div>
+          <Link
+            href={flasherUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex flex-none items-center justify-center gap-2 rounded-md border px-3 py-2 text-sm font-medium transition-colors hover:bg-fd-accent"
+          >
+            Flash in the browser
+            <ExternalLink className="size-4" aria-hidden="true" />
+          </Link>
         </div>
       ) : null}
       {vendorLinks.length > 0 ? (

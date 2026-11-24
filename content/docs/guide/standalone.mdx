@@ -1,6 +1,6 @@
 ---
 title: A standalone frame
-description: Run a single frame with nothing else - flash a generic FrameOS image to a Raspberry Pi, set it up from your phone, and manage it from the frame's own admin page.
+description: Run a single frame with nothing else - flash a generic FrameOS image to a Raspberry Pi, set it up from your phone, and manage it from the frame's own admin page. Or set up an ESP32-S3 in the browser.
 ---
 
 The simplest way to run FrameOS is to run **only the frame**. No backend, no account: a Raspberry
@@ -13,9 +13,8 @@ hand the same frame to a [self-hosted backend](/guide/backend) (**Adopt frame**)
 [FrameOS Cloud](/guide/cloud) (link it with the code on its display). Nothing needs reflashing.
 
 <Callout>
-  A standalone frame is a Raspberry Pi thing. An [ESP32](/guide/esp32) has no admin page of its
-  own, so it is set up from a backend or from the cloud - though it renders on its own afterwards
-  all the same.
+  The steps below are for a Raspberry Pi. An [ESP32-S3](/guide/esp32) runs standalone too, set up
+  in the browser at [flash.frameos.net](/guide/flasher) - see [A standalone ESP32](#esp32).
 </Callout>
 
 ## 1. Flash a generic image
@@ -104,6 +103,27 @@ cd /srv/frameos/current
 ./frameos set-display --device=pimoroni.inky_impression_13 --rotate=90
 ./frameos driver-setup
 ```
+
+## A standalone ESP32 [#esp32]
+
+An ESP32-S3 board runs standalone as well. Open [flash.frameos.net](https://flash.frameos.net) in
+Chrome or Edge on a desktop, pick the board, give the frame a name and your WiFi, and click
+**Flash & set up**. The page writes the signed release firmware over USB, sends the settings, and
+uploads a few starter scenes - the on-frame **Scene store** and a **Clock** to begin with.
+[Flash an ESP32 in the browser](/guide/flasher) has the details.
+
+It differs from a standalone Pi in three ways:
+
+- **No admin page.** Its settings go over USB from the flasher. A touch board also joins WiFi from
+  its own screen: swipe down from the top, then tap the gear.
+- **Scenes come from the store on the frame.** Open the **Scene store** scene and install from
+  there - by touch, or with the board's buttons on e-paper.
+- **Updates go over USB.** It doesn't update over the air: plug it in and use **Update firmware**
+  on flash.frameos.net, which keeps its settings and scenes.
+
+ESP32-C3 boards and the Pico-based [Inky Frames](/guide/pico) are thin clients that need a
+[backend](/guide/backend) to render for them, so they can't run standalone. To hand a standalone
+ESP32 to a backend or to FrameOS Cloud later, flash it from there.
 
 ## Next step
 

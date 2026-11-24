@@ -19,6 +19,7 @@ device:
       url: "https://wiki.seeedstudio.com/xiao_epaper_display_board_overview/"
   platforms:
     - "esp32-s3"
+  flasherBoard: "seeed_xiao_ee04"
   status: "untested"
 ---
 
@@ -31,6 +32,9 @@ connector with a charger. Bring your own panel - anything from a 1.54" black/whi
 It has a hardware preset of its own, and FrameOS runs the **full on-device renderer** on it.
 
 ## Setup
+
+With no backend and no account, [flash it in the browser](https://flash.frameos.net/?board=seeed_xiao_ee04)
+and it runs [standalone](/guide/flasher). To manage it from the backend or FrameOS Cloud instead:
 
 1. In the FrameOS backend or [FrameOS Cloud](/guide/cloud), create a frame with **Flash embedded
    device** and choose **ESP32-S3**.

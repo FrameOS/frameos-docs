@@ -22,6 +22,7 @@ device:
       url: "https://wiki.seeedstudio.com/getting_started_with_reterminal_e1002/"
   platforms:
     - "esp32-s3"
+  flasherBoard: "seeed_reterminal_e1002"
   status: "tested"
 ---
 
@@ -41,6 +42,9 @@ Spectra 6 panels take roughly half a minute per refresh - normal for the technol
 knowing before you plan anything that updates often.
 
 ## Setup
+
+With no backend and no account, [flash it in the browser](https://flash.frameos.net/?board=seeed_reterminal_e1002)
+and it runs [standalone](/guide/flasher). To manage it from the backend instead:
 
 1. In the FrameOS backend, create a frame with **Flash embedded device**.
 2. Choose **ESP32-S3**, select the **Seeed reTerminal E1002** preset, and enter your WiFi details.

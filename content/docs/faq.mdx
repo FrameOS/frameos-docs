@@ -5,7 +5,8 @@ description: Frequently asked questions about FrameOS.
 
 ## Do I need an account or a cloud?
 
-No. A [standalone frame](/guide/standalone) needs nothing but an SD card, and the
+No. A [standalone frame](/guide/standalone) needs nothing but an SD card - or, for an ESP32-S3,
+a browser and a USB cable at [flash.frameos.net](/guide/flasher) - and the
 [self-hosted backend](/guide/backend) is a web app **you** host. Frames run entirely on-device
 once deployed: shut the backend down and they keep rendering, keep their schedules, and stay
 controllable over their [local HTTP API](/guide/control).
@@ -23,11 +24,13 @@ Yes, without reflashing. A frame is managed by one of them at a time: **Adopt fr
 backend takes over a standalone frame, the link code on a frame's display claims it for the cloud,
 and **Disconnect** on the frame's admin page (or deleting it in the cloud) makes it standalone
 again, scenes intact. See [Moving between cloud, backend and standalone](/guide/cloud#moving-between-cloud-backend-and-standalone).
+A standalone ESP32 is the exception: to hand it to a backend or the cloud, flash it from there.
 
 ## Can I run this on an ESP32? [#why-no-microcontrollers]
 
 Yes, and it's a full frame rather than a demo. FrameOS runs on the **ESP32-S3**: you
-[flash the signed release firmware from the browser](/guide/esp32) - nothing to build - and the device renders
+[flash the signed release firmware from the browser](/guide/esp32) - nothing to build, and with
+no account at all if it runs [standalone](/guide/flasher) - and the device renders
 scenes itself - the same interpreter as Linux frames, the same apps, JavaScript on QuickJS, its
 own scheduler, assets on an SD card, logs and metrics back to the backend, and firmware updates
 over the air with automatic rollback. It deep-sleeps between refreshes and wakes on a button

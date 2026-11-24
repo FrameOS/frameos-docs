@@ -1832,6 +1832,7 @@
     "platforms": [
       "esp32-s3"
     ],
+    "flasherBoard": "waveshare_esp32_s3_photopainter",
     "existingPage": true
   },
   {
@@ -2271,6 +2272,7 @@
     "platforms": [
       "esp32-s3"
     ],
+    "flasherBoard": "waveshare_esp32_s3_epaper_13_3e6",
     "existingPage": true
   },
   {

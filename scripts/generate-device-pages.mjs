@@ -140,6 +140,7 @@ function frontmatter(d, title, description) {
       lines.push(`    - ${yamlString(platform)}`);
     }
   }
+  if (d.flasherBoard) lines.push(`  flasherBoard: ${yamlString(d.flasherBoard)}`);
   lines.push(`  status: ${yamlString(d.status)}`);
   lines.push('---');
   return lines.join('\n');
