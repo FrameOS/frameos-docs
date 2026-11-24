@@ -60,7 +60,7 @@ OLED) and the [Pimoroni Inky Frames](/guide/pico) are thin clients: they need a
 3. Check the **time zone**. It is taken from your browser.
 4. Pick the **starter scenes**. The on-frame **Scene store** and a **Clock** are ticked already;
    tick any of the other samples you want as well.
-5. Plug the board in, click **Flash & set up**, and pick the board's USB port.
+5. Plug the board in, click **Flash FrameOS & set it up**, and pick the board's USB port.
 
 ### What happens
 
@@ -101,7 +101,7 @@ Browsers only offer Web Serial on `https://` and on `localhost`. A [backend](/gu
 reached over plain `http://` from another machine - `http://192.168.1.10:8989`, say, or Home
 Assistant at `http://homeassistant.local:8123` - can't talk to the board itself. Its USB buttons
 open flash.frameos.net in a popup instead: **Flash FrameOS & set up this frame**,
-**Update over USB**, **Apply frame settings**, and the settings step of a [Pico](/guide/pico).
+**Update firmware, keep settings**, **Apply frame settings**, and the settings step of a [Pico](/guide/pico).
 
 - The backend hands the popup this frame's setup - its settings, WiFi and scenes - and the
   firmware image it downloaded itself.
