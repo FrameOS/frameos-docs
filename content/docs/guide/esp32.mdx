@@ -19,8 +19,10 @@ do is a short, specific list - it's [at the bottom of this page](#what-it-cannot
   browser and pushes interpreted scenes. It can also run **standalone**, with no backend and no
   account: [flash.frameos.net](https://flash.frameos.net/) flashes it over USB with your board,
   WiFi and starter scenes, and its board tools change the WiFi or update the firmware later over
-  the same cable - an ESP32 has no admin page of its own. The **thin-client** boards below need
-  the self-hosted backend for now: neither the cloud nor the standalone flasher offers them yet.
+  the same cable - an ESP32 has no admin page of its own. The **thin-client** boards below
+  can't run standalone: an ESP32-C3 is rendered for by a self-hosted backend or by the cloud,
+  where it counts as one of a paid plan's [cloud-rendered frames](/guide/cloud#limits), and a
+  [Pico](/guide/pico) needs the self-hosted backend.
 </Callout>
 
 <Callout title="Two kinds of microcontroller frame">

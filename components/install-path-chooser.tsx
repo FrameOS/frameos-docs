@@ -19,8 +19,9 @@ const DOCKER_HUB_URL = 'https://hub.docker.com/r/frameos/frameos';
 
 // flash.frameos.net flashes and sets up a standalone ESP32-S3 from the
 // browser over USB, with no account (cloud/docs/flasher.md in the main repo).
-// A C3 or a Pico is a thin client: something has to render for it, so it is
-// listed here only to say where to go instead.
+// A C3 or a Pico is a thin client: something has to render for it (a backend,
+// or for a C3 the cloud on a paid plan), so it is listed here only to say
+// where to go instead.
 const FLASHER_URL = 'https://flash.frameos.net/';
 
 const platformGroups = [
@@ -36,12 +37,12 @@ const platformGroups = [
     label: 'ESP32',
     options: [
       { id: 'esp32-s3', label: 'ESP32-S3 (Seeed reTerminal, Waveshare PhotoPainter, XIAO and more)' },
-      { id: 'esp32-c3', label: 'ESP32-C3 (TRMNL OG, XTEINK X4) - needs a backend' },
+      { id: 'esp32-c3', label: 'ESP32-C3 (TRMNL OG, XTEINK X4) - thin client' },
     ],
   },
   {
     label: 'Raspberry Pi Pico',
-    options: [{ id: 'pico', label: 'Pico W / Pico 2 W (Pimoroni Inky Frame) - needs a backend' }],
+    options: [{ id: 'pico', label: 'Pico W / Pico 2 W (Pimoroni Inky Frame) - thin client, needs a backend' }],
   },
   {
     label: 'Anything else',
@@ -351,34 +352,27 @@ export function InstallPathChooser({
                     never uploaded.
                   </p>
                 </>
-              ) : board === 'esp32-c3' || board === 'pico' ? (
+              ) : board === 'esp32-c3' ? (
                 <p className="mt-3 text-fd-muted-foreground">
-                  {board === 'esp32-c3' ? (
-                    <>
-                      An <TextLink href="/guide/esp32">ESP32-C3</TextLink>{' '}
-                      has no PSRAM, so it can&apos;t render a scene itself.
-                    </>
-                  ) : (
-                    <>
-                      A <TextLink href="/guide/pico">Pico W or Pico 2 W</TextLink>{' '}
-                      can&apos;t hold a renderer.
-                    </>
-                  )}{' '}
-                  It runs as a <TextLink href="/guide/esp32#render-on-server">thin client</TextLink>:
-                  a <TextLink href="/guide/backend">self-hosted backend</TextLink> renders every
-                  refresh and the board draws the result. Neither standalone nor FrameOS Cloud can
-                  do that yet, so start with the backend, then{' '}
-                  {board === 'esp32-c3' ? (
-                    <>
-                      flash the board from its{' '}
-                      <TextLink href="/guide/esp32#flash-the-device">USB card</TextLink>.
-                    </>
-                  ) : (
-                    <>
-                      copy the <TextLink href="/guide/pico#flash-it">FrameOS UF2</TextLink> onto
-                      the board.
-                    </>
-                  )}
+                  An <TextLink href="/guide/esp32">ESP32-C3</TextLink>{' '}
+                  has no PSRAM, so it can&apos;t render a scene itself or run standalone. It&apos;s a{' '}
+                  <TextLink href="/guide/esp32#render-on-server">thin client</TextLink>: something
+                  else renders every refresh and the board draws the result. That&apos;s either a{' '}
+                  <TextLink href="/guide/backend">self-hosted backend</TextLink>, free, which flashes
+                  the board from its <TextLink href="/guide/esp32#flash-the-device">USB card</TextLink>,
+                  or FrameOS Cloud, which does every render for it, so the board counts as one of
+                  a paid plan&apos;s <TextLink href="/guide/cloud#limits">cloud-rendered frames</TextLink>{' '}
+                  (from $2 a month).
+                </p>
+              ) : board === 'pico' ? (
+                <p className="mt-3 text-fd-muted-foreground">
+                  A <TextLink href="/guide/pico">Pico W or Pico 2 W</TextLink>{' '}
+                  can&apos;t hold a renderer, so it can&apos;t run standalone. It&apos;s a{' '}
+                  <TextLink href="/guide/esp32#render-on-server">thin client</TextLink>: a{' '}
+                  <TextLink href="/guide/backend">self-hosted backend</TextLink>{' '}
+                  renders every refresh and the board draws the result. FrameOS Cloud can&apos;t link a Pico yet,
+                  so set up the backend, then copy the{' '}
+                  <TextLink href="/guide/pico#flash-it">FrameOS UF2</TextLink> onto the board.
                 </p>
               ) : (
               <ol className="mt-3 space-y-2 text-fd-muted-foreground">
