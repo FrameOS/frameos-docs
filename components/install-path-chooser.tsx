@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { useState } from 'react';
-import { Cloud, Cpu, Download, Server } from 'lucide-react';
+import { ArrowRight, Cloud, Cpu, Download, Server, Usb } from 'lucide-react';
 import { cn } from '@/lib/cn';
 import { CopyCommand } from '@/components/copy-command';
 import { TextLink } from '@/components/text-link';
@@ -17,14 +17,44 @@ const CLOUD_URL = 'https://cloud.frameos.net/';
 const CLOUD_SIGNUP_URL = 'https://cloud.frameos.net/signup';
 const DOCKER_HUB_URL = 'https://hub.docker.com/r/frameos/frameos';
 
-const piImages = [
-  { id: 'raspberry-pi-64', label: 'Raspberry Pi Zero 2 W / 3 / 4 / CM4 (64-bit)' },
-  { id: 'raspberry-pi-5', label: 'Raspberry Pi 5 / CM5' },
-  { id: 'raspberry-pi-32', label: 'Raspberry Pi Zero / Zero W / 1 / CM1 (32-bit)' },
-  { id: 'other', label: 'Other (Debian or Ubuntu on arm64, armhf, armv6, amd64)' },
+// flash.frameos.net flashes and sets up a standalone ESP32-S3 from the
+// browser over USB, with no account (cloud/docs/flasher.md in the main repo).
+// A C3 or a Pico is a thin client: something has to render for it, so it is
+// listed here only to say where to go instead.
+const FLASHER_URL = 'https://flash.frameos.net/';
+
+const platformGroups = [
+  {
+    label: 'Raspberry Pi',
+    options: [
+      { id: 'raspberry-pi-64', label: 'Raspberry Pi Zero 2 W / 3 / 4 / CM4 (64-bit)' },
+      { id: 'raspberry-pi-5', label: 'Raspberry Pi 5 / CM5' },
+      { id: 'raspberry-pi-32', label: 'Raspberry Pi Zero / Zero W / 1 / CM1 (32-bit)' },
+    ],
+  },
+  {
+    label: 'ESP32',
+    options: [
+      { id: 'esp32-s3', label: 'ESP32-S3 (Seeed reTerminal, Waveshare PhotoPainter, XIAO and more)' },
+      { id: 'esp32-c3', label: 'ESP32-C3 (TRMNL OG, XTEINK X4) - needs a backend' },
+    ],
+  },
+  {
+    label: 'Raspberry Pi Pico',
+    options: [{ id: 'pico', label: 'Pico W / Pico 2 W (Pimoroni Inky Frame) - needs a backend' }],
+  },
+  {
+    label: 'Anything else',
+    options: [{ id: 'other', label: 'Other Linux (Debian or Ubuntu on arm64, armhf, armv6, amd64)' }],
+  },
 ] as const;
 
-type PiImage = (typeof piImages)[number]['id'];
+type Platform = (typeof platformGroups)[number]['options'][number]['id'];
+type PiImage = Extract<Platform, `raspberry-pi-${string}`>;
+
+function isPiImage(platform: Platform): platform is PiImage {
+  return platform.startsWith('raspberry-pi-');
+}
 
 // The standalone installer (scripts/frameos-setup.sh in the main repo), served
 // with the newest release stamped in. Without a claim token it installs a
@@ -32,7 +62,7 @@ type PiImage = (typeof piImages)[number]['id'];
 // optionally a self-hosted backend to connect to.
 const LINUX_INSTALL_COMMAND = 'curl -fsSL https://cloud.frameos.net/install.sh | sudo sh';
 
-async function latestImageUrl(board: Exclude<PiImage, 'other'>): Promise<string> {
+async function latestImageUrl(board: PiImage): Promise<string> {
   const res = await fetch(LATEST_RELEASE_API, { headers: { Accept: 'application/vnd.github+json' } });
   if (!res.ok) throw new Error(`GitHub API ${res.status}`);
   const release = (await res.json()) as { assets?: { name: string; browser_download_url: string }[] };
@@ -52,7 +82,7 @@ const installOptions = [
     id: 'frame',
     icon: Cpu,
     title: 'Standalone frame',
-    description: 'Flash a Pi and set it up through a WiFi hotspot, or install on any Linux. No backend, no account.',
+    description: 'Flash a Pi and set it up over its WiFi hotspot, flash an ESP32 at flash.frameos.net, or install on any Linux. No backend, no account.',
     // logo gold #c8a247
     tint: 'from-[#c8a247]/30 via-[#c8a247]/10 to-fd-background dark:from-[#c8a247]/25 dark:via-[#c8a247]/10 dark:to-fd-background',
     glow: 'bg-[#c8a247]/50 dark:bg-[#c8a247]/30',
@@ -115,11 +145,11 @@ export function InstallPathChooser({
   hideHeader?: boolean;
 }) {
   const [selectedPath, setSelectedPath] = useState<InstallPath | null>(null);
-  const [board, setBoard] = useState<PiImage>('raspberry-pi-64');
+  const [board, setBoard] = useState<Platform>('raspberry-pi-64');
   const [downloading, setDownloading] = useState(false);
 
   async function downloadImage() {
-    if (board === 'other') return;
+    if (!isPiImage(board)) return;
     setDownloading(true);
     try {
       window.location.href = await latestImageUrl(board);
@@ -213,19 +243,23 @@ export function InstallPathChooser({
                 <p className="font-semibold">Pick a platform</p>
                 <div className="mt-2 flex flex-wrap items-center gap-2">
                   <select
-                    aria-label="Raspberry Pi model"
+                    aria-label="Platform"
                     data-attr="install-frame-board"
                     value={board}
-                    onChange={(e) => setBoard(e.target.value as PiImage)}
+                    onChange={(e) => setBoard(e.target.value as Platform)}
                     className="min-w-0 flex-1 rounded-lg border bg-fd-background px-3 py-1.5 text-sm"
                   >
-                    {piImages.map((img) => (
-                      <option key={img.id} value={img.id}>
-                        {img.label}
-                      </option>
+                    {platformGroups.map((group) => (
+                      <optgroup key={group.label} label={group.label}>
+                        {group.options.map((opt) => (
+                          <option key={opt.id} value={opt.id}>
+                            {opt.label}
+                          </option>
+                        ))}
+                      </optgroup>
                     ))}
                   </select>
-                  {board !== 'other' ? (
+                  {isPiImage(board) ? (
                     <button
                       type="button"
                       data-attr={`install-frame-download-${board}`}
@@ -236,15 +270,35 @@ export function InstallPathChooser({
                       <Download className="size-3.5" aria-hidden="true" />
                       {downloading ? 'Finding latest…' : 'Download'}
                     </button>
+                  ) : board === 'esp32-s3' ? (
+                    <LinkButton href={FLASHER_URL} dataAttr="install-frame-flasher">
+                      <Usb className="size-3.5" aria-hidden="true" />
+                      Open flash.frameos.net
+                    </LinkButton>
+                  ) : board === 'esp32-c3' || board === 'pico' ? (
+                    <button
+                      type="button"
+                      data-attr={`install-frame-to-backend-${board}`}
+                      onClick={() => setSelectedPath('backend')}
+                      className="inline-flex items-center gap-2 rounded-lg border px-3 py-1.5 text-sm font-medium transition-colors hover:bg-fd-accent"
+                    >
+                      Self-hosted backend
+                      <ArrowRight className="size-3.5" aria-hidden="true" />
+                    </button>
                   ) : null}
                 </div>
-                {board !== 'other' ? (
+                {isPiImage(board) ? (
                   <p className="mt-2 text-xs text-fd-muted-foreground">
                     Latest release, <code>{board}</code>. All images and checksums are on{' '}
                     <TextLink href={RELEASES_URL}>
                       GitHub
                     </TextLink>
                     .
+                  </p>
+                ) : board === 'esp32-s3' ? (
+                  <p className="mt-2 text-xs text-fd-muted-foreground">
+                    No account and nothing to install: it flashes over a USB cable from Chrome or Edge
+                    on a computer.
                   </p>
                 ) : null}
               </div>
@@ -265,6 +319,67 @@ export function InstallPathChooser({
                     <TextLink href="/devices/http-upload">with no display at all</TextLink>.
                   </p>
                 </>
+              ) : board === 'esp32-s3' ? (
+                <>
+                  <ol className="mt-3 space-y-2 text-fd-muted-foreground">
+                    <li>
+                      1. Plug the board into your computer and open{' '}
+                      <TextLink href={FLASHER_URL}>flash.frameos.net</TextLink>.
+                    </li>
+                    <li>
+                      2. Pick your board - a preset for a{' '}
+                      <TextLink href="/devices/seeed-buying-guide">Seeed reTerminal</TextLink>, a
+                      Waveshare <TextLink href="/devices/waveshare-esp32-s3-photopainter">PhotoPainter</TextLink>{' '}
+                      and <TextLink href="/guide/esp32#supported-boards">many more</TextLink>, or any other
+                      ESP32-S3 with a panel wired to it. Then give it a name, your WiFi and the scenes
+                      to start with.
+                    </li>
+                    <li>
+                      3. Click <strong>Flash FrameOS &amp; set it up</strong>. The latest release goes on
+                      once its signature checks out, then your settings and scenes follow over the
+                      cable. The first boot formats the board&apos;s storage, which takes a few minutes.
+                    </li>
+                    <li>
+                      4. Add more scenes from the{' '}
+                      <TextLink href="/guide/scene-store">Scene store</TextLink> on the frame itself.
+                    </li>
+                  </ol>
+                  <p className="mt-3 text-fd-muted-foreground">
+                    An ESP32 has no admin page. To change its WiFi, restart it, or update the
+                    firmware and keep its settings and scenes, plug it back in and use the board
+                    tools on the same page. Your WiFi password goes straight to the board and is
+                    never uploaded.
+                  </p>
+                </>
+              ) : board === 'esp32-c3' || board === 'pico' ? (
+                <p className="mt-3 text-fd-muted-foreground">
+                  {board === 'esp32-c3' ? (
+                    <>
+                      An <TextLink href="/guide/esp32">ESP32-C3</TextLink>{' '}
+                      has no PSRAM, so it can&apos;t render a scene itself.
+                    </>
+                  ) : (
+                    <>
+                      A <TextLink href="/guide/pico">Pico W or Pico 2 W</TextLink>{' '}
+                      can&apos;t hold a renderer.
+                    </>
+                  )}{' '}
+                  It runs as a <TextLink href="/guide/esp32#render-on-server">thin client</TextLink>:
+                  a <TextLink href="/guide/backend">self-hosted backend</TextLink> renders every
+                  refresh and the board draws the result. Neither standalone nor FrameOS Cloud can
+                  do that yet, so start with the backend, then{' '}
+                  {board === 'esp32-c3' ? (
+                    <>
+                      flash the board from its{' '}
+                      <TextLink href="/guide/esp32#flash-the-device">USB card</TextLink>.
+                    </>
+                  ) : (
+                    <>
+                      copy the <TextLink href="/guide/pico#flash-it">FrameOS UF2</TextLink> onto
+                      the board.
+                    </>
+                  )}
+                </p>
               ) : (
               <ol className="mt-3 space-y-2 text-fd-muted-foreground">
                 <li>
@@ -292,17 +407,20 @@ export function InstallPathChooser({
                 </li>
               </ol>
               )}
-              <p className="mt-3 text-fd-muted-foreground">
-                Standalone is for Raspberry Pi and other Linux boards.{' '}
-                <TextLink href="/guide/esp32">ESP32 frames</TextLink> have no admin page of their
-                own - they currently need <TextLink href="/guide/cloud">the cloud</TextLink> or a{' '}
-                <TextLink href="/guide/backend">self-hosted backend</TextLink> to manage them.
-              </p>
-              <p className="mt-3 border-t pt-3 text-fd-muted-foreground">
-                Details in <TextLink href="/guide/standalone">the standalone frame guide</TextLink>. You can
-                hand the frame to a <TextLink href="/guide/backend">backend</TextLink> or{' '}
-                <TextLink href="/guide/cloud">the cloud</TextLink> later - no reflash.
-              </p>
+              {board === 'esp32-s3' ? (
+                <p className="mt-3 border-t pt-3 text-fd-muted-foreground">
+                  Want over-the-air updates, logs and previews?{' '}
+                  <TextLink href="/guide/cloud#flash-an-esp32-from-the-browser">FrameOS Cloud</TextLink> and a{' '}
+                  <TextLink href="/guide/backend">self-hosted backend</TextLink> flash ESP32s from the
+                  browser too. Details in <TextLink href="/guide/esp32">the ESP32 guide</TextLink>.
+                </p>
+              ) : isPiImage(board) || board === 'other' ? (
+                <p className="mt-3 border-t pt-3 text-fd-muted-foreground">
+                  Details in <TextLink href="/guide/standalone">the standalone frame guide</TextLink>. You can
+                  hand the frame to a <TextLink href="/guide/backend">backend</TextLink> or{' '}
+                  <TextLink href="/guide/cloud">the cloud</TextLink> later - no reflash.
+                </p>
+              ) : null}
             </>
           ) : selectedPath === 'backend' ? (
             <>

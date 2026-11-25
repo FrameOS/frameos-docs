@@ -13,12 +13,14 @@ S3, with the same apps, the same JavaScript runtime, the same image pipeline, an
 assets, logs, metrics and scheduler the backend shows for a Pi frame. What a $6 board *cannot*
 do is a short, specific list - it's [at the bottom of this page](#what-it-cannot-do).
 
-<Callout title="Self-hosted backend or FrameOS Cloud">
+<Callout title="Standalone, self-hosted backend or FrameOS Cloud">
   An **ESP32-S3** can be set up and managed from either a [self-hosted backend](/guide/backend)
   or [FrameOS Cloud](/guide/cloud). The cloud flashes the generic release firmware from your
-  browser and pushes interpreted scenes. The **thin-client** boards below need the self-hosted
-  backend for now: the cloud's flasher doesn't offer them yet. There is no standalone mode:
-  an ESP32 frame has no admin page of its own.
+  browser and pushes interpreted scenes. It can also run **standalone**, with no backend and no
+  account: [flash.frameos.net](https://flash.frameos.net/) flashes it over USB with your board,
+  WiFi and starter scenes, and its board tools change the WiFi or update the firmware later over
+  the same cable - an ESP32 has no admin page of its own. The **thin-client** boards below need
+  the self-hosted backend for now: neither the cloud nor the standalone flasher offers them yet.
 </Callout>
 
 <Callout title="Two kinds of microcontroller frame">

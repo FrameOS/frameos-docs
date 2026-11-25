@@ -12,10 +12,13 @@ If you later want more - several frames in one place, compiled Nim apps, a build
 hand the same frame to a [self-hosted backend](/guide/backend) (**Adopt frame**) or to
 [FrameOS Cloud](/guide/cloud) (link it with the code on its display). Nothing needs reflashing.
 
-<Callout>
-  A standalone frame is a Raspberry Pi thing. An [ESP32](/guide/esp32) has no admin page of its
-  own, so it is set up from a backend or from the cloud - though it renders on its own afterwards
-  all the same.
+<Callout title="An ESP32-S3 instead?">
+  This page is about a Raspberry Pi or another Linux board. An [ESP32-S3](/guide/esp32) runs
+  standalone too, set up from [flash.frameos.net](https://flash.frameos.net/) over a USB cable with
+  no account: pick the board, a name, your WiFi and the scenes to start with, and it flashes and
+  sets the board up in one go. It has no admin page - add scenes from the Scene store on the frame,
+  and plug it back in to the same page to change its WiFi or update its firmware. ESP32-C3 and
+  [Pico](/guide/pico) boards can't run standalone: they need a backend to render for them.
 </Callout>
 
 ## 1. Flash a generic image

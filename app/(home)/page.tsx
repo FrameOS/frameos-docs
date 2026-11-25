@@ -473,7 +473,7 @@ export default function HomePage() {
                 An <TextLink href="/guide/esp32"><strong>ESP32-S3</strong></TextLink> lets you build battery-powered frames that <TextLink href="/guide/esp32#power">deep-sleep between refreshes</TextLink>.
                 It's still the full FrameOS experience. Everything is rendered on device, including 50MB JPEGs.
                 The easiest start is a ready-made <TextLink href="/devices/seeed-buying-guide">Seeed Studio reTerminal</TextLink>: pick
-                its preset and flash it from the browser. Waveshare&apos;s <TextLink href="/devices/waveshare-esp32-s3-photopainter">PhotoPainter</TextLink>,
+                its preset at <TextLink href="https://flash.frameos.net/">flash.frameos.net</TextLink> and flash it from the browser, no account needed. Waveshare&apos;s <TextLink href="/devices/waveshare-esp32-s3-photopainter">PhotoPainter</TextLink>,
                 Seeed&apos;s XIAO ePaper boards, TRMNL kits and <TextLink href="/guide/esp32#supported-boards">custom setups</TextLink> work too.
                 Boards without PSRAM (e.g. ESP32-C3) run as thin clients.
               </p>
@@ -695,7 +695,7 @@ export default function HomePage() {
         <div className="mx-auto flex w-full max-w-3xl flex-col items-center gap-6 px-6 py-20 text-center">
           <h2 className="text-3xl font-bold tracking-tight">Build your first frame this weekend</h2>
           <p className="text-fd-muted-foreground">
-            A standalone Pi, a self-hosted backend, or a FrameOS Cloud account - the guide walks
+            A standalone Pi or ESP32, a self-hosted backend, or a FrameOS Cloud account - the guide walks
             through all three, and the frame you end up with is the same.
           </p>
           <div className="flex flex-wrap items-center justify-center gap-3">
