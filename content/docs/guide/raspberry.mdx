@@ -30,6 +30,11 @@ description: Choose a Raspberry Pi, then flash either a prebuilt FrameOS SD imag
   answer from a router that used to answer restart the Wi-Fi. Restarting FrameOS no longer drops
   the connection.
 
+Every Pi plays [video](/guide/scenes#video); a Pi 0 to 4 decodes H.264 on its VideoCore, so even a
+Zero W keeps up on a HyperPixel. A Pi 5 has no H.264 decoder and does it in software on its faster
+cores. The **Processor speed** setting picks the CPU governor - *Automatic* runs the top clock while
+the frame renders and the lowest while it idles ([settings](/guide/settings#power-and-battery)).
+
 Not a Pi person, or dreaming of a battery-powered frame? FrameOS also runs on the
 [ESP32-S3 microcontroller](/guide/esp32), on [Pico W boards](/guide/pico), and with
 [no hardware at all](/guide/virtual).

@@ -9,8 +9,8 @@ back of the panel and is otherwise a lovely piece of hardware with nowhere to ru
 
 <Callout type="warn" title="Self-hosted backend only">
   Pico frames need a [self-hosted backend](/guide/backend) - it renders every frame for them.
-  [FrameOS Cloud](/guide/cloud) doesn't render for Picos yet.
-  So a Pico can't be managed from the cloud. Neither can it run [standalone](/guide/standalone).
+  The Pico firmware can't link to [FrameOS Cloud](/guide/cloud) yet, so a Pico can't be managed
+  from the cloud. Neither can it run [standalone](/guide/standalone).
 </Callout>
 
 <Callout title="Thin client, not a renderer">
@@ -76,7 +76,8 @@ frameos> bootsel                         # reboot into the UF2 drive for an upda
 ```
 
 `https://` backends work: TLS 1.2 with hostname verification against a built-in bundle of the
-major public CA roots.
+major public CA roots. A certificate that doesn't verify against it - a self-signed one, say - is
+refused; use plain `http://` on a network you trust instead.
 
 The console stays live through a panel refresh: `status`, `logs` and `render` answer at once, and a
 line that would pull the panel, the flash or the power from under it - `set`, `wifi`, `restart`,

@@ -3,10 +3,11 @@ title: The ESP32
 description: Run FrameOS on an ESP32-S3 microcontroller - flash from the browser, render full scenes on-device, sleep on a battery, update over the air.
 ---
 
-FrameOS runs on **ESP32-S3 microcontrollers** - no Linux, no SD card, no SSH. The backend (or
-[FrameOS Cloud](/guide/cloud#flash-an-esp32-from-the-browser)) flashes a firmware image over USB
-straight from the browser, and from then on the device fetches scenes over WiFi, renders them
-**itself**, drives the panel, and updates its own firmware over the air.
+FrameOS runs on **ESP32-S3 microcontrollers** - no Linux, no SD card, no SSH. The backend,
+[FrameOS Cloud](/guide/cloud#flash-an-esp32-from-the-browser) or
+[flash.frameos.net](#standalone) flashes a firmware image over USB straight from the browser, and
+from then on the device renders its scenes **itself**, drives the panel, and - with a backend or
+the cloud - fetches new scenes over WiFi and updates its own firmware over the air.
 
 This is not a cut-down mode. The same scene interpreter that runs on a Raspberry Pi runs on the
 S3, with the same apps, the same JavaScript runtime, the same image pipeline, and the same
@@ -43,11 +44,14 @@ do is a short, specific list - it's [at the bottom of this page](#what-it-cannot
   (8&nbsp;MB flash, 8&nbsp;MB octal PSRAM), but most people start from an
   [all-in-one board](#supported-boards) that already has a panel attached.
 - **A panel**: any Waveshare-family SPI e-paper panel, wired over SPI, the 10.3" IT8951 panel,
-  one tiny I2C OLED, the 4" touch LCD of the
-  [SenseCAP Indicator](/devices/seeed-sensecap-indicator) - or no display at all.
+  one tiny I2C OLED, the touch LCDs of the [SenseCAP Indicator](/devices/seeed-sensecap-indicator),
+  the [Sunton ESP32-8048S070](/devices/sunton-esp32-8048s070) and the
+  [Guition ESP32-4848S040](/devices/guition-esp32-4848s040), the round AMOLED of the
+  [Waveshare ESP32-S3-Touch-AMOLED-1.75](/devices/waveshare-esp32-s3-touch-amoled-1in75) - or no
+  display at all.
   The 12.48" panels use a different controller stack and still need a Pi.
-- **The [backend](/guide/backend)** or [FrameOS Cloud](/guide/cloud), to flash the board and
-  design scenes. Nothing is compiled: both write the signed
+- **The [backend](/guide/backend)**, [FrameOS Cloud](/guide/cloud) or
+  [flash.frameos.net](#standalone), to flash the board. Nothing is compiled: all three write the signed
   [release](https://github.com/FrameOS/frameos/releases) image for your chip and flash size, then
   configure the board over USB.
 
@@ -67,16 +71,19 @@ filled in for you:
 | [Seeed reTerminal E1004](/devices/seeed-reterminal-e1004) | S3 | 13.3" Spectra 6, portrait | 8&nbsp;MB PSRAM, 32&nbsp;MB flash, TF card, 3 buttons, 5000&nbsp;mAh battery and charger, clock - sleeps on battery by default |
 | [Seeed reTerminal Sticky](/devices/seeed-reterminal-sticky) | S3 | 3.97" black/white, touch | Small desk/fridge frame: 3 keys, microphone, battery gauge |
 | [Seeed SenseCAP Indicator](/devices/seeed-sensecap-indicator) | S3 | 4" 480×480 color LCD, touch | 8&nbsp;MB PSRAM, one button - animates and answers touch ([LCD and touch](#lcd)) |
+| [Sunton ESP32-8048S070](/devices/sunton-esp32-8048s070) | S3 | 7" 800×480 color LCD, touch | 8&nbsp;MB PSRAM, 16&nbsp;MB flash, BOOT button, microSD |
+| [Guition ESP32-4848S040](/devices/guition-esp32-4848s040) | S3 | 4" 480×480 color LCD, touch | 8&nbsp;MB PSRAM, 16&nbsp;MB flash, no button - the edges swipe |
+| [Waveshare ESP32-S3-Touch-AMOLED-1.75](/devices/waveshare-esp32-s3-touch-amoled-1in75) | S3 | 1.75" round 466×466 AMOLED, touch | 8&nbsp;MB PSRAM, 16&nbsp;MB flash, 2 buttons, everything drawn inside the circle |
 | [Elecrow CrowPanel 5.79"](/devices/elecrow-crowpanel-5in79) | S3 | 5.79" 4-grey | 5 buttons, dual SSD1683 |
 | [TRMNL 7.5" DIY Kit](/devices/trmnl-og-diy-kit) | S3 | 7.5" black/white | XIAO ePaper driver board |
 | [TRMNL 4.26" DIY Kit](/devices/trmnl-4in26-diy-kit) | S3 | 4.26" 4-grey | XIAO ePaper driver board |
 | [Seeed XIAO ePaper Display Board EE02](/devices/seeed-xiao-epaper-ee02) | S3 | 13.3" Spectra 6, portrait | 8&nbsp;MB PSRAM, 16&nbsp;MB flash, 3 buttons, battery |
 | [Seeed XIAO ePaper Display Board EE03](/devices/seeed-xiao-epaper-ee03) | S3 | 10.3" 16-level grayscale (IT8951) | 8&nbsp;MB PSRAM, 16&nbsp;MB flash, 3 buttons, battery, temperature sensor |
 | [Seeed XIAO ePaper Display Board EE04](/devices/seeed-xiao-epaper-ee04) / [EE05](/devices/seeed-xiao-epaper-ee05) | S3 | Any 24-pin panel (EE04: also the 7.3" Spectra 6 on 50 pins) | 8&nbsp;MB PSRAM, 16&nbsp;MB flash, 3 buttons, battery - pick your panel and the preset stays |
-| [TRMNL OG](/devices/trmnl-og) | C3 | 7.5" black/white | Thin client - backend renders |
-| [TRMNL BWRY](/devices/trmnl-bwry) | C3 | 7.5" 4-color | Thin client - backend renders |
-| [XTEINK X4](/devices/xteink-x4) | C3 | 4.26" 4-grey | Thin client - backend renders |
-| [Seeed XIAO 7.5" ePaper Panel](/devices/seeed-xiao-7in5-epaper-panel) | C3 | 7.5" black/white | Thin client - backend renders |
+| [TRMNL OG](/devices/trmnl-og) | C3 | 7.5" black/white | Thin client - backend or cloud renders |
+| [TRMNL BWRY](/devices/trmnl-bwry) | C3 | 7.5" 4-color | Thin client - backend or cloud renders |
+| [XTEINK X4](/devices/xteink-x4) | C3 | 4.26" 4-grey | Thin client - backend or cloud renders |
+| [Seeed XIAO 7.5" ePaper Panel](/devices/seeed-xiao-7in5-epaper-panel) | C3 | 7.5" black/white | Thin client - backend or cloud renders |
 | [ESP32-C3 0.42" OLED board](/devices/esp32-c3-oled-0in42) | C3 | 0.42" SSD1306 OLED, 72×40 (I2C) | The tiny HW-675 / 01Space dev board, 4&nbsp;MB flash, BOOT button - thin client |
 
 Anything else is a **Custom ESP32 board**: pick the panel, set the pins, done. The
@@ -108,9 +115,12 @@ Boards people ask about that FrameOS can't drive yet. Each has a device page say
    address, API key, hostname, HTTP response limit and admin login. What a console line can't carry
    (an HTTPS certificate, service keys, the schedule) arrives with the first settings sync over
    WiFi. Nothing is compiled, so a first flash takes about a minute. This uses Web Serial, so it works
-   in Chrome and Edge, on `https://` or `localhost` - a backend served over plain `http://` from
-   another machine (the Home Assistant add-on behind ingress, for instance) has no Web Serial; the
-   Logs panel tells you when that's the case. Either USB port a board offers works: the chip's own
+   in Chrome and Edge, on `https://` or `localhost`. A backend served over plain `http://` from
+   another machine (the Home Assistant add-on behind ingress, for instance) has no Web Serial, so
+   its **Connect over USB** card opens [flash.frameos.net](https://flash.frameos.net/) in a window
+   and hands it the frame: the image still comes from your backend, and the progress and the USB
+   log come back to the frame's Logs panel. Every browser flasher checks the image against the
+   FrameOS release signature before it writes a byte. Either USB port a board offers works: the chip's own
    *USB JTAG/serial debug unit*, or a *USB Single Serial* UART bridge like the CH340 on the Seeed
    reTerminals. Or download the image from the
    [release](https://github.com/FrameOS/frameos/releases) and flash it by hand - there is one per
@@ -130,6 +140,25 @@ It always joins on a 20&nbsp;MHz channel, like a Pi, even where
 the router offers 40&nbsp;MHz: a frame needs a few KB/s, and the narrow channel holds up better on
 a crowded 2.4&nbsp;GHz band.
 
+### Standalone, from flash.frameos.net [#standalone]
+
+[flash.frameos.net](https://flash.frameos.net/) flashes and sets up an ESP32-S3 with no backend and
+no account. Pick a hardware preset or a panel, name the frame, enter your WiFi, and tick the scenes
+to start with: every sample scene a standalone frame can run (nothing that needs a Pi or an
+account's API key), each with its picture, grouped by category with a tickbox per category and a
+search. Presets fill the list for you - *A few to start*, *Interactive LCD scenes*, *Best for
+e-paper*, *Everything* or *Only the Scene store* - up to what the board has room for, and say what
+didn't fit. The [Scene store](/guide/scenes#frame-apps) is always in, so the frame can add more
+scenes by itself later. Your browser's time zone goes along. A board that takes taps and has
+nothing marked to start on opens on the [scene switcher](/guide/scenes#input); a board of keys starts
+on the first scene you picked.
+
+Afterwards the page's board tools work over the same cable: the USB log, a new WiFi network, a
+restart, and a firmware update that keeps every setting - a standalone board has no control plane
+to update it over the air. The ESP32-C3 boards aren't on it: they need a backend or
+[FrameOS Cloud](/guide/cloud#flash-an-esp32-from-the-browser) to render for them. The page counts,
+anonymously, how often it's opened and how flashes end; nothing is kept on your computer.
+
 ### Provisioning by hand
 
 A board flashed by hand with a release image can be configured without the backend's flasher.
@@ -138,12 +167,15 @@ Every supported panel driver is compiled into every image - you pick the panel a
 - **Captive portal**: an unprovisioned device raises a WiFi hotspot called `FrameOS-XXXX`. Join
   it and any web page redirects to the setup form (WiFi, backend URL, frame ID and API key,
   panel, GPIO pins). The hotspot is WPA2-protected with a 10-character passphrase generated per
-  device - it's on the status screen, `config` prints it on the serial console, and `set ap_psk`
+  device - it's on the setup screen, `config` prints it on the serial console, and `set ap_psk`
   changes it. Requests from inside the
   hotspot skip the admin login - the passphrase on the panel is the credential - so a forgotten
   admin password doesn't mean a factory reset to change WiFi. Until then the panel
-  shows the FrameOS status screen with the hotspot's instructions; once provisioned but without scenes, it shows the frame's name, panel, IP and
-  who manages it.
+  shows a QR code your phone joins the hotspot with, and the network's name, its password and the
+  setup page's address under it - on a round panel all of it inside the circle. Once provisioned
+  but without scenes, it shows the frame's name, panel, IP and who manages it. Typed into a browser
+  later, the setup page of a frame with an admin login says how to open it: from the hotspot, the
+  backend's **Frame setup access**, or `set admin_user` / `admin_pass` on the console.
 - **Serial console** (115200 baud) - always available, and quickest for tinkering. It answers on
   both of the ports a board can bring out, the S3's built-in USB-Serial/JTAG device and UART0
   behind a USB-UART bridge:
@@ -152,12 +184,14 @@ Every supported panel driver is compiled into every image - you pick the panel a
   frameos> status                          # chip, panel, WiFi, memory, NVS use, hostname, power policy
   frameos> set hardware waveshare_esp32_s3_photopainter   # apply a board preset: panel, pins, buttons, battery wiring
   frameos> wifi MySSID MyPassword          # saves and reboots
+  frameos> set wifi_ssid -                 # forget the network
   frameos> set time_zone Europe/Brussels   # IANA name; the tz data slice is fetched once online
   frameos> set panel EPD_7in5_V2
   frameos> set pins rst=5,dc=4,cs=3,cs2=-1,busy=6,sck=7,mosi=9,pwr=-1
   frameos> render                          # render right now
   frameos> mic 2                           # record two seconds and print the microphone's level
   frameos> i2c                             # what answers on the board's I2C buses: clock, charger, sensors
+  frameos> set click_sounds silent         # no tap, key or loading sounds (normal turns them back on)
   frameos> ota                             # check for a firmware update
   frameos> ota downgrade                   # let the next update be an older release, once
   frameos> factory-reset                   # wipes scenes, schedule, cached data and all settings
@@ -183,14 +217,15 @@ the panel stays until the last one is in. Each one is added, replaced or
 removed on its own: the backend and the cloud send only what changed, so a push that changed one
 scene of twenty writes one, and **Push & activate** has it on an awake frame's screen in a second or
 two, plus the scene's own first render. A changed scene is written whole before the old one goes,
-so a power cut or a full partition leaves the scene that worked. The frame's page shows how much
-of the scene storage is free, and each scene tile shows its size on the frame. Switching scenes - from the
+so a power cut or a full partition leaves the scene that worked. A disk chip beside the battery in
+the frame's header shows how full its storage is - amber from 80%, red from 95% - and a click on it
+lists the used, free and total space, the scenes' share and every scene by size. Switching scenes - from the
 backend, an event, a button or the schedule - loads the new one and drops the old. A scene that
 ran the board out of memory is skipped at the next boot - the frame starts on the next scene
 instead of looping.
 
 **Every built-in app works** except two that need a real operating system: *Chromium screenshot*
-and *RTSP camera snapshot*. Calendars, weather, Home Assistant sensors, OpenAI text and images,
+and *RTSP camera snapshot*. [Video](/guide/scenes#video) needs a Pi too. Calendars, weather, Home Assistant sensors, OpenAI text and images,
 Immich, Google Photos, Unsplash, Wikimedia Commons, QR codes, charts, SVG, gradients, splits,
 zoom/pan - all of it runs on the microcontroller, over TLS, straight from the device.
 
@@ -264,7 +299,10 @@ through `GET /api/fonts`, the editor's font picker offers them, and the renderer
 app, in JSX (`font-[Family_Name]`) and in SVG `<text>` alike. A name the card doesn't have draws in
 the built-in face. Upload them through the **Files** panel or use **Sync fonts**, which skips files
 the card already has. CFF, WOFF and variable fonts need converting to TrueType first
-(`tools/font_for_card.py` in the repo); the *Fonts* sample scene shows what the card holds.
+(`tools/font_for_card.py` in the repo). The *Fonts* sample scene shows what the card holds, and
+its **Get fonts** view downloads more straight onto the frame from a catalog of 205 families
+(Google Fonts' most popular Latin ones, and FrameOS's own), a style at a time, without a computer
+in between.
 
 `NotoColorEmoji.ttf` on the card gives color emoji, read from the card when drawn and kept at
 their drawn size, as on a Pi.
@@ -293,16 +331,23 @@ their drawn size, as on a Pi.
   `POST /event/<name>` to dispatch any event into the running scene, plus logs, metrics and asset
   routes under `/api/frames/<id>/` - much the same surface the
   [Pi's local API](/guide/api) exposes ([every route](/guide/api#esp32)). Native HTTPS turns on after the frame's first settings
-  sync, when it has a certificate to serve. After each render the frame also pushes its picture to
+  sync, when it has a certificate to serve, and then the plain port 80 closes. A page from another
+  site can't make the frame change anything, and ten wrong logins in five minutes shut the login
+  for five minutes. After each render the frame also pushes its picture to
   a self-hosted backend, so the backend has a sleeping frame's image without pulling it. Every
   route except `/ping` needs the frame's API key or its admin login; firmware
   before 2026.10.21 answered a request without them with *Authentication required* but still
   carried it out, so update a frame on an older release.
 - **Settings on the frame itself**: on a touch board, the scene settings you swipe down for have a
   gear that opens the frame's own page - the Wi-Fi network (with a scan and *Other network…*) and
-  its password, the rotation, the [scale](/guide/settings#render-scale), the date and time when
-  it's offline, the battery and the signal, **Check for updates** and **Install update**, and
-  **Render again**, **Restart FrameOS** and **Reboot**. An update installed there gets the same
+  its password (an eye beside it shows what you typed), the rotation, the
+  [scale](/guide/settings#render-scale), the date and time when it's offline, the battery and the
+  signal, **Check for updates** and **Install update**, **Update scenes** when the store has newer
+  versions of the frame's scenes, **Tap and click sounds** and, on a frame that deep-sleeps,
+  **Stay awake after a press or tap**, and **Render again**, **Restart FrameOS** and **Reboot**.
+  A frame nobody manages yet adds **Link to cloud** and **Link to backend**
+  ([connecting from the frame](/guide/settings#connect-from-the-frame)); a managed one has
+  **Unlink**. An update installed there gets the same
   signature checks as one from the backend or the cloud. A frame you change there tells its
   control plane its new rotation and scale. Turn the page off with
   [Frame settings on the screen](/guide/settings#on-screen); `set settings_unlock 1` on the USB
@@ -319,7 +364,8 @@ their drawn size, as on a Pi.
   renders counts from when the render was due, so a scene that renders every second does so every
   second, not every other one.
 - **Buttons**: GPIO buttons (the board presets know where they are) reach scenes as `button`
-  events - `press`, `doublePress`, `longPress` - and raw `gpio` `down` / `up` edges
+  events - `press`, `doublePress`, `longPress`, and `triplePress` for a key a rule binds three
+  times - and raw `gpio` `down` / `up` edges
   ([details](/guide/scenes#input)), so a press can change a scene, re-render, or run anything you
   wire up in the editor. Every edge is timestamped by the button task, so a tap made during a
   30-second panel refresh is still a tap, and a 30&nbsp;ms debounce catches quick double taps.
@@ -331,7 +377,8 @@ their drawn size, as on a Pi.
   had no room for sounds a dull "no". **Button beep
   GPIO** and **Button beep tone (Hz)** sit under the frame's GPIO buttons; on the console it's
   `set buzzer_pin`, `set buzzer_tone_hz` and `beep` to test. The Waveshare
-  PhotoPainter and 13.3E6 play the same notes on their speaker.
+  PhotoPainter and 13.3E6 play the same notes on their speaker. **Tap and click sounds** set to
+  *Silent* mutes the clicks and the loading chirp on any board that makes them.
 - **Status LED**: the reTerminal E-series' green LED lights with every note the buzzer plays, so a
   frame with its buzzer switched off still shows a press, and it stays lit while the
   [voice chat](#voice-chat) listens. **Status LED GPIO** sits next to the
@@ -371,14 +418,17 @@ frame in its context and a small set of tools for it: switch scenes, set a field
 showing, redraw, rotate the frame, show a picture, play a photo album, or have the scene AI build
 a new scene or change the one showing. The audio isn't kept once the answer is in.
 
-The answer is drawn across the bottom of the panel for 30 seconds - what was heard, in quotes,
-and the reply - and lands in the frame's chat in the workspace, with a log of what each sentence
-did. The buzzer sounds the outcome: three rising notes when something was done, one low note when
+While it works, the panel says what's happening over the last picture - transcribing, what it
+heard, each tool as it runs, and how long it's been when a turn takes more than 15 seconds (the
+scene AI building a scene takes a minute or more). That's on an LCD and on the fast e-paper of the
+Sticky and the E1003. The answer is drawn across the bottom of the panel for 30 seconds - what was
+heard, in quotes, and the reply - and a tap on it, or a key, takes it off. It lands in the frame's
+chat in the workspace too, with a log of what each sentence did. The buzzer sounds the outcome: three rising notes when something was done, one low note when
 nothing was heard. It's one conversation per frame, so a follow-up like *"no, the other one"*
 knows what the last sentence did. A sentence can be up to 30 seconds long.
 
 - **Which boards**: the reTerminal E1001 and E1002 (hold REFRESH), the E1003
-  (REFRESH), the reTerminal Sticky (the AI key), and the Waveshare PhotoPainter (KEY1) and 13.3E6
+  (REFRESH), the reTerminal Sticky (the Action key), and the Waveshare PhotoPainter (KEY1) and 13.3E6
   (BOOT) through their codec's microphones. The E1004 has no microphone; a PDM microphone on its J2
   header works once **Microphone GPIO** in Settings names its pins. A Pi frame can't do this yet.
 - **Which key**: the Action key held ([Buttons](/guide/buttons)), or any
@@ -391,37 +441,49 @@ knows what the last sentence did. A sentence can be up to 30 seconds long.
   frame as a preview, never on its saved list: the scene list shows it with **Install** and
   **Discard** ([preview on frame](/guide/scenes#push-activate-preview)).
 - **What it needs**: the OpenAI key the AI chat uses - **Settings → OpenAI** on the backend; your
-  own key or the shared one on the cloud. The **Voice chat** switch in Settings turns the
-  microphone off altogether, and frames without a microphone don't show any of these controls.
+  own key or the shared one on the cloud, and a frame on WiFi with a backend or the cloud to talk
+  to. Held without them, the key says on the panel what's missing and how to set it up. The
+  **Voice chat** switch in Settings turns the microphone off altogether, and frames without a
+  microphone don't show any of these controls.
 
 ## LCD and touch [#lcd]
 
-The [SenseCAP Indicator](/devices/seeed-sensecap-indicator) brings a 4" 480×480 color touch LCD
-to the ESP32. An LCD changes what a microcontroller frame can do:
+The [SenseCAP Indicator](/devices/seeed-sensecap-indicator)'s 4" 480×480 color touch LCD, the 7"
+800×480 of the [Sunton ESP32-8048S070](/devices/sunton-esp32-8048s070), the 4" of the
+[Guition ESP32-4848S040](/devices/guition-esp32-4848s040) and the round 1.75" AMOLED of the
+[Waveshare ESP32-S3-Touch-AMOLED-1.75](/devices/waveshare-esp32-s3-touch-amoled-1in75) bring a fast
+screen to the ESP32. That changes what a microcontroller frame can do:
 
 - **Animation.** A scene whose render interval is under a second runs back to back: the store's
   *DVD Logo Bounce*, written in JSX, moves at about 29 frames a second, and the board's talk with
   the backend - scenes, settings, commands, logs and the picture - runs on a task of its own
   meanwhile. The scene draws straight into the LCD's own frame buffer, and only the part of the
   picture that changed is drawn again.
-- **Touch.** The touch glass of the Indicator, the [reTerminal Sticky](/devices/seeed-reterminal-sticky)
+- **Touch.** The touch glass of these boards, the [reTerminal Sticky](/devices/seeed-reterminal-sticky)
   and the [E1003](/devices/seeed-reterminal-e1003) reaches scenes as the same `pointerDown`,
   `pointerMove`, `pointerUp`, `tap`, `doubleTap`, `longPress` and `swipe` events a Pi's
   touchscreen sends ([details](/guide/scenes#input)), and two fingers on the E1003 or the Sticky
   make a `pinch`. A swipe in from the screen's edge is the
-  frame's: out of the box on the Indicator, the Sticky and the E1003 it's the
+  frame's: out of the box on every touch board it's the
   [scene switcher, the scene settings, back and forward](/guide/scenes#input), or whichever
   [button action](#button-actions) you bind. A touch on a dark screen only turns it on. Build touch
   interfaces with [JSX and Tailwind classes](/guide/apps#jsx-uis), which have fields with a keyboard
   on the screen: on the SenseCAP Indicator a tap on a JSX home panel is back on the glass in about
-  85&nbsp;ms. A touch board boots straight into its scenes and joins WiFi in the background, so it
-  never opens the setup hotspot by itself. The Indicator's glass tracks one finger, and the keyboard
+  85&nbsp;ms, and the element under your finger is shaded the moment it lands, before the scene
+  answers. A touch board - an LCD, or the touch e-paper of the Sticky and the E1003 - boots straight
+  into its scenes and joins WiFi in the background, so it never opens the setup hotspot by itself
+  and never holds its first picture for the network. Flashed with nothing picked to start on, it
+  opens on the [scene switcher](/guide/scenes#input) as its home, and a scene picked there is the
+  one it boots into next. The Indicator's glass tracks one finger, and the keyboard
   on the screen still types both keys when two thumbs overlap. On touch e-paper only the changed part of the panel is
-  refreshed while you tap, a switch to another scene included, and a full refresh clears the ghosts
-  once the partial ones have moved about a panel and a half - every sixth page of a book on the
-  Sticky. `hover:` and `active:` are not drawn (each would cost a refresh), a press held until
-  something shows still counts as a click, and with
-  **Touch beep** on, a press that something takes clicks at once, before the picture can answer.
+  refreshed while you tap, a switch to another scene included. The frame counts how worn each spot
+  of the glass is, and a full refresh clears the ghosts once a quarter of it has changed over, or
+  one spot has been rewritten sixteen times (a digit in a clock) - every fifth page of a book on
+  the Sticky; a frame left alone cleans only glass that's due. `hover:` and `active:` are not drawn
+  (each would cost a refresh), but the status LED lights while a press is answered and a button
+  whose answer is slow is inked at once. A press held until something shows still counts as a
+  click, and with **Touch beep** on, a press that something takes clicks at once, before the
+  picture can answer.
 - **Display on and off.** *Display on*, *Display off* and *Display on/off* switch the backlight,
   and nothing renders while it's dark. Over HTTP they're the `turnOn`, `turnOff` and `toggleScreen`
   [events](/guide/api#esp32).
@@ -437,9 +499,13 @@ to the ESP32. An LCD changes what a microcontroller frame can do:
   8&nbsp;MB board, four on a bigger one, and a window behind the one in front runs at most every
   five seconds. On the Indicator's 480×480 screen a desktop set to *Automatic* shows one scene,
   since there's no room for two.
-- **Storing scenes.** While a push writes scenes to flash, the LCD shows the FrameOS mark and
+- **Storing scenes.** While a push writes scenes to flash, an RGB LCD shows the FrameOS mark and
   *Updating*: a flash write stops the chip from refreshing the screen, so the picture would tear.
-  The new scene replaces it when it's stored.
+  The new scene replaces it when it's stored. The round AMOLED keeps its own picture and needs
+  neither.
+- **Round screens.** On the round AMOLED the switcher, the settings, the frame page, the keyboard
+  and the edge swipes keep inside the circle, and scenes can do the same
+  ([round screens](/guide/scenes#round-screens)).
 - **Boot.** The FrameOS mark shows on black while the board starts, with a line saying what it's
   waiting for (*Connecting to Wi-Fi*, *Updating firmware*, *Starting*), and an LCD renders as soon
   as WiFi is up rather than waiting for the clock. A frame whose setup hotspot is up shows a QR
@@ -469,11 +535,19 @@ it takes two readings a moment apart and two passes in a row to believe it, so o
 sample can't park a healthy cell in the six-hour sleep.
 
 **Input keeps it awake.** After a button press or a tap, a deep-sleeping frame stays up for five
-minutes (**Stay awake after a press or tap** under Power), so the next one is answered at once
-instead of waking it again.
+minutes (**Stay awake after a press or tap** under Power, and on the frame's own page), so the next
+one is answered at once instead of waking it again, and it sleeps as soon as that window closes.
+Pulling out the USB cable, or switching the frame on with its power key, counts as a press:
+someone has it in hand.
+
+**It shows that it sleeps.** On e-paper with a fast refresh - the Sticky and the E1003 - a frame
+going to sleep puts a small moon in the top-right corner. A tap or a key that wakes it turns the
+moon into a loading ring at once, with a quiet chirp, until the scene is up: about nine seconds on
+a Sticky.
 
 **Buttons wake the frame.** Every GPIO button on a wake-capable pin is armed as a wake source
-next to the timer. A press brings the frame up early and reaches the scene like any
+next to the timer, and so is the touch glass where the board keeps its touch controller powered
+through the sleep (the Sticky and the round AMOLED; the E1003 wakes on its keys). A press brings the frame up early and reaches the scene like any
 other press - held, it's a `longPress`; tapped twice, a `doublePress` - and that
 pass renders, so "next photo" works on a sleeping frame. A press made while a battery frame is
 still rendering holds the sleep for one more pass instead of being lost. While
@@ -526,7 +600,8 @@ shows the board preset's sleep settings where you set none of your own.
 
 **Processor speed** under Power picks the chip's clock. By default an e-paper board renders at
 240&nbsp;MHz and waits out the refresh at 160, and LCD and touch boards run at 240; or pick either
-([settings](/guide/settings#power-and-battery)).
+([settings](/guide/settings#power-and-battery)). The same setting on a Raspberry Pi picks its CPU
+governor.
 
 ## Rendering on the server [#render-on-server]
 
@@ -621,11 +696,14 @@ controllers and needs `cs2` as well.
 
 Straight, so you can decide before you buy:
 
-- **Panels**: Waveshare-family SPI e-paper, the 10.3" IT8951, one small I2C OLED and the
-  SenseCAP Indicator's 4" LCD only. No HDMI, no other LCDs, no Pimoroni Inky HATs, no
-  Python-backed drivers. The 12.48" multi-controller panels need a Pi.
+- **Panels**: Waveshare-family SPI e-paper, the 10.3" IT8951, one small I2C OLED, and the LCDs
+  of the SenseCAP Indicator, the Sunton and Guition boards and Waveshare's round AMOLED only. No
+  HDMI, no other LCDs, no Pimoroni Inky HATs, no Python-backed drivers. The 12.48"
+  multi-controller panels need a Pi.
 - **Two apps are missing**: *Chromium screenshot* and *RTSP camera snapshot*. Both need to launch
   a real program on a real OS.
+- **No video.** The [video scenes](/guide/scenes#video) play through ffmpeg on a Pi; the store
+  doesn't offer them to an ESP32.
 - **No Nim app editing.** Scenes run [interpreted](/guide/scenes#execution), like everywhere else.
   You can write and fork apps in **JavaScript/TypeScript** and use JS code nodes, but editing an
   app's Nim source means compiling, which means a Pi. The backend warns you when a scene contains
@@ -646,7 +724,8 @@ Straight, so you can decide before you buy:
 
 | | Raspberry Pi | ESP32-S3 |
 | --- | --- | --- |
-| Displays | [120+ drivers](/devices): e-ink, HDMI, LCD | Waveshare SPI e-paper and one 4" LCD, every driver in one image |
+| Displays | [120+ drivers](/devices): e-ink, HDMI, LCD | Waveshare SPI e-paper and four boards' LCDs, every driver in one image |
+| Video | [Plays it](/guide/scenes#video), hardware-decoded on a Pi 0-4 | - |
 | Voice | - | [Hold a key and talk](#voice-chat), on boards with a microphone |
 | Custom code | JavaScript, or Nim in a compiled scene | JavaScript/TypeScript |
 | Apps | All of them | All but Chromium screenshots and RTSP |

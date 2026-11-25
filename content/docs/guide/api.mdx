@@ -78,15 +78,18 @@ control it. Device commands and the admin API need more, in every mode:
 | --- | --- | --- | --- |
 | `GET /ping` | Open | Open | Open |
 | **View**: `/`, `/image`, `/ws` | Access key | Open | Open |
-| **Control**: `/state`, `/states`, `/c`, `/getUploadedScenes`, most of `POST /event/<name>` | Access key | Access key | Open |
-| **Device**: `POST /reload`, `POST /uploadScenes`, and the [device events](#device-events) | Admin or backend key | Admin or backend key | Admin or backend key |
+| **Control**: `/state`, `/states`, `/c`, most of `POST /event/<name>` | Access key | Access key | Open |
+| **Device**: `GET /getUploadedScenes`, `POST /reload`, `POST /uploadScenes`, and the [device events](#device-events) | Admin or backend key | Admin or backend key | Admin or backend key |
 | **Admin API**: the [`/api/` routes](#admin-api) | Admin session | Admin session | Admin session |
 
 There are three credentials:
 
 - **The access key** (**HTTP access key** in the frame's settings; the QR code on the display
   carries it). Send it as `?k=KEY` on any request, or on a POST as `Authorization: Bearer KEY`,
-  which keeps it out of URLs. Opening `/?k=KEY` in a browser stores it in a cookie.
+  which keeps it out of URLs. Opening `/?k=KEY` in a browser stores it in a cookie. It's for the
+  scenes: keys and taps sent with it reach the scene, never the frame's own settings page, its
+  code editor or its store, and `/state`, `/states` and `/c` leave out the values of fields marked
+  secret. The QR code is drawn on the panel only, so `/image` and the snapshots never carry it.
 - **The backend API key** (**Backend API key** in the frame's settings, `serverApiKey` in
   `frame.json`). It's how a backend calls its frames: `Authorization: Bearer <key>`, on POST only.
   It opens the control and device routes, but not the admin API.
@@ -136,7 +139,7 @@ Traffic on port `8787` is plain HTTP, key included. If that matters on your netw
 | `GET /image` | View | The current picture as a PNG, with `X-Scene-Id` and `Last-Modified` headers. Send `If-Modified-Since` to get a `304` when nothing changed. |
 | `GET /state` | Control | The active scene and its public state: `{"sceneId": "…", "state": {…}}`. |
 | `GET /states` | Control | Every scene: `{"sceneId": "…", "states": {"<scene id>": {…}}}`. This is where to find scene ids. |
-| `GET /getUploadedScenes` | Control | The scenes pushed to the frame: `{"scenes": […]}`. |
+| `GET /getUploadedScenes` | Device | The scenes pushed to the frame: `{"scenes": […]}`. |
 | `GET /ws` | View | A WebSocket that sends the text `render` after each render. Fetch `/image` when it does. |
 | `GET /` | View | The web page with the live picture. |
 | `GET /c` | Control | The [control page](/guide/control#the-frames-web-app). |
@@ -289,7 +292,11 @@ curl -X POST http://esp32-frame/event/render -H "Authorization: Bearer API_KEY"
 curl -u admin:PASSWORD http://esp32-frame/status
 ```
 
-Either one can send every event the board accepts, device events included.
+Either one can send every event the board accepts, device events included. A request that
+changes something and names another site in its `Origin` header is refused with a `403`, as on a
+Pi. Ten wrong logins in five minutes and the board looks at no login until the five minutes are
+over (`429`); the API key is never counted. Once HTTPS is up, port `80` closes, except in the
+setup hotspot.
 
 | Route | What it does |
 | --- | --- |
@@ -305,6 +312,7 @@ Either one can send every event the board accepts, device events included.
 | `POST /api/action/commands`, `/scenes_sync` | Pull queued commands or scenes from the backend now. |
 | `POST /api/action/remount-sd`, `/format-sd` | SD card maintenance. |
 | `GET /api/setup`, `POST /api/setup` | The setup form's values, and saving them. |
+| `GET /api/adopt`, `POST /api/adopt` | Open. While the frame page shows a **Link to backend** code, a backend's **Adopt frame** reads the board here and sends the code with its address and key ([connecting from the frame](/guide/settings#connect-from-the-frame)). Anything else gets `{"adopting": false}`. |
 | `GET /api/frames`, `/api/frames/<id>` | The frame's details. |
 | `GET /api/frames/<id>/ping`, `/state`, `/states`, `/uploaded_scenes`, `/image`, `/scene_images/<id>`, `/logs`, `/metrics`, `/assets`, `/asset` | The same answers under the frame's id. Logs and metrics are only here. |
 | `POST /api/frames/<id>` | Saves settings. |

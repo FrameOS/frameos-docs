@@ -22,13 +22,36 @@ restyle it, or turn it off entirely.
 
 ## Settings on the frame's screen [#on-screen]
 
-On a touch frame - a HyperPixel, a Pi touch display, the SenseCAP Indicator, the reTerminal E1003
-and Sticky - a swipe down from the top opens the scene's settings, and a gear left of **Save**
-opens the frame's own page: the WiFi network and password, the rotation, the
+On a touch frame - a HyperPixel, a Pi touch display, and every ESP32 touch board: the SenseCAP
+Indicator, the Sunton and Guition LCDs, the round AMOLED, the reTerminal E1003 and Sticky - a swipe
+down from the top opens the scene's settings, and a gear left of **Save** opens the frame's own
+page: the WiFi network and password (an eye beside it shows what you typed), the rotation, the
 [scale](#render-scale), the date and time on an offline ESP32, the battery and the signal, an
-update check, and **Render again**, **Restart FrameOS** and **Reboot**. A rotation or scale changed
-there reaches the backend or the cloud too, so the two stay in step. The scene switcher's header
-has the same gear, so the page is in reach even when a layout broke every scene.
+update check, **Update scenes** when the store has newer versions of the frame's scenes (it asks
+twice, then updates every one in a single push), **Tap and click sounds** on a frame that makes
+them, **Stay awake after a press or tap** on one that deep-sleeps, and **Render again**,
+**Restart FrameOS** and **Reboot**, right under the frame's card. A rotation, scale or sound
+setting changed there reaches the backend or the cloud too, so the two stay in step. The scene
+switcher's header has the same gear, so the page is in reach even when a layout broke every scene.
+On a round panel the page is laid out inside the circle.
+
+### Connecting from the frame [#connect-from-the-frame]
+
+A frame nobody manages yet says **Managed by: Nobody** on that page, and its buttons end with
+**Link to cloud** and **Link to backend**. Either one opens a page with a code, where to enter it,
+and a QR code:
+
+- **Link to cloud** shows a link code for [FrameOS Cloud](/guide/cloud#link-a-frame-that-already-runs):
+  scan it or type it at cloud.frameos.net/device. **Change address** points it at another cloud.
+- **Link to backend** shows six digits and the frame's address. In the backend's **Adopt frame**
+  form, type both, or paste what the QR code holds; the backend takes the frame over, and an ESP32
+  restarts as its frame and keeps its scenes ([adopting](/guide/first-deploy#add-the-frame)).
+
+Either code is proof that someone stands at the frame: it shows only on that page, only while the
+page is up (leave it, and the code ends), and no picture the frame keeps carries it. A backend's
+code is good for five minutes and five tries. A frame the cloud or a backend manages has
+**Unlink** there instead: it says what the frame keeps and what stops, and asks twice. The frame
+keeps its scenes.
 
 **Frame settings on the screen**, on by default, decides whether those gears are there at all. Switch
 it off for a frame in a public place and the screen offers the scene's settings only. Someone with
@@ -79,7 +102,8 @@ MAC address, and a 10-character password it draws on the panel with a QR code. A
 screen keeps the password `frame1234`. Whatever you type into those fields is used as is, so
 frames set up earlier keep `FrameOS-Setup` / `frame1234` until you clear them. Joining the hotspot
 opens the setup page by itself on most phones (a captive portal), and the hotspot shuts down
-after five minutes by default.
+after five minutes by default. The setup page answers only devices on the hotspot: a Pi on
+Ethernet beside its hotspot doesn't offer it to the rest of your network.
 
 ## Buttons, voice and input [#buttons]
 
@@ -102,7 +126,9 @@ there never reaches the scene. Every board comes with the standard set: [Buttons
 lists every board's. A frame keeps the map it was set up
 with, so an ESP32 from before a preset changed keeps its old one until you change the rows, or run
 `set hardware <preset>` and `restart` on its console. A HyperPixel whose map you never touched
-follows the current default. To tell one installed scene which of your keys are its own, use
+follows the current default. A row can also be a **triple press**: only a key bound that way
+waits for a third press, so the reTerminal Sticky's Action key goes back on two presses and opens
+the scene list on three. To tell one installed scene which of your keys are its own, use
 **Map buttons** in that scene's menu instead ([details](/guide/scenes#input)).
 
 ESP32 boards get a **Buzzer, LED and microphone** box under the buttons:
@@ -111,7 +137,10 @@ ESP32 boards get a **Buzzer, LED and microphone** box under the buttons:
   reTerminals - click when a press registers.
 - **Touch beep**: on touch e-paper, a click the moment something on the screen takes a press - a
   button, a field, a scene that listens - and another when it lifts, since the picture takes a
-  moment to answer. While what you asked for loads, the buzzer chirps quietly.
+  moment to answer. While what you asked for loads, the buzzer chirps quietly. A swipe in from the
+  edge chirps four quick clicks the moment it counts as one.
+- **Tap and click sounds**: *Normal* or *Silent*, which mutes the touch and button clicks and the
+  loading chirp, on any board with a buzzer or a speaker. It's on the frame's own page too.
 - **Status LED GPIO** and its type: the reTerminal E-series' green LED lights with the buzzer's
   notes. The placeholder shows the board's own pin.
 - **Microphone GPIO** (clock, data, power) and the **Voice chat** switch, with the four **Voice
@@ -134,12 +163,12 @@ pick up queued commands, and battery voltage sensing (the ADC pin, the divider r
 boards that switch the divider, its enable pin - the hardware presets fill these in). A sleeping
 ESP32 also wakes on any of its GPIO buttons, and the frame list says **asleep · wakes in 5 min**
 while it's down. **Stay awake after a press or tap** keeps it up for a while after someone uses it -
-five minutes by default - so the next press is answered at once. A Raspberry Pi is always awake and always wall-powered, so it has none of this.
+five minutes by default - so the next press is answered at once; it's on the frame's own page too.
+The battery popup shows how often the frame re-renders (the showing scene's refresh interval)
+and, while it sleeps, how often it checks in. A Raspberry Pi is always awake and always
+wall-powered, so it has none of this - only the **Processor speed** below.
 
 An ESP32 that renders its own scenes has two more:
-
-The battery popup shows how often the frame re-renders (the showing scene's refresh interval)
-and, while it sleeps, how often it checks in.
 
 - **Render scenes**: *On the frame* (the default), or *On the backend* / *On FrameOS Cloud*,
   which runs the frame's scenes on its control plane and sends it the finished picture. The frame
@@ -152,6 +181,10 @@ and, while it sleeps, how often it checks in.
   the best of both: on e-paper it renders at 240&nbsp;MHz and waits out the refresh at 160, and LCD
   and touch screens run at 240 throughout. The frame reboots to take a change; on the console it's
   `set cpu_mode`.
+
+On a Raspberry Pi, **Processor speed** picks the kernel's CPU governor, live with no restart:
+*Battery* is `powersave`, *Performance* is `performance`, and *Automatic* is `ondemand`, the top
+clock while it renders and the lowest while it idles.
 
 ## How often it renders
 

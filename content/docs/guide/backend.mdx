@@ -55,8 +55,9 @@ If you run Home Assistant, FrameOS is one click away:
 
 The add-on deploys precompiled release binaries; it has no Docker socket, so building FrameOS from
 source needs a [build host](/guide/settings#builds-self-hosted-backend-only) configured under
-**Settings → Builds**. Browser flashing of ESP32 boards needs the add-on reached over `https://`
-or `localhost` - behind plain-`http://` ingress there is no Web Serial.
+**Settings → Builds**. Behind plain-`http://` ingress the browser has no Web Serial, so a frame's
+USB card opens [flash.frameos.net](/guide/esp32#flash-the-device) in a window to flash an ESP32
+with the add-on's own release image.
 
 Frames talk to the backend on port `8989`. To serve that port over HTTPS, switch on the add-on's
 `ssl` option and name the `certfile` and `keyfile` in Home Assistant's `/ssl` folder, as the
@@ -64,7 +65,8 @@ Mosquitto and Node-RED add-ons do. In a plain container, set `FRAMEOS_SSL_CERTFI
 `FRAMEOS_SSL_KEYFILE`. New frames then start out pointed at `https://<host>:8989`, and an address
 typed anywhere - with its `https://` and port - is read as it's written. A configured file that's
 missing stops the backend with the reason in the log, rather than serving plain HTTP to frames told
-to use HTTPS.
+to use HTTPS. A frame that reaches the backend by IP address over `https://` checks that the
+certificate names that address, so give a certificate for an address an IP entry, not just a name.
 
 ### Frames in Home Assistant [#home-assistant]
 

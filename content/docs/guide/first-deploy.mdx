@@ -25,16 +25,19 @@ Click "New frame" in the backend and pick how this frame gets set up:
 - **Virtual frame** - [no hardware at all](/guide/virtual); the backend renders to an image URL.
 - **Import frame** - restore a frame you exported earlier as JSON. The export contains every
   secret of the frame, so keep it safe.
-- **Adopt frame** - take over a Pi that is already running FrameOS on its own (booted from a
-  generic SD image, say). Give the backend the frame's address and its admin login; it imports the
-  frame's settings and scenes, keeps its access key so existing links work, and points the frame
-  at this backend, restarting it so logs start flowing right away. Adoption goes over the frame's
+- **Adopt frame** - take over a frame that is already running FrameOS on its own: a Pi booted
+  from a generic SD image, say, or a standalone ESP32. On a frame with a touch screen, **Link to
+  backend** on its own page (swipe down, tap the gear) shows a six-digit code and the address to
+  type, with a QR code of both to paste into the form; a Pi's admin login works instead of the
+  code. The backend imports the frame's settings and scenes, with the service keys they use, keeps
+  its access key so existing links work, and points the frame at this backend, restarting it so
+  logs start flowing right away. An ESP32 restarts as this backend's frame and keeps the scenes it
+  had, which the backend reads off it. A Pi's adoption goes over the frame's
   own admin API: a generic-image card has no SSH and no
   [Remote](/guide/remote), so the deploy drawer says "No shell on this frame", deploys are fast
   deploys over that API, and **Update FrameOS** runs the frame's own signed upgrade. Scenes,
   settings, assets, fonts, service keys, logs, restart and reboot all work; the Terminal doesn't.
-  The admin login is the backend's only way in, so it can't be switched off on such a frame. ESP32 frames
-  can't be adopted - flash those from the backend instead.
+  The admin login is the backend's only way in, so it can't be switched off on such a frame.
 
 Then name the frame and select the right **display driver** for your panel - there are over 120 to
 choose from, organised by vendor. Pick "Web only" if you just want to try FrameOS without any

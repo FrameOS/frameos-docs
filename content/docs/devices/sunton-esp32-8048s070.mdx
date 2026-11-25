@@ -1,0 +1,57 @@
+---
+title: "Sunton ESP32-8048S070"
+description: "Sunton (Guition) ESP32-8048S070 - a 7\" 800x480 touch LCD with an ESP32-S3, running FrameOS on-device with animation and touch."
+device:
+  vendor: "Sunton"
+  model: "ESP32-8048S070"
+  driver: "lcd.ek9716_800x480"
+  label: "EK9716 7.0\" IPS LCD 800x480 (ESP32 RGB, Sunton ESP32-8048S070)"
+  technology: "LCD"
+  interface: "ESP32-S3 board"
+  diagonal: 7
+  width: 800
+  height: 480
+  colors: "65K colors (16-bit)"
+  colorClass: "rgb"
+  buttons: 1
+  platforms:
+    - "esp32-s3"
+  status: "untested"
+---
+
+The **Sunton ESP32-8048S070** (also sold under the Guition name) is a cheap 7" 800×480 IPS
+**touch LCD** with an ESP32-S3-WROOM-1 on the back: 16&nbsp;MB of flash, 8&nbsp;MB of PSRAM, a
+GT911 touch panel and a microSD slot.
+
+## What it does
+
+Pick the **Sunton ESP32-8048S070** hardware preset (`sunton_esp32_8048s070`) and it behaves like
+the other [LCD boards](/guide/esp32#lcd):
+
+- **Scenes animate**: a scene whose render interval is under a second renders back to back, drawn
+  straight into the LCD's frame buffer with only the changed part redrawn.
+- **Touch** reaches scenes as taps, drags, swipes and pointer events
+  ([input events](/guide/scenes#input)), so a [JSX](/guide/apps#jsx-uis) dashboard or remote
+  answers a finger.
+- **The BOOT key and the edges** come bound to the frame
+  ([button actions](/guide/esp32#button-actions)): BOOT pressed turns the screen off or on, pressed
+  twice opens the scene switcher; swipe up from the bottom for the switcher, down from the top for
+  the scene's settings, and in from the left or right for back and forward.
+- **The microSD slot** holds the frame's [assets](/guide/esp32#assets-and-the-sd-card) and fonts.
+- **It boots straight into its scenes** and joins WiFi in the background; set the network on the
+  screen (swipe down, tap the gear).
+
+Its USB port is a CH340 serial bridge, which the browser flasher reads like any other.
+
+## Setup
+
+1. In the FrameOS backend or [FrameOS Cloud](/guide/cloud), create a frame with **Flash embedded
+   device** - or flash it standalone from [flash.frameos.net](https://flash.frameos.net/).
+2. Choose **ESP32-S3**, select the **Sunton ESP32-8048S070** preset, and enter your WiFi details.
+3. Flash it over USB from the browser.
+4. Install scenes as usual - they sync over WiFi, and the device updates itself over the air.
+
+## Status
+
+🟡 **Should work, not yet confirmed on real hardware.**
+Tell us on [GitHub](https://github.com/FrameOS/frameos/issues/new) or [Discord](https://discord.gg/9dT9y7EzUw) if you try it.

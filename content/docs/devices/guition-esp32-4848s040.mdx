@@ -1,0 +1,58 @@
+---
+title: "Guition ESP32-4848S040"
+description: "Guition ESP32-4848S040 - a 4\" 480x480 touch LCD wall panel with an ESP32-S3, running FrameOS on-device with animation and touch."
+device:
+  vendor: "Guition"
+  model: "ESP32-4848S040"
+  driver: "lcd.st7701s_480x480"
+  label: "Guition ESP32-4848S040 (4\" LCD ESP32-S3)"
+  technology: "LCD"
+  interface: "ESP32-S3 board"
+  diagonal: 4
+  width: 480
+  height: 480
+  colors: "65K colors (16-bit)"
+  colorClass: "rgb"
+  buttons: 0
+  platforms:
+    - "esp32-s3"
+  status: "untested"
+---
+
+The **Guition ESP32-4848S040** is a 4" square 480×480 IPS **touch LCD** made to fit a European
+wall box (the "86 box" smart-home panel), with an ESP32-S3: 16&nbsp;MB of flash, 8&nbsp;MB of
+PSRAM and GT911 touch. Its glass is the same as the
+[SenseCAP Indicator](/devices/seeed-sensecap-indicator)'s, wired differently, so it needs its own
+preset rather than the bare panel.
+
+## What it does
+
+Pick the **Guition ESP32-4848S040** hardware preset (`guition_esp32_4848s040`) and it behaves like
+the other [LCD boards](/guide/esp32#lcd):
+
+- **Scenes animate**, drawn straight into the LCD's frame buffer with only the changed part
+  redrawn.
+- **Touch** reaches scenes as taps, drags, swipes and pointer events
+  ([input events](/guide/scenes#input)).
+- **The edges are its keys.** The board has no button, so the frame is driven by edge swipes: up
+  from the bottom for the scene switcher, down from the top for the scene's settings, and in from
+  the left or right for back and forward.
+- **It boots straight into its scenes** and joins WiFi in the background; set the network on the
+  screen (swipe down, tap the gear). Flashed with nothing picked, it opens on the scene switcher.
+
+## What it doesn't
+
+- **The microSD slot isn't supported yet.** Assets live in the board's internal storage.
+
+## Setup
+
+1. In the FrameOS backend or [FrameOS Cloud](/guide/cloud), create a frame with **Flash embedded
+   device** - or flash it standalone from [flash.frameos.net](https://flash.frameos.net/).
+2. Choose **ESP32-S3**, select the **Guition ESP32-4848S040** preset, and enter your WiFi details.
+3. Flash it over USB from the browser (its USB port is a CH340 serial bridge).
+4. Install scenes as usual - they sync over WiFi, and the device updates itself over the air.
+
+## Status
+
+🟡 **Should work, not yet confirmed on real hardware.**
+Tell us on [GitHub](https://github.com/FrameOS/frameos/issues/new) or [Discord](https://discord.gg/9dT9y7EzUw) if you try it.

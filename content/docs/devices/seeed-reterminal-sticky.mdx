@@ -40,23 +40,33 @@ The preset also brings:
   scene, DOWN held the next, two keys pressed together are Back
   ([buttons](/guide/buttons), [button actions](/guide/esp32#button-actions)), and AI held is the
   [voice chat](/guide/esp32#voice-chat): hold it, say what you want, let go.
+- **It runs on its battery**: on the cell the board stays on only while its power latch holds,
+  and FrameOS sets the latch first thing at boot, so pulling the USB cable doesn't switch it off.
+  Unplugging it, or switching it on with the power key, counts as a tap: it stays up a few minutes
+  before it sleeps, since someone has it in hand.
 - **Touch**: the glass sends taps, long presses and swipes to scenes like a Pi touchscreen
-  ([input events](/guide/scenes#input)), and a touch wakes a sleeping frame. Only the parts of the
+  ([input events](/guide/scenes#input)), and a touch wakes a sleeping frame: a moon in the top-right
+  corner says it's asleep, and turns into a loading ring the moment you tap. Only the parts of the
   panel that changed are refreshed, so a tap answers at once, and the edges are bound like the
   other touch boards': up from the bottom for the [scene switcher](/guide/scenes#input), down from
   the top for the scene's settings. With **Touch beep** on, a press that something takes clicks.
 - **The battery gauge and charger**: the Sticky's fuel gauge reports the charge and whether it's
   on USB, so the frame deep-sleeps on its cell and stays connected when plugged in, and FrameOS
   enables its charger at boot, so the cell charges on USB.
-- **A layout of its own**: the *reTerminal Sticky* layout writes what each key does beside it and
-  turns the scene list into a home screen ([layouts](/guide/scenes#layouts)). The AI key is the
-  `primary` key, so a short press opens the highlighted scene in the switcher.
+- **A layout of its own**: the *reTerminal Sticky* layout turns the scene list into a home screen
+  with the time, the date, the signal and the battery, and a line each for what the keys and swipes
+  do; over every other scene it's a thin bar with the time (a tap: the scene list) and the signal
+  and battery (a tap: the frame's page) ([layouts](/guide/scenes#layouts)). A scene that asks for
+  [the whole screen](/guide/scenes#full-screen) gets it. The Action key is the `primary` key, so a
+  short press opens the highlighted scene in the switcher.
 - **The TF card** for assets.
 
 ## Setup
 
-1. In the FrameOS backend, create a frame with **Flash embedded device**.
-2. Choose **ESP32-S3**, select the **Seeed reTerminal Sticky** preset, and enter your WiFi details.
+1. In the FrameOS backend or [FrameOS Cloud](/guide/cloud), create a frame with **Flash embedded
+   device** - or flash it standalone from [flash.frameos.net](https://flash.frameos.net/).
+2. Choose **ESP32-S3**, select the **Seeed reTerminal Sticky** preset (it turns the screen to
+   portrait), and enter your WiFi details.
 3. Flash it over USB from the browser - the backend writes the release image for the board and sets
    it up as this frame.
 4. Install scenes as usual - they sync over WiFi, and the device updates itself over the air.

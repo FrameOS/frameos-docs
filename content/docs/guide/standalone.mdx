@@ -16,8 +16,10 @@ hand the same frame to a [self-hosted backend](/guide/backend) (**Adopt frame**)
   This page is about a Raspberry Pi or another Linux board. An [ESP32-S3](/guide/esp32) runs
   standalone too, set up from [flash.frameos.net](https://flash.frameos.net/) over a USB cable with
   no account: pick the board, a name, your WiFi and the scenes to start with, and it flashes and
-  sets the board up in one go. It has no admin page - add scenes from the Scene store on the frame,
-  and plug it back in to the same page to change its WiFi or update its firmware. ESP32-C3 and
+  sets the board up in one go ([details](/guide/esp32#standalone)). It has no admin page - add
+  scenes from the Scene store on the frame, and plug it back in to the same page to change its
+  WiFi or update its firmware. A touch board's own settings page can hand it to a backend or the
+  cloud later ([Link to backend / Link to cloud](/guide/settings#connect-from-the-frame)). ESP32-C3 and
   [Pico](/guide/pico) boards can't run standalone: something has to render for them - a
   [self-hosted backend](/guide/backend), or for a C3 [FrameOS Cloud](/guide/cloud#limits) on a
   paid plan.

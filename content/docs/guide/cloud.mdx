@@ -138,6 +138,10 @@ claimed without reflashing:
   frame shows a short code like `H7LU-JLWN`. While the link is pending, the same code and a QR code
   are drawn **on the panel itself** - over the current scene, or beside the rows on the status
   screen.
+- Or, on the frame's own screen - a touch Pi or an ESP32 that nobody manages yet - swipe down,
+  tap the gear and press **Link to cloud**: the page shows the code and a QR code. A code lives
+  only while that page is up, and 15 minutes at most; if the link stops, the page says why, with
+  **Try again**, and **Change address** points it at another FrameOS Cloud.
 - Scan the QR, or open **Add frame → Link a frame that already runs** in the cloud, type the code
   from the frame, check what is asking (the frame introduces itself by its hostname, kind and
   address) and approve. The drawer opens the frame the moment it has enrolled.
@@ -156,7 +160,8 @@ copies are left alone, and none of your service keys are shared with the importe
 you allow them.
 
 Seeing the code on the display is the proof of ownership, so a frame linked this way is active
-right away. In the frame's setup hotspot you can also pick **Manage via: FrameOS Cloud** and leave
+right away, and it gets what a frame added with a claim code gets: your service keys, and its logs
+and metrics, each with a switch on the frame's page in the cloud to take it back. In the frame's setup hotspot you can also pick **Manage via: FrameOS Cloud** and leave
 the claim code empty - the frame shows a link code on its display as soon as it is online.
 
 ### Flash an ESP32 from the browser
@@ -173,9 +178,12 @@ board - so the flasher waits as long as the image's storage takes to format, giv
 write an S3 image onto a different chip.
 
 ESP32 frames are full frames in the cloud too: scenes render on the chip, with logs, metrics,
-previews, schedules and signed over-the-air updates. PSRAM-less boards (ESP32-C3: the original
-TRMNL, XTEINK X4) would need the cloud to render every refresh for them, which it doesn't offer
-yet - their enrolment is refused. Run those from a [self-hosted backend](/guide/backend).
+previews, schedules and signed over-the-air updates. The PSRAM-less ESP32-C3 boards - the TRMNL
+OG and BWRY, the XTEINK X4, the Seeed XIAO 7.5" ePaper Panel, the C3 OLED dev board - are in the
+flasher's list too, in a group of their own: the cloud [renders every refresh](/guide/esp32#render-on-server)
+for them, so each counts as one of your plan's [cloud-rendered frames](#limits). The flasher checks
+before it writes a byte, and says what your plan is missing if it has no room for another (the
+free plan has none).
 
 ### A virtual frame
 
@@ -214,7 +222,9 @@ and its scenes at `/frames/<id>/scenes/<sceneId>`.
   takes every pending update in one push. A deploy from the deploy drawer takes them too, listed
   under **Scene updates** with what each one changes. A scene that asks for a service key the frame isn't
   allowed says so in its drawer - *Uses your Unsplash key, not allowed on this frame* - with an
-  **Allow** button. **Map buttons** in the scene's menu says which of the frame's keys the scene's
+  **Allow** button. On a frame that doesn't get your keys at all, adding such a scene asks once
+  whether to **Deliver keys**, and its drawer says *Uses your OpenAI key, which this frame does not
+  get* until you do; nothing turns delivery on without asking. **Map buttons** in the scene's menu says which of the frame's keys the scene's
   button listeners answer to ([details](/guide/scenes#input)), and a scene shown with **Preview on
   frame** or by the voice chat sits above the list as a *preview* row, with **Install** and
   **Discard**.
@@ -236,12 +246,12 @@ and its scenes at `/frames/<id>/scenes/<sceneId>`.
   partial-refresh policy, GPIO buttons, [local network access](#local-network-access), and on
   ESP32 the [power options](/guide/esp32#power) - deep sleep, battery pins and the
   battery enable pin, how long it stays awake after a tap, the processor speed and whether the
-  cloud [renders its scenes](/guide/esp32#render-on-server) - the button and touch beep, and
-  whether the frame's own screen offers its [settings page](/guide/settings#on-screen). Also
+  cloud [renders its scenes](/guide/esp32#render-on-server) - the button and touch beep, tap and
+  click sounds, and whether the frame's own screen offers its [settings page](/guide/settings#on-screen). Also
   [button actions](/guide/esp32#button-actions), and on an ESP32 the status LED, the microphone's
   pins and the [voice chat](/guide/esp32#voice-chat) with its four permission switches. A Pi's **Display driver** can be
   switched too: the frame runs the new driver's setup and restarts or reboots
-  by itself. An ESP32's GPIO buttons show as the board reports them, with **Edit buttons** to
+  by itself, and its **Processor speed** picks the CPU governor. An ESP32's GPIO buttons show as the board reports them, with **Edit buttons** to
   change them. Everything else about the device - WiFi, mount points, an ESP32's panel - is owned
   by the device. A rotation or scale someone changes on the frame's own screen shows up here too.
   A setting newer than the frame's firmware is shown disabled with the version it needs.
@@ -282,8 +292,9 @@ for this frame*, and the Logs panel links to the setting.
 
 To allow it, open the frame's settings in the cloud: **Local network access → Turn on** asks the
 frame to draw a six-digit code on its panel, and you type it into the same page. It takes a person in front of the frame: the code never leaves the device as an
-image, it's good for five minutes and five tries, and the frame takes at most ten wrong codes an
-hour. A sleeping frame shows the code when it wakes. Turning access off needs no code, but asks
+image, it's good for five minutes and five tries, and the frame takes at most ten wrong codes in a
+window that starts at an hour and doubles each time it sees a wrong one, up to 128 hours - a typo
+now and then never meets it, someone guessing soon does. A sleeping frame shows the code when it wakes. Turning access off needs no code, but asks
 first, since turning it back on needs someone at the frame again. On an ESP32,
 `set allow_local_network 1` on the USB console works too. Self-hosted and standalone frames have
 no such block - what they reach is your network's call. Devices a frame should never reach belong
@@ -297,9 +308,12 @@ Everything the browser can do with your account is also available to scripts and
 - **Personal API tokens** (`fc_api_…`, or a read-only `fc_apiro_…`) stand in for your account on
   the JSON API. A token can do what you can do in the UI, minus the actions that always need a fresh
   sign-in in the browser (revoking frames, approving device links, changing your password).
-  Minting one needs a recent sign-in too; tokens are shown once and stored hashed. Every token
+  Minting one needs a recent sign-in too, and the account's address gets an email saying so;
+  tokens are shown once and stored hashed. Every token
   expires - after a year by default, which is also the longest - and all of them are revoked when
-  you reset your password or add or remove a second factor.
+  you change or reset your password or add or remove a second factor. A claim token minted with an
+  API token enrolls its frame as **pending**, so a script alone can't add a frame that receives
+  your service keys.
   [Sending a frame an event](/guide/api#backend) is one call with such a token.
 - **A hosted MCP server** at `https://cloud.frameos.net/api/mcp` - the same API with a vocabulary a
   [Model Context Protocol](https://modelcontextprotocol.io/) client can read: around 80 tools
@@ -382,13 +396,14 @@ immediate and needs no support ticket. The full details are in the
 A frame is managed by exactly one of them at a time, and switching is always a local action on the
 device:
 
-- **Cloud → standalone**: delete the frame in the cloud, or **Disconnect** on the frame's admin
-  page. The frame keeps its scenes.
+- **Cloud → standalone**: delete the frame in the cloud, **Disconnect** on the frame's admin
+  page, or **Unlink** on its own screen's frame page (it asks twice). The frame keeps its scenes.
 - **Standalone → cloud**: [link it](#link-a-frame-that-already-runs) with the code on its display.
 - **Standalone → backend**: **Adopt frame** in the backend imports its settings and scenes - see
   [First deploy](/guide/first-deploy#add-the-frame).
-- **Backend → cloud** and back: disconnect from one side, then enroll or adopt from the other.
-  A guided migration is planned but not built yet.
+- **Backend → cloud** and back: disconnect from one side (**Unlink** on the frame's own page does
+  it on the frame), then link or adopt from the other - **Link to cloud** or **Link to backend** on
+  the same page. A guided migration is planned but not built yet.
 - **A cloud ESP32 with a backend set on it too** (`set backend` on its console, a bench setup) stays
   enrolled, but takes its content from that backend and turns down the cloud's scenes, settings and
   schedule. The frame's page says which backend holds it. To hand it back, follow the
