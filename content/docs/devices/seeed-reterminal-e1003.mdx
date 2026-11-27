@@ -55,9 +55,10 @@ scenes on the device. Pick the **Seeed reTerminal E1003** hardware preset
   awake for five minutes (**Stay awake after a press or tap**, under Power), so the next one is
   answered at once. The [Windows 98 layout](/guide/scenes#layouts) - a taskbar with Start, the
   scene's button, the battery and the clock - fits it well.
-- **Keys and voice**: REFRESH, LEFT and RIGHT on GPIO 3, 4 and 5. Out of the box LEFT held is the
-  previous scene, RIGHT held the next, and REFRESH held is the [voice chat](/guide/esp32#voice-chat):
-  hold it, say what you want, let go. Change them under
+- **Keys and voice**: REFRESH, LEFT and RIGHT on GPIO 3, 4 and 5, the
+  [standard keys](/guide/buttons). Out of the box LEFT held is the previous scene, RIGHT held the
+  next, both arrows pressed together are Back, and REFRESH held is the
+  [voice chat](/guide/esp32#voice-chat): hold it, say what you want, let go. Change them under
   [button actions](/guide/esp32#button-actions).
 - **The rest**: the buzzer and the green status LED (GPIO 16), the TF card for assets, and the
   battery on GPIO 1, switched by GPIO 40, with deep sleep on battery.

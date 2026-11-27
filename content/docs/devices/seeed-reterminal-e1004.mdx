@@ -42,8 +42,10 @@ switches on for each reading. The panel is the same glass as the
 [Waveshare 13.3" (E)](/devices/waveshare-epd-13in3e), with Seeed's own analogue tuning applied by
 the preset.
 
-LEFT held is the previous scene and RIGHT held the next - change them
-under [button actions](/guide/esp32#button-actions) - and the preset drives the rest of the board:
+LEFT and RIGHT held are the previous and the next scene, REFRESH held opens the scene list (the
+E1004 has no microphone), and both arrows pressed together are Back ([buttons](/guide/buttons);
+change them under [button actions](/guide/esp32#button-actions)) - and the preset drives the rest
+of the board:
 the green status LED (GPIO 48) lights with the buzzer's notes, the TF card shares the panel's bus,
 the clock chip sets the time at boot, and the charger tells the frame when USB is plugged in. The
 E1004 has no microphone, so no [voice chat](/guide/esp32#voice-chat) unless you add one to its J2

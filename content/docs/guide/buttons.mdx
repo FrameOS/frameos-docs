@@ -1,0 +1,110 @@
+---
+title: Buttons
+description: Every FrameOS board with keys works the same way - Action, Next and Prev, Back, Home and Screen, each a press and a hold - and what each board's keys do out of the box.
+---
+
+Every FrameOS board with keys works the same way. A key plays one of five roles, and each role
+has a **press** and a **hold**, nothing else. There are no double or triple presses: pressing a
+key twice is two presses, so the same digit twice on a calculator works, and Next twice moves
+two steps. A press counts the moment the key comes back up.
+
+A hold acts after one second, while you're still holding the key, with a short beep on boards
+with a buzzer. You never have to guess whether you held it long enough.
+
+## The five keys
+
+| Key | Press | Hold |
+| --- | --- | --- |
+| **Action** | the scene's: pushes the highlighted button on a screen with buttons, redraws a scene with nothing to press | [voice chat](/guide/esp32#voice-chat) on a board with a microphone, otherwise **Home** |
+| **Next / Prev** | the scene's: moves to the next or previous thing to press; on a scene with nothing to press (a photo frame), the next or previous photo or page | the next / previous scene |
+| **Back** | back: closes the keyboard or a list first, then goes back in the scene (the page or photo before), and closes the scene list or the settings | **Home** |
+| **Home** | the scene list; press again to close it | the scene's settings |
+| **Screen** | turns the screen off and on (LCDs) | voice chat if it's the board's only way to talk, otherwise **Home** |
+
+**Home** is the [scene list](/guide/scenes#input): every scene on the frame as a tile. From it:
+
+- **Next / Prev** walk the tiles and **Action** opens one.
+- The **gear** in its header opens the settings of the scene you came from. That page's own gear
+  opens the frame's page (Wi-Fi, rotation, restart).
+- **Back** closes the list again.
+
+## When a board has fewer keys
+
+Most boards don't have all five, so the missing ones are covered like this:
+
+- **No Back key**: press **two keys together** - any two. Press and let go is Back; hold them for
+  a second and it's Home. Nobody presses two keys at once by accident, so this never gets in the
+  way of anything else.
+- **No microphone**: **Action held** is Home.
+- **A touch screen**: swipe in from the left edge for back, from the right for forward, up from
+  the bottom for Home, and down from the top for the scene's settings. The keys on a touch board
+  do what touch can't: the screen and the voice chat.
+- **Only one key** (a TRMNL, an ESP32-C3 board): press it for the scene, hold it for Home. In
+  Home, each press moves to the next tile and holding the key opens the one it's on.
+- **A crown or a knob**: each click is Next or Prev, and pushing it is Action.
+
+## Every board
+
+| Board | Action (hold) | Next / Prev | Back | Home | Screen |
+| --- | --- | --- | --- | --- | --- |
+| [reTerminal E1001](/devices/seeed-reterminal-e1001), [E1002](/devices/seeed-reterminal-e1002) | REFRESH (voice chat) | RIGHT / LEFT | both arrows together | both arrows held | - |
+| [reTerminal E1003](/devices/seeed-reterminal-e1003) | REFRESH (voice chat) | RIGHT / LEFT | both arrows, or swipe in from the left | both arrows held, or swipe up | - |
+| [reTerminal E1004](/devices/seeed-reterminal-e1004) | REFRESH (Home) | RIGHT / LEFT | both arrows together | REFRESH held, or both arrows held | - |
+| [reTerminal Sticky](/devices/seeed-reterminal-sticky) | AI (voice chat) | DOWN / UP | two keys together, or a swipe | two keys held, or swipe up | - |
+| [CrowPanel 5.79"](/devices/elecrow-crowpanel-5in79) and 4.2" e-paper | OK (Home) | NEXT / PREV | EXIT | HOME, or EXIT held | - |
+| Waveshare PhotoPainter | KEY1 (voice chat) | BOOT is Next | KEY1 and BOOT together | both held | - |
+| Seeed XIAO ePaper [EE02](/devices/seeed-xiao-epaper-ee02)-[EE05](/devices/seeed-xiao-epaper-ee05) | KEY2 (Home) | KEY3 / KEY1 | two keys together | two keys held | - |
+| TRMNL [OG DIY](/devices/trmnl-og-diy-kit), [4.26" DIY](/devices/trmnl-4in26-diy-kit) | BOOT (Home) | KEY3 or KEY1 is Next | both together | both held | - |
+| [TRMNL OG](/devices/trmnl-og), [BWRY](/devices/trmnl-bwry), [XIAO 7.5"](/devices/seeed-xiao-7in5-epaper-panel), [C3 OLED](/devices/esp32-c3-oled-0in42), XTEINK X4 | the one key (Home) | - | - | the key held | - |
+| Waveshare 13.3E6 | BOOT (voice chat) | - | - | - | - |
+| [SenseCAP Indicator](/devices/seeed-sensecap-indicator), Sunton 7", CrowPanel Advance 7.0" | - | - | swipe | swipe up, or the key held | the key |
+| CrowPanel Advance 2.8" | - | - | swipe | swipe up | BOOT (held: voice chat) |
+| Waveshare AMOLED 1.75" | BOOT (voice chat) | - | swipe | swipe up, or PWR held | PWR |
+| CrowPanel 2.01" watch | the crown, pushed (voice chat) | the crown, turned | swipe | the power key, BOOT held, or swipe up | BOOT |
+| CrowPanel 1.46" rotary | the knob, pushed (Home) | the knob, turned | swipe | BOOT or the knob held, or swipe up | BOOT |
+| Guition 4848S040, every [HyperPixel](/devices/pimoroni-hyperpixel-4-touch) | - | - | swipe | swipe up | - |
+| [Inky Frame](/devices/pimoroni-inky-frame-7-3) | A (Home) | C / B | D | E, or D held | - |
+| [Inky Impression](/devices/pimoroni-inky-impression-7-2025) | A (Home) | C / B | D | D held | - |
+
+The order of the XIAO ePaper boards' three keys hasn't been checked on every board yet, and
+neither has which of the PhotoPainter's two keys is the easier one to reach. If yours feels the
+wrong way round, swap them under [button actions](#change-what-a-key-does).
+
+## A frame hung another way
+
+Keys with arrows follow the picture. **Next is always the key towards the right or the bottom of
+the picture as you see it**, so a reTerminal hung upside down has Next on its right-hand key, and
+the arrows printed on the keys point the right way again. Hang it sideways and the two arrow
+keys become up and down. The same rotation turns touch, so a swipe and a key always agree. A
+knob's clockwise stays clockwise, and Action, Back, Home and Screen do the same however the frame
+hangs.
+
+## Change what a key does [#change-what-a-key-does]
+
+**Settings → Button actions** lists what each key does on this frame, whatever scene is showing.
+Change a row, add one or clear it there, on the self-hosted backend, in FrameOS Cloud or in the
+iOS app. Each row is one press or hold of a key, or a swipe on a touch screen. The rows for the
+arrows held and for Back name a key by what it does ("Next key · long press", "Back key") rather
+than by its label, because they follow the frame's rotation and stand for two keys pressed
+together on a board without a Back key. A press bound there never reaches the scene.
+
+You can still bind a double or triple press of a key there. Only that key then waits about a
+third of a second after each press to see whether another follows.
+
+A frame that was set up with an older version's defaults gets the new ones when you update it,
+unless you'd changed its button actions yourself: then it keeps yours.
+
+## For scene authors
+
+A scene hears every short press as a `button` event with the key's **role** - `primary` (Action),
+`next`, `prev`, `back`, `menu` (Home) or `screen` - so filter on `role`, not on the label printed
+on a particular board. Holds are the frame's, so a scene shouldn't rely on hearing one.
+
+- **A scene with buttons on screen** gets the keys as Tab, Shift+Tab, Enter and Escape for free
+  ([JSX UIs](/guide/apps#jsx-uis)).
+- **A scene with pages or a set of photos** listens for `back` and `forward`. Next and Prev arrive
+  as `forward` and `back` on a scene with nothing to press, exactly like the edge swipes, so the
+  same scene works with keys and with a finger.
+- **A scene written for other keys** - a store scene that listens for `A` and `B` - can be told
+  which of your keys are its `A` and `B` with **Map buttons** in the installed scene's menu
+  ([details](/guide/scenes#input)).
