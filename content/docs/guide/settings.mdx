@@ -96,11 +96,10 @@ settings**, **Back** and **Forward**, and - on displays that can
 switch their panel off - display on, off or on/off. A **Show scene** row lists that scene's
 settings too: what you set there is applied as the scene comes up, like a schedule entry's, and
 what you leave alone keeps the scene's own value. (An ESP32 keeps the whole map in 1&nbsp;KB, and
-the section warns before a longer one is saved.) Each row is one press (press, double press or
-long press) of one of the frame's buttons, or on a touch screen one
-[edge swipe](/guide/scenes#input), and a press bound there never reaches the scene. The Seeed
-reTerminal presets come with LEFT held = previous scene and RIGHT held = next; the
-[ESP32 guide](/guide/esp32#button-actions) lists every board's. A frame keeps the map it was set up
+the section warns before a longer one is saved.) Each row is one press or hold of one of the frame's buttons (or of a key by what it does: the
+arrows held, Back), or on a touch screen one [edge swipe](/guide/scenes#input), and a press bound
+there never reaches the scene. Every board comes with the standard set: [Buttons](/guide/buttons)
+lists every board's. A frame keeps the map it was set up
 with, so an ESP32 from before a preset changed keeps its old one until you change the rows, or run
 `set hardware <preset>` and `restart` on its console. A HyperPixel whose map you never touched
 follows the current default. To tell one installed scene which of your keys are its own, use

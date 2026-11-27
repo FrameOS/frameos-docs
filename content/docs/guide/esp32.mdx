@@ -327,8 +327,8 @@ their drawn size, as on a Pi.
   settings sync and restarts. What a press does whatever scene is showing - the next scene, say -
   is a [button action](#button-actions).
 - **Button beep**: boards with a buzzer - the Seeed reTerminals - click when a press registers and
-  click lower on the release, the second tap of a double press clicks higher, a held key counts
-  each second out loud, and a press the board had no room for sounds a dull "no". **Button beep
+  click lower on the release, a held key sounds once when its hold counts, and a press the board
+  had no room for sounds a dull "no". **Button beep
   GPIO** and **Button beep tone (Hz)** sit under the frame's GPIO buttons; on the console it's
   `set buzzer_pin`, `set buzzer_tone_hz` and `beep` to test. The Waveshare
   PhotoPainter and 13.3E6 play the same notes on their speaker.
@@ -348,15 +348,10 @@ their drawn size, as on a Pi.
 the next or previous scene, a render, a particular scene, the display on or off, the
 [voice chat](#voice-chat), the scene switcher or scene settings, or Back and Forward, on both
 control planes. On a touch screen an edge swipe
-can be bound the same way. A press bound there never reaches the scene. The board presets come
-with sensible ones:
-
-| Board | Button actions out of the box |
-| --- | --- |
-| reTerminal E1001, E1002, E1003, E1004 | LEFT held = previous scene, RIGHT held = next scene; REFRESH held = voice chat (not on the E1004, which has no microphone). The E1003 adds [the edge swipes](/guide/scenes#input) |
-| reTerminal Sticky | UP held = previous scene, DOWN held = next scene, AI held = voice chat |
-| SenseCAP Indicator | Button pressed = screen on/off, pressed twice = scene switcher; [the edge swipes](/guide/scenes#input): up = scene switcher, down = scene settings, in from the left = back, from the right = forward |
-| PhotoPainter, 13.3E6 | KEY1 / BOOT held = voice chat |
+can be bound the same way. A press bound there never reaches the scene. Every board comes with
+the same standard set - Action, Next and Prev, Back, Home and Screen, each a press and a hold,
+with no double presses - and [Buttons](/guide/buttons) lists what each board's keys do out of the
+box.
 
 Change or clear them in Settings. A board keeps the map it was set up with, so one from before a
 preset changed gets the new one with `set hardware <preset>` and `restart` on its console. A scene
@@ -386,8 +381,10 @@ knows what the last sentence did. A sentence can be up to 30 seconds long.
   (REFRESH), the reTerminal Sticky (the AI key), and the Waveshare PhotoPainter (KEY1) and 13.3E6
   (BOOT) through their codec's microphones. The E1004 has no microphone; a PDM microphone on its J2
   header works once **Microphone GPIO** in Settings names its pins. A Pi frame can't do this yet.
-- **Which key**: a [button action](#button-actions) set to *Voice chat*, always on a long press -
-  the frame listens while the key is held and stops when it's let go.
+- **Which key**: the Action key held ([Buttons](/guide/buttons)), or any
+  [button action](#button-actions) set to *Voice chat*, always on a long press - the frame listens
+  while the key is held and stops when it's let go. Hold another key with it and it's not the voice
+  chat: two keys together are Back.
 - **What it may do**: four switches under **Settings → Buzzer, LED and microphone → Voice chat
   may**: *Change settings*, *Use installed scenes*, *Create new scenes* and *Access photo albums*,
   all on until you switch one off, so "show a picture of a chicken" works out of the box. A picture or scene made by voice lands on the
