@@ -25,8 +25,8 @@ device:
 The **XIAO ePaper Display Board EE05** is the refreshed, slimmer sibling of the
 [EE04](/devices/seeed-xiao-epaper-ee04): the same XIAO ESP32-S3 Plus (8&nbsp;MB of PSRAM), a
 **24-pin** panel connector, three side-mounted keys, a battery connector with a hardware power
-switch, and an extension header for sensors. It's the board in the
-[TRMNL 4.26" DIY Kit](/devices/trmnl-4in26-diy-kit), and Seeed also sells it on its own or as the
+switch, and an extension header for sensors. It's the board of the
+[XIAO ePaper Driver Board + 4.26" panel](/devices/trmnl-4in26-diy-kit) preset, and Seeed also sells it on its own or as the
 XIAO ePaper DIY Kit.
 
 FrameOS runs the **full on-device renderer** on it.
@@ -47,7 +47,9 @@ FrameOS runs the **full on-device renderer** on it.
 
 The keys are KEY1 (GPIO 2), KEY2 (GPIO 3) and KEY3 (GPIO 8), which is not where the
 [EE04](/devices/seeed-xiao-epaper-ee04) has its third key. They arrive in scenes as
-[button events](/guide/scenes#input). The battery is read through a 2:1 divider on GPIO 1, switched
+[button events](/guide/scenes#input) on FrameOS's [button standard](/guide/buttons):
+KEY2 is the Action key and held opens the scene switcher, KEY1 and KEY3 are Prev and Next and held
+switch scenes, and two keys pressed together are Back. The battery is read through a 2:1 divider on GPIO 1, switched
 on by GPIO 39.
 
 The board can't tell the firmware when USB is plugged in, so the preset leaves deep sleep off. Turn

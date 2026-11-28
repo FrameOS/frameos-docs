@@ -23,14 +23,20 @@ restyle it, or turn it off entirely.
 ## Settings on the frame's screen [#on-screen]
 
 On a touch frame - a HyperPixel, a Pi touch display, and every ESP32 touch board: the SenseCAP
-Indicator, the Sunton and Guition LCDs, the round AMOLED, the reTerminal E1003 and Sticky - a swipe
-down from the top opens the scene's settings, and a gear left of **Save** opens the frame's own
+Indicator, the Sunton and Guition LCDs, Elecrow's CrowPanel LCDs, the round AMOLED, the reTerminal
+E1003 and Sticky - a swipe down from the top opens the scene's settings (on a frame of keys, the
+Home key held does), and a gear left of **Save** opens the frame's own
 page: the WiFi network and password (an eye beside it shows what you typed), the rotation, the
 [scale](#render-scale), the date and time on an offline ESP32, the battery and the signal, an
 update check, **Update scenes** when the store has newer versions of the frame's scenes (it asks
 twice, then updates every one in a single push), **Tap and click sounds** on a frame that makes
-them, **Stay awake after a press or tap** on one that deep-sleeps, and **Render again**,
-**Restart FrameOS** and **Reboot**, right under the frame's card. A rotation, scale or sound
+them, **Brightness** on a screen that can dim, **Stay awake after a press or tap** on one that
+deep-sleeps, and **Render again**, **Restart FrameOS** and **Reboot**, right under the frame's card.
+**Service keys** opens a page with a field for each key the apps use - OpenAI, Unsplash, Home
+Assistant's address and token, Immich's address and key, GitHub. A key typed there is the frame's
+own: it stays on the frame through pushes, deploys, reboots and an unlink, the control plane is
+never told it, and it wins over the one the plane sends. The last card, **About**, says what the
+frame runs on: chip, board, display, memory, storage, uptime, its network and who manages it. A rotation, scale or sound
 setting changed there reaches the backend or the cloud too, so the two stay in step. The scene
 switcher's header has the same gear, so the page is in reach even when a layout broke every scene.
 On a round panel the page is laid out inside the circle.
@@ -108,8 +114,11 @@ Ethernet beside its hotspot doesn't offer it to the rest of your network.
 ## Buttons, voice and input [#buttons]
 
 List the frame's buttons by pin and label under **GPIO buttons** - the hardware presets fill them
-in. Each button has a **role** (`primary`, `next`, `prev`, `back`, `menu`, `refresh`…), defaulting
-from its label - the reTerminal's green REFRESH key is `primary` - and scenes hear presses as
+in. Each button has a **role** - `primary` (Action), `next`, `prev`, `back`, `menu` (Home) or
+`screen`, or for a key whose place is a direction, `left`, `right`, `up` or `down`, which turn into
+`next` and `prev` as the frame is rotated. The presets set every key's role, and on a frame
+configured by hand it defaults from the label - the reTerminal's green REFRESH key is `primary`. What
+each role does is the [button standard](/guide/buttons), and scenes hear presses as
 `button` and `gpio` [events](/guide/scenes#input). In a [JSX UI](/guide/apps#jsx-uis) the roles
 are keys: `next` and `prev` walk the elements, `primary` presses one, `back` and `menu` let go. On an ESP32 a changed map reaches the board with its next settings
 sync, and it restarts to rebind the pins (the cloud pushes it too).
@@ -123,12 +132,9 @@ what you leave alone keeps the scene's own value. (An ESP32 keeps the whole map 
 the section warns before a longer one is saved.) Each row is one press or hold of one of the frame's buttons (or of a key by what it does: the
 arrows held, Back), or on a touch screen one [edge swipe](/guide/scenes#input), and a press bound
 there never reaches the scene. Every board comes with the standard set: [Buttons](/guide/buttons)
-lists every board's. A frame keeps the map it was set up
-with, so an ESP32 from before a preset changed keeps its old one until you change the rows, or run
-`set hardware <preset>` and `restart` on its console. A HyperPixel whose map you never touched
-follows the current default. A row can also be a **triple press**: only a key bound that way
-waits for a third press, so the reTerminal Sticky's Action key goes back on two presses and opens
-the scene list on three. To tell one installed scene which of your keys are its own, use
+lists every board's. A frame whose map nobody changed follows its preset, so an update brings the
+newest map; a map you changed is kept. A row can also be a **double** or **triple press**: only a
+key bound that way waits for the next press. To tell one installed scene which of your keys are its own, use
 **Map buttons** in that scene's menu instead ([details](/guide/scenes#input)).
 
 ESP32 boards get a **Buzzer, LED and microphone** box under the buttons:
@@ -167,6 +173,13 @@ five minutes by default - so the next press is answered at once; it's on the fra
 The battery popup shows how often the frame re-renders (the showing scene's refresh interval)
 and, while it sleeps, how often it checks in. A Raspberry Pi is always awake and always
 wall-powered, so it has none of this - only the **Processor speed** below.
+
+A screen whose brightness the frame can set - the round AMOLED and Elecrow's CrowPanel watch,
+rotary and Advance 2.8" - adds three sliders: **Brightness** (5 to 100%), **Dim when idle** (after
+how many seconds without a tap, a key or a turn of the knob; never by default) and **Dimmed
+brightness** (10% by default; 0 is dark). The next touch or press brings the screen back at once
+and still does what it does. The frame's own page has a Brightness bar that sets the glass as your
+finger moves, and on a Pi with a backlight that has levels it sets that, kept across restarts.
 
 An ESP32 that renders its own scenes has two more:
 
@@ -214,11 +227,17 @@ canvas is the panel divided by the scale, lays its UI out at that size, and what
 drawn sharp at the panel's full size. An app that fetches for its size asks for less too: at 2, a
 quarter of the data.
 
-**Automatic**, the default, is 1 - and 2 on a 4K or bigger screen on HDMI. Above 1 a UI is laid
-out smaller and drawn bigger; at 0.75, 0.5 or 0.25 it gets more room than the panel has and
-everything is drawn smaller. A scene can override it in its own settings, or with a numeric state
+**Automatic**, the default, goes by the panel's density, so a scene's text comes out about the
+same size on every frame: the panel's pixels per inch over 130 (the 7" to 7.5" 800×480 panels scenes
+are made on), rounded to a whole number, never below 1 and never leaving a layout under 576 pixels
+on the shorter edge. A panel of 12" or more is read from across a room, so it's at least 2 where it
+keeps those 576 pixels. Every 800×480 panel and a 1080p screen are 1; the reTerminal E1003, the
+13.3" 1200×1600 e-paper and a 4K screen are 2. Whole numbers keep lines and edges on whole pixels,
+which matters on e-paper; a fraction is yours to set. Above 1 a UI is laid out smaller and drawn
+bigger; at 0.75, 0.5 or 0.25 it gets more room than the panel has and everything is drawn smaller. A scene can override it in its own settings, or with a numeric state
 field whose role is `renderScale`. The scale is also on the frame's own
-[settings page](#on-screen), and the scene switcher and settings follow it. On an
+[settings page](#on-screen), with every step from 0.25 to 4 on any panel, and the scene switcher,
+the settings and the *Text* app's sizes follow it. On an
 ESP32's console it's `set render_scale 2`, with `0` for automatic. Plain `.js` and `.ts` apps keep
 the panel's pixels, and a picture an app hands over as pixels is stretched, so it goes soft where
 vectors stay sharp.

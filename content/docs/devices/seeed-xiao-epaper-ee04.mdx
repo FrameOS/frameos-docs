@@ -46,7 +46,9 @@ It has a hardware preset of its own, and FrameOS runs the **full on-device rende
 ## Buttons and battery
 
 The keys are KEY1 (GPIO 2), KEY2 (GPIO 3) and KEY3 (GPIO 5), and they arrive in scenes as
-[button events](/guide/scenes#input). The battery is read through a 2:1 divider on GPIO 1, switched
+[button events](/guide/scenes#input) on FrameOS's [button standard](/guide/buttons):
+KEY2 is the Action key and held opens the scene switcher, KEY1 and KEY3 are Prev and Next and held
+switch scenes, and two keys pressed together are Back. The battery is read through a 2:1 divider on GPIO 1, switched
 on by GPIO 6.
 
 The board can't tell the firmware when USB is plugged in, so the preset leaves deep sleep off. Turn

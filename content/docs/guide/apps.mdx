@@ -269,7 +269,8 @@ export function get(app: FrameOSApp) {
   tap.
 - **Canvases**: `frameos.canvas(key, width, height, color)` is a picture the app draws into with
   `frameos.draw(canvas, <line … />)`, kept between renders - a paint page, a chart that grows a
-  point at a time. `image-rendering="pixelated"` on an `<img>` scales it as hard-edged pixels.
+  point at a time. Where the frame has no room for it - a panel-sized canvas on a big e-paper ESP32 -
+  it's `null`, so draw without it then. `image-rendering="pixelated"` on an `<img>` scales it as hard-edged pixels.
 - **Other scenes inside**: `<Scene id="…" />` draws another scene of the frame into a box, on its
   own schedule ([scenes inside scenes](/guide/scenes#scenes-inside-scenes)), and a
   [layout](/guide/scenes#layouts) is a UI with a `<yield />` where the scene it wraps goes.

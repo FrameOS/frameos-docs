@@ -1,0 +1,64 @@
+---
+title: "Elecrow CrowPanel 2.01\" watch"
+description: "Elecrow CrowPanel 2.01\" watch - a 240x296 touch LCD on the wrist with an ESP32-S3, a crown, a microphone and a battery, running FrameOS on-device."
+device:
+  vendor: "Elecrow"
+  model: "CrowPanel 2.01\" watch"
+  driver: "lcd.gc9309_240x296"
+  label: "GC9309 2.01\" IPS LCD 240x296 (ESP32 SPI, Elecrow CrowPanel 2.01\" watch)"
+  technology: "LCD"
+  interface: "ESP32-S3 board"
+  diagonal: 2.01
+  width: 240
+  height: 296
+  colors: "65K colors (16-bit)"
+  colorClass: "rgb"
+  buttons: 3
+  platforms:
+    - "esp32-s3"
+  status: "tested"
+---
+
+The **Elecrow CrowPanel 2.01" watch** is an ESP32-S3 smartwatch board (16&nbsp;MB flash,
+8&nbsp;MB PSRAM) with a 240×296 IPS **touch LCD**, a crown, a PDM microphone, a vibration motor, a
+clock chip and a battery. It's the smallest screen FrameOS draws on, and the frame's own screens -
+the scene list, the scene settings and the frame page - fit it with every word on the glass.
+
+## What it does
+
+Pick the **Elecrow CrowPanel 2.01" watch** hardware preset (`elecrow_crowpanel_watch_2in01`):
+
+- **Scenes animate and answer a touch.** It's an [LCD-class screen](/guide/esp32#lcd): the panel
+  keeps its own picture and is sent only the part that changed.
+- **Touch** reaches scenes as taps, drags, swipes and pointer events
+  ([input events](/guide/scenes#input)), and a swipe in from an edge is the frame's: up for the
+  scene switcher, down for the scene's settings, left and right for back and forward.
+- **The crown** ([button standard](/guide/buttons)): each click of a turn is Next or
+  Prev, walking what's on the screen - or, on a scene with nothing to press, its own forward and
+  back. Pushed, it's the Action key, and held it's the [voice chat](/guide/esp32#voice-chat) key,
+  through the watch's microphone.
+- **The keys**: the power key opens the scene switcher, and BOOT turns the screen off or on - held,
+  it opens the scene switcher too.
+- **Brightness and dimming.** The backlight dims: set **Brightness**, **Dim when idle** and
+  **Dimmed brightness** under [Power](/guide/settings#power-and-battery), or drag the Brightness
+  bar on the frame's own page.
+- **The vibration motor** plays the notes a buzzer would, so a press is felt on the wrist.
+- **The battery's charge** shows in the backend or cloud, and the clock chip sets the time at boot,
+  before WiFi is up.
+
+The speaker and the accelerometer aren't used yet.
+
+## Setup
+
+1. In the FrameOS backend or [FrameOS Cloud](/guide/cloud), create a frame with **Flash embedded
+   device** - or flash it standalone from [flash.frameos.net](https://flash.frameos.net/).
+2. Choose **ESP32-S3**, select the **Elecrow CrowPanel 2.01" watch** preset, and enter your WiFi
+   details.
+3. Flash it over USB from the browser. A touch board sets up on its own screen: swipe down from
+   the top, tap the gear, and join a WiFi network there.
+4. Install scenes as usual - they sync over WiFi, and the device updates itself over the air.
+
+## Status
+
+🟢 **Confirmed working** - tested on real hardware: the picture, touch, the crown, the keys, the
+frame page and the battery reading.

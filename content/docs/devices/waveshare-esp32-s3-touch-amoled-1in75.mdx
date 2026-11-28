@@ -43,8 +43,12 @@ Pick the **Waveshare ESP32-S3-Touch-AMOLED-1.75** hardware preset
 - **Touch** reaches scenes as taps, drags, swipes and pointer events
   ([input events](/guide/scenes#input)), and a swipe in from the rim is the frame's: up for the
   scene switcher, down for the scene's settings, left and right for back and forward.
-- **Two keys**: PWR pressed turns the screen off or on, pressed twice opens the scene switcher;
-  BOOT held is the [voice chat](/guide/esp32#voice-chat) key.
+- **Two keys** ([button standard](/guide/buttons)): PWR pressed turns the screen off
+  or on, held it opens the scene switcher; BOOT held is the [voice chat](/guide/esp32#voice-chat)
+  key.
+- **Brightness and dimming.** **Power** sets the screen's **Brightness**, and **Dim when idle**
+  lowers it after a while without a touch or a key; the frame's own page has a Brightness bar too
+  ([settings](/guide/settings#power-and-battery)).
 - **A touch wakes it** from deep sleep, like a key.
 - **The accelerometer** answers on the console (`imu`) and in the frame's hardware reports.
 

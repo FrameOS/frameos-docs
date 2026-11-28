@@ -62,17 +62,21 @@ run it with your keys, never renders on its own - it says which of the two it is
 you to click **Run preview** each time the scene changes, so a browse never spends your credits.
 An unedited FrameOS app doesn't count as bringing its own code. The picture stays pinned at the top
 while the log, the settings and the state form scroll under it: drag the handle under it to resize
-it, or double-click the handle to fit it again. The log has a handle of its own. A button in the
+it, or double-click the handle to fit it again. The log hides behind **Show logs**, which the
+browser remembers, and has a handle of its own. Covers and pictures load all at once, and a page
+seen again draws straight away. A button in the
 preview is held like a frame's key, so long presses and double presses work. Tick
 **Memory limit** and pick a device (ESP32 with 8 or 16 MB, Pi Zero, Pi) to render under that
 frame's memory: the preview shows the peak and says "out of memory" where the frame would, then
 stops with a **Restart** button. A
 **Layout** select tries the scene inside any [layout](/guide/scenes#layouts) starter, and
 **Settings** beside it sets that layout's fields for the preview. A layout's own page runs it
-around sample scenes (Clock, Weather demo, Calculator), and a desktop runs windowed.
+around sample scenes (Clock, Weather demo, Calculator), and a desktop runs windowed. The frame's
+own page is in every preview too: a layout's Control Panel, its tray and the settings' gear open it,
+with its Layout select, as on a frame.
 
 A frame can browse the store too: the *Scene store* sample scene puts the shelves on its own
-screen, with Preview and Install, tries a layout on the frame before you keep it, and lists the
+screen - **Featured** is a page of picks from every shelf - with Preview and Install, tries a layout on the frame before you keep it, and lists the
 frame's scenes that have a newer version under **Updates**, with **Update all**
 ([on the frame](/guide/scenes#frame-apps)). The frame's own settings page has the same as an
 **Update scenes** button. An update or install started on the frame never lets a scene do more

@@ -174,7 +174,7 @@ changes. Taps go to whatever is under them. A layout's app can read `app.frame.s
   adds a status bar along the keys' edge with the signal, the battery and the time the picture was
   drawn. *reTerminal Sticky* turns the scene list into a home screen with the time and the date
   large, the signal and the battery, and a line each for what the Action key, Up and Down and the
-  swipes do. Over every other scene it's a thin bar - the time on the left (a tap opens the scene
+  swipes do; held sideways, they go in a narrow column beside the list. Over every other scene it's a thin bar - the time on the left (a tap opens the scene
   list), the signal and the battery on the right (a tap opens the frame's page) - or nothing at
   all. Both follow the frame's [button actions](/guide/settings#buttons) and rotation, have
   switches for everything they show, and step aside while the keyboard is up.
@@ -226,6 +226,10 @@ once or has no limit and has a screen of at least 640×480, and one scene elsewh
   Dock and miniwindows in four greys. Alt+Tab, F11 for full screen, and a gear on each window for
   that scene's settings. With a mouse on a Pi, the cursor turns into resize arrows over a
   window's edges.
+- **Icons** on the desktop of *Windows 98*, *BeOS*, *Classic Mac* and *OS/2 Warp* move: drag on
+  bare desktop for a dotted rectangle that picks every icon it touches (Ctrl or Shift adds to what's
+  picked), and drag a picked icon to move them all. Each lands in the free spot nearest where it was
+  dropped and stays there across restarts, and new windows keep clear of them.
 - **OS/2 Warp** has the WarpCenter along the top (its Desktop menu with the scenes by category,
   the Window List, the tray, the clock), Warp 4's grey windows with a system menu behind the title
   icon, and the LaunchPad at the bottom of the desktop. A right click or a long press on bare
@@ -280,17 +284,20 @@ desktop draws its bar around the one scene.
 
 A frame's GPIO buttons reach a scene as two events:
 
-- **`button`** - what the person meant: `press`, `doublePress`, or `longPress` (held a second or
-  more, delivered once, on release). Every press is exactly one of the three, so a `button`
-  listener without an action filter never runs twice for one press. A `press` arrives 350 ms after
-  the release, once it's clear no second tap is coming. A key that a rule of the frame's or the
-  scene's [button actions](/guide/settings#buttons) binds three times also has a `triplePress`;
-  only such a key waits to see whether a third press comes, so every other key stays as quick.
+- **`button`** - what the person meant: a `press`, delivered the moment the key comes up, or a
+  `longPress`, delivered once when the key has been held a second, while it's still down - a frame
+  with a buzzer sounds then, so you know to let go. Every press is exactly one `button` event, so a
+  `button` listener without an action filter never runs twice for one press, and two quick presses
+  are two presses. A key that a rule of the frame's or the scene's
+  [button actions](/guide/settings#buttons) binds a double or triple press of also has a
+  `doublePress` or `triplePress`; only such a key waits to see whether another press comes, so
+  every other key stays as quick. Each press carries the key's `role` - `primary`, `next`, `prev`,
+  `back`, `menu` or `screen` - so a scene that listens by role works on every board.
 - **`gpio`** - what the line did: `down` and `up`, the moment they happen. Listen for these to
   count every tap, or for hold-to-show.
 
 Each edge is timestamped when the frame sees it, so a tap made while an e-ink panel spends 30
-seconds refreshing is still a tap, and two of them are still a double press. In the event node,
+seconds refreshing is still a tap, and two of them are still two presses. In the event node,
 the label and pin filters pick from the frame's own buttons.
 
 On a Pi with a touchscreen, a mouse or a keyboard, scenes also hear
@@ -311,13 +318,24 @@ pointer events and gestures. A touch `longPress` is held half a second, as on a 
 button's is a second. A swipe that starts at the very edge of a touch screen is the frame's (`edgeSwipe`) and
 never reaches the scene.
 
+**The keys.** Every board's keys follow one standard
+([every board's keys](/guide/buttons)): a short press belongs to the scene and a hold
+to the frame. **Action** presses what's highlighted. **Next** and **Prev** walk what there is to
+press, and on a scene with nothing to press they're its `forward` and `back`; held, they switch to
+the next or previous scene. **Back** is `back`, and held it's Home. **Home** opens the scene
+switcher, and held, the scene's settings. **Screen** turns an LCD off and on. A board with no Back
+key gets one from two keys pressed together. Keys that point somewhere follow the frame's rotation,
+so Next is towards the right or the bottom of the picture however the frame hangs. A key pressed
+or an edge swiped on a dark screen only turns it on, as a touch does.
+
 **Swipes in from the edge.** On every HyperPixel and every ESP32 touch board - the SenseCAP
-Indicator, the Sunton and Guition LCDs, the round AMOLED, the reTerminal E1003 and Sticky - the
+Indicator, the Sunton and Guition LCDs, Elecrow's CrowPanel LCDs, the round AMOLED, the reTerminal
+E1003 and Sticky - the
 edges come bound to the frame:
 
 | Swipe | What it does |
 | --- | --- |
-| Up from the bottom | The **scene switcher**: every scene on the frame as a tile, in the frame's order. Tap one to show it, or the gear in its header for the [frame's own settings](/guide/settings#on-screen). |
+| Up from the bottom | The **scene switcher**: every scene on the frame as a tile, in the frame's order. Tap one to show it, or the gear in its header for the settings of the scene you came from, whose own gear is the [frame's page](/guide/settings#on-screen). |
 | Down from the top | The **scene settings**: the public fields of the scene showing, as a form, with a keyboard on the screen. **Save** applies them; **Cancel** or the same swipe goes back as it was. The gear left of **Save** opens the [frame's own settings](/guide/settings#on-screen). |
 | In from the left | `back`, delivered to the scene: the photo or the page before. |
 | In from the right | `forward`, the other way. |
@@ -332,8 +350,10 @@ from the bottom over the keyboard still opens the switcher.
 
 The switcher is a folder's icon view, as Explorer and Finder show one: each scene's
 [icon](#icon) over its name, grouped by [category](#icon) with *System* first, in one list that
-scrolls, opened with the scene you came from in the middle. Its icons keep one size, so a bigger
-screen shows more of them, not bigger ones. A search field in its header keeps the scenes whose
+scrolls, opened on the row of the scene you came from. Its icons keep one size, so a bigger
+screen shows more of them, not bigger ones. Where it's wider than tall - a frame held sideways,
+the 5.79" strip - each name sits beside its icon, so more scenes fit, and on a round panel the
+columns sit in the middle of the circle. A search field in its header keeps the scenes whose
 name, category or id hold what you type, the first one lit for Enter. On a desktop it's the
 desktop's window of every scene, in the desktop's look. A touch frame that was given no scene to
 start on opens on the switcher as its home: there it has no Close and never times out, and a scene
@@ -341,10 +361,11 @@ picked there is the one the frame boots into next.
 The switcher works without touch too. On e-paper it's black on white and the keys walk a highlight:
 `next` and `prev` step, `primary` and `refresh` show the scene (the reTerminal's green key is
 `primary`), `back` and `menu` go back. Past the
-last tile the highlight reaches the gear, which opens the frame's settings, so even a layout that
-broke every scene can be taken off from the switcher. E-paper
-without touch doesn't come with a binding for it, so add one under **Button actions** (a double
-press of REFRESH, say), or send `sceneSwitcher` [over HTTP](/guide/api#events).
+last tile the highlight reaches the gear, which opens the scene's settings and from there the
+frame's, so even a layout that broke every scene can be taken off from the switcher. Every frame
+with keys reaches it: the Home key, or two keys held together on a board that has none
+([every board](/guide/buttons#every-board)). Or send `sceneSwitcher`
+[over HTTP](/guide/api#events).
 
 **Whose buttons?** A scene listens for the keys its author had - `A` and `B`, or a `next` role -
 and your frame has the keys it has. Two maps sit between them:
@@ -373,14 +394,16 @@ UI that answers in a few hundred milliseconds never flashes them.
 ## Round screens [#round-screens]
 
 On a round panel - the HyperPixel 2.1" Round, Waveshare's
-[ESP32-S3-Touch-AMOLED-1.75](/devices/waveshare-esp32-s3-touch-amoled-1in75) - only the circle
+[ESP32-S3-Touch-AMOLED-1.75](/devices/waveshare-esp32-s3-touch-amoled-1in75), Elecrow's
+[CrowPanel 1.46" rotary](/devices/elecrow-crowpanel-1in46-rotary) - only the circle
 inside the square shows, and the frame's own screens keep inside it: the scene switcher is a lens,
 its tiles full size in the middle and smaller towards the rim; the scene settings and the frame
 page are a round form, the name in the top arc with Back and Save under it; a list's scroll bar
 runs along the rim; the keyboard, the edge swipes and an error's message stay in the circle. The
 frame's own apps - the Scene store, Files, Terminal, Code editor - do too, and most samples lay
 out for the circle: clocks as dials, progress as rings along the rim, games in the square inside
-the circle with their controls in the arcs.
+the circle with their controls in the arcs. Text from the *Text* app drawn on the whole canvas keeps
+to the circle too.
 
 In your own scene, `context.round` (in an app or a code node) is true while it draws a round
 panel's whole canvas, and false in a window, a split's cell or a layout's hole, so a scene can keep
@@ -602,7 +625,10 @@ the 8-bit palette mode (Snake, Brick breaker, Block drop, Moon lander, Star shoo
 Cave flyer, Paddle duel - the turn-based ones turn into puzzles on e-paper), tools (Daily chores,
 Pomodoro, Download to assets, Sketchbook and Handwriting notes, whose strokes keep every point the
 finger passed, Pixel art), a Hacker News reader drawn like the site, and touch remotes for Home
-Assistant, Homey and Spotify (signed in with your own Spotify app's Client ID).
+Assistant, Homey and Spotify (signed in with your own Spotify app's Client ID). Every sample lays
+out for the panel it's on - from a 240×296 watch to the 13.3" E1004, round glass and black-and-white
+or Spectra e-paper included - and the games and tools can be used with a frame's keys alone: Next
+walks what there is to press and the frame's Back leaves each page they open.
 
 ![Sample scenes in the editor](/images/app/edit-samples.gif)
 

@@ -1,19 +1,19 @@
 ---
 title: "Elecrow CrowPanel 5.79\""
-description: "Elecrow CrowPanel 5.79\" - a dual-controller 4-grayscale e-ink board with an ESP32-S3, running FrameOS on-device."
+description: "Elecrow CrowPanel 5.79\" - a wide 792x272 black-and-white e-ink board with an ESP32-S3, partial refresh and five keys, running FrameOS on-device."
 device:
   vendor: "Elecrow"
   model: "CrowPanel 5.79\""
-  driver: "waveshare.EPD_5in79"
-  label: "Elecrow CrowPanel 5.79\" (ESP32-S3)"
+  driver: "waveshare.EPD_5in79_BW"
+  label: "Good Display 5.79\" 792x272 Black/White (ESP32, Elecrow CrowPanel 5.79\")"
   technology: "E-ink"
   interface: "ESP32-S3 board"
   diagonal: 5.79
   width: 792
   height: 272
-  colors: "4-level grayscale"
-  colorCount: 4
-  colorClass: "gray"
+  colors: "Black and white"
+  colorCount: 2
+  colorClass: "bw"
   buttons: 5
   productUrl: "https://www.elecrow.com/crowpanel-esp32-5-79-e-paper-hmi-display-with-272-792-resolution-black-white-color-driven-by-spi-interface.html"
   image: "/images/devices/elecrow-crowpanel-5in79.png"
@@ -22,29 +22,41 @@ device:
       url: "https://www.elecrow.com/wiki/CrowPanel_ESP32_E-paper_5.79-inch_HMI_Display.html"
   platforms:
     - "esp32-s3"
-  status: "untested"
+  status: "tested"
 ---
 
-The **Elecrow CrowPanel 5.79"** is a wide 792×272 four-grayscale e-ink board with an ESP32-S3
-(8&nbsp;MB PSRAM). The panel is driven by two SSD1683 controllers side by side; FrameOS handles
-that for you. Its shape suits a status strip - departures, a now-playing bar, a single-line
+The **Elecrow CrowPanel 5.79"** is a wide 792×272 black-and-white e-ink board with an ESP32-S3
+(8&nbsp;MB flash, 8&nbsp;MB PSRAM). The glass is driven by two controllers side by side; FrameOS
+handles that for you. Its shape suits a status strip - departures, a now-playing bar, a single-line
 dashboard.
 
 FrameOS runs on it as a full [ESP32-S3 frame](/guide/esp32) - scenes render on the device. Pick
-the **Elecrow CrowPanel 5.79"** hardware preset and the panel, GPIO map and all five front
-buttons (HOME, EXIT, NEXT, OK, PREV) are configured for you as the [standard keys](/guide/buttons):
-HOME opens the scene list (held, the scene's settings), EXIT is Back (held, the scene list), NEXT
-and PREV move through a scene and, held, to the next and previous scene, and OK is Action.
+the **Elecrow CrowPanel 5.79"** hardware preset (`elecrow_crowpanel_5in79`) and the panel, GPIO map
+and all five keys are configured for you.
+
+## What it does
+
+- **Black and white with partial refresh.** FrameOS drives the glass on its own waveforms, as
+  Elecrow does, so white is white, and a change that touches part of the picture updates only that
+  part, without the full-screen flash.
+- **Five keys** ([button standard](/guide/buttons)): HOME, the top key, opens the
+  [scene switcher](/guide/scenes#input), and held, the scene's settings. EXIT, the bottom key, is
+  Back - the scene's page or photo before, or closing the settings - and held it opens the scene
+  switcher too. The rocker walks what's on the screen, pressed it's the Action key, and tilted and
+  held it switches to the next or previous scene.
+- **The TF slot** holds the frame's [assets](/guide/esp32#assets-and-the-sd-card) and fonts, and
+  the power LED is lit.
 
 ## Setup
 
-1. In the FrameOS backend, create a frame with **Flash embedded device**.
+1. In the FrameOS backend or [FrameOS Cloud](/guide/cloud), create a frame with **Flash embedded
+   device** - or flash it standalone from [flash.frameos.net](https://flash.frameos.net/).
 2. Choose **ESP32-S3**, select the **Elecrow CrowPanel 5.79"** preset, and enter your WiFi details.
-3. Flash it over USB from the browser - the backend writes the release image for the board and sets
-   it up as this frame.
+3. Flash it over USB from the browser - the release image for the board is written and the board
+   set up as this frame.
 4. Install scenes as usual - they sync over WiFi, and the device updates itself over the air.
 
 ## Status
 
-🟡 **Should work, not yet confirmed on real hardware.**
-Tell us on [GitHub](https://github.com/FrameOS/frameos/issues/new) or [Discord](https://discord.gg/9dT9y7EzUw) if you try it.
+🟢 **Confirmed working** - tested on real hardware: the picture, partial updates, the keys and the
+orientation.

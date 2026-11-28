@@ -1,0 +1,62 @@
+---
+title: "Elecrow CrowPanel Advance 7.0\""
+description: "Elecrow CrowPanel Advance 7.0\" - a 7\" 800x480 touch LCD with an ESP32-S3, running FrameOS on-device with animation and touch."
+device:
+  vendor: "Elecrow"
+  model: "CrowPanel Advance 7.0\""
+  driver: "lcd.sc7277_800x480"
+  label: "SC7277 7.0\" IPS LCD 800x480 (ESP32 RGB, Elecrow CrowPanel Advance 7.0\")"
+  technology: "LCD"
+  interface: "ESP32-S3 board"
+  diagonal: 7
+  width: 800
+  height: 480
+  colors: "65K colors (16-bit)"
+  colorClass: "rgb"
+  buttons: 1
+  platforms:
+    - "esp32-s3"
+  status: "tested"
+---
+
+The **Elecrow CrowPanel Advance 7.0"** is a 7" 800×480 IPS **touch LCD** with an
+ESP32-S3-WROOM-1 on the back: 16&nbsp;MB of flash, 8&nbsp;MB of PSRAM, a GT911 touch panel and a
+clock chip. FrameOS supports hardware version 1.2.
+
+## What it does
+
+Pick the **Elecrow CrowPanel Advance 7.0"** hardware preset (`elecrow_crowpanel_advance_7`) and it
+behaves like the other [LCD boards](/guide/esp32#lcd):
+
+- **Scenes animate**: a scene whose render interval is under a second renders back to back, drawn
+  straight into the LCD's frame buffer with only the changed part redrawn, and the glass doesn't
+  flicker.
+- **Touch** reaches scenes as taps, drags, swipes and pointer events
+  ([input events](/guide/scenes#input)), so a [JSX](/guide/apps#jsx-uis) dashboard or remote
+  answers a finger.
+- **The BOOT key and the edges** come bound to the frame
+  ([button standard](/guide/buttons)): BOOT pressed turns the screen off or on, held
+  it opens the scene switcher; swipe up from the bottom for the switcher, down from the top for the
+  scene's settings, and in from the left or right for back and forward.
+- **The clock chip** sets the time at boot, before WiFi is up.
+- **It boots straight into its scenes** and joins WiFi in the background; set the network on the
+  screen (swipe down, tap the gear).
+
+## Not driven yet
+
+The microphone, the speaker and the TF slot share pins behind the board's DIP switches and aren't
+used yet. Hardware version 1.3 and later talk to their backlight differently and haven't been
+tried.
+
+## Setup
+
+1. In the FrameOS backend or [FrameOS Cloud](/guide/cloud), create a frame with **Flash embedded
+   device** - or flash it standalone from [flash.frameos.net](https://flash.frameos.net/).
+2. Choose **ESP32-S3**, select the **Elecrow CrowPanel Advance 7.0"** preset, and enter your WiFi
+   details.
+3. Flash it over USB from the browser.
+4. Install scenes as usual - they sync over WiFi, and the device updates itself over the air.
+
+## Status
+
+🟢 **Confirmed working** - tested on real hardware: the picture, animation, taps and the backlight.

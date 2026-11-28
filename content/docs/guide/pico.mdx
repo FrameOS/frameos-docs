@@ -88,8 +88,9 @@ line that would pull the panel, the flash or the power from under it - `set`, `w
 - **Every scene works.** The backend runs the scene in the real FrameOS runtime, so JavaScript
   apps, SVG, fonts, photos and scene state behave as on any frame, and the frame's rotation is
   applied before packing.
-- **Buttons reach the scene.** The front buttons arrive as `gpio` edges and the same `press`,
-  `doublePress` and `longPress` as on any frame ([buttons](/guide/scenes#input)): the board sends
+- **Buttons reach the scene.** The front buttons arrive as `gpio` edges and the same `press` and
+  `longPress` as on any frame ([buttons](/guide/scenes#input)), A is Action, B and C Prev and Next,
+  D Back and E Home ([the button standard](/guide/buttons)): the board sends
   them with its next render pull, once a press is decided, and the scene hears them before it
   renders. The press that woke a sleeping board counts.
 - **Events, switches and previews.** A custom event, a scene switch or **Preview on frame** waits

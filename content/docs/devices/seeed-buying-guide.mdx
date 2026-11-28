@@ -53,8 +53,8 @@ support yet.
 | [XIAO ePaper Display Board EE03](/devices/seeed-xiao-epaper-ee03) | 10.3" 16-level grayscale | 🟡 Preset `seeed_xiao_ee03` |
 | [XIAO ePaper Display Board EE04](/devices/seeed-xiao-epaper-ee04) | 24-pin, and the 7.3" Spectra 6 on its 50-pin connector | 🟡 Preset `seeed_xiao_ee04`, pick your panel |
 | [XIAO ePaper Display Board EE05](/devices/seeed-xiao-epaper-ee05) | 24-pin | 🟡 Preset `seeed_xiao_ee05`, pick your panel |
-| [TRMNL 7.5" DIY Kit](/devices/trmnl-og-diy-kit) | 7.5" black/white, included | 🟡 Preset `trmnl_og_diy_kit` |
-| [TRMNL 4.26" DIY Kit](/devices/trmnl-4in26-diy-kit) | 4.26" 4-level grayscale, included | 🟡 Preset `trmnl_4in26_diy_kit` |
+| [TRMNL 7.5" (OG) DIY Kit](/devices/trmnl-og-diy-kit) | 7.5" black/white, included | 🟡 Preset `trmnl_og_diy_kit` |
+| [XIAO ePaper Driver Board + 4.26" panel](/devices/trmnl-4in26-diy-kit) | 4.26" 4-level grayscale, included | 🟡 Preset `trmnl_4in26_diy_kit` |
 
 For anything else, the bare [XIAO ESP32-S3](https://www.seeedstudio.com/XIAO-ESP32S3-p-5627.html?sensecap_affiliate=NK0JMuC&referring_service=link)
 (8&nbsp;MB of PSRAM) is the reference board for a [custom ESP32 build](/guide/esp32#supported-boards):
@@ -71,9 +71,9 @@ nRF52840 boards (EN04, EN05) are not ESP32s and don't run FrameOS.
   [E1004 page](/devices/seeed-reterminal-e1004#macos-install-the-wch-serial-driver-first) has the
   steps. Windows 11 and Linux work as they are.
 - **The buttons and buzzer work in scenes.** The three E-series keys arrive as button events a
-  scene can react to, and the buzzer clicks on each press. Out of the box, LEFT and RIGHT held
-  switch scenes, and on the E1001, E1002 and E1003 holding REFRESH lets you
-  [talk to the frame](/guide/esp32#voice-chat).
+  scene can react to, and the buzzer clicks on each press. Out of the box, the arrows held
+  switch scenes, both pressed together go back, and on the E1001, E1002 and E1003 holding REFRESH
+  lets you [talk to the frame](/guide/esp32#voice-chat).
 - **Battery frames sleep.** The E1004 preset deep-sleeps on battery and wakes every 15 minutes or
   on a button, and the backend or cloud shows when it's due back - see
   [battery and deep sleep](/guide/esp32#power). The battery reading is verified on the E1004 and

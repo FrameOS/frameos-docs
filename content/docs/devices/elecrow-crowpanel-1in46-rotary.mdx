@@ -1,0 +1,64 @@
+---
+title: "Elecrow CrowPanel 1.46\" rotary"
+description: "Elecrow CrowPanel 1.46\" rotary - a round 360x360 touch LCD inside a knob, with an ESP32-S3, running FrameOS on-device with everything kept inside the circle."
+device:
+  vendor: "Elecrow"
+  model: "CrowPanel 1.46\" rotary"
+  driver: "lcd.st77961_360x360"
+  label: "ST77961 1.46\" round IPS LCD 360x360 (ESP32 SPI, Elecrow CrowPanel 1.46\" rotary)"
+  technology: "LCD"
+  interface: "ESP32-S3 board"
+  diagonal: 1.46
+  width: 360
+  height: 360
+  colors: "65K colors (16-bit)"
+  colorClass: "rgb"
+  buttons: 2
+  platforms:
+    - "esp32-s3"
+  status: "tested"
+---
+
+The **Elecrow CrowPanel 1.46" rotary** is a round 360×360 IPS **touch LCD** set in a knob, with an
+ESP32-S3 (16&nbsp;MB flash, 8&nbsp;MB PSRAM). Turn the knob, push it, or tap the glass.
+
+Only the circle inside the square is glass, so FrameOS treats it as a
+[round screen](/guide/scenes#round-screens): the scene switcher, the scene settings, the frame
+page, the keyboard on the screen and the edge swipes all stay inside the circle, and so do most
+sample scenes. The [scene store](/guide/scene-store) marks the scenes that suit a round screen and
+offers them first.
+
+## What it does
+
+Pick the **Elecrow CrowPanel 1.46" rotary** hardware preset (`elecrow_crowpanel_rotary_1in46`):
+
+- **Scenes animate and answer a touch.** It's an [LCD-class screen](/guide/esp32#lcd): the panel
+  keeps its own picture and is sent only the part that changed.
+- **Touch** reaches scenes as taps, drags, swipes and pointer events
+  ([input events](/guide/scenes#input)), and a swipe in from the rim is the frame's: up for the
+  scene switcher, down for the scene's settings, left and right for back and forward.
+- **The knob** ([button standard](/guide/buttons)): each click of a turn is Next or
+  Prev, walking what's on the screen - or, on a scene with nothing to press, its own forward and
+  back. Pushed, it's the Action key, and held it opens the scene switcher. The push is the whole
+  glass pressed down, so it's also a tap wherever your finger lands: to push without tapping
+  anything, press on a spot with nothing to tap.
+- **BOOT** turns the screen off or on, and held it opens the scene switcher.
+- **Brightness and dimming.** The backlight dims: set **Brightness**, **Dim when idle** and
+  **Dimmed brightness** under [Power](/guide/settings#power-and-battery), or drag the Brightness
+  bar on the frame's own page.
+
+The board has no microphone, so no voice chat. The ring of eight LEDs isn't driven yet, and the
+battery isn't read: its divider sits on a pin the ESP32 can't read while WiFi is on.
+
+## Setup
+
+1. In the FrameOS backend or [FrameOS Cloud](/guide/cloud), create a frame with **Flash embedded
+   device** - or flash it standalone from [flash.frameos.net](https://flash.frameos.net/).
+2. Choose **ESP32-S3**, select the **Elecrow CrowPanel 1.46" rotary** preset, and enter your WiFi
+   details.
+3. Flash it over USB from the browser.
+4. Install scenes as usual - they sync over WiFi, and the device updates itself over the air.
+
+## Status
+
+🟢 **Confirmed working** - tested on real hardware: the picture, touch, the knob and the backlight.

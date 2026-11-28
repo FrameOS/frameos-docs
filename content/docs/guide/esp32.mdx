@@ -47,8 +47,11 @@ do is a short, specific list - it's [at the bottom of this page](#what-it-cannot
   one tiny I2C OLED, the touch LCDs of the [SenseCAP Indicator](/devices/seeed-sensecap-indicator),
   the [Sunton ESP32-8048S070](/devices/sunton-esp32-8048s070) and the
   [Guition ESP32-4848S040](/devices/guition-esp32-4848s040), the round AMOLED of the
-  [Waveshare ESP32-S3-Touch-AMOLED-1.75](/devices/waveshare-esp32-s3-touch-amoled-1in75) - or no
-  display at all.
+  [Waveshare ESP32-S3-Touch-AMOLED-1.75](/devices/waveshare-esp32-s3-touch-amoled-1in75), the LCDs
+  of Elecrow's CrowPanel [Advance 7.0"](/devices/elecrow-crowpanel-advance-7in0),
+  [Advance 2.8"](/devices/elecrow-crowpanel-advance-2in8), round
+  [1.46" rotary](/devices/elecrow-crowpanel-1in46-rotary) and
+  [2.01" watch](/devices/elecrow-crowpanel-2in01-watch) - or no display at all.
   The 12.48" panels use a different controller stack and still need a Pi.
 - **The [backend](/guide/backend)**, [FrameOS Cloud](/guide/cloud) or
   [flash.frameos.net](#standalone), to flash the board. Nothing is compiled: all three write the signed
@@ -74,9 +77,14 @@ filled in for you:
 | [Sunton ESP32-8048S070](/devices/sunton-esp32-8048s070) | S3 | 7" 800×480 color LCD, touch | 8&nbsp;MB PSRAM, 16&nbsp;MB flash, BOOT button, microSD |
 | [Guition ESP32-4848S040](/devices/guition-esp32-4848s040) | S3 | 4" 480×480 color LCD, touch | 8&nbsp;MB PSRAM, 16&nbsp;MB flash, no button - the edges swipe |
 | [Waveshare ESP32-S3-Touch-AMOLED-1.75](/devices/waveshare-esp32-s3-touch-amoled-1in75) | S3 | 1.75" round 466×466 AMOLED, touch | 8&nbsp;MB PSRAM, 16&nbsp;MB flash, 2 buttons, everything drawn inside the circle |
-| [Elecrow CrowPanel 5.79"](/devices/elecrow-crowpanel-5in79) | S3 | 5.79" 4-grey | 5 buttons, dual SSD1683 |
-| [TRMNL 7.5" DIY Kit](/devices/trmnl-og-diy-kit) | S3 | 7.5" black/white | XIAO ePaper driver board |
-| [TRMNL 4.26" DIY Kit](/devices/trmnl-4in26-diy-kit) | S3 | 4.26" 4-grey | XIAO ePaper driver board |
+| [Elecrow CrowPanel 5.79"](/devices/elecrow-crowpanel-5in79) | S3 | 5.79" black/white, partial refresh | 5 keys, TF card |
+| [Elecrow CrowPanel 4.2"](/devices/elecrow-crowpanel-4in2) | S3 | 4.2" black/white, partial refresh | The 5.79"'s 5 keys, TF card |
+| [Elecrow CrowPanel Advance 7.0"](/devices/elecrow-crowpanel-advance-7in0) | S3 | 7" 800×480 color LCD, touch | 8&nbsp;MB PSRAM, 16&nbsp;MB flash, BOOT button, clock |
+| [Elecrow CrowPanel Advance 2.8"](/devices/elecrow-crowpanel-advance-2in8) | S3 | 2.8" 320×240 color LCD, touch | BOOT button, microphone, buzzer, TF card, dimmable backlight |
+| [Elecrow CrowPanel 2.01" watch](/devices/elecrow-crowpanel-2in01-watch) | S3 | 2.01" 240×296 color LCD, touch | A crown, 2 keys, microphone, vibration motor, battery, clock |
+| [Elecrow CrowPanel 1.46" rotary](/devices/elecrow-crowpanel-1in46-rotary) | S3 | 1.46" round 360×360 color LCD, touch | A knob to turn and push, BOOT button, everything drawn inside the circle |
+| [TRMNL 7.5" (OG) DIY Kit](/devices/trmnl-og-diy-kit) | S3 | 7.5" black/white | Seeed's kit: a XIAO ESP32-S3 Plus on the XIAO ePaper driver board |
+| [XIAO ePaper Driver Board + 4.26" panel](/devices/trmnl-4in26-diy-kit) | S3 | 4.26" 4-grey | XIAO ESP32-S3 on the XIAO ePaper driver board |
 | [Seeed XIAO ePaper Display Board EE02](/devices/seeed-xiao-epaper-ee02) | S3 | 13.3" Spectra 6, portrait | 8&nbsp;MB PSRAM, 16&nbsp;MB flash, 3 buttons, battery |
 | [Seeed XIAO ePaper Display Board EE03](/devices/seeed-xiao-epaper-ee03) | S3 | 10.3" 16-level grayscale (IT8951) | 8&nbsp;MB PSRAM, 16&nbsp;MB flash, 3 buttons, battery, temperature sensor |
 | [Seeed XIAO ePaper Display Board EE04](/devices/seeed-xiao-epaper-ee04) / [EE05](/devices/seeed-xiao-epaper-ee05) | S3 | Any 24-pin panel (EE04: also the 7.3" Spectra 6 on 50 pins) | 8&nbsp;MB PSRAM, 16&nbsp;MB flash, 3 buttons, battery - pick your panel and the preset stays |
@@ -149,7 +157,12 @@ account's API key), each with its picture, grouped by category with a tickbox pe
 search. Presets fill the list for you - *A few to start*, *Interactive LCD scenes*, *Best for
 e-paper*, *Everything* or *Only the Scene store* - up to what the board has room for, and say what
 didn't fit. The [Scene store](/guide/scenes#frame-apps) is always in, so the frame can add more
-scenes by itself later. Your browser's time zone goes along. A board that takes taps and has
+scenes by itself later. A **Layout** select under the presets picks the
+[layout](/guide/scenes#layouts) the scenes wear, each with its picture: *No layout*, the layouts
+*Made for this board*, the *Desktops* and the *Full screen* ones. The reTerminal Sticky starts on
+its own layout and the E1001 to E1004 on *reTerminal*. The scenes go over the cable compressed and
+in batches, so even *Everything* - a hundred-odd scenes - is on a reTerminal Sticky in three to five
+minutes. Your browser's time zone goes along. A board that takes taps and has
 nothing marked to start on opens on the [scene switcher](/guide/scenes#input); a board of keys starts
 on the first scene you picked.
 
@@ -343,8 +356,12 @@ their drawn size, as on a Pi.
   its password (an eye beside it shows what you typed), the rotation, the
   [scale](/guide/settings#render-scale), the date and time when it's offline, the battery and the
   signal, **Check for updates** and **Install update**, **Update scenes** when the store has newer
-  versions of the frame's scenes, **Tap and click sounds** and, on a frame that deep-sleeps,
-  **Stay awake after a press or tap**, and **Render again**, **Restart FrameOS** and **Reboot**.
+  versions of the frame's scenes, **Tap and click sounds**, **Brightness** on a screen that can dim
+  and, on a frame that deep-sleeps, **Stay awake after a press or tap**, and **Render again**,
+  **Restart FrameOS** and **Reboot**. **Service keys** opens a page for the keys the apps use -
+  OpenAI, Unsplash, Home Assistant, Immich, GitHub - typed on the frame itself, and an **About**
+  card at the end says what the frame runs on: chip, board, display, memory, storage, uptime, its
+  network and who manages it.
   A frame nobody manages yet adds **Link to cloud** and **Link to backend**
   ([connecting from the frame](/guide/settings#connect-from-the-frame)); a managed one has
   **Unlink**. An update installed there gets the same
@@ -363,9 +380,10 @@ their drawn size, as on a Pi.
   JavaScript `format()` helper follows the frame's time zone too. The wait between
   renders counts from when the render was due, so a scene that renders every second does so every
   second, not every other one.
-- **Buttons**: GPIO buttons (the board presets know where they are) reach scenes as `button`
-  events - `press`, `doublePress`, `longPress`, and `triplePress` for a key a rule binds three
-  times - and raw `gpio` `down` / `up` edges
+- **Buttons**: GPIO buttons (the board presets know where they are, and which
+  [role](/guide/buttons) each one plays) reach scenes as `button` events - a `press` the moment
+  the key comes up, and a `longPress` once it's been held a second, while it's still down - and raw
+  `gpio` `down` / `up` edges
   ([details](/guide/scenes#input)), so a press can change a scene, re-render, or run anything you
   wire up in the editor. Every edge is timestamped by the button task, so a tap made during a
   30-second panel refresh is still a tap, and a 30&nbsp;ms debounce catches quick double taps.
@@ -373,11 +391,12 @@ their drawn size, as on a Pi.
   settings sync and restarts. What a press does whatever scene is showing - the next scene, say -
   is a [button action](#button-actions).
 - **Button beep**: boards with a buzzer - the Seeed reTerminals - click when a press registers and
-  click lower on the release, a held key sounds once when its hold counts, and a press the board
-  had no room for sounds a dull "no". **Button beep
+  click lower on the release, a held key sounds once, at the second its long press comes, so you
+  know when to let go, and a press the board had no room for sounds a dull "no". **Button beep
   GPIO** and **Button beep tone (Hz)** sit under the frame's GPIO buttons; on the console it's
   `set buzzer_pin`, `set buzzer_tone_hz` and `beep` to test. The Waveshare
-  PhotoPainter and 13.3E6 play the same notes on their speaker. **Tap and click sounds** set to
+  PhotoPainter and 13.3E6 play the same notes on their speaker, and the CrowPanel 2.01" watch on its
+  vibration motor. **Tap and click sounds** set to
   *Silent* mutes the clicks and the loading chirp on any board that makes them.
 - **Status LED**: the reTerminal E-series' green LED lights with every note the buzzer plays, so a
   frame with its buzzer switched off still shows a press, and it stays lit while the
@@ -391,17 +410,18 @@ their drawn size, as on a Pi.
 
 ## Button actions [#button-actions]
 
+Every board's keys follow the same standard - Action, Next and Prev, Back, Home and Screen, each a
+press and a hold, with no double presses, and two keys pressed together as Back on a board without
+one - and [Buttons](/guide/buttons) lists what each board's keys do out of the box, the CrowPanels'
+crown and knob included. A key pressed on a dark screen only turns it on, as a touch does.
+
 **Settings → Button actions** says what a press does on this frame, whatever scene is showing:
 the next or previous scene, a render, a particular scene, the display on or off, the
 [voice chat](#voice-chat), the scene switcher or scene settings, or Back and Forward, on both
-control planes. On a touch screen an edge swipe
-can be bound the same way. A press bound there never reaches the scene. Every board comes with
-the same standard set - Action, Next and Prev, Back, Home and Screen, each a press and a hold,
-with no double presses - and [Buttons](/guide/buttons) lists what each board's keys do out of the
-box.
-
-Change or clear them in Settings. A board keeps the map it was set up with, so one from before a
-preset changed gets the new one with `set hardware <preset>` and `restart` on its console. A scene
+control planes. On a touch screen an edge swipe can be bound the same way. A press bound there
+never reaches the scene. A row can also be a double or triple press, and only a key bound that way
+waits for the next press. A board whose map nobody changed follows its preset, so a firmware
+update brings the newest map with it; a map you changed is kept. A scene
 written for other keys - a store scene that listens for
 `A` and `B` - can be told which of your frame's keys are its `A` and `B` with **Map buttons** in
 the installed scene's menu, without touching the scene ([details](/guide/scenes#input)). The
@@ -428,8 +448,9 @@ nothing was heard. It's one conversation per frame, so a follow-up like *"no, th
 knows what the last sentence did. A sentence can be up to 30 seconds long.
 
 - **Which boards**: the reTerminal E1001 and E1002 (hold REFRESH), the E1003
-  (REFRESH), the reTerminal Sticky (the Action key), and the Waveshare PhotoPainter (KEY1) and 13.3E6
-  (BOOT) through their codec's microphones. The E1004 has no microphone; a PDM microphone on its J2
+  (REFRESH), the reTerminal Sticky (the Action key), the Waveshare PhotoPainter (KEY1) and 13.3E6
+  (BOOT) through their codec's microphones, the round AMOLED (BOOT), and Elecrow's CrowPanel 2.01"
+  watch (the crown) and Advance 2.8" (BOOT). The E1004 has no microphone; a PDM microphone on its J2
   header works once **Microphone GPIO** in Settings names its pins. A Pi frame can't do this yet.
 - **Which key**: the Action key held ([Buttons](/guide/buttons)), or any
   [button action](#button-actions) set to *Voice chat*, always on a long press - the frame listens
@@ -450,9 +471,12 @@ knows what the last sentence did. A sentence can be up to 30 seconds long.
 
 The [SenseCAP Indicator](/devices/seeed-sensecap-indicator)'s 4" 480×480 color touch LCD, the 7"
 800×480 of the [Sunton ESP32-8048S070](/devices/sunton-esp32-8048s070), the 4" of the
-[Guition ESP32-4848S040](/devices/guition-esp32-4848s040) and the round 1.75" AMOLED of the
-[Waveshare ESP32-S3-Touch-AMOLED-1.75](/devices/waveshare-esp32-s3-touch-amoled-1in75) bring a fast
-screen to the ESP32. That changes what a microcontroller frame can do:
+[Guition ESP32-4848S040](/devices/guition-esp32-4848s040), the round 1.75" AMOLED of the
+[Waveshare ESP32-S3-Touch-AMOLED-1.75](/devices/waveshare-esp32-s3-touch-amoled-1in75) and
+Elecrow's CrowPanels - the [Advance 7.0"](/devices/elecrow-crowpanel-advance-7in0) and
+[Advance 2.8"](/devices/elecrow-crowpanel-advance-2in8), the round
+[1.46" rotary](/devices/elecrow-crowpanel-1in46-rotary) and the
+[2.01" watch](/devices/elecrow-crowpanel-2in01-watch) - bring a fast screen to the ESP32. That changes what a microcontroller frame can do:
 
 - **Animation.** A scene whose render interval is under a second runs back to back: the store's
   *DVD Logo Bounce*, written in JSX, moves at about 29 frames a second, and the board's talk with
@@ -486,7 +510,13 @@ screen to the ESP32. That changes what a microcontroller frame can do:
   picture can answer.
 - **Display on and off.** *Display on*, *Display off* and *Display on/off* switch the backlight,
   and nothing renders while it's dark. Over HTTP they're the `turnOn`, `turnOff` and `toggleScreen`
-  [events](/guide/api#esp32).
+  [events](/guide/api#esp32). A key, a touch or a swipe on a dark screen only turns it on.
+- **Brightness.** On the round AMOLED and the CrowPanel watch, rotary and Advance 2.8", **Power**
+  sets the screen's **Brightness**, and **Dim when idle** lowers it to **Dimmed brightness** after
+  so many seconds without a tap, a key or a turn of the knob. The next one brings it back at once
+  and still does what it does, and dimming costs no render
+  ([settings](/guide/settings#power-and-battery)). The frame's own page has a Brightness bar too,
+  set on the glass as your finger moves.
 - **Slow renders.** A scene switch or a refresh that hasn't put its picture up within 200 ms shows
   three pulsing dots until it does. One that answers a tap, a swipe or a key waits 500 ms, so a UI
   that answers in a few hundred milliseconds never flashes them - and an animation that takes a
@@ -503,8 +533,8 @@ screen to the ESP32. That changes what a microcontroller frame can do:
   *Updating*: a flash write stops the chip from refreshing the screen, so the picture would tear.
   The new scene replaces it when it's stored. The round AMOLED keeps its own picture and needs
   neither.
-- **Round screens.** On the round AMOLED the switcher, the settings, the frame page, the keyboard
-  and the edge swipes keep inside the circle, and scenes can do the same
+- **Round screens.** On the round AMOLED and the CrowPanel 1.46" rotary the switcher, the
+  settings, the frame page, the keyboard and the edge swipes keep inside the circle, and scenes can do the same
   ([round screens](/guide/scenes#round-screens)).
 - **Boot.** The FrameOS mark shows on black while the board starts, with a line saying what it's
   waiting for (*Connecting to Wi-Fi*, *Updating firmware*, *Starting*), and an LCD renders as soon
@@ -548,7 +578,7 @@ a Sticky.
 **Buttons wake the frame.** Every GPIO button on a wake-capable pin is armed as a wake source
 next to the timer, and so is the touch glass where the board keeps its touch controller powered
 through the sleep (the Sticky and the round AMOLED; the E1003 wakes on its keys). A press brings the frame up early and reaches the scene like any
-other press - held, it's a `longPress`; tapped twice, a `doublePress` - and that
+other press - held, it's a `longPress` - and that
 pass renders, so "next photo" works on a sleeping frame. A press made while a battery frame is
 still rendering holds the sleep for one more pass instead of being lost. While
 asleep the WiFi radio is in modem sleep, the clock is kept by the RTC (no time-sync wait on wake),
@@ -697,7 +727,8 @@ controllers and needs `cs2` as well.
 Straight, so you can decide before you buy:
 
 - **Panels**: Waveshare-family SPI e-paper, the 10.3" IT8951, one small I2C OLED, and the LCDs
-  of the SenseCAP Indicator, the Sunton and Guition boards and Waveshare's round AMOLED only. No
+  of the SenseCAP Indicator, the Sunton and Guition boards, Elecrow's CrowPanels and Waveshare's
+  round AMOLED only. No
   HDMI, no other LCDs, no Pimoroni Inky HATs, no Python-backed drivers. The 12.48"
   multi-controller panels need a Pi.
 - **Two apps are missing**: *Chromium screenshot* and *RTSP camera snapshot*. Both need to launch
@@ -724,7 +755,7 @@ Straight, so you can decide before you buy:
 
 | | Raspberry Pi | ESP32-S3 |
 | --- | --- | --- |
-| Displays | [120+ drivers](/devices): e-ink, HDMI, LCD | Waveshare SPI e-paper and four boards' LCDs, every driver in one image |
+| Displays | [120+ drivers](/devices): e-ink, HDMI, LCD | Waveshare SPI e-paper and eight boards' LCDs, every driver in one image |
 | Video | [Plays it](/guide/scenes#video), hardware-decoded on a Pi 0-4 | - |
 | Voice | - | [Hold a key and talk](#voice-chat), on boards with a microphone |
 | Custom code | JavaScript, or Nim in a compiled scene | JavaScript/TypeScript |

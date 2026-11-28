@@ -1,0 +1,59 @@
+---
+title: "Elecrow CrowPanel Advance 2.8\""
+description: "Elecrow CrowPanel Advance 2.8\" - a small 320x240 touch LCD with an ESP32-S3, a microphone and a dimmable backlight, running FrameOS on-device."
+device:
+  vendor: "Elecrow"
+  model: "CrowPanel Advance 2.8\""
+  driver: "lcd.st7789_320x240"
+  label: "ST7789 2.8\" IPS LCD 320x240 (ESP32 SPI, Elecrow CrowPanel Advance 2.8\")"
+  technology: "LCD"
+  interface: "ESP32-S3 board"
+  diagonal: 2.8
+  width: 320
+  height: 240
+  colors: "65K colors (16-bit)"
+  colorClass: "rgb"
+  buttons: 1
+  platforms:
+    - "esp32-s3"
+  status: "tested"
+---
+
+The **Elecrow CrowPanel Advance 2.8"** is a palm-sized 320×240 IPS **touch LCD** with an
+ESP32-S3-WROOM-1 (16&nbsp;MB flash, 8&nbsp;MB PSRAM), a PDM microphone, a buzzer and a TF slot.
+FrameOS supports hardware version 1.2.
+
+## What it does
+
+Pick the **Elecrow CrowPanel Advance 2.8"** hardware preset (`elecrow_crowpanel_advance_2in8`):
+
+- **Scenes animate and answer a touch.** It's an [LCD-class screen](/guide/esp32#lcd): the panel
+  keeps its own picture and is sent only the part that changed.
+- **Touch** reaches scenes as taps, drags, swipes and pointer events
+  ([input events](/guide/scenes#input)), and a swipe in from an edge is the frame's: up for the
+  scene switcher, down for the scene's settings, left and right for back and forward.
+- **The BOOT key** ([button standard](/guide/buttons)) turns the screen off or on, and
+  held it's the [voice chat](/guide/esp32#voice-chat) key, through the board's microphone.
+- **Brightness and dimming.** The backlight dims: set **Brightness**, **Dim when idle** and
+  **Dimmed brightness** under [Power](/guide/settings#power-and-battery), or drag the Brightness
+  bar on the frame's own page.
+- **The buzzer** clicks on a press, and the TF slot holds the frame's
+  [assets](/guide/esp32#assets-and-the-sd-card) and fonts.
+
+The board has no clock chip and no way to read its battery, so the time comes from the network and
+there's no charge to show. The speaker amplifier isn't driven yet.
+
+## Setup
+
+1. In the FrameOS backend or [FrameOS Cloud](/guide/cloud), create a frame with **Flash embedded
+   device** - or flash it standalone from [flash.frameos.net](https://flash.frameos.net/).
+2. Choose **ESP32-S3**, select the **Elecrow CrowPanel Advance 2.8"** preset, and enter your WiFi
+   details.
+3. Flash it over USB from the browser. A touch board sets up on its own screen: swipe down from
+   the top, tap the gear, and join a WiFi network there.
+4. Install scenes as usual - they sync over WiFi, and the device updates itself over the air.
+
+## Status
+
+🟢 **Confirmed working** - tested on real hardware: the picture, touch from corner to corner and
+the backlight. The voice chat on BOOT hasn't been tried yet.
