@@ -26,9 +26,31 @@ function seeedStoreUrl(url: string): string {
   return url.includes('?') ? `${url}&${seeedAffiliateQuery}` : `${url}?${seeedAffiliateQuery}`;
 }
 
+// Elecrow's affiliate program runs on Awin (merchant 82721): a store page goes through Awin's
+// tracking link with the page as `ued`. Its wiki pages don't.
+const elecrowAwinLink = 'https://www.awin1.com/cread.php?awinmid=82721&awinaffid=3170346&ued=';
+
+function elecrowStoreUrl(url: string): string {
+  try {
+    const parsed = new URL(url);
+    if (
+      (parsed.hostname !== 'www.elecrow.com' && parsed.hostname !== 'elecrow.com') ||
+      !parsed.pathname.endsWith('.html') ||
+      /^\/(pub\/)?wiki\//.test(parsed.pathname)
+    ) {
+      return url;
+    }
+  } catch {
+    return url;
+  }
+  return `${elecrowAwinLink}${encodeURIComponent(url)}`;
+}
+
 function productUrl(url: string): string {
   const seeedUrl = seeedStoreUrl(url);
   if (seeedUrl !== url) return seeedUrl;
+  const elecrowUrl = elecrowStoreUrl(url);
+  if (elecrowUrl !== url) return elecrowUrl;
   try {
     const parsed = new URL(url);
     if (parsed.hostname !== 'www.waveshare.com' || parsed.pathname.startsWith('/wiki/')) {
